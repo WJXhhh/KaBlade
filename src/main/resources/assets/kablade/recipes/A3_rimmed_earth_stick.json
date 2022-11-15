@@ -1,0 +1,18 @@
+{
+  "group": "kablade",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "  0",
+    "  0"
+  ],
+  "key": {
+    "0": {
+      "item": "kablade:rimmed_earth"
+    }
+  },
+  "result": {
+    "item": "kablade:rimmed_earth_stick",
+    "count": 1
+  }
+}

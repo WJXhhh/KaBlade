@@ -1,0 +1,71 @@
+
+
+#刀之铭
+name.slashblade.magic=Demon Blade -Thousand Blades-
+item.wjx.blade.hangtu.name=§rAnonymity -RimmedEarth-
+item.wjx.blade.bamboo_iron.name=§rIron -BambooLight-
+item.wjx.blade.bamboo_battler.name=Battler -BambooLight-
+item.wjx.blade.bamboo_lumi.name=Lumen -BambooLight-
+item.wjx.blade.rocky_anshan.name=Noted「矍铄」
+item.wjx.blade.rocky_shanchang.name=自铭「明磬」
+item.wjx.blade.rocky_huagang.name=自铭「嶙峋」
+
+
+item.wjx.blade.honkai.muraseshu.name=势州村正
+item.wjx.blade.honkai.murahori.name=堀川国广
+item.wjx.blade.honkai.murauson.name=妖刀雨村
+item.wjx.blade.honkai.murayoto.name=妖刀村正
+item.wjx.blade.honkai.byorai.name=苗刀·雷妖
+item.wjx.blade.honkai.byoden.name=苗刀·电魂
+item.wjx.blade.honkai.fuheliuye.name=复合刀·柳叶
+item.wjx.blade.honkai.fuhezhuque.name=复合刀·朱雀
+item.wjx.blade.honkai.pulse_katana_t17.name=脉冲太刀17式
+item.wjx.blade.honkai.pulse_katana_t19.name=脉冲太刀19式
+
+item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
+
+#组之呈
+itemGroup.tabkablade=斩无不断
+itemGroup.tabkablade_blades=斩无不断:铭刀
+itemGroup.tabkablade_bladesgod=斩无不断:神锻
+itemGroup.tabkablade_honkai=斩无不断:崩坏
+
+
+#物之名
+tile.rimmed_earth.name=Rimmed earth
+item.rimmed_earth_stick.name=Rimmed earth stick
+
+
+#刀之述
+info.slashblade.magic.1=原是神锻国的秘宝
+info.slashblade.magic.2=刀刃是由上千块碎片组成，黑色刀柄半截刀身
+info.slashblade.magic.3=刀身上的蓝色条纹，显现出恶灵的图案，闪现着淡淡的蓝色或紫色的光
+info.slashblade.magic.4=只有条纹发光，才可以发挥出强大的力量
+info.slashblade.magic.5=只攻不防，天下无双，魔刀千刃
+
+info.damageguer1111.name=陨月沉星
+info.slashblade.deamon=魔
+info.infinity=无尽
+
+info.slashblade.dizui.1=前文明抗崩坏组织逐火之蛾以第三律者·雷之律者的核心打造的神之键
+info.slashblade.dizui.2=雷电是虚数空间所赋予它的权柄，又可为谁所用？
+info.slashblade.dizui.3=被该剑击中者将被附加【鸣神】状态，持续15秒
+info.slashblade.dizui.4=【唤霆霓】
+info.slashblade.dizui.5=向前方劈出X形刀光，造成大量伤害。附近附加【鸣神】状态者，鸣
+info.slashblade.dizui.6=神印记将引爆，造成伤害。受波及者将附着【鸣神】状态
+
+
+
+info.slashblade.godkey.3=裁决之键
+info.slashblade.godkey.12=侵蚀之键
+
+flammpfeil.slashblade.specialattack.magic=柒·邪极魔斩
+flammpfeil.slashblade.specialattack.lacerate_blade=撕裂灵刃
+flammpfeil.slashblade.specialattack.dizuijiu=唤霆霓
+flammpfeil.slashblade.specialattack.fire_of_sin=罪业之火
+flammpfeil.slashblade.specialattack.chop_willow=锋刀抚柳
+flammpfeil.slashblade.specialattack.frost_blade=寒霜灵刃
+
+
+#堺之言
+msg.yunluo=陨落！

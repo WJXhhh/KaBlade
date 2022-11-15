@@ -1,0 +1,26 @@
+{
+  "group": "ticthingsplus",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:dirt",
+      "data": 32767
+    },
+    {
+      "item": "minecraft:dirt",
+      "data": 32767
+    },
+    {
+      "item": "minecraft:dirt",
+      "data": 32767
+    },
+    {
+      "item": "minecraft:dirt",
+      "data": 32767
+    }
+  ],
+  "result": {
+    "item": "kablade:rimmed_earth",
+    "count": 1
+  }
+}
