@@ -84,7 +84,7 @@ public class FuheZhuque {
                         "A  ",
                         'A', prevblade,
                         'B',Item.getItemFromBlock(Blocks.GOLD_BLOCK),
-                        'C', new ItemStack(Items.BLAZE_ROD,2),
+                        'C', new ItemStack(Items.BLAZE_ROD),
                 });
 
         SlashBlade.addRecipe("fuhezhuque", recipe);

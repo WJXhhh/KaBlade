@@ -84,7 +84,7 @@ public class ByoRai {
                         " B ",
                         "A  ",
                         'A', prevblade,
-                        'B',new ItemStack(Items.REDSTONE,2),
+                        'B',new ItemStack(Items.REDSTONE),
                         'C', new ItemStack(Item.getItemFromBlock(Blocks.IRON_BLOCK)),
                 });
 
