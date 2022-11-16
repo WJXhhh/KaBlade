@@ -77,8 +77,6 @@ public class HonKaiFrostComet extends SpecialAttackBase {
                     }
                 }
 
-            } else {
-                Main.logger.info("dizuisa:isEmpty");
             }
 
         }
