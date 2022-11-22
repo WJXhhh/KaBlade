@@ -11,6 +11,7 @@ item.wjx.blade.rocky_shanchang.name=自铭「明磬」
 item.wjx.blade.rocky_huagang.name=自铭「嶙峋」
 item.wjx.blade.rocky_ex.name=千岩之锋
 item.wjx.blade.arc_light.name=弧光刃「流芒」
+item.wjx.blade.cut_iron.name=复合刃「斩铁」
 
 
 item.wjx.blade.honkai.muraseshu.name=势州村正
@@ -25,7 +26,8 @@ item.wjx.blade.honkai.pulse_katana_t17.name=脉冲太刀17式
 item.wjx.blade.honkai.pulse_katana_t19.name=脉冲太刀19式
 item.wjx.blade.honkai.thermal_cutter.name=热能切割刃
 item.wjx.blade.honkai.crystal_cutter.name=结晶逆刃刀
-
+item.wjx.blade.honkai.galactic.name=银河追光
+item.wjx.blade.honkai.vorpal_sword.name=反力场打刀11式
 
 item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
 
@@ -34,11 +36,36 @@ itemGroup.tabkablade=斩无不断
 itemGroup.tabkablade_blades=斩无不断:铭刀
 itemGroup.tabkablade_bladesgod=斩无不断:神锻
 itemGroup.tabkablade_honkai=斩无不断:崩坏
+itemGroup.tabkablade_ore=斩无不断:矿藏
+
 
 
 #物之名
 tile.rimmed_earth.name=夯土
+
+tile.chromium_ore.name=铬矿石
+tile.molybdenite.name=辉钼矿石
+
 item.rimmed_earth_stick.name=夯土棍
+item.chromium_ingot.name=铬锭
+item.molybdenum_ingot.name=钼锭
+item.crude_chromoly.name=铬钼钢粗胚
+item.chromoly_ingot.name=铬钼钢锭
+item.gravity_nugget.name=重力微粒
+item.gravity_crystal.name=重力结晶
+
+item.chromium_sword.name=铬剑
+item.chromium_axe.name=铬斧
+item.chromium_pickaxe.name=铬镐
+item.chromium_hoe.name=铬锄
+item.molybdenum_sword.name=钼剑
+item.molybdenum_axe.name=钼斧
+item.molybdenum_pickaxe.name=钼镐
+item.molybdenum_hoe.name=钼锄
+item.chromoly_sword.name=铬钼钢剑
+item.chromoly_axe.name=铬钼钢斧
+item.chromoly_hoe.name=铬钼钢锄
+item.chromoly_pickaxe.name=铬钼钢镐
 
 
 #刀之述
@@ -51,6 +78,10 @@ info.slashblade.magic.5=只攻不防，天下无双，魔刀千刃
 info.damageguer1111.name=陨月沉星
 info.slashblade.deamon=魔
 info.infinity=无尽
+
+info.item.chromoly_ingot=加入Cr（<10%）， Mo等合金元素以显著提高高温强度极限和蠕变极限的钢种，高强度的材料可以辅助锻刀
+info.item.gravity_nugget=存在于岩石之中的奇异物质，拥有着强大的引力
+info.item.gravity_crystal=重力微粒的大块聚合体，通过某些手段已经可以自由控制它内部的能量
 
 info.slashblade.dizui.1=前文明抗崩坏组织逐火之蛾以第三律者·雷之律者的核心打造的神之键
 info.slashblade.dizui.2=雷电是虚数空间所赋予它的权柄，又可为谁所用？
@@ -75,6 +106,11 @@ flammpfeil.slashblade.specialattack.molten_blade=熔铁之刃
 flammpfeil.slashblade.specialattack.frost_comet=霜冻彗星
 flammpfeil.slashblade.specialattack.rock_hit_i=磐石撼击
 flammpfeil.slashblade.specialattack.break_the_dawn=弧光破晓
+flammpfeil.slashblade.specialattack.cut_metal=斩铁断金
+flammpfeil.slashblade.specialattack.vorpal_hoe=时空黑洞
+
+#生之称
+entity.vorpal_black_hole.name=反力场黑洞
 
 
 #堺之言

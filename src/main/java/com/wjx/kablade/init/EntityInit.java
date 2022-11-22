@@ -1,6 +1,7 @@
 package com.wjx.kablade.init;
 
 import com.wjx.kablade.Entity.EntitySummonSwordFree;
+import com.wjx.kablade.Entity.EntityVorpalBlackHole;
 import com.wjx.kablade.Entity.SummonBladeOfFrostBlade;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.util.Reference;
@@ -14,7 +15,8 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 public class EntityInit {
     public static void registerEntity(){
         registerEntity("summon_blade_of_frost_blade", SummonBladeOfFrostBlade.class,13700001,50);
-        registerEntity("summon_blade_free", EntitySummonSwordFree.class,13700001,50);
+        registerEntity("summon_blade_free", EntitySummonSwordFree.class,13700002,50);
+        registerEntity("vorpal_black_hole", EntityVorpalBlackHole.class,13700003,50);
     }
 
     private static void registerEntitySpawn(Class<? extends Entity> entityClass, int spawnWeight, int min, int max, EnumCreatureType typeOfCreature, Biome... biomes)

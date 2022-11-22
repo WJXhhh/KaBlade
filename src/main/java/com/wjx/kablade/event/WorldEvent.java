@@ -4,30 +4,33 @@ import com.google.common.collect.Sets;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
-import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
-import net.minecraft.client.Minecraft;
+import com.wjx.kablade.init.ItemInit;
+import com.wjx.kablade.util.interfaces.IKabladeOre;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -58,8 +61,21 @@ public class WorldEvent {
                 return;
             }
         }
-
     }
+
+    @SubscribeEvent
+    public void onPlayerJoinWorld(PlayerEvent.PlayerLoggedInEvent event) {
+        EntityPlayer player = event.player;
+        if (Main.YesUpdate){
+            if (!player.world.isRemote){
+                player.sendStatusMessage(new TextComponentString("§6§l[斩无不断]§b检测到模组有更新。最新版本为：§6"+Main.GetUrlVersion),false);
+                TextComponentString t = new TextComponentString("§9https://www.mcmod.cn/class/8128.html");
+                t.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,"https://www.mcmod.cn/class/8128.html")).setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("点击前往链接")));
+                player.sendStatusMessage(new TextComponentString("§6§l[斩无不断]§b可从MC百科下载或从其界面寻找蓝奏云下载地址：").appendSibling(t),false);
+            }
+        }
+    }
+
 
     @SubscribeEvent
     public void onTooltip(ItemTooltipEvent event) {
@@ -91,6 +107,43 @@ public class WorldEvent {
             }
         }
     }
+    @SubscribeEvent
+    public void PlayerHurtProtect(LivingHurtEvent event){
+        if(event.getEntityLiving() instanceof EntityPlayer){
+            EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+            if(player.inventory.hasItemStack(new ItemStack(ITEM_MAGIC))||player.getHeldItemMainhand().getItem() instanceof MagicBlade){
+                player.setHealth(player.getMaxHealth());
+                player.deathTime=0;
+                player.isDead=false;
+                if(event.isCancelable())
+                {
+                    event.setCanceled(true);
+                }
+
+            }
+        }
+    }
+
+
+    @SubscribeEvent
+    public void PlayerUpdattingProtect(LivingEvent.LivingUpdateEvent event){
+        if(event.getEntityLiving() instanceof EntityPlayer){
+            EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+            if(player.inventory.hasItemStack(new ItemStack(ITEM_MAGIC))||player.getHeldItemMainhand().getItem() instanceof MagicBlade){
+                if(player.isDead || player.getHealth()<=0)
+                {
+                    player.setHealth(player.getMaxHealth());
+                    player.deathTime = 0;
+                    player.isDead = false;
+                    player.preparePlayerToSpawn();
+                }
+
+            }
+        }
+
+    }
+
+
 
     @SubscribeEvent
     public void LivingUpdate(LivingEvent.LivingUpdateEvent event){
@@ -256,6 +309,30 @@ public class WorldEvent {
 
             }else{
                 Main.logger.info("dizuisaofkuosan:isEmpty");
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onBlockBreak(BlockEvent.BreakEvent event){
+        IBlockState state = event.getState();
+        World world = event.getWorld();
+        BlockPos pos = event.getPos();
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+        if (!world.isRemote){
+            if (state.getBlock() == Blocks.STONE){
+                if (Math.random() < 0.003){
+                    EntityItem item = new EntityItem(world,x,y,z,new ItemStack(ItemInit.GRAVITY_NUGGET));
+                    world.spawnEntity(item);
+                }
+            }
+            if (state.getBlock() instanceof IKabladeOre){
+                if (Math.random() < 0.01){
+                    EntityItem item = new EntityItem(world,x,y,z,new ItemStack(ItemInit.GRAVITY_NUGGET));
+                    world.spawnEntity(item);
+                }
             }
         }
     }

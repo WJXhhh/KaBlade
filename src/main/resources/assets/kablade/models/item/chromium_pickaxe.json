@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "kablade:items/chromium_pickaxe"
+  }
+}

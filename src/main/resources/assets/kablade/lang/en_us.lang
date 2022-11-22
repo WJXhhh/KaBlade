@@ -47,6 +47,10 @@ info.damageguer1111.name=陨月沉星
 info.slashblade.deamon=魔
 info.infinity=无尽
 
+info.item.chromoly_ingot=加入Cr（<10%）， Mo等合金元素以显著提高高温强度极限和蠕变极限的钢种，高强度的材料可以辅助锻刀
+info.item.gravity_nugget=存在于岩石之中的奇异物质，拥有着强大的引力
+info.item.gravity_crystal=重力微粒的大块聚合体，通过某些手段已经可以自由控制它内部的能量
+
 info.slashblade.dizui.1=前文明抗崩坏组织逐火之蛾以第三律者·雷之律者的核心打造的神之键
 info.slashblade.dizui.2=雷电是虚数空间所赋予它的权柄，又可为谁所用？
 info.slashblade.dizui.3=被该剑击中者将被附加【鸣神】状态，持续15秒

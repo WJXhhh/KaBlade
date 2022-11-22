@@ -1,0 +1,1 @@
+{"group":"kablade","type":"minecraft:crafting_shaped","pattern":["11 ","12 "," 2 "],"key":{"1":{"type":"forge:ore_dict","ore":"ingotChromoly"},"2":{"item":"minecraft:stick"}},"result":{"item":"chromoly_axe","count":1}}

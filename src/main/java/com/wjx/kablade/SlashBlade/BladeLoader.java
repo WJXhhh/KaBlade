@@ -42,7 +42,6 @@ public class BladeLoader {
     public BladeLoader() {
 
         RegistOther();
-            Main.logger.info("RegisterItemBlade:" + autu);
 
 
 
@@ -59,6 +58,7 @@ public class BladeLoader {
       this.loadBlade(new RockyShanchang());
       this.loadBlade(new RockyEX());
       this.loadBlade(new ArcLight());
+      this.loadBlade(new CutIron());
         Main.logger.info("RegisterHONKAI:"+(autu));
     if(autu)
         {
@@ -79,6 +79,9 @@ public class BladeLoader {
             loadBlade(new PulseKatanaType17());
             loadBlade(new ThermalCutter());
             loadBlade(new CrystalCutter());
+
+            loadBlade(new GalacticNova());
+            loadBlade(new VorpalSword());
 
 
 

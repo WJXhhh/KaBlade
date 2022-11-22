@@ -1,0 +1,26 @@
+{
+  "group": "kablade",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 0 ",
+    " 1 ",
+    " 2 "
+  ],
+  "key": {
+    "0": {
+      "item": "minecraft:iron_ingot"
+    },
+    "1": {
+      "type": "forge:ore_dict",
+      "ore": "ingotChromium"
+    },
+    "2": {
+      "type": "forge:ore_dict",
+      "ore": "ingotMolybdenum"
+    }
+  },
+  "result": {
+    "item": "kablade:crude_chromoly",
+    "count": 1
+  }
+}

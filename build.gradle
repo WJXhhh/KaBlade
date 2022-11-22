@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.2-b'
+version = '0.3-b'
 group = 'com.wjx.kablade' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'kablade'
 
@@ -117,3 +117,5 @@ publishing {
         }
     }
 }
+
+compileJava.options.encoding = 'UTF-8'

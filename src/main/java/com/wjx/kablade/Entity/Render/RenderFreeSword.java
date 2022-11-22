@@ -6,11 +6,12 @@ import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
+
+import static org.lwjgl.opengl.GL11.*;
 
 public class RenderFreeSword extends Render {
     private static double[][] dVec = new double[][]{{0.0D, 0.0D, 417.7431D}, {0.0D, -44.6113D, -30.0D}, {38.9907D, 0.0D, -20.0D}, {0.0D, 44.6113D, -30.0D}, {-38.9907D, 0.0D, -20.0D}, {30.9907D, 0.0D, -50.0D}, {-30.9907D, 0.0D, -50.0D}, {0.0D, 0.0D, -214.0305D}, {159.1439D, 0.0D, -30.0D}, {-159.1439D, 0.0D, -30.0D}};
@@ -33,16 +34,16 @@ public class RenderFreeSword extends Render {
 
     private void doDriveRender(EntitySummonSwordFree entityPhantomSword, double dX, double dY, double dZ, float f, float f1) {
         Tessellator tessellator = Tessellator.getInstance();
-        GL11.glDisable(3553);
-        GL11.glDisable(2896);
-        GL11.glEnable(3042);
+        GL11.glDisable(GL_TEXTURE_2D);
+        GL11.glDisable(GL_LIGHTING);
+        GL11.glEnable(GL_BLEND);//开启混合
         int color = entityPhantomSword.getColor();
         boolean inverse = color < 0;
         color = Math.abs(color);
         if (!inverse) {
-            GL11.glBlendFunc(770, 1);
+            GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE);//混合 使用源颜色的alpha值来作为因子;使用1.0作为因子;新颜色：RsSr+RdDr, GsSg+GdDg, BsSb+BdDb, AsSa+AdDa
         } else {
-            GL11.glBlendFunc(775, 0);
+            GL11.glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
         }
 
         GL11.glPushMatrix();
@@ -70,9 +71,9 @@ public class RenderFreeSword extends Render {
 
         tessellator.draw();
         GL11.glPopMatrix();
-        GL11.glDisable(3042);
-        GL11.glEnable(2896);
-        GL11.glEnable(3553);
+        GL11.glDisable(GL_BLEND);
+        GL11.glEnable(GL_LIGHTING);
+        GL11.glEnable(GL_TEXTURE_2D);
     }
 
     float lerp(float start, float end, float percent) {
