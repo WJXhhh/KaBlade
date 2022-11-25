@@ -28,6 +28,7 @@ public class BladeProxy {
         ItemSlashBlade.specialAttacks.put(289,new SaBreakTheDawn());
         ItemSlashBlade.specialAttacks.put(290,new SaCutMetal());
         ItemSlashBlade.specialAttacks.put(291,new HonKaiVorpalHole());
+        ItemSlashBlade.specialAttacks.put(292,new HonkaiBladeWard());
     }
     public static void ClientLoader(){
         new ItemSlashUtil();

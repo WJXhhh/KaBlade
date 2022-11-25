@@ -2,10 +2,10 @@ package com.wjx.kablade.init;
 
 import com.wjx.kablade.objects.items.ItemBase;
 import com.wjx.kablade.objects.items.NormalTools;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 
@@ -27,26 +27,26 @@ public class ItemInit {
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.format("info.item.gravity_nugget"));
+            tooltip.add(I18n.translateToLocal("info.item.gravity_nugget"));
         }
     };
     public static Item GRAVITY_CRYSTAL = new ItemBase("gravity_crystal",TABKABLADE){
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.format("info.item.gravity_crystal"));
+            tooltip.add(I18n.translateToLocal("info.item.gravity_crystal"));
         }
     };
 
-    public static Item CHROMIUM_INGOT = new ItemBase("chromium_ingot",TABKABLADE){
+    public static Item CHROMIUM_INGOT = new ItemBase("chromium_ingot",TABKABLADE);
+    public static Item MOLYBDENUM_INGOT = new ItemBase("molybdenum_ingot",TABKABLADE);
+    public static Item CHROMOLY_INGOT = new ItemBase("chromoly_ingot",TABKABLADE){
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.format("info.item.chromoly_ingot"));
+            tooltip.add(I18n.translateToLocal("info.item.chromoly_ingot"));
         }
-    };
-    public static Item MOLYBDENUM_INGOT = new ItemBase("molybdenum_ingot",TABKABLADE);
-    public static Item CHROMOLY_INGOT = new ItemBase("chromoly_ingot",TABKABLADE);
+    };;
 
     public static Item.ToolMaterial CHROMIUM_MATERIAL= EnumHelper.addToolMaterial("KABLADE_CHROMIUM",2, 800, 6.8F, 2.6F, 17).setRepairItem(new ItemStack(CHROMIUM_INGOT,1));
     public static Item.ToolMaterial MOLYBDENUM_MATERIAL= EnumHelper.addToolMaterial("KABLADE_MOLYBDENUM",2, 700, 7F, 2.4F, 20).setRepairItem(new ItemStack(MOLYBDENUM_INGOT,1));

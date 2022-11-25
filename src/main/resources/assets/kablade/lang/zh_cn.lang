@@ -28,6 +28,8 @@ item.wjx.blade.honkai.thermal_cutter.name=热能切割刃
 item.wjx.blade.honkai.crystal_cutter.name=结晶逆刃刀
 item.wjx.blade.honkai.galactic.name=银河追光
 item.wjx.blade.honkai.vorpal_sword.name=反力场打刀11式
+item.wjx.blade.honkai.raikiri.name=雷切
+
 
 item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
 
@@ -108,6 +110,7 @@ flammpfeil.slashblade.specialattack.rock_hit_i=磐石撼击
 flammpfeil.slashblade.specialattack.break_the_dawn=弧光破晓
 flammpfeil.slashblade.specialattack.cut_metal=斩铁断金
 flammpfeil.slashblade.specialattack.vorpal_hoe=时空黑洞
+flammpfeil.slashblade.specialattack.blade_ward=灵刃护体
 
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞
@@ -115,3 +118,5 @@ entity.vorpal_black_hole.name=反力场黑洞
 
 #堺之言
 msg.yunluo=陨落！
+msg.raikiri_shield_crash=雷切护盾已损毁
+msg.raikiri_shield_blood=雷切护盾耐久还有：

@@ -30,7 +30,16 @@ public class EntityVorpalBlackHole extends Entity implements IThrowableEntity {
             return false;
         }
         if (!(input1 instanceof EntityLivingBase)){
-            return input1 instanceof IThrowableEntity;
+            if (input1 instanceof IThrowableEntity){
+                if (((IThrowableEntity)input1).getThrower() == this.thrower){
+                    return false;
+                }
+            }
+        }
+        if (input1 instanceof IThrowableEntity){
+            if (((IThrowableEntity)input1).getThrower() == this.thrower){
+                return false;
+            }
         }
         if (input1 instanceof EntityPlayerMP){
             return !((EntityPlayerMP) input1).capabilities.isCreativeMode;

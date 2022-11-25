@@ -5,6 +5,7 @@ import com.wjx.kablade.init.ItemInit;
 import com.wjx.kablade.util.interfaces.IHasModel;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.potion.Potion;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -17,7 +18,6 @@ public class RegistryHandler {
     @SubscribeEvent
     public static void onItemRegister(RegistryEvent.Register<Item> event){
         event.getRegistry().registerAll(ItemInit.ITEMS.toArray(new Item[0]));
-
     }
 
     @SubscribeEvent
@@ -45,6 +45,11 @@ public class RegistryHandler {
             }
         }
 
+    }
+
+    @SubscribeEvent
+    public void registerPotion(RegistryEvent.Register<Potion> event){
+        event.getRegistry().registerAll();
     }
 
 

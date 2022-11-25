@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.oredict.OreDictionary;
 
 import static com.wjx.kablade.Main.bladestr;
 
@@ -64,7 +65,7 @@ public class CutIron {
                 " A ",
                 "B B",
                 'A', prevblade,
-                'B', new ItemStack(ItemInit.CHROMIUM_INGOT),
+                'B', "ingotChromium",
                 'C',new ItemStack(Items.DIAMOND));
 
         SlashBlade.addRecipe("cut_iron", recipe);

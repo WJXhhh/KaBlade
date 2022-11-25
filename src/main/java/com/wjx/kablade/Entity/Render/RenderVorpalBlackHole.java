@@ -1,11 +1,11 @@
 package com.wjx.kablade.Entity.Render;
 
-import com.wjx.kablade.Entity.EntityVorpalBlackHole;
 import com.wjx.kablade.Entity.model.ModelVorpalBlackHole;
 import com.wjx.kablade.Main;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 
 @SideOnly(Side.CLIENT)
-public class RenderVorpalBlackHole extends Render<EntityVorpalBlackHole> {
+public class RenderVorpalBlackHole extends Render<Entity> {
     protected ModelBase mainModel;
 
     public RenderVorpalBlackHole(RenderManager renderManagerIn) {
@@ -26,7 +26,7 @@ public class RenderVorpalBlackHole extends Render<EntityVorpalBlackHole> {
 
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(EntityVorpalBlackHole entity) {
+    protected ResourceLocation getEntityTexture(Entity entity) {
         return TEXTURE;
     }
 
@@ -35,18 +35,17 @@ public class RenderVorpalBlackHole extends Render<EntityVorpalBlackHole> {
         GlStateManager.scale(2d,2d,2d);
     }
 
-    public float prepareScale()
+    public void prepareScale()
     {
         GlStateManager.enableRescaleNormal();
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);
         this.preRenderCallback();
         float f = 0.0625F;
         GlStateManager.translate(0.0F, -1.501F, 0.0F);
-        return 0.0625F;
     }
 
     @Override
-    public void doRender(EntityVorpalBlackHole entity, double x, double y, double z, float entityYaw, float partialTicks) {
+    public void doRender(Entity entity, double x, double y, double z, float entityYaw, float partialTicks) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         this.bindEntityTexture(entity);

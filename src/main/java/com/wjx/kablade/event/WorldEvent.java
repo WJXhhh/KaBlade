@@ -1,12 +1,21 @@
 package com.wjx.kablade.event;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import com.wjx.kablade.Entity.AbsEntityShield;
+import com.wjx.kablade.Entity.model.mdlRaikiriBlade;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
 import com.wjx.kablade.init.ItemInit;
+import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
+import com.wjx.kablade.util.interfaces.IEntityShield;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderBoat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -17,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -24,6 +34,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -35,7 +46,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -48,6 +62,8 @@ public class WorldEvent {
     public WorldEvent(){
         MinecraftForge.EVENT_BUS.register(this);
     }
+
+    public static int RaikiriRotation = 0;
 
     public static Set<Class<? extends Entity>> antiEntity = Sets.newHashSet();
 
@@ -336,4 +352,52 @@ public class WorldEvent {
             }
         }
     }
+
+    @SubscribeEvent
+    public void onLivingHurt(LivingHurtEvent event){
+        EntityLivingBase e = event.getEntityLiving();
+        World world = e.getEntityWorld();
+        //Shield
+        {
+            if (e instanceof EntityPlayer){
+                ArrayList<AbsEntityShield> list = Lists.newArrayList();
+                EntityPlayer player = (EntityPlayer)e;
+                List<Entity> entities = PlayerThrowableHandler.getAllThrowableForPlayer(world, player);
+                if (!entities.isEmpty()){
+                    for (Entity e1 : entities){
+                        if (e1 instanceof AbsEntityShield){
+                            list.add((AbsEntityShield) e1);
+                        }
+                    }
+                    if (!list.isEmpty()){
+                        float damage = event.getAmount();
+                        for (AbsEntityShield shield : list){
+                            if (damage <= 0){
+                                break;
+                            }
+                            if (shield.getShieldBlood() > damage){
+                                if (damage > 0){
+                                    shield.setShieldBlood(shield.getShieldBlood() - damage);
+                                    damage = 0;
+                                }
+                            }
+                            if (shield.getShieldBlood() == damage){
+                                if (damage > 0){
+                                    shield.setShieldBlood(0);
+                                }
+                                damage = 0;
+                            }
+                            if (shield.getShieldBlood() < damage){
+                                shield.setShieldBlood(0);
+                                damage -= shield.getShieldBlood();
+                            }
+                        }
+                        event.setAmount(damage);
+                    }
+                }
+            }
+        }
+
+    }
+
 }

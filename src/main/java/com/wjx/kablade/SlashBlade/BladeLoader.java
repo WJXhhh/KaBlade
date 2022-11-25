@@ -83,6 +83,8 @@ public class BladeLoader {
             loadBlade(new GalacticNova());
             loadBlade(new VorpalSword());
 
+            loadBlade(new Raikiri());
+
 
 
             this.loadBlade(new MoDao());

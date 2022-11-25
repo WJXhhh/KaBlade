@@ -6,18 +6,19 @@ import com.wjx.kablade.event.OreGen;
 import com.wjx.kablade.init.BlockInit;
 import com.wjx.kablade.init.EntityInit;
 import com.wjx.kablade.init.ItemInit;
-import com.wjx.kablade.network.MessageRemoteLighting;
-import com.wjx.kablade.network.MessageRemoteLightingHandler;
+import com.wjx.kablade.network.*;
 import com.wjx.kablade.proxy.CommonProxy;
 import com.wjx.kablade.util.Reference;
 import com.wjx.kablade.util.handlers.RenderHandler;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -30,14 +31,13 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Objects;
 
 @Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION)
 public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "0.3";
+    public static final String VERSION = "0.4";
 
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
@@ -174,6 +174,14 @@ public class Main
                 e.printStackTrace();
             }
             return null;
+        }
+
+
+    }
+    public static class ModHelper{
+        private static final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        public static void sendMessageToAll(String s){
+            server.getPlayerList().sendMessage(new TextComponentString(s));
         }
     }
 }
