@@ -11,8 +11,8 @@ public class tabOre extends CreativeTabs {
         super("tabkablade_ore");
     }
 
-    @Nonnull
-    public ItemStack getTabIconItem(){
+    @Override
+    public ItemStack createIcon() {
         return new ItemStack(ItemInit.ICON_ORE);
     }
 }

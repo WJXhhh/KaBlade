@@ -53,7 +53,7 @@ public class KillEvent {
             target.isDead = true;
             target.world.onEntityRemoved(target);
 
-            target.world.getChunkFromChunkCoords(target.chunkCoordX, target.chunkCoordZ).removeEntity(target);
+            target.world.getChunk(target.chunkCoordX, target.chunkCoordZ).removeEntity(target);
             target.world.removeEntity(target);
             target.world.removeEntityDangerously(target);
 

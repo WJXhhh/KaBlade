@@ -59,6 +59,8 @@ public class BladeLoader {
       this.loadBlade(new RockyEX());
       this.loadBlade(new ArcLight());
       this.loadBlade(new CutIron());
+      this.loadBlade(new AuroraBlade());
+      this.loadBlade(new NotedVine());
         Main.logger.info("RegisterHONKAI:"+(autu));
     if(autu)
         {
@@ -84,6 +86,8 @@ public class BladeLoader {
             loadBlade(new VorpalSword());
 
             loadBlade(new Raikiri());
+            loadBlade(new PlasmaKagehide());
+            loadBlade(new XuanYuanKatana());
 
 
 

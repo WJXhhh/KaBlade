@@ -3,18 +3,21 @@ package com.wjx.kablade;
 import com.google.common.collect.Lists;
 import com.wjx.kablade.creativeTab.*;
 import com.wjx.kablade.event.OreGen;
-import com.wjx.kablade.init.BlockInit;
-import com.wjx.kablade.init.EntityInit;
-import com.wjx.kablade.init.ItemInit;
+import com.wjx.kablade.event.WorldEvent;
+import com.wjx.kablade.init.*;
 import com.wjx.kablade.network.*;
 import com.wjx.kablade.proxy.CommonProxy;
 import com.wjx.kablade.util.Reference;
 import com.wjx.kablade.util.handlers.RenderHandler;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Biomes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -37,7 +40,7 @@ public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "0.4";
+    public static final String VERSION = "0.5";
 
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
@@ -89,9 +92,11 @@ public class Main
         proxy.preInit(event);
 
         GameRegistry.registerWorldGenerator(new OreGen(),5);
-
+        PotionInit.registerPotions();
+        EnchantmentInit.registerEnchantments();
         EntityInit.registerEntity();
         RenderHandler.registerEntityRenders();
+        WorldEvent.loadEvent();
     }
 
     public static String GetUrlVersion;
@@ -126,7 +131,7 @@ public class Main
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event){
-
+        proxy.postInit(event);
     }
 
     public void registerMessage(){
@@ -183,5 +188,19 @@ public class Main
         public static void sendMessageToAll(String s){
             server.getPlayerList().sendMessage(new TextComponentString(s));
         }
+
+        public static boolean checkBiome(World world, BlockPos pos,Biome[] biomes){
+            Biome b = world.getBiome(pos);
+            boolean f = false;
+            for (Biome biome : biomes){
+                if (b == biome) {
+                    f = true;
+                    break;
+                }
+            }
+            return f;
+        }
+
+        public static Biome[] COLD_BIOMES = {Biomes.COLD_BEACH,Biomes.COLD_TAIGA,Biomes.COLD_TAIGA_HILLS,Biomes.MUTATED_TAIGA_COLD,Biomes.ICE_MOUNTAINS,Biomes.ICE_PLAINS,Biomes.MUTATED_ICE_FLATS};
     }
 }

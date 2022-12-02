@@ -12,6 +12,8 @@ item.wjx.blade.rocky_huagang.name=自铭「嶙峋」
 item.wjx.blade.rocky_ex.name=千岩之锋
 item.wjx.blade.arc_light.name=弧光刃「流芒」
 item.wjx.blade.cut_iron.name=复合刃「斩铁」
+item.wjx.blade.aurora_blade.name=极光刃「映天」
+item.wjx.blade.noted_vine.name=铭刀「青藤」
 
 
 item.wjx.blade.honkai.muraseshu.name=势州村正
@@ -29,6 +31,9 @@ item.wjx.blade.honkai.crystal_cutter.name=结晶逆刃刀
 item.wjx.blade.honkai.galactic.name=银河追光
 item.wjx.blade.honkai.vorpal_sword.name=反力场打刀11式
 item.wjx.blade.honkai.raikiri.name=雷切
+item.wjx.blade.honkai.plasma_kagehide.name=等离子影秀
+item.wjx.blade.honkai.xuanyuan_katana.name=轩辕·脉冲太刀
+
 
 
 item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
@@ -42,13 +47,15 @@ itemGroup.tabkablade_ore=斩无不断:矿藏
 
 
 
-#物之名
+#物之言
 tile.rimmed_earth.name=夯土
 
 tile.chromium_ore.name=铬矿石
 tile.molybdenite.name=辉钼矿石
+tile.aurora_ore.name=极光矿石
 
 item.rimmed_earth_stick.name=夯土棍
+item.sturdy_glass_stick.name=强化玻璃棒
 item.chromium_ingot.name=铬锭
 item.molybdenum_ingot.name=钼锭
 item.crude_chromoly.name=铬钼钢粗胚
@@ -68,9 +75,16 @@ item.chromoly_sword.name=铬钼钢剑
 item.chromoly_axe.name=铬钼钢斧
 item.chromoly_hoe.name=铬钼钢锄
 item.chromoly_pickaxe.name=铬钼钢镐
+item.aurora_fragment.name=极光残片
+item.aurora_metal_ingot.name=极光金属锭
+item.aurora_metal_sword.name=极光金属剑
+item.aurora_metal_pickaxe.name=极光金属镐
+item.aurora_metal_axe.name=极光金属斧
+item.aurora_metal_hoe.name=极光金属锄
 
 
-#刀之述
+
+#尘之述
 info.slashblade.magic.1=原是神锻国的秘宝
 info.slashblade.magic.2=刀刃是由上千块碎片组成，黑色刀柄半截刀身
 info.slashblade.magic.3=刀身上的蓝色条纹，显现出恶灵的图案，闪现着淡淡的蓝色或紫色的光
@@ -97,7 +111,7 @@ info.slashblade.dizui.6=神印记将引爆，造成伤害。受波及者将附�
 info.slashblade.godkey.3=裁决之键
 info.slashblade.godkey.12=侵蚀之键
 
-#刀之技
+#舞之技
 flammpfeil.slashblade.specialattack.magic=柒·邪极魔斩
 flammpfeil.slashblade.specialattack.lacerate_blade=撕裂灵刃
 flammpfeil.slashblade.specialattack.dizuijiu=唤霆霓
@@ -111,6 +125,8 @@ flammpfeil.slashblade.specialattack.break_the_dawn=弧光破晓
 flammpfeil.slashblade.specialattack.cut_metal=斩铁断金
 flammpfeil.slashblade.specialattack.vorpal_hoe=时空黑洞
 flammpfeil.slashblade.specialattack.blade_ward=灵刃护体
+flammpfeil.slashblade.specialattack.absolute_zero=绝对零度
+flammpfeil.slashblade.specialattack.aurora_shining=极光耀天
 
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞
@@ -120,3 +136,6 @@ entity.vorpal_black_hole.name=反力场黑洞
 msg.yunluo=陨落！
 msg.raikiri_shield_crash=雷切护盾已损毁
 msg.raikiri_shield_blood=雷切护盾耐久还有：
+
+#魔之印
+enchantment.kablade_slow=缓慢

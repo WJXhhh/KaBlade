@@ -1,15 +1,19 @@
 package com.wjx.kablade.util.handlers;
 
 import com.wjx.kablade.init.BlockInit;
+import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
+import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.util.interfaces.IHasModel;
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import static com.wjx.kablade.util.handlers.TileEntityHandler.registerTileEntity;
 
@@ -26,6 +30,12 @@ public class RegistryHandler {
         registerTileEntity();
 
     }
+
+    /*@SubscribeEvent
+    public static void onEnchantmentRegister(RegistryEvent.Register<Enchantment> event){
+        event.getRegistry().registerAll(EnchantmentInit.ENCHANTMENTS.toArray(new Enchantment[0]));
+
+    }*/
 
 
     @SubscribeEvent
@@ -46,12 +56,6 @@ public class RegistryHandler {
         }
 
     }
-
-    @SubscribeEvent
-    public void registerPotion(RegistryEvent.Register<Potion> event){
-        event.getRegistry().registerAll();
-    }
-
 
     public static void otherRegistries(){
 

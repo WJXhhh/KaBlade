@@ -10,7 +10,7 @@ public class NormalTools {
     public static class ToolHoe extends ItemHoe implements IHasModel{
         public ToolHoe(String name, ToolMaterial material, CreativeTabs tabs){
             super(material);
-            setUnlocalizedName(name);
+            setTranslationKey(name);
             setRegistryName(name);
             setCreativeTab(tabs);
 
@@ -26,7 +26,7 @@ public class NormalTools {
     public static class ToolAxe extends ItemAxe implements IHasModel {
         public ToolAxe(String name, ToolMaterial material, CreativeTabs tabs){
             super(material,material.getAttackDamage()+5.5f,-3f);
-            setUnlocalizedName(name);
+            setTranslationKey(name);
             setRegistryName(name);
             setCreativeTab(tabs);
 
@@ -42,7 +42,7 @@ public class NormalTools {
     public static class ToolPickaxe extends ItemPickaxe implements IHasModel{
         public ToolPickaxe(String name, ToolMaterial material, CreativeTabs tabs){
             super(material);
-            setUnlocalizedName(name);
+            setTranslationKey(name);
             setRegistryName(name);
             setCreativeTab(tabs);
 
@@ -58,7 +58,7 @@ public class NormalTools {
     public static class ToolSword extends ItemSword implements IHasModel{
         public ToolSword(String name, ToolMaterial material, CreativeTabs tabs){
             super(material);
-            setUnlocalizedName(name);
+            setTranslationKey(name);
             setRegistryName(name);
             setCreativeTab(tabs);
 
@@ -75,7 +75,7 @@ public class NormalTools {
     public static class ToolShovel extends ItemSpade implements IHasModel{
         public ToolShovel(String name, ToolMaterial material, CreativeTabs tabs){
             super(material);
-            setUnlocalizedName(name);
+            setTranslationKey(name);
             setRegistryName(name);
             setCreativeTab(tabs);
 

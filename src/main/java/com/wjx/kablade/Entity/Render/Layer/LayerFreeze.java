@@ -1,12 +1,15 @@
 package com.wjx.kablade.Entity.Render.Layer;
 
 import com.wjx.kablade.init.PotionInit;
+import net.minecraft.client.model.ModelSheep1;
+import net.minecraft.client.model.ModelSheep2;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class LayerFreeze implements LayerRenderer<EntityLivingBase> {
     private final RenderLivingBase<?> renderer;
@@ -32,9 +35,10 @@ public class LayerFreeze implements LayerRenderer<EntityLivingBase> {
         }
 
         //bg
+        GL11.glEnable(GL11.GL_CULL_FACE);
         this.renderer.bindTexture(OVERLAY_ICE);
         this.renderer.getMainModel().render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-
+        GL11.glDisable(GL11.GL_CULL_FACE);
     }
 
     @Override

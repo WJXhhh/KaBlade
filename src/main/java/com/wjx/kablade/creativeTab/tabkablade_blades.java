@@ -11,8 +11,8 @@ public class tabkablade_blades extends CreativeTabs {
         super("tabkablade_blades");
     }
 
-    @Nonnull
-    public ItemStack getTabIconItem(){
+    @Override
+    public ItemStack createIcon() {
         return new ItemStack(ItemInit.ICON_NOTED);
     }
 }

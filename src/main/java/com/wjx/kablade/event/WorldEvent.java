@@ -5,17 +5,23 @@ import com.google.common.collect.Sets;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wjx.kablade.Entity.AbsEntityShield;
 import com.wjx.kablade.Entity.model.mdlRaikiriBlade;
+import com.wjx.kablade.Lib;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
+import com.wjx.kablade.enchantments.EnchantmentSlow;
+import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
 import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
 import com.wjx.kablade.util.interfaces.IEntityShield;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.util.EnchantHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderBoat;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -49,10 +55,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static com.wjx.kablade.SlashBlade.BladeLoader.ITEM_MAGIC;
 
@@ -63,9 +66,39 @@ public class WorldEvent {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public static int RaikiriRotation = 0;
+    public static ArrayList<Integer> auroraBladeColor = Lists.newArrayList();
+    public static int auroraBladeColorIndex = 0;
+
+     public static void loadEvent(){
+        //auroraColor
+         auroraBladeColor.clear();
+         auroraBladeColorIndex = 0;
+        int g = 196;
+        int b = 255;
+        while (g < 255){
+            int c = Lib.rgbToMetrication(0,g,b);
+            auroraBladeColor.add(c);
+            g++;
+            b--;
+        }
+        ArrayList<Integer> array1 = (ArrayList<Integer>) auroraBladeColor.clone();
+        Collections.reverse(array1);
+        auroraBladeColor.addAll(array1);
+    }
 
     public static Set<Class<? extends Entity>> antiEntity = Sets.newHashSet();
+
+     @SubscribeEvent
+     public void onWorldUpdate(TickEvent.WorldTickEvent event){
+
+         if (!auroraBladeColor.isEmpty()){
+
+             if (auroraBladeColorIndex>= (auroraBladeColor.size() -2)){
+                 auroraBladeColorIndex = 0;
+             }
+             else auroraBladeColorIndex++;
+         }
+     }
 
     @SubscribeEvent
     public void onEntityItemJoinWorld(EntityJoinWorldEvent event) {
@@ -97,7 +130,7 @@ public class WorldEvent {
     public void onTooltip(ItemTooltipEvent event) {
         if (event.getItemStack().getItem() instanceof MagicBlade) {
             for(int x = 0; x < event.getToolTip().size(); ++x) {
-                if (((String)event.getToolTip().get(x)).contains(I18n.translateToLocal("attribute.name.generic.attackDamage")) || ((String)event.getToolTip().get(x)).contains(I18n.translateToLocal("Attack Damage"+""))) {
+                if (event.getToolTip().get(x).contains(I18n.translateToLocal("attribute.name.generic.attackDamage")) || event.getToolTip().get(x).contains(I18n.translateToLocal("Attack Damage"+""))) {
                     event.getToolTip().set(x,  ChatFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.damageguer1111.name"))+" "+ChatFormatting.BLUE + I18n.translateToLocal("attribute.name.generic.attackDamage") );
                     return;
                 }
@@ -234,6 +267,20 @@ public class WorldEvent {
                 if (player.getEntityData().getInteger("chop_willow_retry_count") <= 40){
                     player.getEntityData().setBoolean("start_chop_willow",true);
                     player.getEntityData().setInteger("chop_willow_retry_count",player.getEntityData().getInteger("chop_willow_retry_count") + 1);
+                }
+            }
+        }
+        //SlashBladeColorUpdate
+        {
+            //Aurora
+            {
+                ItemStack stack = player.getHeldItemMainhand();
+                if (stack.getItem() instanceof ItemSlashBlade){
+                    if(stack.hasTagCompound()){
+                        if (stack.getTagCompound().getBoolean("isAurora")){
+                            ItemSlashBlade.SummonedSwordColor.set(stack.getTagCompound(),auroraBladeColor.get(auroraBladeColorIndex));
+                        }
+                    }
                 }
             }
         }
@@ -397,7 +444,20 @@ public class WorldEvent {
                 }
             }
         }
-
+        //EnchantmentFreezyBlades
+        {
+            if (!world.isRemote){
+                if (event.getSource().getTrueSource() != null){
+                    if (event.getSource().getTrueSource() instanceof EntityLivingBase){
+                        EntityLivingBase attacker = (EntityLivingBase) event.getSource().getTrueSource();
+                        ItemStack stack = attacker.getHeldItemMainhand();
+                        int level = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.ENCHANTMENT_SLOW,stack);
+                        if (level > 0){
+                            event.getEntityLiving().addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,25 * level,level));
+                        }
+                    }
+                }
+            }
+        }
     }
-
 }

@@ -11,8 +11,8 @@ public class tabkablade_honkai extends CreativeTabs {
         super("tabkablade_honkai");
     }
 
-    @Nonnull
-    public ItemStack getTabIconItem(){
+    @Override
+    public ItemStack createIcon() {
         return new ItemStack(ItemInit.ICON_HONKAI);
     }
 }

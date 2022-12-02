@@ -50,7 +50,6 @@ public class Raikiri {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Raikiri_Plas/texRaikiri");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Raikiri_Plas/mdlRaikiri_Plas");
 
-        ItemSlashBlade.AttackAmplifier.set(tag,18.0f);
         ItemSlashBlade.SpecialAttackType.set(tag, 292);
         customblade.getTagCompound().setFloat("baseAttackModifier",18.0F);
         customblade.addEnchantment(Enchantments.SMITE,2);

@@ -46,7 +46,6 @@ public class GalacticNova {
 
         ItemSlashBlade.SpecialAttackType.set(tag,7);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
-        ItemSlashBlade.AttackAmplifier.set(tag,16.0f);
         customblade.getTagCompound().setFloat("baseAttackModifier",16.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);

@@ -46,7 +46,6 @@ public class CutIron {
         ItemSlashBlade.ModelName.set(Tag, "kablade/cutIron/mdlCutIron");
 
         ItemSlashBlade.setBaseAttackModifier(Tag,8);
-        ItemSlashBlade.AttackAmplifier.set(Tag,2.0f);
         customBlade.getTagCompound().setFloat("baseAttackModifier",12.0F);
         ItemSlashBlade.SpecialAttackType.set(Tag,290);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);

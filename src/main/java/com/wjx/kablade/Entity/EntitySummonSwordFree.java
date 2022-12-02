@@ -45,6 +45,7 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
     private static final DataParameter<Integer> INTERVAL;
     private static final DataParameter<Integer> COLOR;
     protected static final DataParameter<Float> LOCK_YAW;
+    public static final DataParameter<Boolean> LIGHTING;
     float speed;
     public float iniYaw;
     public float iniPitch;
@@ -168,7 +169,7 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
         }
 
         Vec3d lookVec = getLook(owner, par1);
-        Vec3d reachVec = entityPos.addVector(lookVec.x * reachMax, lookVec.y * reachMax, lookVec.z * reachMax);
+        Vec3d reachVec = entityPos.add(lookVec.x * reachMax, lookVec.y * reachMax, lookVec.z * reachMax);
         Entity pointedEntity = null;
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().offset(lookVec.x * reachMax, lookVec.y * reachMax, lookVec.z * reachMax).grow((double)expandFactor + reachMax, (double)expandFactor + reachMax, (double)expandFactor + reachMax));
         list.removeAll(this.alreadyHitEntity);
@@ -225,7 +226,7 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
     public static RayTraceResult rayTrace(Entity owner, double par1, float par3) {
         Vec3d Vec3d = getPosition(owner);
         Vec3d Vec3d1 = getLook(owner, par3);
-        Vec3d Vec3d2 = Vec3d.addVector(Vec3d1.x * par1, Vec3d1.y * par1, Vec3d1.z * par1);
+        Vec3d Vec3d2 = Vec3d.add(Vec3d1.x * par1, Vec3d1.y * par1, Vec3d1.z * par1);
         return owner.world.rayTraceBlocks(Vec3d, Vec3d2, false, false, true);
     }
 
@@ -761,5 +762,6 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
         INTERVAL = EntityDataManager.createKey(EntitySummonSwordFree.class, DataSerializers.VARINT);
         COLOR = EntityDataManager.createKey(EntitySummonSwordFree.class, DataSerializers.VARINT);
         LOCK_YAW = EntityDataManager.createKey(EntitySummonSwordFree.class,DataSerializers.FLOAT);
+        LIGHTING = EntityDataManager.createKey(EntitySummonSwordFree.class,DataSerializers.BOOLEAN);
     }
 }

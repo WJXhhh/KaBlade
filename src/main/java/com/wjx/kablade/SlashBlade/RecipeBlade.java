@@ -84,7 +84,7 @@ public class RecipeBlade extends ShapedOreRecipe {
                                 }
                             }
 
-                            boolean determine = !curIs.getUnlocalizedName().equals(materialBlade.getUnlocalizedName()) ||
+                            boolean determine = !curIs.getTranslationKey().equals(materialBlade.getTranslationKey()) ||
                                     !ItemSlashBladeNamed.CurrentItemName.get(blade).equals(ItemSlashBladeNamed.CurrentItemName.get(material)) ||
                                     !compare(ItemSlashBlade.ProudSoul, material, blade) || !compare(ItemSlashBlade.ProudSoul, material, blade) ||
                                     !compare(ItemSlashBlade.RepairCount, material, blade);

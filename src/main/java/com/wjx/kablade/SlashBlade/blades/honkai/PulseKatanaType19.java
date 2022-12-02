@@ -43,7 +43,6 @@ public class PulseKatanaType19 {
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/PulseKatanas/mdl");
 
         ItemSlashBlade.setBaseAttackModifier(tag,2);
-        ItemSlashBlade.AttackAmplifier.set(tag,14.0f);
         customblade.getTagCompound().setFloat("baseAttackModifier",14.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,1);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

@@ -43,7 +43,6 @@ public class VorpalSword {
 
         ItemSlashBlade.SpecialAttackType.set(tag,291);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
-        ItemSlashBlade.AttackAmplifier.set(tag,17.0f);
         customblade.getTagCompound().setFloat("baseAttackModifier",17.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,3);

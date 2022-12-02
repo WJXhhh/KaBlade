@@ -5,6 +5,7 @@ import mods.flammpfeil.slashblade.client.renderer.entity.RenderPhantomSwordBase;
 import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -13,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class RenderFreeSword extends Render {
+public class RenderFreeSword extends Render<Entity> {
     private static double[][] dVec = new double[][]{{0.0D, 0.0D, 417.7431D}, {0.0D, -44.6113D, -30.0D}, {38.9907D, 0.0D, -20.0D}, {0.0D, 44.6113D, -30.0D}, {-38.9907D, 0.0D, -20.0D}, {30.9907D, 0.0D, -50.0D}, {-30.9907D, 0.0D, -50.0D}, {0.0D, 0.0D, -214.0305D}, {159.1439D, 0.0D, -30.0D}, {-159.1439D, 0.0D, -30.0D}};
     private static int[][] nVecPos = new int[][]{{0, 2, 1}, {0, 3, 2}, {0, 4, 3}, {0, 1, 4}, {1, 5, 7}, {5, 3, 7}, {3, 6, 7}, {6, 1, 7}, {2, 8, 1}, {5, 8, 3}, {4, 9, 3}, {6, 9, 1}, {1, 8, 5}, {1, 9, 4}, {3, 8, 2}, {3, 9, 6}};
 
@@ -35,6 +36,9 @@ public class RenderFreeSword extends Render {
     private void doDriveRender(EntitySummonSwordFree entityPhantomSword, double dX, double dY, double dZ, float f, float f1) {
         Tessellator tessellator = Tessellator.getInstance();
         GL11.glDisable(GL_TEXTURE_2D);
+        if (entityPhantomSword.getDataManager().get(EntitySummonSwordFree.LIGHTING)){
+            GL11.glEnable(GL_LIGHTING);
+        }else
         GL11.glDisable(GL_LIGHTING);
         GL11.glEnable(GL_BLEND);//开启混合
         int color = entityPhantomSword.getColor();
@@ -56,6 +60,12 @@ public class RenderFreeSword extends Render {
         GL11.glScalef(0.5F, 0.5F, 1.0F);
         float lifetime = (float)entityPhantomSword.getLifeTime();
         float ticks = (float)entityPhantomSword.ticksExisted;
+        if (entityPhantomSword.getDataManager().get(EntitySummonSwordFree.LIGHTING)){
+            int i = 15728880;
+            int j = i % 65536;
+            int k = i / 65536;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
+        }
         BufferBuilder wr = tessellator.getBuffer();
         wr.begin(4, DefaultVertexFormats.POSITION_COLOR);
         int r = color >> 16 & 255;

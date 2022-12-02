@@ -42,7 +42,6 @@ public class BambooLumi {
         ItemSlashBlade.ModelName.set(Tag, "kablade/BambooIron/blade");
 
         ItemSlashBlade.setBaseAttackModifier(Tag,6);
-        ItemSlashBlade.AttackAmplifier.set(Tag,2.0f);
         customBlade.getTagCompound().setFloat("baseAttackModifier",7.0F);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.SMITE,2);

@@ -62,7 +62,6 @@ public class CaiJueDizui {
         //customblade.getTagCompound().setBoolean("isUniverseBlade",true);
         //ItemSlashBlade.BaseAttackModifier.set(tag, 32768.0F);
         //ItemSlashBlade.setBaseAttackModifier(tag,32768.0F);
-        ItemSlashBlade.AttackAmplifier.set(tag,12.0f);
         customblade.getTagCompound().setFloat("baseAttackModifier",64.0F);
 
         ItemSlashBlade.SpecialAttackType.set(tag, 282);

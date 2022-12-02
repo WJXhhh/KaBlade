@@ -52,7 +52,6 @@ public class FuheZhuque {
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Fuhe/mdlfuhe");
 
         ItemSlashBlade.setBaseAttackModifier(tag,2);
-        ItemSlashBlade.AttackAmplifier.set(tag,12.0f);
         //ItemSlashBlade.KillCount.set(tag, 0);
 
         //customblade.addEnchantment(Enchantments.LOOTING,100);

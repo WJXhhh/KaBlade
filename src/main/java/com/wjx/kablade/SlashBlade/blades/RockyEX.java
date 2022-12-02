@@ -44,7 +44,6 @@ public class RockyEX {
 
         ItemSlashBlade.setBaseAttackModifier(Tag,6);
         ItemSlashBlade.SpecialAttackType.set(Tag,288);
-        ItemSlashBlade.AttackAmplifier.set(Tag,2.0f);
         customBlade.getTagCompound().setFloat("baseAttackModifier",10F);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.UNBREAKING,2);

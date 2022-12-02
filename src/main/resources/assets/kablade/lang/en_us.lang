@@ -50,6 +50,8 @@ info.infinity=无尽
 info.item.chromoly_ingot=加入Cr（<10%）， Mo等合金元素以显著提高高温强度极限和蠕变极限的钢种，高强度的材料可以辅助锻刀
 info.item.gravity_nugget=存在于岩石之中的奇异物质，拥有着强大的引力
 info.item.gravity_crystal=重力微粒的大块聚合体，通过某些手段已经可以自由控制它内部的能量
+info.item.aurora_fragment=世间极光崩落，融入地中，世间本源再无极光
+info.item.aurora_metal_ingot=
 
 info.slashblade.dizui.1=前文明抗崩坏组织逐火之蛾以第三律者·雷之律者的核心打造的神之键
 info.slashblade.dizui.2=雷电是虚数空间所赋予它的权柄，又可为谁所用？
@@ -75,3 +77,5 @@ flammpfeil.slashblade.specialattack.frost_blade=寒霜灵刃
 msg.yunluo=陨落！
 msg.raikiri_shield_crash=雷切护盾已损毁
 msg.raikiri_shield_blood=雷切护盾耐久还有：
+#Enchantment Name
+enchantment.slow.name=Slowness
