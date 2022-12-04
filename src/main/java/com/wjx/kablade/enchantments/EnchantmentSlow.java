@@ -11,7 +11,7 @@ public class EnchantmentSlow extends Enchantment {
     public EnchantmentSlow() {
         super(Rarity.UNCOMMON, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
         this.setName("kablade_slow");
-        this.setRegistryName(new ResourceLocation(Reference.MODID + "kablade_slow"));
+        this.setRegistryName(new ResourceLocation(Reference.MODID + ":kablade_slow"));
         EnchantmentInit.ENCHANTMENTS.add(this);
     }
 

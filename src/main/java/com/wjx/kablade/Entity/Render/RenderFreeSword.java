@@ -36,9 +36,6 @@ public class RenderFreeSword extends Render<Entity> {
     private void doDriveRender(EntitySummonSwordFree entityPhantomSword, double dX, double dY, double dZ, float f, float f1) {
         Tessellator tessellator = Tessellator.getInstance();
         GL11.glDisable(GL_TEXTURE_2D);
-        if (entityPhantomSword.getDataManager().get(EntitySummonSwordFree.LIGHTING)){
-            GL11.glEnable(GL_LIGHTING);
-        }else
         GL11.glDisable(GL_LIGHTING);
         GL11.glEnable(GL_BLEND);//开启混合
         int color = entityPhantomSword.getColor();
@@ -60,12 +57,6 @@ public class RenderFreeSword extends Render<Entity> {
         GL11.glScalef(0.5F, 0.5F, 1.0F);
         float lifetime = (float)entityPhantomSword.getLifeTime();
         float ticks = (float)entityPhantomSword.ticksExisted;
-        if (entityPhantomSword.getDataManager().get(EntitySummonSwordFree.LIGHTING)){
-            int i = 15728880;
-            int j = i % 65536;
-            int k = i / 65536;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
-        }
         BufferBuilder wr = tessellator.getBuffer();
         wr.begin(4, DefaultVertexFormats.POSITION_COLOR);
         int r = color >> 16 & 255;

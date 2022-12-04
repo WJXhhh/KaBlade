@@ -4,6 +4,7 @@ import com.wjx.kablade.Entity.Render.Layer.LayerFreeze;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.util.Reference;
+import com.wjx.kablade.util.handlers.RenderHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -36,8 +37,8 @@ public class ClientProxy extends CommonProxy{
         if(Loader.isModLoaded("flammpfeil.slashblade"))
         {
             BladeProxy.ClientLoader();
-
         }
+        RenderHandler.registerEntityRenders();
     }
 
     @Override

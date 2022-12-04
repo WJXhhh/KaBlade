@@ -40,7 +40,7 @@ public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "0.5";
+    public static final String VERSION = "0.7";
 
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
@@ -95,7 +95,6 @@ public class Main
         PotionInit.registerPotions();
         EnchantmentInit.registerEnchantments();
         EntityInit.registerEntity();
-        RenderHandler.registerEntityRenders();
         WorldEvent.loadEvent();
     }
 

@@ -127,6 +127,7 @@ public class WorldEvent {
 
 
     @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     public void onTooltip(ItemTooltipEvent event) {
         if (event.getItemStack().getItem() instanceof MagicBlade) {
             for(int x = 0; x < event.getToolTip().size(); ++x) {
