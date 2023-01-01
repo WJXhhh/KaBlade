@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeTwoRecipeModding;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
@@ -62,8 +63,8 @@ public class Raikiri {
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.byorai", 1);
         ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.byoden", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"raikiri"),
-                blackblade, prevblade,
+        IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"raikiri"),
+                blackblade, prevblade,prevblade2,
                 new Object[]{
                         "  C",
                         " B ",

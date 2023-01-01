@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeTwoRecipeModding;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
@@ -76,8 +77,8 @@ public class MuraUson {
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.murahori", 1);
         ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.bamboo_iron", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"murauson"),
-                blackblade, prevblade,
+        IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"murauson"),
+                blackblade, prevblade,prevblade2,
                 new Object[]{
                         "  C",
                         " B ",

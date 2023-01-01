@@ -8,17 +8,15 @@ import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
 import com.wjx.kablade.SlashBlade.blades.honkai.*;
+import com.wjx.kablade.init.EnchantmentInit;
 import mods.flammpfeil.slashblade.SlashBlade;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Optional;
 
 import java.util.List;
 
 public class BladeLoader {
-
-
-
 
     public static List<String> NamedBlades = Lists.newArrayList();
     public static List<String> NamedGod = Lists.newArrayList();
@@ -61,7 +59,8 @@ public class BladeLoader {
       this.loadBlade(new CutIron());
       this.loadBlade(new AuroraBlade());
       this.loadBlade(new NotedVine());
-        Main.logger.info("RegisterHONKAI:"+(autu));
+      this.loadBlade(new BlackSteel());
+       // Main.logger.info("RegisterHONKAI:"+(autu));
     if(autu)
         {
             this.loadBlade(new MuraSeshu());

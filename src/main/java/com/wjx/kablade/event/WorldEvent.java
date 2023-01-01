@@ -4,31 +4,37 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wjx.kablade.Entity.AbsEntityShield;
-import com.wjx.kablade.Entity.model.mdlRaikiriBlade;
 import com.wjx.kablade.Lib;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
-import com.wjx.kablade.enchantments.EnchantmentSlow;
+import com.wjx.kablade.capability.CapabilityLoader;
+import com.wjx.kablade.capability.CapabilitySlashPotion;
+import com.wjx.kablade.capability.inters.IPotionInSlash;
 import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
+import com.wjx.kablade.network.MessageAddPotion;
+import com.wjx.kablade.network.MessageSlashPotion;
+import com.wjx.kablade.network.MessageSpawnParticle;
+import com.wjx.kablade.util.Reference;
 import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
-import com.wjx.kablade.util.interfaces.IEntityShield;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
+import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import mods.flammpfeil.slashblade.util.EnchantHelper;
+import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderBoat;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
@@ -40,8 +46,10 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -57,6 +65,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.*;
 
+import static com.wjx.kablade.Lib.*;
+import static com.wjx.kablade.Main.*;
 import static com.wjx.kablade.SlashBlade.BladeLoader.ITEM_MAGIC;
 
 @Mod.EventBusSubscriber
@@ -123,6 +133,20 @@ public class WorldEvent {
                 player.sendStatusMessage(new TextComponentString("§6§l[斩无不断]§b可从MC百科下载或从其界面寻找蓝奏云下载地址：").appendSibling(t),false);
             }
         }
+        if (!Main.isBladePostLoad){
+            Main.isBladePostLoad = true;
+            ItemStack stack = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.plasma_kagehide", 1);
+            stack.addEnchantment(EnchantmentInit.ENCHANTMENT_SLOW,1);
+            SlashBlade.BladeRegistry.put(new ResourceLocationRaw(bladestr,"wjx.blade.honkai.plasma_kagehide"),stack);
+            addEnchantmentForBlade(EnchantmentInit.ENCHANTMENT_SLOW,1,"wjx.blade.honkai.xuanyuan_katana");
+        }
+
+    }
+
+    void addEnchantmentForBlade(Enchantment e,int level,String name){
+        ItemStack stack = SlashBlade.findItemStack(bladestr, name, 1);
+        stack.addEnchantment(e,level);
+        SlashBlade.BladeRegistry.put(new ResourceLocationRaw(bladestr,name),stack);
     }
 
 
@@ -196,14 +220,45 @@ public class WorldEvent {
 
 
     @SubscribeEvent
-    public void LivingUpdate(LivingEvent.LivingUpdateEvent event){
+    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event){
         EntityLivingBase entity = event.getEntityLiving();
-        if (entity.getEntityData().getInteger("frost_blade_1") > 0){
-            if (!entity.world.isRemote){
-                entity.getEntityData().setInteger("frost_blade_1",entity.getEntityData().getInteger("frost_blade_1")-1);
-                entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,60,2));
+        World world = entity.world;
+        if (!entity.world.isRemote){
+            if (entity.getEntityData().getInteger("frost_blade_1") > 0){
+                if (!entity.world.isRemote){
+                    entity.getEntityData().setInteger("frost_blade_1",entity.getEntityData().getInteger("frost_blade_1")-1);
+                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,60,2));
+                }
+            }
+            if (entity.hasCapability(CapabilityLoader.SlashPotion,null)){
+                IPotionInSlash slash = entity.getCapability(CapabilityLoader.SlashPotion,null);
+                Capability.IStorage<IPotionInSlash> storage = CapabilityLoader.SlashPotion.getStorage();
+                NBTTagCompound compound = (NBTTagCompound) storage.writeNBT(CapabilityLoader.SlashPotion,slash,null);
+                if (compound.getInteger(NBT_SLOW_LEVEL) > 0){
+                    if (compound.getInteger(NBT_SLOW_TIME) > 0){
+                        compound.setInteger(NBT_SLOW_TIME,compound.getInteger(NBT_SLOW_TIME) - 1);
+                        int state1;
+                        int state2;
+                        if (world.rand.nextBoolean()){
+                            state1 = 1;
+                        }
+                        else state1 = -1;
+                        if (world.rand.nextBoolean()){
+                            state2 = 1;
+                        }
+                        else state2 = -1;
+                        PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.SLIME,entity.posX+world.rand.nextDouble()*state1,entity.posY+(entity.height/2),entity.posZ+world.rand.nextDouble()*state2,0.0D,0.0D,0.0D));
+                        if (compound.getInteger(NBT_SLOW_TIME) > 1){
+                            entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(compound.getDouble(NBT_ORIGIN_MOVEMENT)/(1 + compound.getInteger(NBT_SLOW_LEVEL) * 0.2));
+                        }
+                        if (compound.getInteger(NBT_SLOW_TIME) == 1){
+                            entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(compound.getDouble(NBT_ORIGIN_MOVEMENT));
+                        }
+                    }
+                }
             }
         }
+
     }
 
     @SubscribeEvent
@@ -294,8 +349,8 @@ public class WorldEvent {
         if(entity.getEntityData().getBoolean("dizui")){
             if(entity.getEntityData().getInteger("dizuitime")>0){
                 entity.getEntityData().setInteger("dizuitime",entity.getEntityData().getInteger("dizuitime")-1);
-                int state1 = 0;
-                int state2 = 0;
+                int state1;
+                int state2;
                 if (world.rand.nextBoolean()){
                     state1 = 1;
                 }
@@ -305,8 +360,6 @@ public class WorldEvent {
                 }
                 else state2 = -1;
                 if (world.isRemote){
-                    world.spawnParticle(EnumParticleTypes.END_ROD,entity.posX+world.rand.nextDouble()*state1,entity.posY+(entity.height/2),entity.posZ+world.rand.nextDouble()*state2,0.0D,0.0D,0.0D);
-                }else {
                     world.spawnParticle(EnumParticleTypes.END_ROD,entity.posX+world.rand.nextDouble()*state1,entity.posY+(entity.height/2),entity.posZ+world.rand.nextDouble()*state2,0.0D,0.0D,0.0D);
                 }
             }else if(entity.getEntityData().getInteger("dizuitime")<=0){
@@ -371,8 +424,6 @@ public class WorldEvent {
                     }
                 }
 
-            }else{
-                Main.logger.info("dizuisaofkuosan:isEmpty");
             }
         }
     }
@@ -448,17 +499,57 @@ public class WorldEvent {
         //EnchantmentFreezyBlades
         {
             if (!world.isRemote){
-                if (event.getSource().getTrueSource() != null){
-                    if (event.getSource().getTrueSource() instanceof EntityLivingBase){
-                        EntityLivingBase attacker = (EntityLivingBase) event.getSource().getTrueSource();
+                if (event.getSource().getImmediateSource() != null){
+                    if (event.getSource().getImmediateSource() instanceof EntityLivingBase){
+                        EntityLivingBase attacker = (EntityLivingBase) event.getSource().getImmediateSource();
                         ItemStack stack = attacker.getHeldItemMainhand();
                         int level = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.ENCHANTMENT_SLOW,stack);
                         if (level > 0){
-                            event.getEntityLiving().addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,25 * level,level));
+                            if(event.getEntityLiving()!=null)
+                            {
+                                if (stack.getItem() instanceof ItemSlashBlade){
+                                    if (event.getEntityLiving().hasCapability(CapabilityLoader.SlashPotion,null)){
+                                        Capability.IStorage<IPotionInSlash> storage = CapabilityLoader.SlashPotion.getStorage();
+                                        IPotionInSlash potions = event.getEntityLiving().getCapability(CapabilityLoader.SlashPotion,null);
+                                        if (potions != null){
+                                            NBTTagCompound compound = CapabilitySlashPotion.initNBT(potions);
+                                            compound.setInteger(NBT_SLOW_LEVEL,level);
+                                            compound.setInteger(NBT_SLOW_TIME,50 * level);
+                                            storage.readNBT(CapabilityLoader.SlashPotion,potions,null,compound);
+                                        }
+                                    }
+                                }
+                                else
+                                event.getEntityLiving().addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 50 * level, level));
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onAttachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event)
+    {
+        Entity entity = event.getObject();
+        if (entity instanceof EntityLivingBase){
+            ICapabilitySerializable<NBTTagCompound> provider = new CapabilitySlashPotion.ProviderEntity();
+            event.addCapability(new ResourceLocation(Reference.MODID + ":" + "slash_potion"), provider);
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityJoin(EntityJoinWorldEvent event){
+         if (event.getEntity() instanceof EntityLivingBase){
+             EntityLivingBase livingBase = (EntityLivingBase) event.getEntity();
+             if (livingBase.hasCapability(CapabilityLoader.SlashPotion,null)){
+                 IPotionInSlash potion = livingBase.getCapability(CapabilityLoader.SlashPotion,null);
+                 Capability.IStorage<IPotionInSlash> storage = CapabilityLoader.SlashPotion.getStorage();
+                 NBTTagCompound compound = (NBTTagCompound) storage.writeNBT(CapabilityLoader.SlashPotion,livingBase.getCapability(CapabilityLoader.SlashPotion,null),null).copy();
+                 compound.setDouble(NBT_ORIGIN_MOVEMENT, livingBase.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
+                 storage.readNBT(CapabilityLoader.SlashPotion,livingBase.getCapability(CapabilityLoader.SlashPotion,null),null,compound);
+             }
+         }
     }
 }

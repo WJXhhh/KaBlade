@@ -8,11 +8,13 @@ import com.wjx.kablade.init.*;
 import com.wjx.kablade.network.*;
 import com.wjx.kablade.proxy.CommonProxy;
 import com.wjx.kablade.util.Reference;
-import com.wjx.kablade.util.handlers.RenderHandler;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Biomes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -40,11 +42,13 @@ public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "0.7";
+    public static final String VERSION = "0.9";
 
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
     public static String bladestr= SlashBlade.modid;
+
+    public static boolean isBladePostLoad = false;
 
     public static Logger logger;
 
@@ -93,7 +97,7 @@ public class Main
 
         GameRegistry.registerWorldGenerator(new OreGen(),5);
         PotionInit.registerPotions();
-        EnchantmentInit.registerEnchantments();
+
         EntityInit.registerEntity();
         WorldEvent.loadEvent();
     }
@@ -128,13 +132,19 @@ public class Main
         //logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
     }
 
+    public static int p = 0;
+
     @EventHandler
     public void postInit(FMLPostInitializationEvent event){
         proxy.postInit(event);
+        p = Enchantment.getEnchantmentID(EnchantmentInit.ENCHANTMENT_SLOW);
     }
 
     public void registerMessage(){
         PACKET_HANDLER.registerMessage(MessageRemoteLightingHandler.class, MessageRemoteLighting.class,0, Side.SERVER);
+        PACKET_HANDLER.registerMessage(MessageHandlerAddPotion.class,MessageAddPotion.class,1,Side.CLIENT);
+        PACKET_HANDLER.registerMessage(MessageHandlerSlashPotion.class,MessageSlashPotion.class,2,Side.CLIENT);
+        PACKET_HANDLER.registerMessage(MessageHandlerSpawnParticle.class,MessageSpawnParticle.class,3,Side.CLIENT);
     }
 
     public static class getUpdateInfo{
@@ -200,6 +210,13 @@ public class Main
             return f;
         }
 
-        public static Biome[] COLD_BIOMES = {Biomes.COLD_BEACH,Biomes.COLD_TAIGA,Biomes.COLD_TAIGA_HILLS,Biomes.MUTATED_TAIGA_COLD,Biomes.ICE_MOUNTAINS,Biomes.ICE_PLAINS,Biomes.MUTATED_ICE_FLATS};
+        public static NBTTagCompound getPlayerPersistedTag(EntityPlayer player){
+            if (!player.getEntityData().hasKey(EntityPlayer.PERSISTED_NBT_TAG)){
+                player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG,new NBTTagCompound());
+            }
+            return player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        }
+
+        public static Biome[] COLD_BIOMES = {Biomes.COLD_BEACH,Biomes.COLD_TAIGA,Biomes.COLD_TAIGA_HILLS,Biomes.MUTATED_TAIGA_COLD,Biomes.ICE_MOUNTAINS,Biomes.ICE_PLAINS,Biomes.MUTATED_ICE_FLATS,Biomes.FROZEN_RIVER,Biomes.FROZEN_OCEAN};
     }
 }

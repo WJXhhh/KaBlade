@@ -1,14 +1,18 @@
 package com.wjx.kablade.SlashBlade.blades.honkai;
 
+import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
+import com.wjx.kablade.enchantments.EnchantmentSlow;
 import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
+import com.wjx.kablade.util.Reference;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -48,7 +52,6 @@ public class XuanYuanKatana {
         ItemSlashBlade.setBaseAttackModifier(tag,2);
         customblade.getTagCompound().setFloat("baseAttackModifier",14.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
-        customblade.addEnchantment(EnchantmentInit.ENCHANTMENT_SLOW,1);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,65518);
         ItemSlashBladeNamed.NamedBlades.add(this.name);

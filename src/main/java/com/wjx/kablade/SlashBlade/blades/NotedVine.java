@@ -1,4 +1,4 @@
-package com.wjx.kablade.SlashBlade.blades.honkai;
+package com.wjx.kablade.SlashBlade.blades;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;

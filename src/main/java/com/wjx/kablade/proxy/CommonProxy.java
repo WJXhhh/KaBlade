@@ -2,11 +2,15 @@ package com.wjx.kablade.proxy;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeProxy;
+import com.wjx.kablade.capability.CapabilityLoader;
 import com.wjx.kablade.creativeTab.tabkablade_bladesgod;
 import com.wjx.kablade.creativeTab.tabkablade_honkai;
 import com.wjx.kablade.event.WorldEvent;
+import com.wjx.kablade.init.EnchantmentInit;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -19,10 +23,17 @@ public class CommonProxy{
     public void registerVariantRenderer(Item item, int meta, String filename, String id){}
 
     public void init(FMLInitializationEvent event){
+
         new WorldEvent();
+
     }
 
     public void preInit(FMLPreInitializationEvent event) {
+
+
+        MinecraftForge.EVENT_BUS.register(this);
+        EnchantmentInit.registerEnchantments();
+        new CapabilityLoader(event);
         if(Loader.isModLoaded("flammpfeil.slashblade")){
             //SlashEvent(this);
             /*if(Loader.isModLoaded("the_golden_autumn")){
@@ -31,8 +42,6 @@ public class CommonProxy{
             }*/
             BladeProxy.CommonLoader(this);
         }
-
-        MinecraftForge.EVENT_BUS.register(this);
 
 
     }

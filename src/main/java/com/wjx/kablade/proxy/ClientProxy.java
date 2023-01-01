@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -57,5 +58,11 @@ public class ClientProxy extends CommonProxy{
 
     private static <T extends EntityLivingBase> void attachRenderLayers(RenderLivingBase<T> renderer) {
         renderer.addLayer(new LayerFreeze(renderer));
+    }
+
+    @Override
+    public void init(FMLInitializationEvent event) {
+        super.init(event);
+
     }
 }

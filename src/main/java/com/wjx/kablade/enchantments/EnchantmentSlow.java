@@ -14,14 +14,15 @@ public class EnchantmentSlow extends Enchantment {
         this.setRegistryName(new ResourceLocation(Reference.MODID + ":kablade_slow"));
         EnchantmentInit.ENCHANTMENTS.add(this);
     }
+    @Override
+    public int getMinLevel() {
+        return 1;
+    }
 
     @Override
     public int getMaxLevel() {
         return 3;
     }
 
-    @Override
-    public int getMinLevel() {
-        return 1;
-    }
+
 }

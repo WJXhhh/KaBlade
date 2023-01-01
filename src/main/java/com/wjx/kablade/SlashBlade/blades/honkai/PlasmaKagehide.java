@@ -2,14 +2,17 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeTwoRecipeModding;
 import com.wjx.kablade.enchantments.EnchantmentSlow;
 import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
+import com.wjx.kablade.util.Reference;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -53,7 +56,6 @@ public class PlasmaKagehide {
         customblade.getTagCompound().setFloat("baseAttackModifier",18.0F);
         customblade.addEnchantment(Enchantments.SMITE,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
-        customblade.addEnchantment(EnchantmentInit.ENCHANTMENT_SLOW,1);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
@@ -62,8 +64,8 @@ public class PlasmaKagehide {
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.crystal_cutter", 1);
         ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.pulse_katana_t17", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"plasma_kagehide"),
-                blackblade, prevblade,
+        IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"plasma_kagehide"),
+                blackblade, prevblade,prevblade2,
                 new Object[]{
                         "  C",
                         " B ",
