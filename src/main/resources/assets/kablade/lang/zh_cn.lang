@@ -15,6 +15,7 @@ item.wjx.blade.cut_iron.name=复合刃「斩铁」
 item.wjx.blade.aurora_blade.name=极光刃「映天」
 item.wjx.blade.noted_vine.name=铭刀「青藤」
 item.wjx.blade.black_steel.name=黑锻「暗泛」
+item.wjx.blade.forest_shadow.name=御灵刃「林中之影」
 
 
 item.wjx.blade.honkai.muraseshu.name=势州村正
@@ -128,6 +129,7 @@ flammpfeil.slashblade.specialattack.vorpal_hoe=时空黑洞
 flammpfeil.slashblade.specialattack.blade_ward=灵刃护体
 flammpfeil.slashblade.specialattack.absolute_zero=绝对零度
 flammpfeil.slashblade.specialattack.aurora_shining=极光耀天
+flammpfeil.slashblade.specialattack.wine_bind=藤蔓捆缚
 
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞

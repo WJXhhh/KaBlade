@@ -9,6 +9,7 @@ item.wjx.blade.bamboo_lumi.name=Lumen -BambooLight-
 item.wjx.blade.rocky_anshan.name=Noted「矍铄」
 item.wjx.blade.rocky_shanchang.name=自铭「明磬」
 item.wjx.blade.rocky_huagang.name=自铭「嶙峋」
+item.wjx.blade.forest_shadow.name=Faeries Blade「Forest Shadow」
 
 
 item.wjx.blade.honkai.muraseshu.name=势州村正
@@ -71,6 +72,7 @@ flammpfeil.slashblade.specialattack.dizuijiu=唤霆霓
 flammpfeil.slashblade.specialattack.fire_of_sin=罪业之火
 flammpfeil.slashblade.specialattack.chop_willow=锋刀抚柳
 flammpfeil.slashblade.specialattack.frost_blade=寒霜灵刃
+flammpfeil.slashblade.specialattack.wine_bind=Wine Bind
 
 
 #堺之言

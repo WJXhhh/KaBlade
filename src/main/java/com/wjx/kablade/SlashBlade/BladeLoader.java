@@ -10,10 +10,23 @@ import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
 import com.wjx.kablade.SlashBlade.blades.honkai.*;
 import com.wjx.kablade.init.EnchantmentInit;
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.init.Blocks;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
+import javax.annotation.Nonnull;
+import java.util.Iterator;
 import java.util.List;
 
 public class BladeLoader {
@@ -23,11 +36,11 @@ public class BladeLoader {
     public static List<String> NamedHonkai = Lists.newArrayList();
     public static List<String> DIZUI = Lists.newArrayList();
 
-    public static final Item ITEM_KABLADE_NAMED = new Item_KaNamed(Item.ToolMaterial.IRON, 1.0F, "kanamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES);
-    public static final Item ITEM_MAGIC = new MagicBlade(Item.ToolMaterial.IRON, 32768.0F, "magicslashblade").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_GOD);
+    public static final Item ITEM_KABLADE_NAMED = new Item_KaNamed(Item.ToolMaterial.IRON, 1.0F, "kanamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES).setNoRepair();
+    public static Item ITEM_MAGIC = null;
 
-    public static final Item ITEM_HONKAI_NAMED = new Item_HonkaiNamed(Item.ToolMaterial.IRON, 1.0F, "honkainamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI);
-    public static final Item ITEM_DIZUI= new Item_Caijue(Item.ToolMaterial.IRON, 1.0F, "honkaidizui").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI);
+    public static Item ITEM_HONKAI_NAMED = null;
+    public static Item ITEM_DIZUI= null;
 
     public boolean autu=false;
 
@@ -40,6 +53,12 @@ public class BladeLoader {
     public BladeLoader() {
 
         RegistOther();
+        if(autu){
+            ITEM_MAGIC = new MagicBlade(Item.ToolMaterial.IRON, 32768.0F, "magicslashblade").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_GOD).setNoRepair();
+            ITEM_HONKAI_NAMED=new Item_HonkaiNamed(Item.ToolMaterial.IRON, 1.0F, "honkainamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
+            ITEM_DIZUI= new Item_Caijue(Item.ToolMaterial.IRON, 1.0F, "honkaidizui").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
+        }
+
 
 
 
@@ -60,6 +79,7 @@ public class BladeLoader {
       this.loadBlade(new AuroraBlade());
       this.loadBlade(new NotedVine());
       this.loadBlade(new BlackSteel());
+      this.loadBlade(new ForestShadow());
        // Main.logger.info("RegisterHONKAI:"+(autu));
     if(autu)
         {

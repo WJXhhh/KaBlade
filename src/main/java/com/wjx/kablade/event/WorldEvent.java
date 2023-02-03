@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wjx.kablade.Entity.AbsEntityShield;
+import com.wjx.kablade.Entity.EntityWine;
 import com.wjx.kablade.Lib;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
@@ -15,11 +16,13 @@ import com.wjx.kablade.init.ItemInit;
 import com.wjx.kablade.network.MessageAddPotion;
 import com.wjx.kablade.network.MessageSlashPotion;
 import com.wjx.kablade.network.MessageSpawnParticle;
+import com.wjx.kablade.util.KaBladeProperties;
 import com.wjx.kablade.util.Reference;
 import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.named.Doutanuki;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
@@ -33,7 +36,10 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.RecipeRepairItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -50,7 +56,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -60,6 +68,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -223,6 +232,7 @@ public class WorldEvent {
     public void onLivingUpdate(LivingEvent.LivingUpdateEvent event){
         EntityLivingBase entity = event.getEntityLiving();
         World world = entity.world;
+        NBTTagCompound KaBladeCompound = KaBladeProperties.getPropCompound(entity);
         if (!entity.world.isRemote){
             if (entity.getEntityData().getInteger("frost_blade_1") > 0){
                 if (!entity.world.isRemote){
@@ -253,6 +263,81 @@ public class WorldEvent {
                         }
                         if (compound.getInteger(NBT_SLOW_TIME) == 1){
                             entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(compound.getDouble(NBT_ORIGIN_MOVEMENT));
+                        }
+                    }
+                }
+            }
+        }
+        //WineBind
+        {
+            if (KaBladeCompound.getInteger(KaBladeProperties.PROP_WINE_BIND) > 0){
+                KaBladeCompound.setInteger(KaBladeProperties.PROP_WINE_BIND,KaBladeProperties.getPropCompound(entity).getInteger(KaBladeProperties.PROP_WINE_BIND) - 1);
+                Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeProperties.PROP_WINE_BIND_ATTACKER));
+                if (world.getTotalWorldTime() % 20 == 0 &&  attacker!=null && !attacker.isDead){
+                    entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) attacker),3);
+                }
+                boolean hasLocked = false;
+                for (Entity e:world.getLoadedEntityList()){
+                    if (e instanceof EntityWine){
+                        if (((EntityWine) e).target == entity){
+                            hasLocked = true;
+                        }
+                    }
+                }
+                if (hasLocked){
+                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,-1,2));
+                }
+                else {
+                    int originX = (int) entity.posX;
+                    int originY = (int) entity.posY;
+                    int originZ = (int) entity.posZ;
+                    ArrayList<BlockPos> poses = Lists.newArrayList();
+                    ArrayList<BlockPos> correctPoses = Lists.newArrayList();
+                    int dx = originX -1;
+                    int dy = originY -1;
+                    int dz = originZ -1;
+                    int mx = originX +1;
+                    int my = originY +1;
+                    int mz = originZ +1;
+                    boolean shouldBreak = false;
+                    for (int i = 0;i < 6;i++){
+                        if (shouldBreak){
+                            break;
+                        }
+                        dx -= 1;
+                        dy -= 1;
+                        dz -= 1;
+                        mx += 1;
+                        my += 1;
+                        mz += 1;
+                        for (int j = dx;j < mx;j ++){
+                            for (int k = dy;k<my;k++){
+                                if (k <= 0){
+                                    continue;
+                                }
+                                for (int l = dz;l < mz;l++){
+                                    BlockPos pos1 = new BlockPos(j,k,l);
+                                    if (poses.contains(pos1)){
+                                        continue;
+                                    }
+                                    else {
+                                        if (world.getBlockState(pos1).getBlock() != Blocks.AIR){
+                                            correctPoses.add(pos1);
+                                            shouldBreak = true;
+                                            poses.add(pos1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!correctPoses.isEmpty()){
+                        for (int i = 0;i<3;i++){
+                            BlockPos pos = correctPoses.get(world.rand.nextInt(correctPoses.size()));
+                            EntityWine wine = new EntityWine(world,pos.getX(),pos.getY(),pos.getZ());
+                            wine.target = entity;
+                            if (!world.isRemote)
+                            world.spawnEntity(wine);
                         }
                     }
                 }
@@ -419,8 +504,9 @@ public class WorldEvent {
                             }
                         }
                         else entitys.attackEntityFrom(DamageSource.LIGHTNING_BOLT,10);
-                        entitys.getEntityData().setBoolean("dizui",true);
                         entitys.getEntityData().setInteger("dizuitime", 300);
+                        entitys.getEntityData().setBoolean("dizui",true);
+
                     }
                 }
 
@@ -552,4 +638,7 @@ public class WorldEvent {
              }
          }
     }
+
+
+
 }

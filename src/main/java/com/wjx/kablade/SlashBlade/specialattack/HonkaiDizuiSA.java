@@ -65,14 +65,14 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
             if(entityPlayer.getAttackingEntity()!=null ){
                 entityPlayer.getAttackingEntity().addPotionEffect(new PotionEffect(MobEffects.WITHER,100,1));
             }
-            EntitySummonSwordFree s1 = new  EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 1d,entityPlayer.posZ,0,0f);
-            EntitySummonSwordFree s2 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 1d,entityPlayer.posZ,0,45f);
-            EntitySummonSwordFree s3 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 1d,entityPlayer.posZ,0,90f);
-            EntitySummonSwordFree s4 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 1d,entityPlayer.posZ,0,135f);
-            EntitySummonSwordFree s5 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 1d,entityPlayer.posZ,0,180f);
-            EntitySummonSwordFree s6 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 1d,entityPlayer.posZ,0,225f);
-            EntitySummonSwordFree s7 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 1d,entityPlayer.posZ,0,270f);
-            EntitySummonSwordFree s8 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 1d,entityPlayer.posZ,0,315f);
+            EntitySummonSwordFree s1 = new  EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,0f);
+            EntitySummonSwordFree s2 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,45f);
+            EntitySummonSwordFree s3 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,90f);
+            EntitySummonSwordFree s4 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,135f);
+            EntitySummonSwordFree s5 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,180f);
+            EntitySummonSwordFree s6 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,225f);
+            EntitySummonSwordFree s7 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,270f);
+            EntitySummonSwordFree s8 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,315f);
             s1.setColor(0xFF1493);
             s2.setColor(0xFF1493);
             s3.setColor(0xFF1493);

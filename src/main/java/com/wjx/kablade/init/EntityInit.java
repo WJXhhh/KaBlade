@@ -17,6 +17,7 @@ public class EntityInit {
         registerEntity("vorpal_black_hole", EntityVorpalBlackHole.class,13700003,50);
         registerEntity("raikiri_blade", EntityRaikiriBlade.class,13700004,50);
         registerEntity("summoned_sword_base_plus",EntitySummonedSwordBasePlus.class,13700005,50);
+        registerEntity("wine",EntityWine.class,13700006,50);
     }
 
     private static void registerEntitySpawn(Class<? extends Entity> entityClass, int spawnWeight, int min, int max, EnumCreatureType typeOfCreature, Biome... biomes)
