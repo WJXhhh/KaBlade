@@ -71,10 +71,11 @@ public class SaWineBind extends SpecialAttackBase {
         }
         if (pointedEntity != null){
             if (pointedEntity instanceof EntityLivingBase){
-
+                if (!world.isRemote){
                     KaBladeProperties.getPropCompound(pointedEntity).setInteger(KaBladeProperties.PROP_WINE_BIND,160);
-                KaBladeProperties.getPropCompound(pointedEntity).setInteger(KaBladeProperties.PROP_WINE_BIND_ATTACKER,entityPlayer.getEntityId());
-
+                    KaBladeProperties.getPropCompound(pointedEntity).setInteger(KaBladeProperties.PROP_WINE_BIND_ATTACKER,entityPlayer.getEntityId());
+                    KaBladeProperties.updateNBTForClient(pointedEntity);
+                }
             }
         }
     }

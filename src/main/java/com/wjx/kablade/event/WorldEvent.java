@@ -267,82 +267,83 @@ public class WorldEvent {
                     }
                 }
             }
-        }
-        //WineBind
-        {
-            if (KaBladeCompound.getInteger(KaBladeProperties.PROP_WINE_BIND) > 0){
-                KaBladeCompound.setInteger(KaBladeProperties.PROP_WINE_BIND,KaBladeProperties.getPropCompound(entity).getInteger(KaBladeProperties.PROP_WINE_BIND) - 1);
-                Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeProperties.PROP_WINE_BIND_ATTACKER));
-                if (world.getTotalWorldTime() % 20 == 0 &&  attacker!=null && !attacker.isDead){
-                    entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) attacker),3);
-                }
-                boolean hasLocked = false;
-                for (Entity e:world.getLoadedEntityList()){
-                    if (e instanceof EntityWine){
-                        if (((EntityWine) e).target == entity){
-                            hasLocked = true;
+            //WineBind
+            {
+                if (KaBladeCompound.getInteger(KaBladeProperties.PROP_WINE_BIND) > 0){
+                    KaBladeCompound.setInteger(KaBladeProperties.PROP_WINE_BIND,KaBladeProperties.getPropCompound(entity).getInteger(KaBladeProperties.PROP_WINE_BIND) - 1);
+                    KaBladeProperties.updateNBTForClient(entity);
+                    Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeProperties.PROP_WINE_BIND_ATTACKER));
+                    if (world.getTotalWorldTime() % 20 == 0 &&  attacker!=null && !attacker.isDead){
+                        entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) attacker),3);
+                    }
+                    boolean hasLocked = false;
+                    for (Entity e:world.getLoadedEntityList()){
+                        if (e instanceof EntityWine){
+                            if (e.getDataManager().get(EntityWine.targetID) == entity.getEntityId()){
+                                hasLocked = true;
+                            }
                         }
                     }
-                }
-                if (hasLocked){
-                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,-1,2));
-                }
-                else {
-                    int originX = (int) entity.posX;
-                    int originY = (int) entity.posY;
-                    int originZ = (int) entity.posZ;
-                    ArrayList<BlockPos> poses = Lists.newArrayList();
-                    ArrayList<BlockPos> correctPoses = Lists.newArrayList();
-                    int dx = originX -1;
-                    int dy = originY -1;
-                    int dz = originZ -1;
-                    int mx = originX +1;
-                    int my = originY +1;
-                    int mz = originZ +1;
-                    boolean shouldBreak = false;
-                    for (int i = 0;i < 6;i++){
-                        if (shouldBreak){
-                            break;
-                        }
-                        dx -= 1;
-                        dy -= 1;
-                        dz -= 1;
-                        mx += 1;
-                        my += 1;
-                        mz += 1;
-                        for (int j = dx;j < mx;j ++){
-                            for (int k = dy;k<my;k++){
-                                if (k <= 0){
-                                    continue;
-                                }
-                                for (int l = dz;l < mz;l++){
-                                    BlockPos pos1 = new BlockPos(j,k,l);
-                                    if (poses.contains(pos1)){
+                    if (hasLocked){
+                        entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,-1,2));
+                    }
+                    else {
+                        int originX = (int) entity.posX;
+                        int originY = (int) entity.posY;
+                        int originZ = (int) entity.posZ;
+                        ArrayList<BlockPos> poses = Lists.newArrayList();
+                        ArrayList<BlockPos> correctPoses = Lists.newArrayList();
+                        int dx = originX -1;
+                        int dy = originY -1;
+                        int dz = originZ -1;
+                        int mx = originX +1;
+                        int my = originY +1;
+                        int mz = originZ +1;
+                        boolean shouldBreak = false;
+                        for (int i = 0;i < 6;i++){
+                            if (shouldBreak){
+                                break;
+                            }
+                            dx -= 1;
+                            dy -= 1;
+                            dz -= 1;
+                            mx += 1;
+                            my += 1;
+                            mz += 1;
+                            for (int j = dx;j < mx;j ++){
+                                for (int k = dy;k<my;k++){
+                                    if (k <= 0){
                                         continue;
                                     }
-                                    else {
-                                        if (world.getBlockState(pos1).getBlock() != Blocks.AIR){
-                                            correctPoses.add(pos1);
-                                            shouldBreak = true;
-                                            poses.add(pos1);
+                                    for (int l = dz;l < mz;l++){
+                                        BlockPos pos1 = new BlockPos(j,k,l);
+                                        if (poses.contains(pos1)){
+                                            continue;
+                                        }
+                                        else {
+                                            if (world.getBlockState(pos1).getBlock() != Blocks.AIR){
+                                                correctPoses.add(pos1);
+                                                shouldBreak = true;
+                                                poses.add(pos1);
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                    if (!correctPoses.isEmpty()){
-                        for (int i = 0;i<3;i++){
-                            BlockPos pos = correctPoses.get(world.rand.nextInt(correctPoses.size()));
-                            EntityWine wine = new EntityWine(world,pos.getX(),pos.getY(),pos.getZ());
-                            wine.target = entity;
-                            if (!world.isRemote)
-                            world.spawnEntity(wine);
+                        if (!correctPoses.isEmpty()){
+                            for (int i = 0;i<3;i++){
+                                BlockPos pos = correctPoses.get(world.rand.nextInt(correctPoses.size()));
+                                EntityWine wine = new EntityWine(world,pos.getX(),pos.getY(),pos.getZ());
+                                wine.getDataManager().set(EntityWine.targetID,entity.getEntityId());
+                                world.spawnEntity(wine);
+                            }
                         }
                     }
                 }
             }
         }
+
 
     }
 

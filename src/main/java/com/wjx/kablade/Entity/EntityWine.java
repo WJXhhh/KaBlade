@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class EntityWine extends Entity {
-    public EntityLivingBase target = null;
     public double longNess = 1d;
 
     public static final DataParameter<Integer> targetID = EntityDataManager.createKey(EntityWine.class, DataSerializers.VARINT);
@@ -38,46 +37,49 @@ public class EntityWine extends Entity {
         if (this.ticksExisted >160){
             this.setDead();
         }
-        if (!world.isRemote){
-            if (target!=null){
-                if (target.isDead || target.getDistance(this) > 8 || !(KaBladeProperties.getPropCompound(target).getInteger(KaBladeProperties.PROP_WINE_BIND) > 0)){
-                    target = null;
-                    longNess = 1;
+        EntityLivingBase target = (EntityLivingBase) this.world.getEntityByID(dataManager.get(targetID));
+        if (world.isRemote){
+            if (target != null){
+                double distance = target.getDistance(this);
+                longNess = distance;
+                double distanceZ = Math.abs(posZ - target.posZ);
+                double distanceX = Math.abs(posX - target.posX);
+                double lengthDistance = Math.abs(posY - target.posY);
+                double placeDistance = Math.sqrt((distance * distance) - (lengthDistance * lengthDistance));
+                double v = Math.toDegrees(Math.atan(lengthDistance / placeDistance));
+                if(posY >= target.posY){
+                    rotationPitch = (float) v;
                 }
-                else {
-                    double distance = target.getDistance(this);
-                    longNess = distance;
-                    double distanceZ = Math.abs(posZ - target.posZ);
-                    double distanceX = Math.abs(posX - target.posX);
-                    double lengthDistance = Math.abs(posY - target.posY);
-                    double placeDistance = Math.sqrt((distance * distance) - (lengthDistance * lengthDistance));
-                    double v = Math.toDegrees(Math.atan(lengthDistance / placeDistance));
-                    if(posY >= target.posY){
-                        rotationPitch = (float) v;
-                    }
-                    else rotationPitch = -(float) v;
+                else rotationPitch = -(float) v;
 
-                    double n = Math.toDegrees(Math.atan(distanceX / distanceZ));
-                    double k = Math.toDegrees(Math.atan(distanceZ / distanceX));
-                    if (posZ < target.posZ){
-                        if (posX > target.posX){
-                            rotationYaw = (float) n;
-                        }
-                        else {
-                            rotationYaw = -(float) n;
-                        }
+                double n = Math.toDegrees(Math.atan(distanceX / distanceZ));
+                double k = Math.toDegrees(Math.atan(distanceZ / distanceX));
+                if (posZ < target.posZ){
+                    if (posX > target.posX){
+                        rotationYaw = (float) n;
                     }
                     else {
-                        if (posX > target.posX){
-                            rotationYaw = 90f + (float) k;
-                        }
-                        else {
-                            rotationYaw = -90f -(float) k;
-                        }
+                        rotationYaw = -(float) n;
+                    }
+                }
+                else {
+                    if (posX > target.posX){
+                        rotationYaw = 90f + (float) k;
+                    }
+                    else {
+                        rotationYaw = -90f -(float) k;
                     }
                 }
             }
-            if (this.target==null){
+        }
+        if (!world.isRemote){
+            if (target!=null){
+                if (target.isDead || target.getDistance(this) > 8 || !(KaBladeProperties.getPropCompound(target).getInteger(KaBladeProperties.PROP_WINE_BIND) > 0)){
+                    dataManager.set(targetID,-1);
+                    longNess = 1;
+                }
+            }
+            if (target==null){
                 this.longNess = 1;
                 AxisAlignedBB bb = this.getEntityBoundingBox().grow(4,4,4);
                 List<Entity> list = this.world.getEntitiesInAABBexcluding(this,bb, input -> {
@@ -98,10 +100,10 @@ public class EntityWine extends Entity {
                             t = (EntityLivingBase) e;
                         }
                     }
-                    this.target = t;
+                    dataManager.set(targetID,t.getEntityId());
                 }
-            }else if (!(KaBladeProperties.getPropCompound(this.target).getInteger(KaBladeProperties.PROP_WINE_BIND) > 0)){
-                this.target = null;
+            }else if (!(KaBladeProperties.getPropCompound(target).getInteger(KaBladeProperties.PROP_WINE_BIND) > 0)){
+                dataManager.set(targetID,-1);
             }
         }
         else if (world.getEntityByID(dataManager.get(targetID)) != null){

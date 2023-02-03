@@ -37,6 +37,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.InputStream;
 import java.util.List;
 
+import static mods.flammpfeil.slashblade.SlashBlade.InitEventBus;
+
 @Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION)
 public class Main
 {
@@ -147,6 +149,7 @@ public class Main
         PACKET_HANDLER.registerMessage(MessageHandlerAddPotion.class,MessageAddPotion.class,1,Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerSlashPotion.class,MessageSlashPotion.class,2,Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerSpawnParticle.class,MessageSpawnParticle.class,3,Side.CLIENT);
+        PACKET_HANDLER.registerMessage(MessageHandlerUpdateKaBladeProp.class,MessageUpdateKaBladeProp.class,4,Side.CLIENT);
     }
 
     public static class getUpdateInfo{

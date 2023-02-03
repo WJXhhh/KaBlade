@@ -1,5 +1,7 @@
 package com.wjx.kablade.util;
 
+import com.wjx.kablade.Main;
+import com.wjx.kablade.network.MessageUpdateKaBladeProp;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -20,5 +22,9 @@ public class KaBladeProperties {
     public static NBTTagCompound getPropCompound(Entity e){
         initNBT(e);
         return e.getEntityData().getCompoundTag("kablade_property");
+    }
+
+    public static void updateNBTForClient(Entity e){
+        Main.PACKET_HANDLER.sendToAll(new MessageUpdateKaBladeProp(e.getEntityId(),getPropCompound(e)));
     }
 }
