@@ -1,17 +1,11 @@
 package com.wjx.kablade.proxy;
 
-import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.capability.CapabilityLoader;
-import com.wjx.kablade.creativeTab.tabkablade_bladesgod;
-import com.wjx.kablade.creativeTab.tabkablade_honkai;
 import com.wjx.kablade.event.WorldEvent;
 import com.wjx.kablade.init.EnchantmentInit;
-import com.wjx.kablade.util.slash.SlashInit;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -42,7 +36,6 @@ public class CommonProxy{
                 Main.TABKABLADE_BLADES_HONKAI = new tabkablade_honkai("tabkablade_honkai");
             }*/
             BladeProxy.CommonLoader(this);
-            SlashInit.init();
         }
 
 
