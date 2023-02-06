@@ -104,6 +104,13 @@ public class EntitySummonedSwordBasePlus extends Entity implements IThrowableEnt
         }
     }
 
+    public EntitySummonedSwordBasePlus(World par1World, EntityLivingBase entityLiving, float AttackLevel,double x,double y ,double z,float rotationPitch,float rotationYaw){
+        this(par1World, entityLiving, AttackLevel);
+        this.setLocationAndAngles(x,y,z,rotationYaw,rotationPitch);
+        this.iniPitch = rotationPitch;
+        this.iniYaw = rotationYaw;
+    }
+
     private static final DataParameter<Integer> THROWER_ENTITY_ID = EntityDataManager.createKey(EntitySummonedSwordBasePlus.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> LIFETIME = EntityDataManager.createKey(EntitySummonedSwordBasePlus.class, DataSerializers.VARINT);
     private static final DataParameter<Float> ROLL = EntityDataManager.createKey(EntitySummonedSwordBasePlus.class, DataSerializers.FLOAT);

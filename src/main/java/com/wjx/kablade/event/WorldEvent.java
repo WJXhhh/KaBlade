@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wjx.kablade.Entity.AbsEntityShield;
+import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
 import com.wjx.kablade.Entity.EntityWine;
 import com.wjx.kablade.Lib;
 import com.wjx.kablade.Main;
@@ -13,6 +14,7 @@ import com.wjx.kablade.capability.CapabilitySlashPotion;
 import com.wjx.kablade.capability.inters.IPotionInSlash;
 import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
+import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.network.MessageAddPotion;
 import com.wjx.kablade.network.MessageSlashPotion;
 import com.wjx.kablade.network.MessageSpawnParticle;
@@ -21,6 +23,7 @@ import com.wjx.kablade.util.Reference;
 import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.Doutanuki;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
@@ -275,6 +278,12 @@ public class WorldEvent {
                     Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeProperties.PROP_WINE_BIND_ATTACKER));
                     if (world.getTotalWorldTime() % 20 == 0 &&  attacker!=null && !attacker.isDead){
                         entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) attacker),3);
+                        EntitySummonedSwordBasePlus sword = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker,4,entity.posX + 1,entity.posY + entity.getEyeHeight() + 1,entity.posZ,0f,0f) ;
+                        EntitySummonedSwordBasePlus sword2 = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker,4,entity.posX - 1,entity.posY + entity.getEyeHeight() + 1,entity.posZ,0f,0f) ;
+                        sword.setColor(3388211);
+                        sword2.setColor(3388211);
+                        world.spawnEntity(sword);
+                        world.spawnEntity(sword2);
                     }
                     boolean hasLocked = false;
                     for (Entity e:world.getLoadedEntityList()){
@@ -611,6 +620,15 @@ public class WorldEvent {
                             }
                         }
                     }
+                }
+            }
+        }
+        //PotionParaly
+        {
+            PotionEffect effect = e.getActivePotionEffect(PotionInit.PARALY);
+            if (effect != null){
+                if (effect.getDuration() >0 && effect.getAmplifier() > 0){
+                    event.setAmount(event.getAmount() * (1.2f * (1f + (effect.getAmplifier() * 0.1f))));
                 }
             }
         }
