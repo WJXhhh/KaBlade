@@ -1,6 +1,6 @@
 package com.wjx.kablade.Entity;
 
-import com.wjx.kablade.util.KaBladeProperties;
+import com.wjx.kablade.util.KaBladeEntityProperties;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -74,7 +74,7 @@ public class EntityWine extends Entity {
         }
         if (!world.isRemote){
             if (target!=null){
-                if (target.isDead || target.getDistance(this) > 8 || !(KaBladeProperties.getPropCompound(target).getInteger(KaBladeProperties.PROP_WINE_BIND) > 0)){
+                if (target.isDead || target.getDistance(this) > 8 || !(KaBladeEntityProperties.getPropCompound(target).getInteger(KaBladeEntityProperties.PROP_WINE_BIND) > 0)){
                     dataManager.set(targetID,-1);
                     longNess = 1;
                 }
@@ -84,7 +84,7 @@ public class EntityWine extends Entity {
                 AxisAlignedBB bb = this.getEntityBoundingBox().grow(4,4,4);
                 List<Entity> list = this.world.getEntitiesInAABBexcluding(this,bb, input -> {
                     if (input instanceof EntityLivingBase){
-                        return KaBladeProperties.getPropCompound(input).getInteger(KaBladeProperties.PROP_WINE_BIND) > 0;
+                        return KaBladeEntityProperties.getPropCompound(input).getInteger(KaBladeEntityProperties.PROP_WINE_BIND) > 0;
                     }
                     return false;
                 });
@@ -102,7 +102,7 @@ public class EntityWine extends Entity {
                     }
                     dataManager.set(targetID,t.getEntityId());
                 }
-            }else if (!(KaBladeProperties.getPropCompound(target).getInteger(KaBladeProperties.PROP_WINE_BIND) > 0)){
+            }else if (!(KaBladeEntityProperties.getPropCompound(target).getInteger(KaBladeEntityProperties.PROP_WINE_BIND) > 0)){
                 dataManager.set(targetID,-1);
             }
         }

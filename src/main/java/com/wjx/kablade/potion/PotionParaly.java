@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -46,5 +47,10 @@ public class PotionParaly extends Potion {
     @Override
     public boolean isReady(int duration, int amplifier) {
         return true;
+    }
+
+    @Override
+    public double getAttributeModifierAmount(int amplifier, AttributeModifier modifier) {
+        return amplifier < 12 ? (1 - (amplifier * 0.08d)) : 0.04d;
     }
 }

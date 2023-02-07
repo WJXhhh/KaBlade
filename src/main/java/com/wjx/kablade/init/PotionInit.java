@@ -17,7 +17,7 @@ public class PotionInit {
     public static UUID UUID_PARALY = UUID.fromString("3fccf4fc-3ea9-366b-98e6-607f8dcec98d");
 
     public static final Potion FREEZE = new PotionFreeze(0).registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED,UUID_FREEZE.toString(),-1d,2);
-    public static final Potion PARALY = new PotionParaly().registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED,UUID_PARALY.toString(),-8,1);
+    public static final Potion PARALY = new PotionParaly().registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED,UUID_PARALY.toString(),1d,2);
 
     public static void registerPotions(){
         ForgeRegistries.POTIONS.registerAll(potions.toArray(new Potion[0]));

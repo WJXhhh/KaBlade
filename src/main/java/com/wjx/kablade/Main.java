@@ -150,6 +150,8 @@ public class Main
         PACKET_HANDLER.registerMessage(MessageHandlerSlashPotion.class,MessageSlashPotion.class,2,Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerSpawnParticle.class,MessageSpawnParticle.class,3,Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerUpdateKaBladeProp.class,MessageUpdateKaBladeProp.class,4,Side.CLIENT);
+        PACKET_HANDLER.registerMessage(MessageHandlerUpdateKaBladePlayerProp.class,MessageUpdateKaBladePlayerProp.class,5,Side.CLIENT);
+
     }
 
     public static class getUpdateInfo{

@@ -15,17 +15,13 @@ import com.wjx.kablade.capability.inters.IPotionInSlash;
 import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
 import com.wjx.kablade.init.PotionInit;
-import com.wjx.kablade.network.MessageAddPotion;
-import com.wjx.kablade.network.MessageSlashPotion;
 import com.wjx.kablade.network.MessageSpawnParticle;
-import com.wjx.kablade.util.KaBladeProperties;
+import com.wjx.kablade.util.KaBladeEntityProperties;
 import com.wjx.kablade.util.Reference;
 import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import mods.flammpfeil.slashblade.named.Doutanuki;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
@@ -33,16 +29,11 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.RecipeRepairItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -59,9 +50,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -71,7 +60,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -235,7 +223,7 @@ public class WorldEvent {
     public void onLivingUpdate(LivingEvent.LivingUpdateEvent event){
         EntityLivingBase entity = event.getEntityLiving();
         World world = entity.world;
-        NBTTagCompound KaBladeCompound = KaBladeProperties.getPropCompound(entity);
+        NBTTagCompound KaBladeCompound = KaBladeEntityProperties.getPropCompound(entity);
         if (!entity.world.isRemote){
             if (entity.getEntityData().getInteger("frost_blade_1") > 0){
                 if (!entity.world.isRemote){
@@ -272,10 +260,10 @@ public class WorldEvent {
             }
             //WineBind
             {
-                if (KaBladeCompound.getInteger(KaBladeProperties.PROP_WINE_BIND) > 0){
-                    KaBladeCompound.setInteger(KaBladeProperties.PROP_WINE_BIND,KaBladeProperties.getPropCompound(entity).getInteger(KaBladeProperties.PROP_WINE_BIND) - 1);
-                    KaBladeProperties.updateNBTForClient(entity);
-                    Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeProperties.PROP_WINE_BIND_ATTACKER));
+                if (KaBladeCompound.getInteger(KaBladeEntityProperties.PROP_WINE_BIND) > 0){
+                    KaBladeCompound.setInteger(KaBladeEntityProperties.PROP_WINE_BIND, KaBladeEntityProperties.getPropCompound(entity).getInteger(KaBladeEntityProperties.PROP_WINE_BIND) - 1);
+                    KaBladeEntityProperties.updateNBTForClient(entity);
+                    Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeEntityProperties.PROP_WINE_BIND_ATTACKER));
                     if (world.getTotalWorldTime() % 20 == 0 &&  attacker!=null && !attacker.isDead){
                         entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) attacker),3);
                         EntitySummonedSwordBasePlus sword = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker,4,entity.posX + 1,entity.posY + entity.getEyeHeight() + 1,entity.posZ,0f,0f) ;

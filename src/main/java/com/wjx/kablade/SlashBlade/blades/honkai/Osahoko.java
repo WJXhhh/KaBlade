@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.blades.honkai;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
+import com.wjx.kablade.SlashBlade.SpeacialEffects.SETurbulence;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
@@ -49,6 +50,7 @@ public class Osahoko {
         ItemSlashBlade.SummonedSwordColor.set(tag,65518);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
+        SpecialEffects.addEffect(customblade,new SETurbulence());
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
     }

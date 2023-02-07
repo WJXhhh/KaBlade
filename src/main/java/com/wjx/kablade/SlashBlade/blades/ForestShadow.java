@@ -58,7 +58,7 @@ public class ForestShadow {
         IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"forest_shadow"),
                 blackblade, prevblade,
                 new Object[]{
-                        "   ",
+                        " C ",
                         "ABA",
                         " A ",
                         'A', new ItemStack(Items.EMERALD,1),

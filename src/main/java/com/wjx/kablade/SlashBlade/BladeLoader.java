@@ -108,6 +108,8 @@ public class BladeLoader {
             loadBlade(new PlasmaKagehide());
             loadBlade(new XuanYuanKatana());
 
+            loadBlade(new Osahoko());
+
 
 
             this.loadBlade(new MoDao());

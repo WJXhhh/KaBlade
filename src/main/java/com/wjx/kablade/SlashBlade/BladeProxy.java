@@ -1,10 +1,12 @@
 package com.wjx.kablade.SlashBlade;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.SlashBlade.SpeacialEffects.SETurbulence;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.SlashBlade.specialattack.*;
 import com.wjx.kablade.proxy.CommonProxy;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 
 import static mods.flammpfeil.slashblade.SlashBlade.InitEventBus;
 
@@ -26,6 +28,7 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(291,new HonKaiVorpalHole());
             ItemSlashBlade.specialAttacks.put(292,new HonkaiBladeWard());
             ItemSlashBlade.specialAttacks.put(293,new HonkaiAbsoluteZero());
+            SpecialEffects.register(new SETurbulence());
         }
         ItemSlashBlade.specialAttacks.put(288,new RockHit_I());
         ItemSlashBlade.specialAttacks.put(289,new SaBreakTheDawn());

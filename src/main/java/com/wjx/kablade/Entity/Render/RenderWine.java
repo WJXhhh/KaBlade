@@ -1,26 +1,18 @@
 package com.wjx.kablade.Entity.Render;
 
 import com.wjx.kablade.Entity.EntityWine;
-import com.wjx.kablade.Entity.model.mdlRaikiriBlade;
 import com.wjx.kablade.Main;
-import com.wjx.kablade.util.KaBladeProperties;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderLightningBolt;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class RenderWine extends Render<EntityWine> {

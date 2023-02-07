@@ -1,11 +1,7 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.google.common.base.Predicates;
-import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
-import com.wjx.kablade.event.WorldEvent;
-import com.wjx.kablade.init.PotionInit;
-import com.wjx.kablade.util.KaBladeProperties;
-import mods.flammpfeil.slashblade.entity.EntityDrive;
+import com.wjx.kablade.util.KaBladeEntityProperties;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -13,17 +9,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.Random;
 
 public class SaWineBind extends SpecialAttackBase {
     @Override
@@ -72,9 +64,9 @@ public class SaWineBind extends SpecialAttackBase {
         if (pointedEntity != null){
             if (pointedEntity instanceof EntityLivingBase){
                 if (!world.isRemote){
-                    KaBladeProperties.getPropCompound(pointedEntity).setInteger(KaBladeProperties.PROP_WINE_BIND,160);
-                    KaBladeProperties.getPropCompound(pointedEntity).setInteger(KaBladeProperties.PROP_WINE_BIND_ATTACKER,entityPlayer.getEntityId());
-                    KaBladeProperties.updateNBTForClient(pointedEntity);
+                    KaBladeEntityProperties.getPropCompound(pointedEntity).setInteger(KaBladeEntityProperties.PROP_WINE_BIND,160);
+                    KaBladeEntityProperties.getPropCompound(pointedEntity).setInteger(KaBladeEntityProperties.PROP_WINE_BIND_ATTACKER,entityPlayer.getEntityId());
+                    KaBladeEntityProperties.updateNBTForClient(pointedEntity);
                 }
             }
         }
