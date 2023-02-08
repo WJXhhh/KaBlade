@@ -1,7 +1,6 @@
 package com.wjx.kablade.SlashBlade.blades.honkai;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
-import com.wjx.kablade.SlashBlade.SpeacialEffects.SETurbulence;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
@@ -9,10 +8,8 @@ import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
-import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,11 +19,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import static com.wjx.kablade.Main.bladestr;
 
-public class Osahoko {
-    String name = "wjx.blade.honkai.osahoko";
-    String key = "wjx.blade.honkai.osahoko";
+public class DawnBreaker {
+    String name = "wjx.blade.honkai.dawn_breaker";
+    String key = "wjx.blade.honkai.dawn_breaker";
 
-    public Osahoko(){
+    public DawnBreaker(){
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -39,18 +36,32 @@ public class Osahoko {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 700);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 800);
 
-        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Osahoko/texOsahoko");
-        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Osahoko/mdlOsahoko");
-        customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
-        customblade.addEnchantment(Enchantments.SHARPNESS,2);
+        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/VorpalSword/texVorpalSword");
+        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/VorpalSword/mdlVorpalSword");
+
+        ItemSlashBlade.SpecialAttackType.set(tag,291);
+        ItemSlashBlade.setBaseAttackModifier(tag,2);
+        customblade.getTagCompound().setFloat("baseAttackModifier",17.0F);
+        customblade.addEnchantment(Enchantments.KNOCKBACK,2);
+        customblade.addEnchantment(Enchantments.SHARPNESS,3);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
-        ItemSlashBlade.SummonedSwordColor.set(tag,5460948);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
-        SpecialEffects.addEffect(customblade,new SETurbulence());
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
+        ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.galactic", 1);
+        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"vorpal_sword"),
+                blackblade, prevblade,
+                "  C",
+                " B ",
+                "A  ",
+                'A', prevblade,
+                'B',new ItemStack(Items.DIAMOND),
+                'C', new ItemStack(ItemInit.GRAVITY_CRYSTAL));
+
+        SlashBlade.addRecipe("vorpal_sword", recipe);
     }
 }

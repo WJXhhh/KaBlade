@@ -75,6 +75,11 @@ flammpfeil.slashblade.specialattack.chop_willow=锋刀抚柳
 flammpfeil.slashblade.specialattack.frost_blade=寒霜灵刃
 flammpfeil.slashblade.specialattack.wine_bind=Wine Bind
 
+slashblade.seffect.name.kablade.SETurbulence=Turbulence
+
+#生之称
+entity.vorpal_black_hole.name=Vorpal Black Hole
+entity.wine.name=Wine
 
 #堺之言
 msg.yunluo=陨落！

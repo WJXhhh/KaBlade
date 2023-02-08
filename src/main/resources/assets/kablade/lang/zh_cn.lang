@@ -132,8 +132,12 @@ flammpfeil.slashblade.specialattack.absolute_zero=绝对零度
 flammpfeil.slashblade.specialattack.aurora_shining=极光耀天
 flammpfeil.slashblade.specialattack.wine_bind=藤蔓捆缚
 
+slashblade.seffect.name.kablade.SETurbulence=乱流
+
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞
+entity.wine.name=藤蔓
+
 
 
 #堺之言

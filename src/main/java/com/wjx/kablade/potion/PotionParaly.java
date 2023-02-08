@@ -17,15 +17,8 @@ public class PotionParaly extends Potion {
     public PotionParaly() {
         super(true, 0xf3eb20);
         setPotionName("kablade.effect.paraly");
-        setIconIndex(0,0);
         PotionInit.potions.add(this);
         setRegistryName(new ResourceLocation(Reference.MODID+":paraly"));
-    }
-
-    @Override
-    public boolean hasStatusIcon() {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(Reference.MODID + ":textures/potion/paraly.png"));
-        return true;
     }
 
     @SideOnly(Side.CLIENT)
@@ -51,6 +44,6 @@ public class PotionParaly extends Potion {
 
     @Override
     public double getAttributeModifierAmount(int amplifier, AttributeModifier modifier) {
-        return amplifier < 12 ? (1 - (amplifier * 0.08d)) : 0.04d;
+        return amplifier < 12 ? (1 + amplifier * 0.08) * modifier.getAmount() : -0.94d;
     }
 }
