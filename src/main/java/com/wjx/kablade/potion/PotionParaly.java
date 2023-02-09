@@ -25,7 +25,7 @@ public class PotionParaly extends Potion {
     @Override
     public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
         if (mc.currentScreen != null) {
-            mc.getTextureManager().bindTexture(new ResourceLocation(Reference.MODID + ":textures/potion/erosion.png"));
+            mc.getTextureManager().bindTexture(new ResourceLocation(Reference.MODID + ":textures/potion/paraly.png"));
             Gui.drawModalRectWithCustomSizedTexture(x + 6, y + 7, 0, 0, 18, 18, 18, 18);
         }
     }
@@ -33,7 +33,7 @@ public class PotionParaly extends Potion {
     @SideOnly(Side.CLIENT)
     @Override
     public void renderHUDEffect(int x, int y, PotionEffect effect, Minecraft mc, float alpha) {
-        mc.getTextureManager().bindTexture(new ResourceLocation(Reference.MODID + ":textures/potion/erosion.png"));
+        mc.getTextureManager().bindTexture(new ResourceLocation(Reference.MODID + ":textures/potion/paraly.png"));
         Gui.drawModalRectWithCustomSizedTexture(x + 3, y + 3, 0, 0, 18, 18, 18, 18);
     }
 

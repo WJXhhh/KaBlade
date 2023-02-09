@@ -5,16 +5,18 @@ import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.List;
 
-public class HonKaiMoltenBlade extends SpecialAttackBase {
+public class HonkaiShockImpact extends SpecialAttackBase {
     @Override
     public String toString() {
-        return "molten_blade";
+        return "shock_impact";
     }
 
     @Override
@@ -22,13 +24,15 @@ public class HonKaiMoltenBlade extends SpecialAttackBase {
         Spear spear = new Spear();
         spear.doSpacialAttack(itemStack,entityPlayer);
         AxisAlignedBB ax = entityPlayer.getEntityBoundingBox();
-       ax= ax.grow(3,1,3);
+        ax= ax.grow(3,1,3);
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
-        List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input != entityPlayer && input instanceof EntityLivingBase);
+        List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax, input -> input != entityPlayer && input instanceof EntityLivingBase);
         for (Entity entity : entities){
             if (entity != null){
-                entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),12);
-                entity.setFire(5);
+                if (!entityPlayer.world.isRemote){
+                    entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),22);
+                    entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,5));
+                }
             }
         }
     }

@@ -36,6 +36,7 @@ item.wjx.blade.honkai.raikiri.name=雷切
 item.wjx.blade.honkai.plasma_kagehide.name=等离子影秀
 item.wjx.blade.honkai.xuanyuan_katana.name=轩辕·脉冲太刀
 item.wjx.blade.honkai.osahoko.name=藏锋
+item.wjx.blade.honkai.dawn_breaker.name=破晓者：塔尔瓦
 
 
 
@@ -131,6 +132,7 @@ flammpfeil.slashblade.specialattack.blade_ward=灵刃护体
 flammpfeil.slashblade.specialattack.absolute_zero=绝对零度
 flammpfeil.slashblade.specialattack.aurora_shining=极光耀天
 flammpfeil.slashblade.specialattack.wine_bind=藤蔓捆缚
+flammpfeil.slashblade.specialattack.shock_impact=震荡冲击
 
 slashblade.seffect.name.kablade.SETurbulence=乱流
 

@@ -36,16 +36,15 @@ public class DawnBreaker {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 800);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 850);
 
-        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/VorpalSword/texVorpalSword");
-        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/VorpalSword/mdlVorpalSword");
+        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/DawnBreaker/texDawnBreaker");
+        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/DawnBreaker/mdlDawnBreaker");
 
-        ItemSlashBlade.SpecialAttackType.set(tag,291);
-        ItemSlashBlade.setBaseAttackModifier(tag,2);
-        customblade.getTagCompound().setFloat("baseAttackModifier",17.0F);
+        ItemSlashBlade.SpecialAttackType.set(tag,294);
+        customblade.getTagCompound().setFloat("baseAttackModifier",18.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
-        customblade.addEnchantment(Enchantments.SHARPNESS,3);
+        customblade.addEnchantment(Enchantments.SHARPNESS,4);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
@@ -53,15 +52,15 @@ public class DawnBreaker {
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.galactic", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"vorpal_sword"),
+        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"dawn_breaker"),
                 blackblade, prevblade,
                 "  C",
                 " B ",
                 "A  ",
                 'A', prevblade,
                 'B',new ItemStack(Items.DIAMOND),
-                'C', new ItemStack(ItemInit.GRAVITY_CRYSTAL));
+                'C', new ItemStack(ItemInit.AURORA_METAL_INGOT));
 
-        SlashBlade.addRecipe("vorpal_sword", recipe);
+        SlashBlade.addRecipe("dawn_breaker", recipe);
     }
 }

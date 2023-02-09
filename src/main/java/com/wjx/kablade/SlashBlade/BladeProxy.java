@@ -28,6 +28,7 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(291,new HonKaiVorpalHole());
             ItemSlashBlade.specialAttacks.put(292,new HonkaiBladeWard());
             ItemSlashBlade.specialAttacks.put(293,new HonkaiAbsoluteZero());
+            ItemSlashBlade.specialAttacks.put(294,new HonkaiShockImpact());
             SpecialEffects.register(new SETurbulence());
         }
         ItemSlashBlade.specialAttacks.put(288,new RockHit_I());
