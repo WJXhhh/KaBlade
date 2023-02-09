@@ -1,14 +1,12 @@
 package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
-import com.wjx.kablade.Main;
 import com.wjx.kablade.init.PotionInit;
-import com.wjx.kablade.util.KaBladePlayerProp;
 import com.wjx.kablade.util.KaBladeEntityProperties;
+import com.wjx.kablade.util.KaBladePlayerProp;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.IRemovable;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
-import mods.flammpfeil.slashblade.util.SlashBladeHooks;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,7 +27,7 @@ public class SETurbulence implements ISpecialEffect, IRemovable {
 
     @Override
     public int getDefaultRequiredLevel() {
-        return 1;
+        return -1;
     }
 
     @Override

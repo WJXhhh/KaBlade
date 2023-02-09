@@ -37,6 +37,8 @@ item.wjx.blade.honkai.plasma_kagehide.name=等离子影秀
 item.wjx.blade.honkai.xuanyuan_katana.name=轩辕·脉冲太刀
 item.wjx.blade.honkai.osahoko.name=藏锋
 item.wjx.blade.honkai.dawn_breaker.name=破晓者：塔尔瓦
+item.wjx.blade.honkai.sky_breaker.name=开天剑
+item.wjx.blade.honkai.phoenix.name=凰剑
 
 
 
@@ -135,6 +137,8 @@ flammpfeil.slashblade.specialattack.wine_bind=藤蔓捆缚
 flammpfeil.slashblade.specialattack.shock_impact=震荡冲击
 
 slashblade.seffect.name.kablade.SETurbulence=乱流
+slashblade.seffect.name.kablade.divine_penalty=天罚
+slashblade.seffect.name.kablade.phoenix=凰
 
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞

@@ -1,6 +1,8 @@
 package com.wjx.kablade.SlashBlade;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.SlashBlade.SpeacialEffects.SEDivinePenalty;
+import com.wjx.kablade.SlashBlade.SpeacialEffects.SEPhoenix;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.SETurbulence;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.SlashBlade.specialattack.*;
@@ -30,6 +32,8 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(293,new HonkaiAbsoluteZero());
             ItemSlashBlade.specialAttacks.put(294,new HonkaiShockImpact());
             SpecialEffects.register(new SETurbulence());
+            SpecialEffects.register(new SEDivinePenalty());
+            SpecialEffects.register(new SEPhoenix());
         }
         ItemSlashBlade.specialAttacks.put(288,new RockHit_I());
         ItemSlashBlade.specialAttacks.put(289,new SaBreakTheDawn());

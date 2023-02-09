@@ -8,25 +8,10 @@ import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
 import com.wjx.kablade.SlashBlade.blades.honkai.*;
-import com.wjx.kablade.init.EnchantmentInit;
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 
-import javax.annotation.Nonnull;
-import java.util.Iterator;
 import java.util.List;
 
 public class BladeLoader {
@@ -109,6 +94,9 @@ public class BladeLoader {
             loadBlade(new XuanYuanKatana());
 
             loadBlade(new Osahoko());
+            loadBlade(new DawnBreaker());
+            loadBlade(new SkyBreaker());
+            loadBlade(new Phoenix());
 
 
 
