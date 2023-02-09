@@ -21,6 +21,8 @@ public class EntityRaikiriBlade extends AbsEntityShield {
 
     public EntityLivingBase thrower;
 
+    public static final DataParameter<Integer> throwerID = EntityDataManager.createKey(EntityRaikiriBlade.class,DataSerializers.VARINT);
+
     private static final DataParameter<Float> shieldBlood = EntityDataManager.createKey(EntityRaikiriBlade.class,DataSerializers.FLOAT);
 
     public boolean shouldFollow = false;
@@ -60,6 +62,17 @@ public class EntityRaikiriBlade extends AbsEntityShield {
             this.setDead();
         }
 
+        if (!world.isRemote){
+            if (this.thrower!=null&&!(this.thrower.isDead)){
+                if (this.dataManager.get(throwerID) != this.thrower.getEntityId()){
+                    this.dataManager.set(throwerID,this.thrower.getEntityId());
+                }
+            }
+            else if (this.dataManager.get(throwerID) != -1){
+                this.dataManager.set(throwerID,-1);
+            }
+        }
+
         if (this.thrower!=null&&!(this.thrower.isDead)) {
             followX = thrower.posX;
             followY = thrower.posY;
@@ -86,6 +99,7 @@ public class EntityRaikiriBlade extends AbsEntityShield {
     @Override
     protected void entityInit() {
         this.getDataManager().register(shieldBlood,10f);
+        this.getDataManager().register(throwerID,-1);
     }
 
     @Override

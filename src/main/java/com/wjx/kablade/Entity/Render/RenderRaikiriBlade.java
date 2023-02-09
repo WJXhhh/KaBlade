@@ -4,6 +4,7 @@ import com.wjx.kablade.Entity.EntityRaikiriBlade;
 import com.wjx.kablade.Entity.model.ModelVorpalBlackHole;
 import com.wjx.kablade.Entity.model.mdlRaikiriBlade;
 import com.wjx.kablade.Main;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
@@ -20,7 +21,6 @@ import javax.annotation.Nullable;
 @SideOnly(Side.CLIENT)
 public class RenderRaikiriBlade extends Render<Entity> {
     protected ModelBase mainModel;
-
 
     public RenderRaikiriBlade(RenderManager renderManagerIn) {
         super(renderManagerIn);
@@ -52,9 +52,11 @@ public class RenderRaikiriBlade extends Render<Entity> {
 
     @Override
     public void doRender(Entity entity, double x, double y, double z, float entityYaw, float partialTicks) {
-
         {
             GlStateManager.pushMatrix();
+            if (Minecraft.getMinecraft().world.getEntityByID(entity.getDataManager().get(EntityRaikiriBlade.throwerID)) != Minecraft.getMinecraft().player){
+                GlStateManager.translate(x, y, z);
+            }
             GlStateManager.translate(0, 0.5, 0);
             GlStateManager.rotate(10f * entity.world.getTotalWorldTime(), 0f, 1f, 0f);
             this.bindEntityTexture(entity);
