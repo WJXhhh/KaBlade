@@ -54,7 +54,7 @@ public class ForestShadow {
         SlashBlade.registerCustomItemStack(this.name, customBlade);
         BladeLoader.NamedBlades.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.noted_vine", 1);
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.noted_vine", 1);
         IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"forest_shadow"),
                 blackblade, prevblade,
                 new Object[]{
@@ -63,7 +63,7 @@ public class ForestShadow {
                         " A ",
                         'A', new ItemStack(Items.EMERALD,1),
                         'B',prevblade,
-                        'C', new ItemStack(Items.DYE),
+                        'C', new ItemStack(Items.DYE,1,15),
                 });
 
         SlashBlade.addRecipe("forest_shadow", recipe);

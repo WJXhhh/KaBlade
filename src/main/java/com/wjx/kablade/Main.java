@@ -44,7 +44,7 @@ public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "1.2";
 
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
@@ -54,6 +54,8 @@ public class Main
     public static boolean GALoaded=false;
 
     public static Logger logger;
+
+    public static boolean hasSendMessage = false;
 
     public static CreativeTabs TABKABLADE = null;
     public static CreativeTabs TABKABLADE_BLADES = null;
@@ -113,13 +115,16 @@ public class Main
     public void init(FMLInitializationEvent event)
     {
         proxy.init(event);
-        registerMessage();
         if (!Loader.isModLoaded("networkmod"))
-        {try{
-            GetUrlVersion = getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB").get(0);
+        {
+            try{
+            GetUrlVersion = getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB").get(1);
 
             if(GetUrlVersion!=null){
-                if(Float.parseFloat(VERSION)<Float.parseFloat(GetUrlVersion)){
+                String[] s = VERSION.split("\\.");
+                String[] s1 = GetUrlVersion.split("\\.");
+
+                if (Integer.parseInt(s1[0]) > Integer.parseInt(s[0])|| Integer.parseInt(s1[1]) > Integer.parseInt(s[1])){
                     YesUpdate = true;
                 }
             }
@@ -144,15 +149,7 @@ public class Main
         p = Enchantment.getEnchantmentID(EnchantmentInit.ENCHANTMENT_SLOW);
     }
 
-    public void registerMessage(){
-        PACKET_HANDLER.registerMessage(MessageRemoteLightingHandler.class, MessageRemoteLighting.class,0, Side.SERVER);
-        PACKET_HANDLER.registerMessage(MessageHandlerAddPotion.class,MessageAddPotion.class,1,Side.CLIENT);
-        PACKET_HANDLER.registerMessage(MessageHandlerSlashPotion.class,MessageSlashPotion.class,2,Side.CLIENT);
-        PACKET_HANDLER.registerMessage(MessageHandlerSpawnParticle.class,MessageSpawnParticle.class,3,Side.CLIENT);
-        PACKET_HANDLER.registerMessage(MessageHandlerUpdateKaBladeProp.class,MessageUpdateKaBladeProp.class,4,Side.CLIENT);
-        PACKET_HANDLER.registerMessage(MessageHandlerUpdateKaBladePlayerProp.class,MessageUpdateKaBladePlayerProp.class,5,Side.CLIENT);
 
-    }
 
     public static class getUpdateInfo{
         static List<String> firstGet = null;

@@ -15,6 +15,7 @@ import com.wjx.kablade.capability.inters.IPotionInSlash;
 import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
 import com.wjx.kablade.init.PotionInit;
+import com.wjx.kablade.network.MessageResetSend;
 import com.wjx.kablade.network.MessageSpawnParticle;
 import com.wjx.kablade.util.KaBladeEntityProperties;
 import com.wjx.kablade.util.Reference;
@@ -31,6 +32,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
@@ -125,12 +127,9 @@ public class WorldEvent {
     @SubscribeEvent
     public void onPlayerJoinWorld(PlayerEvent.PlayerLoggedInEvent event) {
         EntityPlayer player = event.player;
-        if (Main.YesUpdate){
-            if (!player.world.isRemote){
-                player.sendStatusMessage(new TextComponentString("§6§l[斩无不断]§b检测到模组有更新。最新版本为：§6"+Main.GetUrlVersion),false);
-                TextComponentString t = new TextComponentString("§9https://www.mcmod.cn/class/8128.html");
-                t.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,"https://www.mcmod.cn/class/8128.html")).setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("点击前往链接")));
-                player.sendStatusMessage(new TextComponentString("§6§l[斩无不断]§b可从MC百科下载或从其界面寻找蓝奏云下载地址：").appendSibling(t),false);
+        if(!player.world.isRemote){
+            if(YesUpdate){
+                PACKET_HANDLER.sendTo(new MessageResetSend(), (EntityPlayerMP) player);
             }
         }
         if (!Main.isBladePostLoad){
@@ -140,7 +139,6 @@ public class WorldEvent {
             SlashBlade.BladeRegistry.put(new ResourceLocationRaw(bladestr,"wjx.blade.honkai.plasma_kagehide"),stack);
             addEnchantmentForBlade(EnchantmentInit.ENCHANTMENT_SLOW,1,"wjx.blade.honkai.xuanyuan_katana");
         }
-
     }
 
     void addEnchantmentForBlade(Enchantment e,int level,String name){
@@ -348,6 +346,16 @@ public class WorldEvent {
     public void PlayerUpdateEvent(TickEvent.PlayerTickEvent event){
         EntityPlayer player = event.player;
         World world = event.player.world;
+
+        if(player.world.isRemote){
+            if(YesUpdate && !hasSendMessage){
+                hasSendMessage = true;
+                player.sendStatusMessage(new TextComponentString("§6§l[斩无不断]§b检测到模组有更新。最新版本为：§6"+Main.GetUrlVersion),false);
+                TextComponentString t = new TextComponentString("§9https://www.mcmod.cn/class/8128.html");
+                t.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,"https://www.mcmod.cn/class/8128.html")).setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("点击前往链接")));
+                player.sendStatusMessage(new TextComponentString("§6§l[斩无不断]§b可从MC百科下载或从其界面寻找蓝奏云下载地址：").appendSibling(t),false);
+            }
+        }
         //Chop Willow
         if (player.getEntityData().getBoolean("to_chop_willow")){
             player.getEntityData().setInteger("chop_willow_retry_count",0);

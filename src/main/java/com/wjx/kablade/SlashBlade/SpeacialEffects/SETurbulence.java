@@ -7,6 +7,7 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.IRemovable;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,10 +48,10 @@ public class SETurbulence implements ISpecialEffect, IRemovable {
 
     @SubscribeEvent
     public void onEntityHurt(LivingHurtEvent event){
-        EntityLivingBase attacker = (EntityLivingBase) event.getSource().getTrueSource();
+        Entity e1 = event.getSource().getTrueSource();
         EntityLivingBase e = event.getEntityLiving();
-        if (!e.world.isRemote){
-
+        if (!e.world.isRemote && e1 instanceof EntityLivingBase){
+            EntityLivingBase attacker = (EntityLivingBase) e1;
             if (e instanceof EntityPlayer && e.getHeldItemMainhand().getItem() instanceof ItemSlashBlade){
                 EntityPlayer player = (EntityPlayer) e;
                 ItemStack slash = e.getHeldItemMainhand();
