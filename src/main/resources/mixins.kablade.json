@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "package": "com.wjx.kablade.mixin",
+  "setSourceFile": true,
+  "priority": 0,
+  "refmap": "mixins.kablade.refmap.json",
+  "mixins": [
+    "MixinItemSlashBladeDoAttack",
+    "MixinItemSlashBladeLeftAttack1",
+    "MixinItemSlashBladeSA",
+    "MixinSlashBladeLeftAttack2"
+  ]
+}

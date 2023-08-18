@@ -37,14 +37,14 @@ public class ThermalCutter {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 680);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 500);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Rhomphaia/tex/the");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Rhomphaia/mdl");
 
         ItemSlashBlade.SpecialAttackType.set(tag,286);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
-        customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",11.0F);
         customblade.addEnchantment(Enchantments.FIRE_ASPECT,2);
         ItemSlashBladeNamed.SummonedSwordColor.set(tag,0xDAA520);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

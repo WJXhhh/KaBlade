@@ -40,13 +40,13 @@ public class CutIron {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 800);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 400);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/cutIron/texCutIron");
         ItemSlashBlade.ModelName.set(Tag, "kablade/cutIron/mdlCutIron");
 
         ItemSlashBlade.setBaseAttackModifier(Tag,8);
-        customBlade.getTagCompound().setFloat("baseAttackModifier",12.0F);
+        customBlade.getTagCompound().setFloat("baseAttackModifier",8.0F);
         ItemSlashBlade.SpecialAttackType.set(Tag,290);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.SHARPNESS,4);

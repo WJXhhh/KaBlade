@@ -36,13 +36,13 @@ public class BambooLumi {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 400);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 220);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/BambooLumi/tex");
         ItemSlashBlade.ModelName.set(Tag, "kablade/BambooIron/blade");
 
         ItemSlashBlade.setBaseAttackModifier(Tag,6);
-        customBlade.getTagCompound().setFloat("baseAttackModifier",7.0F);
+        customBlade.getTagCompound().setFloat("baseAttackModifier",6.0F);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.SMITE,2);
         Item_KaNamed.IsDefaultBewitched.set(Tag, false);

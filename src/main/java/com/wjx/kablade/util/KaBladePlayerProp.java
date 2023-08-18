@@ -9,6 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class KaBladePlayerProp {
     public static String TURBULENCE = "turbulence";
+    public static String LOCKING_ENTITY_UUID = "locking_entity_uuid";
+    public static String LOCKING_ENTITY_LEFT_TIME = "locking_entity_left_time";
 
     public static void initNBT(EntityPlayer e){
         if (!e.getEntityData().hasKey("kablade_player_property")){

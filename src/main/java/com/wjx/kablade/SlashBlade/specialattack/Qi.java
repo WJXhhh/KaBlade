@@ -31,27 +31,16 @@ public class Qi extends SpecialAttackBase {
         double dx = vec3.x * 3.0D;
         double dy = (double)player.getEyeHeight() + vec3.y * 3.0D;
         double dz = vec3.z * 3.0D;
-        List<Entity> list11 = player.world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().grow(8.0D, 8.0D, 8.0D).offset(dx, dy, dz), input -> input != player && input.isEntityAlive());
+        List<Entity> list11 = player.world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().grow(8.0D, 8.0D, 8.0D).offset(dx, dy, dz), input -> input != player && input instanceof  EntityLivingBase );
         //list11.remove(player);
-        if (list11 != null && !list11.isEmpty()) {
+        if (!list11.isEmpty()) {
             for (Entity entity : list11) {
-                if (entity instanceof EntityLivingBase){
+                if(entity instanceof EntityPlayer){
+                    KillEvent.killplayer((EntityPlayer) entity, player);
+                }
+                else {
                    // server.getPlayerList().sendMessage(new TextComponentString(entity.toString()));
-                    if (entity != null) {
-                        KillEvent.killutil(entity, player);
-                    } else {
-                        Entity target = null;
-                        int entityId = ItemSlashBlade.TargetEntityId.get(tag);
-                        if (entityId != 0) {
-                            Entity tmp = world.getEntityByID(entityId);
-                            if (tmp != null && tmp.getDistance(player) < 100.0F) {
-                                target = tmp;
-                            }
-                        }
-                        if (target != null) {
-                            KillEvent.killutil(target, player);
-                        }
-                    }
+                    KillEvent.killutil((EntityLivingBase) entity, player);
                 }
             }
         }else {
@@ -63,9 +52,15 @@ public class Qi extends SpecialAttackBase {
                     target = tmp;
                 }
             }
-            if(target!=null)
+            if(target != null)
             {
-                KillEvent.killutil(target, player);
+                if(target instanceof EntityPlayer){
+                    KillEvent.killplayer((EntityPlayer) target, player);
+                }
+                else {
+                    // server.getPlayerList().sendMessage(new TextComponentString(entity.toString()));
+                    KillEvent.killutil((EntityLivingBase) target, player);
+                }
             }
         }
 

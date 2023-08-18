@@ -2,7 +2,6 @@ package com.wjx.kablade.SlashBlade.blades.bladeitem;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
-import com.wjx.kablade.event.KillEvent;
 import com.wjx.kablade.event.UpdateColor;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
@@ -15,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -63,14 +61,15 @@ public class Item_Caijue extends ItemSlashBladeNamed {
         }
         //super.hitEntity(stack,par2EntityLivingBase,par3EntityLivingBase);
         super.hitEntity(stack,par2EntityLivingBase,par3EntityLivingBase);
-        par2EntityLivingBase.attackEntityFrom(DamageSource.causeMobDamage(par3EntityLivingBase),1f);
+        par2EntityLivingBase.attackEntityFrom(DamageSource.causeMobDamage(par3EntityLivingBase),64f);
+
 
 
         return true;
     }
 
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, World worldIn, List tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         //tooltip.add(String.format("SBCOLOR: %s",stack.getTagCompound().getInteger("SummonedSwordColor")));
         //tooltip.add("");
@@ -85,6 +84,8 @@ public class Item_Caijue extends ItemSlashBladeNamed {
         tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.dizui.6")));
 
     }
+
+
 
     @SideOnly(Side.CLIENT)
     public void addInformationSpecialAttack(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {

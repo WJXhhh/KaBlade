@@ -46,14 +46,14 @@ public class MuraSeshu {
 
         //tag.setBoolean("Unbreakable",true);
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 450);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 260);
 
         //ItemSlashBlade.TextureName.set(tag, "kablade/BambooLumi/tex");
         //ItemSlashBlade.ModelName.set(tag, "kablade/BambooIron/blade");
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Muramasa/tex/SeshuMuramasa");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Muramasa/mdlmura");
 
-        ItemSlashBlade.setBaseAttackModifier(tag,2);
+        //ItemSlashBlade.setBaseAttackModifier(tag,2);
         //ItemSlashBlade.KillCount.set(tag, 0);
 
         //customblade.addEnchantment(Enchantments.LOOTING,100);
@@ -66,7 +66,7 @@ public class MuraSeshu {
 
         //ItemSlashBlade.BaseAttackModifier.set(tag, 32768.0F);
         //ItemSlashBlade.setBaseAttackModifier(tag,32768.0F);
-        customblade.getTagCompound().setFloat("baseAttackModifier",8.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",6.0F);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, false);
         ItemSlashBladeNamed.NamedBlades.add(this.name);

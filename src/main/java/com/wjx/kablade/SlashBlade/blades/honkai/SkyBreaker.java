@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.blades.honkai;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
+import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.SEDivinePenalty;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.init.ItemInit;
@@ -39,33 +40,31 @@ public class SkyBreaker {
     public void init(LoadEvent.InitEvent event) {
 
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 800);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 660);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/SkyBreaker/texSkyBreaker");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/SkyBreaker/mdlSkyBreaker");
 
-        customblade.getTagCompound().setFloat("baseAttackModifier",19.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
         customblade.addEnchantment(Enchantments.SMITE,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
-        SpecialEffects.addEffect(customblade,new SEDivinePenalty() );
+        SpecialEffects.addEffect(customblade, BladeProxy.DivinePenalty);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.byoden", 1);
         IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"sky_breaker"),
                 blackblade, prevblade,
-                new Object[]{
-                        "ADA",
-                        " B ",
-                        "ACA",
-                        'A',new ItemStack(Items.REDSTONE),
-                        'B', prevblade,
-                        'C', new ItemStack(ItemInit.CHROMOLY_INGOT),
-                        'D',new ItemStack(Items.GLOWSTONE_DUST)
-                });
+                "ADA",
+                " B ",
+                "ACA",
+                'A',new ItemStack(Items.REDSTONE),
+                'B', prevblade,
+                'C', new ItemStack(ItemInit.CHROMOLY_INGOT),
+                'D',new ItemStack(Items.GLOWSTONE_DUST));
 
         SlashBlade.addRecipe("sky_breaker", recipe);
     }

@@ -30,13 +30,9 @@ public class SaWineBind extends SpecialAttackBase {
         Vec3d vec3d = entityPlayer.getPositionEyes(1.0F);
         Vec3d vec3d1 = entityPlayer.getLook(1.0F);
         Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
-        double d1 = dist;
         Entity pointedEntity = null;
-        List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> {
-            boolean blindness = entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isPotionActive(MobEffects.BLINDNESS);
-            return entity != null && entity.canBeCollidedWith() && !blindness && (entity instanceof EntityPlayer || entity instanceof EntityLiving);
-        }));
-        double d2 = d1;
+        List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+        double d2 = dist;
         for (Entity entity1 : list) {
             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
             RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(vec3d, vec3d2);

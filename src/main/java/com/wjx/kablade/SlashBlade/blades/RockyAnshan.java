@@ -37,12 +37,12 @@ public class RockyAnshan {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 320);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 150);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/Rocky/Anshan/tex");
         ItemSlashBlade.ModelName.set(Tag, "kablade/HangTu/mdl");
 
-        ItemSlashBlade.setBaseAttackModifier(Tag,6);
+        ItemSlashBlade.setBaseAttackModifier(Tag,5);
         customBlade.getTagCompound().setFloat("baseAttackModifier",5F);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.UNBREAKING,2);

@@ -5,9 +5,10 @@ import com.wjx.kablade.creativeTab.*;
 import com.wjx.kablade.event.OreGen;
 import com.wjx.kablade.event.WorldEvent;
 import com.wjx.kablade.init.*;
-import com.wjx.kablade.network.*;
+import com.wjx.kablade.util.SaEvent;
 import com.wjx.kablade.proxy.CommonProxy;
 import com.wjx.kablade.util.Reference;
+import com.wjx.kablade.util.SaEventManager;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
@@ -31,13 +32,10 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.util.List;
-
-import static mods.flammpfeil.slashblade.SlashBlade.InitEventBus;
 
 @Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION)
 public class Main
@@ -106,6 +104,8 @@ public class Main
 
         EntityInit.registerEntity();
         WorldEvent.loadEvent();
+
+
     }
 
     public static String GetUrlVersion;

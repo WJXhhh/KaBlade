@@ -65,6 +65,7 @@ public class BladeLoader {
       this.loadBlade(new NotedVine());
       this.loadBlade(new BlackSteel());
       this.loadBlade(new ForestShadow());
+      this.loadBlade(new Originyer());
        // Main.logger.info("RegisterHONKAI:"+(autu));
     if(autu)
         {

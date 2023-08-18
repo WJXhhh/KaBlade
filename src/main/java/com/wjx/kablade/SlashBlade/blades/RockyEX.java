@@ -39,14 +39,14 @@ public class RockyEX {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 800);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 400);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/RockEx/tex");
         ItemSlashBlade.ModelName.set(Tag, "kablade/RockEx/mdl");
 
         ItemSlashBlade.setBaseAttackModifier(Tag,6);
         ItemSlashBlade.SpecialAttackType.set(Tag,288);
-        customBlade.getTagCompound().setFloat("baseAttackModifier",10F);
+        customBlade.getTagCompound().setFloat("baseAttackModifier",6.0F);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.UNBREAKING,2);
         customBlade.addEnchantment(Enchantments.SHARPNESS,2);

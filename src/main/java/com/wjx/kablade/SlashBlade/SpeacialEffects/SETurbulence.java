@@ -43,7 +43,7 @@ public class SETurbulence implements ISpecialEffect, IRemovable {
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return false;
+        return !itemStack.getTranslationKey().equals("wjx.blade.honkai.osahoko");
     }
 
     @SubscribeEvent
@@ -61,15 +61,13 @@ public class SETurbulence implements ISpecialEffect, IRemovable {
                     KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.TURBULENCE,100);
                 }
             }
-            if (attacker != null){
-                if (attacker instanceof EntityPlayer && attacker.getHeldItemMainhand().getItem() instanceof ItemSlashBlade){
-                    EntityPlayer player = (EntityPlayer) attacker;
-                    if (SpecialEffects.isEffective(player,player.getHeldItemMainhand(),this) == SpecialEffects.State.Effective && KaBladePlayerProp.getPropCompound(player).getInteger(KaBladePlayerProp.TURBULENCE) > 0){
-                        KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.TURBULENCE,0);
-                        e.world.addWeatherEffect(new EntityLightningBolt(e.world,e.posX,e.posY,e.posZ,true));
-                        e.attackEntityFrom(DamageSource.causePlayerDamage(player),4f);
-                        e.addPotionEffect(new PotionEffect(PotionInit.PARALY,100,1));
-                    }
+            if (attacker instanceof EntityPlayer && attacker.getHeldItemMainhand().getItem() instanceof ItemSlashBlade) {
+                EntityPlayer player = (EntityPlayer) attacker;
+                if (SpecialEffects.isEffective(player, player.getHeldItemMainhand(), this) == SpecialEffects.State.Effective && KaBladePlayerProp.getPropCompound(player).getInteger(KaBladePlayerProp.TURBULENCE) > 0) {
+                    KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.TURBULENCE, 0);
+                    e.world.addWeatherEffect(new EntityLightningBolt(e.world, e.posX, e.posY, e.posZ, true));
+                    e.attackEntityFrom(DamageSource.causePlayerDamage(player), 4f);
+                    e.addPotionEffect(new PotionEffect(PotionInit.PARALY, 100, 1));
                 }
             }
         }
@@ -77,10 +75,12 @@ public class SETurbulence implements ISpecialEffect, IRemovable {
 
     @SubscribeEvent
     public void onPlayerUpdate(TickEvent.PlayerTickEvent event){
-        EntityPlayer player = event.player;
-        NBTTagCompound compound = KaBladePlayerProp.getPropCompound(player);
-        if (compound.getInteger(KaBladePlayerProp.TURBULENCE) > 0){
-            KaBladeEntityProperties.doIntegerLower(compound,KaBladePlayerProp.TURBULENCE);
+        if (event.phase == TickEvent.Phase.START){
+            EntityPlayer player = event.player;
+            NBTTagCompound compound = KaBladePlayerProp.getPropCompound(player);
+            if (compound.getInteger(KaBladePlayerProp.TURBULENCE) > 0){
+                KaBladeEntityProperties.doIntegerLower(compound,KaBladePlayerProp.TURBULENCE);
+            }
         }
     }
 }

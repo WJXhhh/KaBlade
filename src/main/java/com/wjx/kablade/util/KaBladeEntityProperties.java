@@ -9,6 +9,8 @@ public class KaBladeEntityProperties {
     public static final String PROP_WINE_BIND = "wine_bind";
     public static final String PROP_WINE_BIND_ATTACKER = "wine_bind_attacker";
 
+    public static final String KABLADE_UUID = "kablade_uuid";
+
     public static void initNBT(Entity e){
         if (!e.getEntityData().hasKey("kablade_property")){
             e.getEntityData().setTag("kablade_property",new NBTTagCompound());

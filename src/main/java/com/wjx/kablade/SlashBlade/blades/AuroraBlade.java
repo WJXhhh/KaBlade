@@ -39,12 +39,12 @@ public class AuroraBlade {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 860);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 500);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/AuroraBlade/texAuroraBlade2");
         ItemSlashBlade.ModelName.set(Tag, "kablade/AuroraBlade/mdlAuroraBlade");
 
-        customBlade.getTagCompound().setFloat("baseAttackModifier",12.0F);
+        customBlade.getTagCompound().setFloat("baseAttackModifier",11.0F);
         customBlade.getTagCompound().setBoolean("isAurora",true);
         ItemSlashBlade.SpecialAttackType.set(Tag,294);
         customBlade.addEnchantment(Enchantments.SMITE,4);

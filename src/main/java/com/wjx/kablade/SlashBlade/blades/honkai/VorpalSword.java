@@ -36,14 +36,14 @@ public class VorpalSword {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 800);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 680);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/VorpalSword/texVorpalSword");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/VorpalSword/mdlVorpalSword");
 
         ItemSlashBlade.SpecialAttackType.set(tag,291);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
-        customblade.getTagCompound().setFloat("baseAttackModifier",17.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",16.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,3);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

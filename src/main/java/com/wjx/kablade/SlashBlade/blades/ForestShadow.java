@@ -39,12 +39,12 @@ public class ForestShadow {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 760);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 400);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/ForestShadow/texForestShadow");
         ItemSlashBlade.ModelName.set(Tag, "kablade/ForestShadow/mdlForestShadow");
 
-        customBlade.getTagCompound().setFloat("baseAttackModifier",10.0F);
+        customBlade.getTagCompound().setFloat("baseAttackModifier",9.0F);
         ItemSlashBlade.SpecialAttackType.set(Tag,295);
         customBlade.addEnchantment(Enchantments.POWER,2);
         Item_KaNamed.IsDefaultBewitched.set(Tag, true);

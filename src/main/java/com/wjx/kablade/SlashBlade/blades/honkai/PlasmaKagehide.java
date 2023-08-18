@@ -47,13 +47,13 @@ public class PlasmaKagehide {
 
         //tag.setBoolean("Unbreakable",true);
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 800);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 660);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Raikiri_Plas/texPlasmaKagehide");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Raikiri_Plas/mdlRaikiri_Plas");
 
         ItemSlashBlade.SpecialAttackType.set(tag, 293);
-        customblade.getTagCompound().setFloat("baseAttackModifier",18.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",16.0F);
         customblade.addEnchantment(Enchantments.SMITE,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

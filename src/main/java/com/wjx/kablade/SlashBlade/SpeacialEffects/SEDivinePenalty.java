@@ -18,12 +18,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class SEDivinePenalty implements ISpecialEffect, IRemovable {
     @Override
     public boolean canCopy(ItemStack itemStack) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return false;
+        return !itemStack.getTranslationKey().equals("wjx.blade.honkai.sky_breaker");
     }
 
     @Override

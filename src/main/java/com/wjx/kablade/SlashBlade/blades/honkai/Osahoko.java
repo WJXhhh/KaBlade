@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.blades.honkai;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
+import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.SETurbulence;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.init.ItemInit;
@@ -43,13 +44,13 @@ public class Osahoko {
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Osahoko/texOsahoko");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Osahoko/mdlOsahoko");
-        customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",13.0F);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,5460948);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
-        SpecialEffects.addEffect(customblade,new SETurbulence());
+        SpecialEffects.addEffect(customblade, BladeProxy.Turbulence);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
     }

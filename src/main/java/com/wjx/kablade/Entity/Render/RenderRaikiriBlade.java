@@ -20,11 +20,10 @@ import javax.annotation.Nullable;
 
 @SideOnly(Side.CLIENT)
 public class RenderRaikiriBlade extends Render<Entity> {
-    protected ModelBase mainModel;
+    public static ModelBase mainModel = new mdlRaikiriBlade();;
 
     public RenderRaikiriBlade(RenderManager renderManagerIn) {
         super(renderManagerIn);
-        this.mainModel = new mdlRaikiriBlade();
         this.shadowSize = 0.0F;
     }
 
@@ -52,8 +51,8 @@ public class RenderRaikiriBlade extends Render<Entity> {
 
     @Override
     public void doRender(Entity entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        {
-            GlStateManager.pushMatrix();
+
+            /*GlStateManager.pushMatrix();
             if (Minecraft.getMinecraft().world.getEntityByID(entity.getDataManager().get(EntityRaikiriBlade.throwerID)) != Minecraft.getMinecraft().player){
                 GlStateManager.translate(x, y, z);
             }
@@ -74,7 +73,7 @@ public class RenderRaikiriBlade extends Render<Entity> {
             }
 
             GlStateManager.popMatrix();}
-            super.doRender(entity, x, y, z, entityYaw, partialTicks);
+            super.doRender(entity, x, y, z, entityYaw, partialTicks);*/
 
     }
     /*ModelBase modelBase;

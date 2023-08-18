@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.blades.honkai;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
+import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.SEPhoenix;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
@@ -38,19 +39,19 @@ public class Phoenix {
     public void init(LoadEvent.InitEvent event) {
 
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 800);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 660);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Phoenix/texPhoenix");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Phoenix/mdlPhoenix");
 
         ItemSlashBlade.SpecialAttackType.set(tag, 286);
-        customblade.getTagCompound().setFloat("baseAttackModifier",19.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",14.0F);
         customblade.addEnchantment(Enchantments.FIRE_ASPECT,3);
         ItemSlashBladeNamed.SummonedSwordColor.set(tag,0xDAA520);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
-        SpecialEffects.addEffect(customblade,new SEPhoenix());
+        SpecialEffects.addEffect(customblade, BladeProxy.Phoenix);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);

@@ -41,14 +41,14 @@ public class GalacticNova {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 640);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 600);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/GalacticNova/texGalactic");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/GalacticNova/mdlGalactic");
 
         ItemSlashBlade.SpecialAttackType.set(tag,7);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
-        customblade.getTagCompound().setFloat("baseAttackModifier",16.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

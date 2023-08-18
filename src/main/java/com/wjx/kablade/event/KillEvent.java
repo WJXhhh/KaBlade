@@ -7,61 +7,44 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class KillEvent {
-    public static void killutil(Entity target,Entity hitter){
-        if(true)
+    public static void killutil(EntityLivingBase target,Entity hitter){
+        if(!(target.world.isRemote||target.isDead))
         {
             DamageSource ds = new DamageSource("universe").setDamageBypassesArmor().setDamageAllowedInCreativeMode();
+            World world = target.world;
+           // List<Entity> entitylist = new ArrayList();
 
 
-            List<Entity> entitylist = new ArrayList();
-            if (target instanceof EntityLivingBase) {
-                Class<? extends EntityLivingBase> clazz = ((EntityLivingBase) target).getClass();
-                WorldEvent.antiEntity.add(clazz);
-            }
 
 
-            entitylist.add(target);
+
+           // entitylist.add(target);
 
 
             //((EntityLivingBase) target).setHealth(0);
             ((EntityLivingBase) target).setLastAttackedEntity(hitter);
-            target.attackEntityFrom(DamageSource.GENERIC, Integer.MAX_VALUE);
 
 
-            //if(target.isEntityAlive()) {
-            //System.out.println("AUTUMN:ALIVE");
-            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
-            target.world.unloadEntities(entitylist);
-            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
-            target.world.loadedEntityList.remove(target);
-            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
-            target.world.loadedEntityList.removeAll(entitylist);
-            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
-            target.world.unloadEntities(entitylist);
-            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
-            target.ticksExisted = 0;
-            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
-            target.onRemovedFromWorld();
-            target.onKillCommand();
-            target.setDead();
-            ((EntityLivingBase) target).onDeath(ds);
-            target.isDead = true;
-            target.world.onEntityRemoved(target);
+            target.getCombatTracker().trackDamage(ds,Float.MAX_VALUE,Float.MAX_VALUE);
+            target.setHealth(0f);
 
-            target.world.getChunk(target.chunkCoordX, target.chunkCoordZ).removeEntity(target);
-            target.world.removeEntity(target);
-            target.world.removeEntityDangerously(target);
-
-
-            if (target instanceof EntityLivingBase) {
-                Class<? extends EntityLivingBase> clazz = ((EntityLivingBase) target).getClass();
-                WorldEvent.antiEntity.remove(clazz);
+            Class<? extends EntityLivingBase> clazz = ((EntityLivingBase) target).getClass();
+            WorldEvent.antiEntity.add(clazz);
+            target.onDeath(ds);
+            if(!target.isDead){
+                world.removeEntity(target);
+                if(!target.isDead){
+                    world.getLoadedEntityList().remove(target);
+                }
             }
+                WorldEvent.antiEntity.remove(clazz);
+
             if (hitter instanceof EntityPlayer) {
                 if(target instanceof EntityPlayer)
                 {
@@ -71,6 +54,60 @@ public class KillEvent {
                         if (target.isDead) {
                             ((EntityPlayer) hitter).sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18n.translateToLocal("msg.yunluo"))), false);
                         }
+                    }
+                }
+            }
+        }
+        /*if (target != null && hitter instanceof EntityPlayer) {
+            EntityPlayer player1 = (EntityPlayer) hitter;
+            target.world.addWeatherEffect(new RainBow( target.world,target.posX, target.posY, target.posZ));
+
+        }
+        if (target instanceof EntityLivingBase) {
+            EntityLivingBase livtar = (EntityLivingBase) target;
+            livtar.isDead = true;
+            //livtar.getDataManager().(6, MathHelper.clamp(-10.f,0.0f,((EntityLivingBase) target).getMaxHealth()));
+            livtar.world.getChunkFromChunkCoords(livtar.chunkCoordX, livtar.chunkCoordZ).removeEntity(livtar);
+        }*/
+        //target.onUpdate();
+
+    }
+
+    public static void killplayer(EntityLivingBase target,EntityPlayer hitter){
+        if(!(target.world.isRemote||target.isDead))
+        {
+            DamageSource ds = new DamageSource("universe").setDamageBypassesArmor().setDamageAllowedInCreativeMode();
+
+
+            // List<Entity> entitylist = new ArrayList();
+
+
+
+
+
+            // entitylist.add(target);
+
+
+            //((EntityLivingBase) target).setHealth(0);
+            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
+            target.getCombatTracker().trackDamage(ds, Float.MAX_VALUE, Float.MAX_VALUE);
+            target.setHealth(0.0F);
+            target.onDeath(ds);
+
+            if(!target.isDead){
+                target.isDead=true;
+            }
+
+
+                //Class<? extends EntityLivingBase> clazz = ((EntityLivingBase) target).getClass();
+
+
+            if (hitter instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) hitter;
+                if(((EntityPlayer) hitter).getHeldItemMainhand().getItem() instanceof MagicBlade)
+                {
+                    if (target.isDead) {
+                        ((EntityPlayer) hitter).sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18n.translateToLocal("msg.yunluo"))), false);
                     }
                 }
             }

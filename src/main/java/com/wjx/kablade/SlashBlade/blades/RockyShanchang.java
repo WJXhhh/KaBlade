@@ -37,12 +37,12 @@ public class RockyShanchang {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 280);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 130);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/Rocky/Shanchang/tex");
         ItemSlashBlade.ModelName.set(Tag, "kablade/HangTu/mdl");
 
-        ItemSlashBlade.setBaseAttackModifier(Tag,6);
+        ItemSlashBlade.setBaseAttackModifier(Tag,5);
         customBlade.getTagCompound().setFloat("baseAttackModifier",5F);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.SMITE,2);

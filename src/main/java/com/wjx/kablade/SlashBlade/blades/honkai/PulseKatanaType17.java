@@ -37,14 +37,14 @@ public class PulseKatanaType17 {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 640);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 500);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/PulseKatanas/tex/t17");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/PulseKatanas/mdl");
 
         ItemSlashBlade.SpecialAttackType.set(tag,285);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
-        customblade.getTagCompound().setFloat("baseAttackModifier",13.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",11.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,1);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,65518);

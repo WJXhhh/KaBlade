@@ -14,12 +14,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class SEPhoenix implements ISpecialEffect, IRemovable {
     @Override
     public boolean canCopy(ItemStack itemStack) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return false;
+        return  !itemStack.getTranslationKey().equals("wjx.blade.honkai.phoenix");
     }
 
     @Override

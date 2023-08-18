@@ -43,7 +43,7 @@ public class XuanYuanKatana {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 700);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 600);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/XuanYuanKatana/texHonkaiXuanyuanKatana");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/XuanYuanKatana/mdlHonkaiXuanyuanKatana");

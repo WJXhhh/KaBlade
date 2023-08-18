@@ -37,13 +37,13 @@ public class PulseKatanaType19 {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 650);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 510);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/PulseKatanas/tex/t19");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/PulseKatanas/mdl");
 
         ItemSlashBlade.setBaseAttackModifier(tag,2);
-        customblade.getTagCompound().setFloat("baseAttackModifier",14.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",12.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,1);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
@@ -51,7 +51,7 @@ public class PulseKatanaType19 {
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.murahori", 1);
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.murayoto", 1);
         IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"pulse_katana_t19"),
                 blackblade, prevblade,
                 "  C",

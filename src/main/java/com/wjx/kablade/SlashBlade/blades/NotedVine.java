@@ -37,7 +37,7 @@ public class NotedVine {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 300);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 150);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/NotedVine/texNotedVine");
         ItemSlashBlade.ModelName.set(Tag, "kablade/NotedVine/mdlNotedVine");

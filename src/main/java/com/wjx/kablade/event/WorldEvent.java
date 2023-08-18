@@ -4,8 +4,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wjx.kablade.Entity.AbsEntityShield;
+import com.wjx.kablade.Entity.EntityRaikiriBlade;
 import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
 import com.wjx.kablade.Entity.EntityWine;
+import com.wjx.kablade.Entity.Render.RenderRaikiriBlade;
 import com.wjx.kablade.Lib;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
@@ -15,16 +17,21 @@ import com.wjx.kablade.capability.inters.IPotionInSlash;
 import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
 import com.wjx.kablade.init.PotionInit;
+import com.wjx.kablade.network.MessageDizuiKuo;
 import com.wjx.kablade.network.MessageResetSend;
 import com.wjx.kablade.network.MessageSpawnParticle;
-import com.wjx.kablade.util.KaBladeEntityProperties;
-import com.wjx.kablade.util.Reference;
+import com.wjx.kablade.util.*;
 import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -48,6 +55,8 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -64,6 +73,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
@@ -76,10 +86,28 @@ public class WorldEvent {
 
     public WorldEvent(){
         MinecraftForge.EVENT_BUS.register(this);
+
+        timer.schedule(task,0,5);
     }
 
     public static ArrayList<Integer> auroraBladeColor = Lists.newArrayList();
     public static int auroraBladeColorIndex = 0;
+
+    public static RotateAngleManager angleManager = new RotateAngleManager();
+
+
+    public static Timer timer = new Timer();
+
+    public static TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+           angleManager.rotate(1f);
+        }
+    };
+
+
+
+    ResourceLocation HuntingLockerIcon = new ResourceLocation(Main.MODID + ":textures/icon/hunting_locker.png");
 
      public static void loadEvent(){
         //auroraColor
@@ -117,7 +145,7 @@ public class WorldEvent {
         Entity entity = event.getEntity();
         for (Class<? extends Entity> clazz : antiEntity) {
             if (clazz.isInstance(entity)) {
-                Main.logger.info("checked "+ clazz);
+                //Main.logger.info("checked "+ clazz);
                 event.setCanceled(true);
                 return;
             }
@@ -233,24 +261,22 @@ public class WorldEvent {
                 IPotionInSlash slash = entity.getCapability(CapabilityLoader.SlashPotion,null);
                 Capability.IStorage<IPotionInSlash> storage = CapabilityLoader.SlashPotion.getStorage();
                 NBTTagCompound compound = (NBTTagCompound) storage.writeNBT(CapabilityLoader.SlashPotion,slash,null);
-                if (compound.getInteger(NBT_SLOW_LEVEL) > 0){
-                    if (compound.getInteger(NBT_SLOW_TIME) > 0){
-                        compound.setInteger(NBT_SLOW_TIME,compound.getInteger(NBT_SLOW_TIME) - 1);
+                if (compound != null && compound.getInteger(NBT_SLOW_LEVEL) > 0) {
+                    if (compound.getInteger(NBT_SLOW_TIME) > 0) {
+                        compound.setInteger(NBT_SLOW_TIME, compound.getInteger(NBT_SLOW_TIME) - 1);
                         int state1;
                         int state2;
-                        if (world.rand.nextBoolean()){
+                        if (world.rand.nextBoolean()) {
                             state1 = 1;
-                        }
-                        else state1 = -1;
-                        if (world.rand.nextBoolean()){
+                        } else state1 = -1;
+                        if (world.rand.nextBoolean()) {
                             state2 = 1;
+                        } else state2 = -1;
+                        PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.SLIME, entity.posX + world.rand.nextDouble() * state1, entity.posY + (entity.height / 2), entity.posZ + world.rand.nextDouble() * state2, 0.0D, 0.0D, 0.0D));
+                        if (compound.getInteger(NBT_SLOW_TIME) > 1) {
+                            entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(compound.getDouble(NBT_ORIGIN_MOVEMENT) / (1 + compound.getInteger(NBT_SLOW_LEVEL) * 0.2));
                         }
-                        else state2 = -1;
-                        PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.SLIME,entity.posX+world.rand.nextDouble()*state1,entity.posY+(entity.height/2),entity.posZ+world.rand.nextDouble()*state2,0.0D,0.0D,0.0D));
-                        if (compound.getInteger(NBT_SLOW_TIME) > 1){
-                            entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(compound.getDouble(NBT_ORIGIN_MOVEMENT)/(1 + compound.getInteger(NBT_SLOW_LEVEL) * 0.2));
-                        }
-                        if (compound.getInteger(NBT_SLOW_TIME) == 1){
+                        if (compound.getInteger(NBT_SLOW_TIME) == 1) {
                             entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(compound.getDouble(NBT_ORIGIN_MOVEMENT));
                         }
                     }
@@ -424,8 +450,8 @@ public class WorldEvent {
                 ItemStack stack = player.getHeldItemMainhand();
                 if (stack.getItem() instanceof ItemSlashBlade){
                     if(stack.hasTagCompound()){
-                        if (stack.getTagCompound().getBoolean("isAurora")){
-                            ItemSlashBlade.SummonedSwordColor.set(stack.getTagCompound(),auroraBladeColor.get(auroraBladeColorIndex));
+                        if (stack.getTagCompound() != null && stack.getTagCompound().getBoolean("isAurora")) {
+                            ItemSlashBlade.SummonedSwordColor.set(stack.getTagCompound(), auroraBladeColor.get(auroraBladeColorIndex));
                         }
                     }
                 }
@@ -461,23 +487,19 @@ public class WorldEvent {
             entity.getEntityData().setBoolean("dizui",false);
             entity.getEntityData().setBoolean("dizuialive",false);
             EntityLivingBase attacker = entity.getLastAttackedEntity();
-            if (attacker!=null){
-                //entity.setLastAttackedEntity(attacker);
-                if (attacker instanceof EntityPlayer){
-                    entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker),15);
-                }
-                else {
-                    entity.attackEntityFrom(DamageSource.causeMobDamage(attacker),15);
-                }
+            //entity.setLastAttackedEntity(attacker);
+            if (attacker instanceof EntityPlayer){
+                entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker),25);
             }
-            else entity.attackEntityFrom(DamageSource.LIGHTNING_BOLT,20);
-            for (int i = 0; i < 30; ++i)
+            else {
+                entity.attackEntityFrom(DamageSource.causeMobDamage(attacker),25);
+            }
+            for (int i = 0; i < 10; ++i)
             {
                 Random r1 =new Random();
                 Random r2 =new Random(r1.nextLong());
                 int state1;
                 int state2;
-                int state3;
                 if (r1.nextBoolean()){
                     state1 = 1;
                 }
@@ -486,32 +508,27 @@ public class WorldEvent {
                     state2 = 1;
                 }
                 else state2 = -1;
-                if (world.rand.nextBoolean()){
-                    state3 = 1;
-                }
-                else state3 = -1;
+                world.rand.nextBoolean();
                 world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, entity.posX + (world.rand.nextDouble() * 4 * state1), entity.posY + world.rand.nextDouble() *entity.height, entity.posZ + (world.rand.nextDouble() * 4 * state2), 0.0D, 0.0D, 0.0D);
 
             }
             AxisAlignedBB bb = entity.getEntityBoundingBox();
-            bb = bb.grow(3.0D, 3.0D, 3.0D);
-            bb = bb.offset(entity.motionX, entity.motionY, entity.motionZ);
-            List<Entity> list = entity.world.getEntitiesInAABBexcluding(entity, bb, input -> !(input instanceof EntityPlayer) && input.isEntityAlive());
-            if (list.size()!=0){
+            bb = bb.grow(4.0D, 4.0D, 4.0D);
+            //bb = bb.offset(entity.motionX, entity.motionY, entity.motionZ);
+            List<Entity> list = entity.world.getEntitiesInAABBexcluding(entity, bb, input -> input.isEntityAlive()&& !(entity instanceof EntityPlayer));
+            if (!list.isEmpty()){
                 for (Entity entitys: list){
-                    if (entitys instanceof EntityLivingBase){
-                        if (attacker!=null){
-                            //((EntityLivingBase) entitys).setLastAttackedEntity(attacker);
-                            if (attacker instanceof EntityPlayer){
-                                entitys.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker),10);
-                            }
-                            else {
-                                entitys.attackEntityFrom(DamageSource.causeMobDamage(attacker),10);
-                            }
+                    if (entitys instanceof EntityLivingBase && !(entitys instanceof EntityPlayer)){
+                        //((EntityLivingBase) entitys).setLastAttackedEntity(attacker);
+                        if (attacker instanceof EntityPlayer){
+                            entitys.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker),10);
                         }
-                        else entitys.attackEntityFrom(DamageSource.LIGHTNING_BOLT,10);
+                        else {
+                            entitys.attackEntityFrom(DamageSource.causeMobDamage(attacker),10);
+                        }
                         entitys.getEntityData().setInteger("dizuitime", 300);
                         entitys.getEntityData().setBoolean("dizui",true);
+                        PACKET_HANDLER.sendToAll(new MessageDizuiKuo(entitys.getEntityId()));
 
                     }
                 }
@@ -567,10 +584,8 @@ public class WorldEvent {
                                 break;
                             }
                             if (shield.getShieldBlood() > damage){
-                                if (damage > 0){
-                                    shield.setShieldBlood(shield.getShieldBlood() - damage);
-                                    damage = 0;
-                                }
+                                shield.setShieldBlood(shield.getShieldBlood() - damage);
+                                damage = 0;
                             }
                             if (shield.getShieldBlood() == damage){
                                 if (damage > 0){
@@ -611,8 +626,7 @@ public class WorldEvent {
                                         }
                                     }
                                 }
-                                else
-                                event.getEntityLiving().addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 50 * level, level));
+                                else event.getEntityLiving().addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 50 * level, level));
                             }
                         }
                     }
@@ -645,15 +659,98 @@ public class WorldEvent {
          if (event.getEntity() instanceof EntityLivingBase){
              EntityLivingBase livingBase = (EntityLivingBase) event.getEntity();
              if (livingBase.hasCapability(CapabilityLoader.SlashPotion,null)){
-                 IPotionInSlash potion = livingBase.getCapability(CapabilityLoader.SlashPotion,null);
                  Capability.IStorage<IPotionInSlash> storage = CapabilityLoader.SlashPotion.getStorage();
-                 NBTTagCompound compound = (NBTTagCompound) storage.writeNBT(CapabilityLoader.SlashPotion,livingBase.getCapability(CapabilityLoader.SlashPotion,null),null).copy();
+                 NBTTagCompound compound = (NBTTagCompound) Objects.requireNonNull(storage.writeNBT(CapabilityLoader.SlashPotion, livingBase.getCapability(CapabilityLoader.SlashPotion, null), null)).copy();
                  compound.setDouble(NBT_ORIGIN_MOVEMENT, livingBase.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
                  storage.readNBT(CapabilityLoader.SlashPotion,livingBase.getCapability(CapabilityLoader.SlashPotion,null),null,compound);
              }
          }
     }
 
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onPlayerRender(RenderWorldLastEvent event){
+        for (EntityPlayer p : Minecraft.getMinecraft().world.playerEntities){
+            if (p != null){
+                List<Entity> parts = PlayerThrowableHandler.getAllThrowableForPlayer(p.world,p);
+                EntityPlayer c = Minecraft.getMinecraft().player;
+                if (!parts.isEmpty()){
+                    for (Entity e1 : parts){
+                        if (e1 instanceof EntityRaikiriBlade){
+                            double vx,vy,vz;
+                            if (p == c){
+                                vx = 0d;
+                                vy = 0d;
+                                vz = 0d;
+                            }
+                            else {
+                                vx = p.posX - c.posX;
+                                vy = p.posY - c.posY;
+                                vz = p.posZ - c.posZ;
+                            }
+                            GlStateManager.disableTexture2D();
+                            GlStateManager.disableLighting();
+                            GlStateManager.enableBlend();
+                            GlStateManager.pushMatrix();
+                            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+                            GlStateManager.scale(1f,1f,1f);
+                            GlStateManager.translate(vx,vy,vz);
+                            GlStateManager.rotate(angleManager.getAngle(), 0f, 1f, 0f);
+
+                            GlStateManager.color(0f,1f,1f,0.5f);
+
+                            RenderRaikiriBlade.mainModel.render(e1,event.getPartialTicks(),0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+                            GlStateManager.popMatrix();
+                            GlStateManager.disableBlend();
+                            GlStateManager.enableLighting();
+                            GlStateManager.enableTexture2D();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onLivingRender(RenderLivingEvent.Specials.Pre<EntityLivingBase> event){
+         EntityLivingBase entity = event.getEntity();
+        if (entity.posX == 0 && entity.posY == 0 && entity.posZ == 0)
+            return;
+        Minecraft mc = Minecraft.getMinecraft();
+        if (KaBladePlayerProp.getPropCompound(mc.player).hasKey(KaBladePlayerProp.LOCKING_ENTITY_UUID)){
+                if (EntityUUIDManager.getEntitiesFromUUID(KaBladePlayerProp.getPropCompound(mc.player).getString(KaBladePlayerProp.LOCKING_ENTITY_UUID),mc.player.world).contains(entity)){
+                    GlStateManager.disableLighting();
+                    GlStateManager.enableBlend();
+                    GlStateManager.pushMatrix();
+                    GlStateManager.depthFunc(GL11.GL_ALWAYS);
+                    GlStateManager.color(1f,1f,1f,0.8f);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+                    GlStateManager.depthMask(false);
+
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(HuntingLockerIcon);
+                    Tessellator tess = Tessellator.getInstance();
+                    BufferBuilder buffer = tess.getBuffer();
 
 
+                    GlStateManager.translate(event.getX(), event.getY() + ((event.getEntity().getEntityBoundingBox().maxY - event.getEntity().getEntityBoundingBox().minY)/2), event.getZ());
+                    GlStateManager.rotate(180f - mc.getRenderManager().playerViewY, 0, 1, 0);
+                    GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
+
+
+                    buffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
+                    buffer.pos(-0.5d, -0.25d, 0).tex(0, 1).normal(0.0f, 1.0f, 0.0f).endVertex();
+                    buffer.pos(0.5d, -0.25d, 0).tex(1, 1).normal(0.0f, 1.0f, 0.0f).endVertex();
+                    buffer.pos(0.5d, 0.75d, 0).tex(1, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
+                    buffer.pos(-0.5d, 0.75d, 0).tex(0, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
+                    tess.draw();
+                    GlStateManager.depthMask(true);
+                    GlStateManager.depthFunc(GL11.GL_LEQUAL);
+                    GlStateManager.popMatrix();
+                    GlStateManager.disableBlend();
+                    GlStateManager.enableLighting();
+
+                }
+        }
+    }
 }

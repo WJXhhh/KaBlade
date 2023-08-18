@@ -37,7 +37,7 @@ public class BlackSteel {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 300);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 200);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/BlackSteel/blacksteeltexture");
         ItemSlashBlade.ModelName.set(Tag, "kablade/BlackSteel/blacksteel");

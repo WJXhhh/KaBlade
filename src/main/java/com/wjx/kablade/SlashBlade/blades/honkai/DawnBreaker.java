@@ -36,12 +36,12 @@ public class DawnBreaker {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 850);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 710);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/DawnBreaker/texDawnBreaker");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/DawnBreaker/mdlDawnBreaker");
 
-        customblade.getTagCompound().setFloat("baseAttackModifier",18.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",17.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,4);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

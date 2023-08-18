@@ -1,15 +1,11 @@
 package com.wjx.kablade.SlashBlade.blades.bladeitem;
 
-import com.wjx.kablade.Entity.RainBow;
-import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
-import com.wjx.kablade.creativeTab.tabkablade_bladesgod;
 import com.wjx.kablade.event.KillEvent;
 import com.wjx.kablade.event.UpdateColor;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -42,13 +38,18 @@ public class MagicBlade extends ItemSlashBladeNamed {
     }
 
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-        KillEvent.killutil(entity, player);
+        if(entity instanceof EntityPlayer){
+            KillEvent.killplayer((EntityLivingBase) entity, player);
+        }else if(entity instanceof  EntityLivingBase){
+            KillEvent.killutil((EntityLivingBase) entity,player);
+        }
+
         super.onLeftClickEntity(stack, player, entity);
         return true;
     }
 
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, World worldIn, List tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         //tooltip.add(String.format("SBCOLOR: %s",stack.getTagCompound().getInteger("SummonedSwordColor")));
         //tooltip.add("");
@@ -64,9 +65,13 @@ public class MagicBlade extends ItemSlashBladeNamed {
 
     }
 
-    public boolean func_77644_a(ItemStack stack, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase) {
-        if (par2EntityLivingBase != null && !par2EntityLivingBase.world.isRemote) {
-            KillEvent.killutil(par2EntityLivingBase, par3EntityLivingBase);
+    public boolean func_77644_a(ItemStack stack, EntityLivingBase target, EntityLivingBase player) {
+        if(target!=null){
+            if(target instanceof EntityPlayer){
+             KillEvent.killplayer( target,(EntityPlayer)player);
+            }else {
+             KillEvent.killutil(target,player);
+            }
         }
 
         return true;

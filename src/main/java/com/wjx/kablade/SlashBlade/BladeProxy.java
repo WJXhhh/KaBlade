@@ -2,17 +2,24 @@ package com.wjx.kablade.SlashBlade;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.SEDivinePenalty;
+import com.wjx.kablade.SlashBlade.SpeacialEffects.SEOripursuit;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.SEPhoenix;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.SETurbulence;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.SlashBlade.specialattack.*;
 import com.wjx.kablade.proxy.CommonProxy;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 
 import static mods.flammpfeil.slashblade.SlashBlade.InitEventBus;
 
 public class BladeProxy {
+    public static ISpecialEffect DivinePenalty = SpecialEffects.register(new SEDivinePenalty());
+    public static ISpecialEffect Phoenix = SpecialEffects.register(new SEPhoenix());
+    public static ISpecialEffect Turbulence = SpecialEffects.register(new SETurbulence());
+    public static ISpecialEffect Oripursuit = SpecialEffects.register(new SEOripursuit());
+
     public static void CommonLoader(CommonProxy proxy){
         InitEventBus.register(proxy);
         InitEventBus.register(Main.instance);
@@ -41,6 +48,7 @@ public class BladeProxy {
 
         ItemSlashBlade.specialAttacks.put(294,new SaAuroraShining());
         ItemSlashBlade.specialAttacks.put(295,new SaWineBind());
+        ItemSlashBlade.specialAttacks.put(296,new SaDomainSuppression());
     }
     public static void ClientLoader(){
         new ItemSlashUtil();

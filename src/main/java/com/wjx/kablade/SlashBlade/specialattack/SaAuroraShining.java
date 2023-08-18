@@ -32,7 +32,7 @@ public class SaAuroraShining extends SpecialAttackBase {
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
         for (int i=0;i<10;i++){
-            EntitySummonedSwordBasePlus s = new EntitySummonedSwordBasePlus(world,entityPlayer,8);
+            EntitySummonedSwordBasePlus s = new EntitySummonedSwordBasePlus(world,entityPlayer,6);
             s.getDataManager().set(EntitySummonedSwordBasePlus.BRIGHT,15728880);
             s.getDataManager().set(EntitySummonedSwordBasePlus.BRIGHTNESS,15f);
             int color = WorldEvent.auroraBladeColor.get(new Random().nextInt(60));

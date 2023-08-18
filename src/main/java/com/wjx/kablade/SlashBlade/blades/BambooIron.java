@@ -40,7 +40,7 @@ public class BambooIron {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 300);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 190);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/BambooIron/tex");
         ItemSlashBlade.ModelName.set(Tag, "kablade/BambooIron/blade");
