@@ -1,70 +1,115 @@
 
 
 #刀之铭
-name.slashblade.magic=Demon Blade -Thousand Blades-
+name.slashblade.magic=Qian The mighty Blade
 item.wjx.blade.hangtu.name=§rAnonymity -RimmedEarth-
 item.wjx.blade.bamboo_iron.name=§rIron -BambooLight-
 item.wjx.blade.bamboo_battler.name=Battler -BambooLight-
 item.wjx.blade.bamboo_lumi.name=Lumen -BambooLight-
-item.wjx.blade.rocky_anshan.name=Noted「矍铄」
-item.wjx.blade.rocky_shanchang.name=自铭「明磬」
-item.wjx.blade.rocky_huagang.name=自铭「嶙峋」
+item.wjx.blade.rocky_anshan.name=Noted「Hearty」
+item.wjx.blade.rocky_shanchang.name=Noted「White Rock」
+item.wjx.blade.rocky_huagang.name=Noted「Jagged」
+item.wjx.blade.rocky_ex.name=Rocky Ex
+item.wjx.blade.arc_light.name=ArcLight Blade「Light Flowing」
+item.wjx.blade.cut_iron.name=composite Blade「Iron Cutter」
+item.wjx.blade.aurora_blade.name=Aurora Blade「Sky Shining」
+item.wjx.blade.noted_vine.name=Noted Blade「Vine」
+item.wjx.blade.black_steel.name=Black Blade「Bleak」
 item.wjx.blade.forest_shadow.name=Faeries Blade「Forest Shadow」
 item.wjx.blade.originyer.name=Originyer
 
 
-item.wjx.blade.honkai.muraseshu.name=势州村正
-item.wjx.blade.honkai.murahori.name=堀川国广
-item.wjx.blade.honkai.murauson.name=妖刀雨村
-item.wjx.blade.honkai.murayoto.name=妖刀村正
-item.wjx.blade.honkai.byorai.name=苗刀·雷妖
-item.wjx.blade.honkai.byoden.name=苗刀·电魂
-item.wjx.blade.honkai.fuheliuye.name=复合刀·柳叶
-item.wjx.blade.honkai.fuhezhuque.name=复合刀·朱雀
-item.wjx.blade.honkai.pulse_katana_t17.name=脉冲太刀17式
-item.wjx.blade.honkai.pulse_katana_t19.name=脉冲太刀19式
+item.wjx.blade.honkai.muraseshu.name=Seishuu Muramasa
+item.wjx.blade.honkai.murahori.name=Horikawa Kunihiro
+item.wjx.blade.honkai.murauson.name=Amemura Bloodlust
+item.wjx.blade.honkai.murayoto.name=Muramasa Bloodlust
+item.wjx.blade.honkai.byorai.name=Hell Thunder
+item.wjx.blade.honkai.byoden.name=Lightning Soul
+item.wjx.blade.honkai.fuheliuye.name=Willow
+item.wjx.blade.honkai.fuhezhuque.name=Rosefinch
+item.wjx.blade.honkai.pulse_katana_t17.name=Pulse Katana Type-17
+item.wjx.blade.honkai.pulse_katana_t19.name=Pulse Katana Type-19
+item.wjx.blade.honkai.thermal_cutter.name=Thermal Cutter
+item.wjx.blade.honkai.crystal_cutter.name=Crystal Cutter
+item.wjx.blade.honkai.galactic.name=Galactic
+item.wjx.blade.honkai.vorpal_sword.name=Vorpal Sword Type-11
+item.wjx.blade.honkai.raikiri.name=Raikiri
+item.wjx.blade.honkai.plasma_kagehide.name=Plasma Kagehide
+item.wjx.blade.honkai.xuanyuan_katana.name=Xuanyuan Katana
 item.wjx.blade.honkai.osahoko.name=Osahoko
 item.wjx.blade.honkai.dawn_breaker.name=Dawn Breaker:Talwar
 item.wjx.blade.honkai.sky_breaker.name=Sky Breaker
 item.wjx.blade.honkai.phoenix.name=Phoenix
 
-item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
+item.wjx.blade.honkai.dizui.name=§d§lSeven Thunders of Retribution: Rumble
 
 #组之呈
-itemGroup.tabkablade=斩无不断
-itemGroup.tabkablade_blades=斩无不断:铭刀
-itemGroup.tabkablade_bladesgod=斩无不断:神锻
-itemGroup.tabkablade_honkai=斩无不断:崩坏
+itemGroup.tabkablade=KaBlade
+itemGroup.tabkablade_blades=KaBlade:Blades
+itemGroup.tabkablade_bladesgod=KaBlade:Ultimate Blades
+itemGroup.tabkablade_honkai=KaBlade:Honkai Impact 3 Blades
+itemGroup.tabkablade_ore=KaBlade:Ore
 
 
 #物之名
-tile.rimmed_earth.name=Rimmed earth
-item.rimmed_earth_stick.name=Rimmed earth stick
+tile.rimmed_earth.name=Rimmed Earth
+tile.chromium_ore.name=Chromium Ore
+tile.molybdenite.name=Molybdenite
+tile.aurora_ore.name=Aurora Ore
+
+
+item.rimmed_earth_stick.name=Rimmed Earth Stick
+item.sturdy_glass_stick.name=Sturdy Glass Stick
+item.chromium_ingot.name=Chromium Ingot
+item.molybdenum_ingot.name=Molybdenum Ingot
+item.crude_chromoly.name=Crude Chromoly
+item.chromoly_ingot.name=Chromoly Ingot
+item.gravity_nugget.name=Gravity Nugget
+item.gravity_crystal.name=Gravity Crystal
+
+item.chromium_sword.name=Chromium Sword
+item.chromium_axe.name=Chromium Axe
+item.chromium_pickaxe.name=Chromium Pickaxe
+item.chromium_hoe.name=Chromium Hoe
+item.molybdenum_sword.name=Molybdenum Sword
+item.molybdenum_axe.name=Molybdenum Axe
+item.molybdenum_pickaxe.name=Molybdenum Pickaxe
+item.molybdenum_hoe.name=Molybdenum Hoe
+item.chromoly_sword.name=Chromoly Sword
+item.chromoly_axe.name=Chromoly Axe
+item.chromoly_hoe.name=Chromoly Hoe
+item.chromoly_pickaxe.name=Chromoly Pickaxe
+item.aurora_fragment.name=Aurora Fragment
+item.aurora_metal_ingot.name=Aurora Metal Ingot
+item.aurora_metal_sword.name=Aurora Metal Sword
+item.aurora_metal_pickaxe.name=Aurora Metal Pickaxe
+item.aurora_metal_axe.name=Aurora Metal Axe
+item.aurora_metal_hoe.name=Aurora Metal Hoe
 
 
 #刀之述
-info.slashblade.magic.1=原是神锻国的秘宝
-info.slashblade.magic.2=刀刃是由上千块碎片组成，黑色刀柄半截刀身
-info.slashblade.magic.3=刀身上的蓝色条纹，显现出恶灵的图案，闪现着淡淡的蓝色或紫色的光
-info.slashblade.magic.4=只有条纹发光，才可以发挥出强大的力量
-info.slashblade.magic.5=只攻不防，天下无双，魔刀千刃
+info.slashblade.magic.1=Originally a secret treasure of the Divine Forge Kingdom
+info.slashblade.magic.2=The blade is composed of thousands of fragments, with a black handle and half body
+info.slashblade.magic.3=The blue stripes on the blade reveal patterns of evil spirits, flashing a faint blue or purple light
+info.slashblade.magic.4=Only when the stripes shine can they unleash their powerful power
+info.slashblade.magic.5=Attack without defense, unparalleled in the world, Qian The mighty Blade
 
-info.damageguer1111.name=陨月沉星
-info.slashblade.deamon=魔
-info.infinity=无尽
+info.damageguer1111.name=Planet Fall
+info.slashblade.deamon=Demon
+info.infinity=Infinity
 
-info.item.chromoly_ingot=加入Cr（<10%）， Mo等合金元素以显著提高高温强度极限和蠕变极限的钢种，高强度的材料可以辅助锻刀
-info.item.gravity_nugget=存在于岩石之中的奇异物质，拥有着强大的引力
-info.item.gravity_crystal=重力微粒的大块聚合体，通过某些手段已经可以自由控制它内部的能量
-info.item.aurora_fragment=世间极光崩落，融入地中，世间本源再无极光
-info.item.aurora_metal_ingot=
+info.item.chromoly_ingot=Adding alloy elements such as Cr (<10%) and Mo to significantly improve the high-temperature strength limit and creep limit of steel grades, high-strength materials can assist forging blades
+info.item.gravity_nugget=Strange matter that exists in rocks, possessing a powerful gravitational force
+info.item.gravity_crystal=A large aggregate of gravity nugget that can be freely controlled by certain means to control their internal energy
+info.item.aurora_fragment=The aurora in the world collapses, merging into the earth, and there is no aurora in the origin of the world anymore
+info.item.aurora_metal_ingot=Aurora Metal Ingot
 
-info.slashblade.dizui.1=前文明抗崩坏组织逐火之蛾以第三律者·雷之律者的核心打造的神之键
-info.slashblade.dizui.2=雷电是虚数空间所赋予它的权柄，又可为谁所用？
-info.slashblade.dizui.3=被该剑击中者将被附加【鸣神】状态，持续15秒
-info.slashblade.dizui.4=【唤霆霓】
-info.slashblade.dizui.5=向前方劈出X形刀光，造成大量伤害。附近附加【鸣神】状态者，鸣
-info.slashblade.dizui.6=神印记将引爆，造成伤害。受波及者将附着【鸣神】状态
+info.slashblade.dizui.1=The former anti-Honkai organization The Moth That Chases The Flames created the divine key with the core of the Third Herrscher - Herrscher of Thunder
+info.slashblade.dizui.2=Thunder is the authority given to it by the imaginary space, and who can use it for?
+info.slashblade.dizui.3=Those who are hit by this sword will be given an additional [Narukami] state for 15 seconds
+info.slashblade.dizui.4=[Thunderbolt Call]
+info.slashblade.dizui.5=Cleave X-shaped blade light forward, causing a large amount of damage.
+info.slashblade.dizui.6=If there is an additional [Narukami] status nearby, the [Narukami] will detonate, causing damage. Affected individuals will be attached to the [Narukami] state
 
 
 
@@ -79,18 +124,20 @@ flammpfeil.slashblade.specialattack.chop_willow=锋刀抚柳
 flammpfeil.slashblade.specialattack.frost_blade=寒霜灵刃
 flammpfeil.slashblade.specialattack.wine_bind=Wine Bind
 flammpfeil.slashblade.specialattack.shock_impact=Shock Impact
+flammpfeil.slashblade.specialattack.domain_suppression=Domain Suppression
 
 slashblade.seffect.name.kablade.SETurbulence=Turbulence
 slashblade.seffect.name.kablade.divine_penalty=Divine_penalty
 slashblade.seffect.name.kablade.phoenix=Phoenix
+slashblade.seffect.name.kablade.oripursuit=Oripursult
 
 #生之称
 entity.vorpal_black_hole.name=Vorpal Black Hole
 entity.wine.name=Wine
 
 #堺之言
-msg.yunluo=陨落！
-msg.raikiri_shield_crash=雷切护盾已损毁
-msg.raikiri_shield_blood=雷切护盾耐久还有：
+msg.yunluo=DIE！
+msg.raikiri_shield_crash=Raikiri Shield has crashed
+msg.raikiri_shield_blood=Raikiri shield durability is still left：
 #Enchantment Name
 enchantment.slow.name=Slowness

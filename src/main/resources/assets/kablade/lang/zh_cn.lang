@@ -136,10 +136,12 @@ flammpfeil.slashblade.specialattack.absolute_zero=绝对零度
 flammpfeil.slashblade.specialattack.aurora_shining=极光耀天
 flammpfeil.slashblade.specialattack.wine_bind=藤蔓捆缚
 flammpfeil.slashblade.specialattack.shock_impact=震荡冲击
+flammpfeil.slashblade.specialattack.domain_suppression=领域压杀
 
 slashblade.seffect.name.kablade.SETurbulence=乱流
 slashblade.seffect.name.kablade.divine_penalty=天罚
 slashblade.seffect.name.kablade.phoenix=凰
+slashblade.seffect.name.kablade.oripursuit=§b源能裁决
 
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞
