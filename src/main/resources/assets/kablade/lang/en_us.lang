@@ -66,6 +66,7 @@ item.crude_chromoly.name=Crude Chromoly
 item.chromoly_ingot.name=Chromoly Ingot
 item.gravity_nugget.name=Gravity Nugget
 item.gravity_crystal.name=Gravity Crystal
+item.thunder_crystal.name=Thunder Crystal
 
 item.chromium_sword.name=Chromium Sword
 item.chromium_axe.name=Chromium Axe
@@ -102,7 +103,8 @@ info.item.chromoly_ingot=Adding alloy elements such as Cr (<10%) and Mo to signi
 info.item.gravity_nugget=Strange matter that exists in rocks, possessing a powerful gravitational force
 info.item.gravity_crystal=A large aggregate of gravity nugget that can be freely controlled by certain means to control their internal energy
 info.item.aurora_fragment=The aurora in the world collapses, merging into the earth, and there is no aurora in the origin of the world anymore
-info.item.aurora_metal_ingot=Aurora Metal Ingot
+info.item.aurora_metal_ingot=A metal ingot made by the power of the aurora, but it is estimated that it will need to be assembled with other suitable materials to fully exert its power
+info.item.thunder_crystal=The crystal that appears calm on the surface is full of the power of thunder.
 
 info.slashblade.dizui.1=The former anti-Honkai organization The Moth That Chases The Flames created the divine key with the core of the Third Herrscher - Herrscher of Thunder
 info.slashblade.dizui.2=Thunder is the authority given to it by the imaginary space, and who can use it for?
@@ -116,20 +118,29 @@ info.slashblade.dizui.6=If there is an additional [Narukami] status nearby, the 
 info.slashblade.godkey.3=裁决之键
 info.slashblade.godkey.12=侵蚀之键
 
-flammpfeil.slashblade.specialattack.magic=柒·邪极魔斩
-flammpfeil.slashblade.specialattack.lacerate_blade=撕裂灵刃
-flammpfeil.slashblade.specialattack.dizuijiu=唤霆霓
-flammpfeil.slashblade.specialattack.fire_of_sin=罪业之火
-flammpfeil.slashblade.specialattack.chop_willow=锋刀抚柳
-flammpfeil.slashblade.specialattack.frost_blade=寒霜灵刃
+flammpfeil.slashblade.specialattack.magic=Demon Hit
+flammpfeil.slashblade.specialattack.lacerate_blade=Ripper Blade
+flammpfeil.slashblade.specialattack.dizuijiu=Thunderbolt Call
+flammpfeil.slashblade.specialattack.fire_of_sin=Sinfire
+flammpfeil.slashblade.specialattack.chop_willow=Leaf Razor
+flammpfeil.slashblade.specialattack.frost_blade=Frost Blade
+flammpfeil.slashblade.specialattack.molten_blade=Molten Blade
+flammpfeil.slashblade.specialattack.frost_comet=Frost Comet
+flammpfeil.slashblade.specialattack.rock_hit_i=Rock Hit
+flammpfeil.slashblade.specialattack.break_the_dawn=Break The Dawn
+flammpfeil.slashblade.specialattack.cut_metal=Break Metal
+flammpfeil.slashblade.specialattack.vorpal_hoe=Vorpal Hole
+flammpfeil.slashblade.specialattack.blade_ward=Blade Ward
+flammpfeil.slashblade.specialattack.absolute_zero=Absolute Zero
+flammpfeil.slashblade.specialattack.aurora_shining=Aurora Shining
 flammpfeil.slashblade.specialattack.wine_bind=Wine Bind
 flammpfeil.slashblade.specialattack.shock_impact=Shock Impact
 flammpfeil.slashblade.specialattack.domain_suppression=Domain Suppression
 
-slashblade.seffect.name.kablade.SETurbulence=Turbulence
-slashblade.seffect.name.kablade.divine_penalty=Divine_penalty
-slashblade.seffect.name.kablade.phoenix=Phoenix
-slashblade.seffect.name.kablade.oripursuit=Oripursult
+slashblade.seffect.name.kablade.SETurbulence=§5Turbulence
+slashblade.seffect.name.kablade.divine_penalty=§eDivine_penalty
+slashblade.seffect.name.kablade.phoenix=§cPhoenix
+slashblade.seffect.name.kablade.oripursuit=§bOripursult
 
 #生之称
 entity.vorpal_black_hole.name=Vorpal Black Hole
@@ -140,4 +151,4 @@ msg.yunluo=DIE！
 msg.raikiri_shield_crash=Raikiri Shield has crashed
 msg.raikiri_shield_blood=Raikiri shield durability is still left：
 #Enchantment Name
-enchantment.slow.name=Slowness
+enchantment.kablade_slow=Slowness

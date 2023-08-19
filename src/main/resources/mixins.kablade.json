@@ -6,7 +6,8 @@
   "priority": 0,
   "refmap": "mixins.kablade.refmap.json",
   "mixins": [
-    "MixinItemSlashBladeDoAttack",
+    "MixinItemSlashBladeDoAttack1",
+    "MixinItemSlashBladeDoAttack2",
     "MixinItemSlashBladeLeftAttack1",
     "MixinItemSlashBladeSA",
     "MixinSlashBladeLeftAttack2"

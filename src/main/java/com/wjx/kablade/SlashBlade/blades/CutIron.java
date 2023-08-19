@@ -61,7 +61,7 @@ public class CutIron {
         IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"cut_iron"),
                 blackblade, prevblade,
                 "CCC",
-                " A ",
+                "BAB",
                 "B B",
                 'A', prevblade,
                 'B', "ingotChromium",

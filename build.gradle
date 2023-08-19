@@ -118,8 +118,8 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-	compileOnly(files("./libs/SlashBlade_deobf1.jar"))
-    runtimeOnly(files("./libs/SlashBlade_deobf1.jar"))
+	compileOnly(files("./libs/SlashBlade_deobf3.jar"))
+    runtimeOnly(files("./libs/SlashBlade_deobf3.jar"))
     //runtimeOnly(files("./libs/optifine.jar"))
     runtimeOnly(files("./libs/the_golden_autumn-12.0.3.4.jar"))
     //runtimeOnly(files("./libs/jei.jar"))
@@ -181,4 +181,17 @@ mixin {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+reobf{
+    shadowJar
+}
+
+shadowJar {
+    baseName = 'kablade-containMixinBooter'
+    classifier = null
+    version = null
+    dependencies {
+        include(dependency('zone.rong:mixinbooter:8.4'))
+    }
 }

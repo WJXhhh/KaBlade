@@ -58,7 +58,7 @@ public class PulseKatanaType19 {
                 " B ",
                 "A  ",
                 'A', prevblade,
-                'B',new ItemStack(Items.REDSTONE,1),
+                'B',new ItemStack(Item.getItemFromBlock(Blocks.REDSTONE_BLOCK),1),
                 'C', new ItemStack(Item.getItemFromBlock(Blocks.PISTON)));
 
         SlashBlade.addRecipe("pulse_katana_t19", recipe);
