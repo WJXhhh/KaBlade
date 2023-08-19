@@ -48,6 +48,7 @@ public class Originyer {
         ItemSlashBlade.setBaseAttackModifier(Tag,8);
         customBlade.getTagCompound().setFloat("baseAttackModifier",13.0F);
         ItemSlashBlade.SpecialAttackType.set(Tag,296);
+        ItemSlashBlade.SummonedSwordColor.set(Tag,65535);
         customBlade.addEnchantment(Enchantments.SHARPNESS,5);
         customBlade.addEnchantment(Enchantments.POWER,2);
         Item_KaNamed.IsDefaultBewitched.set(Tag, true);

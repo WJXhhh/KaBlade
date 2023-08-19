@@ -13,6 +13,7 @@ import mods.flammpfeil.slashblade.named.event.LoadEvent;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -53,5 +54,19 @@ public class Osahoko {
         SpecialEffects.addEffect(customblade, BladeProxy.Turbulence);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
+
+        ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.byorai", 1);
+        //ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.bamboo_iron", 1);
+        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"byotorai"),
+                blackblade, prevblade,
+                "  C",
+                " B ",
+                "A B",
+                'A', prevblade,
+                'B',new ItemStack(Blocks.GLOWSTONE),
+                'C', new ItemStack(ItemInit.THUNDER_CRYSTAL));
+
+        SlashBlade.addRecipe("byotorai", recipe);
     }
 }

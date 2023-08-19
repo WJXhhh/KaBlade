@@ -37,6 +37,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -360,6 +361,19 @@ public class WorldEvent {
                                 world.spawnEntity(wine);
                             }
                         }
+                    }
+                }
+            }
+            //Thunder Crystal Attack
+            {
+                if (KaBladeEntityProperties.getPropCompound(entity).hasKey(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK)){
+                    if (KaBladeEntityProperties.getPropCompound(entity).getInteger(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK) > 0){
+                        KaBladeEntityProperties.doIntegerLower(KaBladeEntityProperties.getPropCompound(entity),KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK);
+                    }
+                    if (KaBladeEntityProperties.getPropCompound(entity).getInteger(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK) <= 0){
+                        entity.world.addWeatherEffect(new EntityLightningBolt(entity.world,entity.posX,entity.posY,entity.posZ,false));
+                        entity.world.createExplosion(null,entity.posX,entity.posY,entity.posZ,2f,true);
+                        KaBladeEntityProperties.getPropCompound(entity).removeTag(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK);
                     }
                 }
             }
