@@ -116,20 +116,29 @@ info.slashblade.dizui.6=If there is an additional [Narukami] status nearby, the 
 info.slashblade.godkey.3=裁决之键
 info.slashblade.godkey.12=侵蚀之键
 
-flammpfeil.slashblade.specialattack.magic=柒·邪极魔斩
-flammpfeil.slashblade.specialattack.lacerate_blade=撕裂灵刃
-flammpfeil.slashblade.specialattack.dizuijiu=唤霆霓
-flammpfeil.slashblade.specialattack.fire_of_sin=罪业之火
-flammpfeil.slashblade.specialattack.chop_willow=锋刀抚柳
-flammpfeil.slashblade.specialattack.frost_blade=寒霜灵刃
+flammpfeil.slashblade.specialattack.magic=Demon Hit
+flammpfeil.slashblade.specialattack.lacerate_blade=Ripper Blade
+flammpfeil.slashblade.specialattack.dizuijiu=Thunderbolt Call
+flammpfeil.slashblade.specialattack.fire_of_sin=Sinfire
+flammpfeil.slashblade.specialattack.chop_willow=Leaf Razor
+flammpfeil.slashblade.specialattack.frost_blade=Frost Blade
+flammpfeil.slashblade.specialattack.molten_blade=Molten Blade
+flammpfeil.slashblade.specialattack.frost_comet=Frost Comet
+flammpfeil.slashblade.specialattack.rock_hit_i=Rock Hit
+flammpfeil.slashblade.specialattack.break_the_dawn=Break The Dawn
+flammpfeil.slashblade.specialattack.cut_metal=Break Metal
+flammpfeil.slashblade.specialattack.vorpal_hoe=Vorpal Hole
+flammpfeil.slashblade.specialattack.blade_ward=Blade Ward
+flammpfeil.slashblade.specialattack.absolute_zero=Absolute Zero
+flammpfeil.slashblade.specialattack.aurora_shining=Aurora Shining
 flammpfeil.slashblade.specialattack.wine_bind=Wine Bind
 flammpfeil.slashblade.specialattack.shock_impact=Shock Impact
 flammpfeil.slashblade.specialattack.domain_suppression=Domain Suppression
 
-slashblade.seffect.name.kablade.SETurbulence=Turbulence
-slashblade.seffect.name.kablade.divine_penalty=Divine_penalty
-slashblade.seffect.name.kablade.phoenix=Phoenix
-slashblade.seffect.name.kablade.oripursuit=Oripursult
+slashblade.seffect.name.kablade.SETurbulence=§5Turbulence
+slashblade.seffect.name.kablade.divine_penalty=§eDivine_penalty
+slashblade.seffect.name.kablade.phoenix=§cPhoenix
+slashblade.seffect.name.kablade.oripursuit=§bOripursult
 
 #生之称
 entity.vorpal_black_hole.name=Vorpal Black Hole
@@ -140,4 +149,4 @@ msg.yunluo=DIE！
 msg.raikiri_shield_crash=Raikiri Shield has crashed
 msg.raikiri_shield_blood=Raikiri shield durability is still left：
 #Enchantment Name
-enchantment.slow.name=Slowness
+enchantment.kablade_slow=Slowness

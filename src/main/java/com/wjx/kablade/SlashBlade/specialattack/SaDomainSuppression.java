@@ -76,11 +76,6 @@ public class SaDomainSuppression extends SpecialAttackBase {
                     float a = 0f;
                     float radius = 2f;
 
-                    for (int j = 0;j<8;j++){
-                        //EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,4f,pointedEntity.posX,pointedEntity.posY + 2,pointedEntity.posZ,(float) 0,(float)0);
-                        //world.spawnEntity(p);
-                    }
-
                     for (int i = 0;i < 6;i++){
                         double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
                         double py = pointedEntity.posY + pointedEntity.getEyeHeight() + 1d;
@@ -108,7 +103,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
                                 ay = -90f -(float) k;
                             }
                         }
-                        EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,4f,px,py,pz,(float) ap1,(float)ay);
+                        EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,20f,px,py,pz,(float) ap1,(float)ay);
                         p.setColor(65535);
                         world.spawnEntity(p);
                         a += 60;
@@ -214,7 +209,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
                     }
                     for (int i = 0;i<6;i++){
                         for (int l = 0;l<6;l++){
-                            Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_NORMAL,pointedEntity.posX,pointedEntity.posY,pointedEntity.posZ,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
+                            Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_LARGE,pointedEntity.posX,pointedEntity.posY,pointedEntity.posZ,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
                         }
                         world.addWeatherEffect(new EntityLightningBolt(world,pointedEntity.posX,pointedEntity.posY,pointedEntity.posZ,true));
                     }
