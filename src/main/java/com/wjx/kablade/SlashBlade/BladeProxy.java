@@ -1,10 +1,7 @@
 package com.wjx.kablade.SlashBlade;
 
 import com.wjx.kablade.Main;
-import com.wjx.kablade.SlashBlade.SpeacialEffects.SEDivinePenalty;
-import com.wjx.kablade.SlashBlade.SpeacialEffects.SEOripursuit;
-import com.wjx.kablade.SlashBlade.SpeacialEffects.SEPhoenix;
-import com.wjx.kablade.SlashBlade.SpeacialEffects.SETurbulence;
+import com.wjx.kablade.SlashBlade.SpeacialEffects.*;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.SlashBlade.specialattack.*;
 import com.wjx.kablade.proxy.CommonProxy;
@@ -19,6 +16,7 @@ public class BladeProxy {
     public static ISpecialEffect Phoenix = SpecialEffects.register(new SEPhoenix());
     public static ISpecialEffect Turbulence = SpecialEffects.register(new SETurbulence());
     public static ISpecialEffect Oripursuit = SpecialEffects.register(new SEOripursuit());
+    public static ISpecialEffect EMInduction = SpecialEffects.register(new SEEMInduction());
 
     public static void CommonLoader(CommonProxy proxy){
         InitEventBus.register(proxy);
