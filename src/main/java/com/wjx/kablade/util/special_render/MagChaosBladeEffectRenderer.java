@@ -11,9 +11,12 @@ public class MagChaosBladeEffectRenderer {
     public double playerY;
     public double playerZ;
     public int exitTick;
+
+    public float playerYaw;
     public MagChaosBladeEffectRenderer(EntityPlayer player){
         playerX = player.posX;
         playerY = player.posY;
         playerZ = player.posZ;
+        playerYaw = player.rotationYaw;
     }
 }
