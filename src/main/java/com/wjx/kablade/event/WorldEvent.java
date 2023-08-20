@@ -23,6 +23,7 @@ import com.wjx.kablade.network.MessageSpawnParticle;
 import com.wjx.kablade.util.*;
 import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
+import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
@@ -90,6 +91,8 @@ public class WorldEvent {
 
         timer.schedule(task,0,5);
     }
+
+
 
     public static ArrayList<Integer> auroraBladeColor = Lists.newArrayList();
     public static int auroraBladeColorIndex = 0;
