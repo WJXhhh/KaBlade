@@ -37,38 +37,37 @@ public class EntityWine extends Entity {
         if (this.ticksExisted >160){
             this.setDead();
         }
-        EntityLivingBase target = (EntityLivingBase) this.world.getEntityByID(dataManager.get(targetID));
-        if (world.isRemote){
-            if (target != null){
-                double distance = target.getDistance(this);
-                longNess = distance;
-                double distanceZ = Math.abs(posZ - target.posZ);
-                double distanceX = Math.abs(posX - target.posX);
-                double lengthDistance = Math.abs(posY - target.posY);
-                double placeDistance = Math.sqrt((distance * distance) - (lengthDistance * lengthDistance));
-                double v = Math.toDegrees(Math.atan(lengthDistance / placeDistance));
-                if(posY >= target.posY){
-                    rotationPitch = (float) v;
-                }
-                else rotationPitch = -(float) v;
 
-                double n = Math.toDegrees(Math.atan(distanceX / distanceZ));
-                double k = Math.toDegrees(Math.atan(distanceZ / distanceX));
-                if (posZ < target.posZ){
-                    if (posX > target.posX){
-                        rotationYaw = (float) n;
-                    }
-                    else {
-                        rotationYaw = -(float) n;
-                    }
+        Entity target = this.world.getEntityByID(dataManager.get(targetID));
+        if (world.isRemote && target instanceof EntityLivingBase){
+            double distance = target.getDistance(this);
+            longNess = distance;
+            double distanceZ = Math.abs(posZ - target.posZ);
+            double distanceX = Math.abs(posX - target.posX);
+            double lengthDistance = Math.abs(posY - target.posY);
+            double placeDistance = Math.sqrt((distance * distance) - (lengthDistance * lengthDistance));
+            double v = Math.toDegrees(Math.atan(lengthDistance / placeDistance));
+            if(posY >= target.posY){
+                rotationPitch = (float) v;
+            }
+            else rotationPitch = -(float) v;
+
+            double n = Math.toDegrees(Math.atan(distanceX / distanceZ));
+            double k = Math.toDegrees(Math.atan(distanceZ / distanceX));
+            if (posZ < target.posZ){
+                if (posX > target.posX){
+                    rotationYaw = (float) n;
                 }
                 else {
-                    if (posX > target.posX){
-                        rotationYaw = 90f + (float) k;
-                    }
-                    else {
-                        rotationYaw = -90f -(float) k;
-                    }
+                    rotationYaw = -(float) n;
+                }
+            }
+            else {
+                if (posX > target.posX){
+                    rotationYaw = 90f + (float) k;
+                }
+                else {
+                    rotationYaw = -90f -(float) k;
                 }
             }
         }
