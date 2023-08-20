@@ -99,6 +99,8 @@ public class BladeLoader {
             loadBlade(new SkyBreaker());
             loadBlade(new Phoenix());
 
+            loadBlade(new MagStorm());
+
 
 
             this.loadBlade(new MoDao());

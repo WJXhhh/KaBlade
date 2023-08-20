@@ -12,6 +12,7 @@ import mods.flammpfeil.slashblade.named.event.LoadEvent;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,6 +45,7 @@ public class MagStorm {
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/MagStorm/mdlMagStorm");
         customblade.getTagCompound().setFloat("baseAttackModifier",13.0F);
         customblade.addEnchantment(Enchantments.SHARPNESS,3);
+        ItemSlashBlade.SpecialAttackType.set(tag,298);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
@@ -51,7 +53,7 @@ public class MagStorm {
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
 
-        ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
+        /*ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.byorai", 1);
         //ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.bamboo_iron", 1);
         IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"byotorai"),
@@ -63,6 +65,6 @@ public class MagStorm {
                 'B',new ItemStack(Blocks.GLOWSTONE),
                 'C', new ItemStack(ItemInit.THUNDER_CRYSTAL));
 
-        SlashBlade.addRecipe("byotorai", recipe);
+        SlashBlade.addRecipe("byotorai", recipe);*/
     }
 }

@@ -36,17 +36,15 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(292,new HonkaiBladeWard());
             ItemSlashBlade.specialAttacks.put(293,new HonkaiAbsoluteZero());
             ItemSlashBlade.specialAttacks.put(294,new HonkaiShockImpact());
-            SpecialEffects.register(new SETurbulence());
-            SpecialEffects.register(new SEDivinePenalty());
-            SpecialEffects.register(new SEPhoenix());
+            ItemSlashBlade.specialAttacks.put(298,new HonkaiMagChaosBlade());
         }
         ItemSlashBlade.specialAttacks.put(288,new RockHit_I());
         ItemSlashBlade.specialAttacks.put(289,new SaBreakTheDawn());
         ItemSlashBlade.specialAttacks.put(290,new SaCutMetal());
 
-        ItemSlashBlade.specialAttacks.put(294,new SaAuroraShining());
-        ItemSlashBlade.specialAttacks.put(295,new SaWineBind());
-        ItemSlashBlade.specialAttacks.put(296,new SaDomainSuppression());
+        ItemSlashBlade.specialAttacks.put(295,new SaAuroraShining());
+        ItemSlashBlade.specialAttacks.put(296,new SaWineBind());
+        ItemSlashBlade.specialAttacks.put(297,new SaDomainSuppression());
     }
     public static void ClientLoader(){
         new ItemSlashUtil();

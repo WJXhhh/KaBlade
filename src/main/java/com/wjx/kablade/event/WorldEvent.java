@@ -17,9 +17,7 @@ import com.wjx.kablade.capability.inters.IPotionInSlash;
 import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
 import com.wjx.kablade.init.PotionInit;
-import com.wjx.kablade.network.MessageDizuiKuo;
-import com.wjx.kablade.network.MessageResetSend;
-import com.wjx.kablade.network.MessageSpawnParticle;
+import com.wjx.kablade.network.*;
 import com.wjx.kablade.util.*;
 import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
@@ -134,13 +132,30 @@ public class WorldEvent {
 
      @SubscribeEvent
      public void onWorldUpdate(TickEvent.WorldTickEvent event){
-
          if (!auroraBladeColor.isEmpty()){
 
              if (auroraBladeColorIndex>= (auroraBladeColor.size() -2)){
                  auroraBladeColorIndex = 0;
              }
              else auroraBladeColorIndex++;
+         }
+         //MagChaosBladeEffectsSub
+         if (event.phase == TickEvent.Phase.START){
+             if (!event.world.isRemote){
+                 if (!MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.isEmpty()){
+                     for(Iterator<MagChaosBladeEffectRenderer> it=MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.iterator(); it.hasNext();){
+                         MagChaosBladeEffectRenderer i = it.next();
+                         if (i.exitTick > 0){
+                             i.exitTick -= 1;
+                             PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
+                         }
+                         else {
+                             it.remove();
+                             PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
+                         }
+                     }
+                 }
+             }
          }
      }
 
@@ -383,6 +398,7 @@ public class WorldEvent {
         }
 
 
+
     }
 
     @SubscribeEvent
@@ -463,6 +479,7 @@ public class WorldEvent {
         //SlashBladeColorUpdate
         {
             //Aurora
+            if (!player.world.isRemote)
             {
                 ItemStack stack = player.getHeldItemMainhand();
                 if (stack.getItem() instanceof ItemSlashBlade){
@@ -723,6 +740,46 @@ public class WorldEvent {
                             GlStateManager.enableTexture2D();
                         }
                     }
+                }
+            }
+        }
+        //RenderMagChaosBladeEffect
+        if (!MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.isEmpty()){
+            for (MagChaosBladeEffectRenderer renderer : MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers){
+                Entity e = Minecraft.getMinecraft().world.getEntityByID(renderer.playerID);
+                if (e instanceof EntityPlayer){
+                    EntityPlayer targetPlayer = (EntityPlayer) e;
+                    EntityPlayer ownerPlayer = Minecraft.getMinecraft().player;
+                    double vx,vy,vz;
+                    if (targetPlayer == ownerPlayer){
+                        vx = 0d;
+                        vy = 0d;
+                        vz = 0d;
+                    }
+                    else {
+                        vx = targetPlayer.posX - ownerPlayer.posX;
+                        vy = targetPlayer.posY - ownerPlayer.posY;
+                        vz = targetPlayer.posZ - ownerPlayer.posZ;
+                    }
+                    GlStateManager.disableLighting();
+                    GlStateManager.enableBlend();
+                    GlStateManager.pushMatrix();
+                    GlStateManager.scale(1f,1f,1f);
+                    GlStateManager.translate(vx,vy,vz);
+                    GlStateManager.rotate(targetPlayer.rotationYaw,0f,-1f,0f);
+                    GlStateManager.translate(0f,0f,1f);
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(HuntingLockerIcon);
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder buffer = tessellator.getBuffer();
+                    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
+                    buffer.pos(-0.5d, -0.25d, 0).tex(0, 1).normal(0.0f, 1.0f, 0.0f).endVertex();
+                    buffer.pos(0.5d, -0.25d, 0).tex(1, 1).normal(0.0f, 1.0f, 0.0f).endVertex();
+                    buffer.pos(0.5d, 0.75d, 0).tex(1, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
+                    buffer.pos(-0.5d, 0.75d, 0).tex(0, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
+                    tessellator.draw();
+                    GlStateManager.popMatrix();
+                    GlStateManager.disableBlend();
+                    GlStateManager.enableLighting();
                 }
             }
         }

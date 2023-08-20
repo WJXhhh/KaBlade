@@ -2,7 +2,6 @@ package com.wjx.kablade.proxy;
 
 import com.wjx.kablade.Entity.Render.Layer.LayerFreeze;
 import com.wjx.kablade.SlashBlade.BladeProxy;
-import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.network.*;
 import com.wjx.kablade.util.Reference;
 import com.wjx.kablade.util.handlers.RenderHandler;
@@ -49,6 +48,7 @@ public class ClientProxy extends CommonProxy{
         PACKET_HANDLER.registerMessage(MessageHandlerUpdateKaBladePlayerProp.class,MessageUpdateKaBladePlayerProp.class,5,Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerResetSend.class,MessageResetSend.class,6,Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerDizuiKuo.class,MessageDizuiKuo.class,7,Side.CLIENT);
+        PACKET_HANDLER.registerMessage(MessageHandlerMagChaosBladeEffectUpdate.class, MessageMagChaosBladeEffectUpdate.class,8,Side.CLIENT);
 
         if(Loader.isModLoaded("flammpfeil.slashblade"))
         {
