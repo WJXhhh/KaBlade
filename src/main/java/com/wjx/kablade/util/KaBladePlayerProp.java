@@ -8,9 +8,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class KaBladePlayerProp {
-    public static String TURBULENCE = "turbulence";
-    public static String LOCKING_ENTITY_UUID = "locking_entity_uuid";
-    public static String LOCKING_ENTITY_LEFT_TIME = "locking_entity_left_time";
+    public static final String TURBULENCE = "turbulence";
+    public static final String LOCKING_ENTITY_UUID = "locking_entity_uuid";
+    public static final String LOCKING_ENTITY_LEFT_TIME = "locking_entity_left_time";
+    public static final String MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK = "mag_chaos_blade_extra_attack_tick";
 
     public static void initNBT(EntityPlayer e){
         if (!e.getEntityData().hasKey("kablade_player_property")){

@@ -3,7 +3,9 @@ package com.wjx.kablade.SlashBlade.specialattack;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.wjx.kablade.Main;
+import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.network.MessageMagChaosBladeEffectUpdate;
+import com.wjx.kablade.util.KaBladePlayerProp;
 import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -11,6 +13,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
@@ -27,15 +31,16 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
 
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
-        doMagStormAttack(itemStack,entityPlayer);
+        doMagStormAttack(entityPlayer);
     }
 
-    private void doMagStormAttack(ItemStack itemStack, EntityPlayer entityPlayer){
+    private void doMagStormAttack(EntityPlayer entityPlayer){
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
             MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(entityPlayer));
             Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
-            double dist = 10;
+            KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK,6);
+            double dist = 6;
             Vec3d vec3d = entityPlayer.getPositionEyes(1.0F);
             Vec3d vec3d1 = entityPlayer.getLook(1.0F);
             Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
@@ -67,7 +72,12 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
                 }
             }
             if (!pointedEntity.isEmpty()){
-                if (pointedEntity instanceof EntityLivingBase){}
+                for (Entity e : pointedEntity){
+                    if (e instanceof EntityLivingBase){
+                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),40f);
+                        ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,3));
+                    }
+                }
             }
         }
     }

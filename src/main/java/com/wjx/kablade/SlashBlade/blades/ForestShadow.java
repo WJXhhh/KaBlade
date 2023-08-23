@@ -45,7 +45,7 @@ public class ForestShadow {
         ItemSlashBlade.ModelName.set(Tag, "kablade/ForestShadow/mdlForestShadow");
 
         customBlade.getTagCompound().setFloat("baseAttackModifier",9.0F);
-        ItemSlashBlade.SpecialAttackType.set(Tag,295);
+        ItemSlashBlade.SpecialAttackType.set(Tag,296);
         customBlade.addEnchantment(Enchantments.POWER,2);
         Item_KaNamed.IsDefaultBewitched.set(Tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);

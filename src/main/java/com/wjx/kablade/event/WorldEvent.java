@@ -1,5 +1,6 @@
 package com.wjx.kablade.event;
 
+import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.realmsclient.gui.ChatFormatting;
@@ -34,6 +35,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -46,10 +48,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
@@ -110,6 +115,7 @@ public class WorldEvent {
 
 
     ResourceLocation HuntingLockerIcon = new ResourceLocation(Main.MODID + ":textures/icon/hunting_locker.png");
+    ResourceLocation MagChaosBladeEffectIcon = new ResourceLocation(MODID + ":textures/effect/tex_mag_chaos_blade_effect.png");
 
      public static void loadEvent(){
         //auroraColor
@@ -491,6 +497,61 @@ public class WorldEvent {
                 }
             }
         }
+
+        if (!world.isRemote){
+            if (event.phase == TickEvent.Phase.START){
+                //MagChaosBladeExtraAttack
+                if (KaBladePlayerProp.getPropCompound(player).hasKey(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK)){
+                    if (KaBladePlayerProp.getPropCompound(player).getInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK) > 0){
+                        KaBladeEntityProperties.doIntegerLower(KaBladePlayerProp.getPropCompound(player),KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
+                    }
+                    else {
+                        KaBladePlayerProp.getPropCompound(player).removeTag(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
+                        MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(player));
+                        Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
+                        double dist = 6;
+                        Vec3d vec3d = player.getPositionEyes(1.0F);
+                        Vec3d vec3d1 = player.getLook(1.0F);
+                        Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
+                        List<Entity> pointedEntity = Lists.newArrayList();
+                        List<Entity> list = world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+                        double d2 = dist;
+                        for (Entity entity1 : list) {
+                            AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
+                            RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(vec3d, vec3d2);
+
+                            if (axisalignedbb.contains(vec3d)) {
+                                if (d2 >= 0.0D) {
+                                    pointedEntity.add(entity1);
+                                    d2 = 0.0D;
+                                }
+                            } else if (raytraceresult != null) {
+                                double d3 = vec3d.distanceTo(raytraceresult.hitVec);
+
+                                if (d3 < d2 || d2 == 0.0D) {
+                                    if (entity1.getLowestRidingEntity() == player.getLowestRidingEntity() && !player.canRiderInteract()) {
+                                        if (d2 == 0.0D) {
+                                            pointedEntity.add(entity1);;
+                                        }
+                                    } else {
+                                        pointedEntity.add(entity1);
+                                        d2 = d3;
+                                    }
+                                }
+                            }
+                        }
+                        if (!pointedEntity.isEmpty()){
+                            for (Entity e : pointedEntity){
+                                if (e instanceof EntityLivingBase){
+                                    e.attackEntityFrom(DamageSource.causePlayerDamage(player),20f);
+                                    ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,3));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -764,11 +825,15 @@ public class WorldEvent {
                     GlStateManager.disableLighting();
                     GlStateManager.enableBlend();
                     GlStateManager.pushMatrix();
-                    GlStateManager.scale(1f,1f,1f);
                     GlStateManager.translate(vx,vy,vz);
                     GlStateManager.rotate(targetPlayer.rotationYaw,0f,-1f,0f);
+                    GlStateManager.rotate(-90f,1f,0f,0f);
+                    GlStateManager.translate(0f,-2f,0f);
                     GlStateManager.translate(0f,0f,1f);
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(HuntingLockerIcon);
+                    GlStateManager.rotate(180f,0f,0f,1f);
+                    GlStateManager.scale(4f,4f,4f);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(MagChaosBladeEffectIcon);
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder buffer = tessellator.getBuffer();
                     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);

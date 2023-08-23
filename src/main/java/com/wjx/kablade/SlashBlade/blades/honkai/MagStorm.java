@@ -43,9 +43,13 @@ public class MagStorm {
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/MagStorm/texMagStorm");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/MagStorm/mdlMagStorm");
-        customblade.getTagCompound().setFloat("baseAttackModifier",13.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",23.0F);
         customblade.addEnchantment(Enchantments.SHARPNESS,3);
         ItemSlashBlade.SpecialAttackType.set(tag,298);
+        ItemSlashBlade.SummonedSwordColor.set(tag,65535);
+        customblade.addEnchantment(Enchantments.POWER,3);
+        customblade.addEnchantment(Enchantments.SMITE,4);
+        customblade.addEnchantment(Enchantments.SHARPNESS,4);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);

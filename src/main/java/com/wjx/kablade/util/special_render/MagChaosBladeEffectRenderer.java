@@ -12,11 +12,11 @@ public class MagChaosBladeEffectRenderer {
     public int exitTick;
     public MagChaosBladeEffectRenderer(EntityPlayer player){
         playerID = player.getEntityId();
-        exitTick = 20;
+        exitTick = 4;
     }
 
     public MagChaosBladeEffectRenderer(int idIn){
         playerID = idIn;
-        exitTick = 20;
+        exitTick = 4;
     }
 }
