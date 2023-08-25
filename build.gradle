@@ -14,13 +14,14 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+'
         classpath group: 'wtf.gofancy.fancygradle', name: 'wtf.gofancy.fancygradle.gradle.plugin',    version: '+'
         // MixinGradle:
-        classpath "org.spongepowered:mixingradle:0.7-SNAPSHOT"
+        classpath "org.spongepowered:mixingradle:0.7.+"
     }
 }
 
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
+
 }
         
 apply plugin: 'net.minecraftforge.gradle'
@@ -113,13 +114,15 @@ dependencies {
 
     // Examples using mod jars from ./libs
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-    compileOnly(files("./libs/!mixinbooter-8.4.jar"))
+    //compileOnly(files("./libs/!mixinbooter-8.4.jar"))
     runtimeOnly(files("./libs/!mixinbooter-8.4.jar"))
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-	compileOnly(files("./libs/SlashBlade_deobf3.jar"))
-    runtimeOnly(files("./libs/SlashBlade_deobf3.jar"))
+    compileOnly('org.spongepowered:mixin:0.8.5')
+    //runtimeOnly('org.spongepowered:mixin:0.8.5')
+	compileOnly(files("./libs/SlashBlade-mc1.12-r32.jar"))
+    runtimeOnly(files("./libs/SlashBlade-mc1.12-r32.jar"))
     //runtimeOnly(files("./libs/optifine.jar"))
     runtimeOnly(files("./libs/the_golden_autumn-12.0.3.7.jar"))
     //runtimeOnly(files("./libs/jei.jar"))
@@ -149,6 +152,7 @@ jar {
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "examplemodsareus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "TweakClass": "com.wjx.kablade.mixin.KaBladeMixinTweak"
                 //"FMLCorePlugin": "com.wjx.kablade.mixin.KaBladeEarlyMixinInit",
                 //"FMLCorePluginContainsFMLMod": true,
                 //"ForceLoadAsMod": true
@@ -177,6 +181,10 @@ publishing {
 
 mixin {
     add sourceSets.main, "mixins.kablade.refmap.json"
+    config 'mixins.kablade.json'
+
+    debug.verbose = true
+    debug.export = true
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -188,10 +196,10 @@ reobf{
 }
 
 shadowJar {
-    baseName = 'kablade-containMixinBooter'
+    baseName = 'kablade-containMixin'
     classifier = null
-    version = null
+    version = 1.3
     dependencies {
-        include(dependency('zone.rong:mixinbooter:8.4'))
+        include(dependency('org.spongepowered:mixin:0.8.5'))
     }
 }

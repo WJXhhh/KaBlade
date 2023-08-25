@@ -41,6 +41,8 @@ item.wjx.blade.honkai.dawn_breaker.name=破晓者：塔尔瓦
 item.wjx.blade.honkai.sky_breaker.name=开天剑
 item.wjx.blade.honkai.phoenix.name=凰剑
 item.wjx.blade.honkai.mag_storm.name=磁暴斩
+item.wjx.blade.honkai.third_sacred.name=3rd圣遗物
+item.wjx.blade.honkai.ice_epiphyllum.name=仿灵刀·冰昙天
 
 
 
@@ -143,12 +145,14 @@ flammpfeil.slashblade.specialattack.wine_bind=藤蔓捆缚
 flammpfeil.slashblade.specialattack.shock_impact=震荡冲击
 flammpfeil.slashblade.specialattack.domain_suppression=领域压杀
 flammpfeil.slashblade.specialattack.mag_chaos_blade=磁暴之刃
+flammpfeil.slashblade.specialattack.snow_dance=冰天雪舞
 
 slashblade.seffect.name.kablade.SETurbulence=§5乱流
 slashblade.seffect.name.kablade.divine_penalty=§e天罚
 slashblade.seffect.name.kablade.phoenix=§c凰
 slashblade.seffect.name.kablade.oripursuit=§b源能裁决
 slashblade.seffect.name.kablade.em_induction=§b电磁感应
+slashblade.seffect.name.kablade.glacial_bane=§b苦寒地狱
 
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞

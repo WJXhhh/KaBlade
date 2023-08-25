@@ -99,7 +99,10 @@ public class BladeLoader {
             loadBlade(new SkyBreaker());
             loadBlade(new Phoenix());
 
+            loadBlade(new ThirdSacredRelic());
             loadBlade(new MagStorm());
+            loadBlade(new IceEpiphyllum());
+
 
 
 

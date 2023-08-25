@@ -14,5 +14,6 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityRaikiriBlade.class, RenderRaikiriBlade::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySummonedSwordBasePlus.class, RenderSummonedSwordBasePlus::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityWine.class, RenderWine::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFreezeDomain.class, RenderFreezeDomain::new);
     }
 }

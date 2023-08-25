@@ -104,7 +104,9 @@ public class ItemInit {
             super.addInformation(stack, worldIn, tooltip, flagIn);
             tooltip.add(I18n.translateToLocal("info.item.aurora_metal_ingot"));
         }
-    };;
+    };
+
+    public static Item IRON_COIL = new ItemBase("iron_coil",TABKABLADE);
 
     public static Item.ToolMaterial CHROMIUM_MATERIAL= EnumHelper.addToolMaterial("KABLADE_CHROMIUM",2, 800, 6.8F, 2.6F, 17).setRepairItem(new ItemStack(CHROMIUM_INGOT,1));
     public static Item.ToolMaterial MOLYBDENUM_MATERIAL= EnumHelper.addToolMaterial("KABLADE_MOLYBDENUM",2, 700, 7F, 2.4F, 20).setRepairItem(new ItemStack(MOLYBDENUM_INGOT,1));

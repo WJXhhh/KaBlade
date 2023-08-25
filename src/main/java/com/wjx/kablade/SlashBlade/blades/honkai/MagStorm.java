@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeTwoRecipeModding;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
@@ -39,7 +40,7 @@ public class MagStorm {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 700);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 1000);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/MagStorm/texMagStorm");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/MagStorm/mdlMagStorm");
@@ -57,18 +58,18 @@ public class MagStorm {
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
 
-        /*ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.byorai", 1);
-        //ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.bamboo_iron", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"byotorai"),
-                blackblade, prevblade,
-                "  C",
-                " B ",
-                "A B",
+        ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.osahoko", 1);
+        ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.third_sacred", 1);
+        IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"mag_storm"),
+                blackblade, prevblade,prevblade2,
+                "CCC",
+                "DBD",
+                " A ",
                 'A', prevblade,
-                'B',new ItemStack(Blocks.GLOWSTONE),
-                'C', new ItemStack(ItemInit.THUNDER_CRYSTAL));
-
-        SlashBlade.addRecipe("byotorai", recipe);*/
+                'B',prevblade2,
+                'C', new ItemStack(ItemInit.IRON_COIL),
+                'D',new ItemStack(ItemInit.THUNDER_CRYSTAL));
+        SlashBlade.addRecipe("mag_storm", recipe);
     }
 }

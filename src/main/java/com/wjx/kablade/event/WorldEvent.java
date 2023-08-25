@@ -390,14 +390,25 @@ public class WorldEvent {
             }
             //Thunder Crystal Attack
             {
-                if (KaBladeEntityProperties.getPropCompound(entity).hasKey(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK)){
-                    if (KaBladeEntityProperties.getPropCompound(entity).getInteger(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK) > 0){
-                        KaBladeEntityProperties.doIntegerLower(KaBladeEntityProperties.getPropCompound(entity),KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK);
+                if (KaBladeCompound.hasKey(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK)){
+                    if (KaBladeCompound.getInteger(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK) > 0){
+                        KaBladeEntityProperties.doIntegerLower(KaBladeCompound,KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK);
                     }
-                    if (KaBladeEntityProperties.getPropCompound(entity).getInteger(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK) <= 0){
+                    if (KaBladeCompound.getInteger(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK) <= 0){
                         entity.world.addWeatherEffect(new EntityLightningBolt(entity.world,entity.posX,entity.posY,entity.posZ,false));
                         entity.world.createExplosion(null,entity.posX,entity.posY,entity.posZ,2f,true);
-                        KaBladeEntityProperties.getPropCompound(entity).removeTag(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK);
+                        KaBladeCompound.removeTag(KaBladeEntityProperties.THUNDER_CRYSTAL_ATTACK);
+                    }
+                }
+            }
+            //FreezeDomainBooster
+            {
+                if (KaBladeCompound.hasKey(KaBladeEntityProperties.FREEZE_DOMAIN_DAMAGE_BOOSTER)){
+                    if (KaBladeCompound.getInteger(KaBladeEntityProperties.FREEZE_DOMAIN_DAMAGE_BOOSTER) > 0){
+                        KaBladeEntityProperties.doIntegerLower(KaBladeCompound,KaBladeEntityProperties.FREEZE_DOMAIN_DAMAGE_BOOSTER);
+                    }
+                    else {
+                        KaBladeCompound.removeTag(KaBladeEntityProperties.FREEZE_DOMAIN_DAMAGE_BOOSTER);
                     }
                 }
             }
@@ -660,6 +671,7 @@ public class WorldEvent {
     public void onLivingHurt(LivingHurtEvent event){
         EntityLivingBase e = event.getEntityLiving();
         World world = e.getEntityWorld();
+        NBTTagCompound kec = KaBladeEntityProperties.getPropCompound(e);
         //Shield
         {
             if (e instanceof EntityPlayer){
@@ -735,6 +747,13 @@ public class WorldEvent {
                 if (effect.getDuration() >0 && effect.getAmplifier() > 0){
                     event.setAmount(event.getAmount() * (1.2f * (1f + (effect.getAmplifier() * 0.1f))));
                 }
+            }
+        }
+        //FreezeDomainBooster
+        {
+            if (kec.hasKey(KaBladeEntityProperties.FREEZE_DOMAIN_DAMAGE_BOOSTER)){
+                if (event.getAmount() > 0)
+                  event.setAmount(event.getAmount() * 1.4f);
             }
         }
     }

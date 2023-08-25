@@ -27,7 +27,7 @@ public class SaCutMetal extends SpecialAttackBase {
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,60,2));
-        AxisAlignedBB bb = entityPlayer.getEntityBoundingBox().grow(8,8,8).offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
+        AxisAlignedBB bb = entityPlayer.getEntityBoundingBox().grow(8,4,8).offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input != entityPlayer&&input instanceof EntityLivingBase);
         for (Entity e: l){
             if (e instanceof EntityLivingBase){

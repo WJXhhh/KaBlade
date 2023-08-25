@@ -40,7 +40,7 @@ public class Originyer {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_KaNamed.CurrentItemName.set(Tag, name);
-        Item_KaNamed.CustomMaxDamage.set(Tag, 400);
+        Item_KaNamed.CustomMaxDamage.set(Tag, 700);
 
         ItemSlashBlade.TextureName.set(Tag, "kablade/Originyer/texOriginyer");
         ItemSlashBlade.ModelName.set(Tag, "kablade/Originyer/mdlOriginyer");

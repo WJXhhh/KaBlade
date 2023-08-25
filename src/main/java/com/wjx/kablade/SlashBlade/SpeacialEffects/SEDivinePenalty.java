@@ -15,6 +15,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.Random;
+
 public class SEDivinePenalty implements ISpecialEffect, IRemovable {
     @Override
     public boolean canCopy(ItemStack itemStack) {
@@ -67,4 +69,6 @@ public class SEDivinePenalty implements ISpecialEffect, IRemovable {
             }
         }
     }
+
+
 }

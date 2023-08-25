@@ -41,6 +41,8 @@ item.wjx.blade.honkai.dawn_breaker.name=Dawn Breaker:Talwar
 item.wjx.blade.honkai.sky_breaker.name=Sky Breaker
 item.wjx.blade.honkai.phoenix.name=Phoenix
 item.wjx.blade.honkai.mag_storm.name=Mag Storm
+item.wjx.blade.honkai.third_sacred.name=3rd Sacred Relic
+item.wjx.blade.honkai.ice_epiphyllum.name=Ice Epiphyllum
 
 item.wjx.blade.honkai.dizui.name=§d§lSeven Thunders of Retribution: Rumble
 
@@ -68,6 +70,7 @@ item.chromoly_ingot.name=Chromoly Ingot
 item.gravity_nugget.name=Gravity Nugget
 item.gravity_crystal.name=Gravity Crystal
 item.thunder_crystal.name=Thunder Crystal
+item.iron_coil.name=Iron Coil
 
 item.chromium_sword.name=Chromium Sword
 item.chromium_axe.name=Chromium Axe
@@ -138,12 +141,14 @@ flammpfeil.slashblade.specialattack.wine_bind=Wine Bind
 flammpfeil.slashblade.specialattack.shock_impact=Shock Impact
 flammpfeil.slashblade.specialattack.domain_suppression=Domain Suppression
 flammpfeil.slashblade.specialattack.mag_chaos_blade=Chaos Blade
+flammpfeil.slashblade.specialattack.snow_dance=Snow Dance
 
 slashblade.seffect.name.kablade.SETurbulence=§5Turbulence
 slashblade.seffect.name.kablade.divine_penalty=§eDivine_penalty
 slashblade.seffect.name.kablade.phoenix=§cPhoenix
 slashblade.seffect.name.kablade.oripursuit=§bOripursult
 slashblade.seffect.name.kablade.em_induction=§bEM Induction
+slashblade.seffect.name.kablade.glacial_bane=§bGlacial Bane
 
 #生之称
 entity.vorpal_black_hole.name=Vorpal Black Hole

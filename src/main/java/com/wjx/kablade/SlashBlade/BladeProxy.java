@@ -17,6 +17,7 @@ public class BladeProxy {
     public static ISpecialEffect Turbulence = SpecialEffects.register(new SETurbulence());
     public static ISpecialEffect Oripursuit = SpecialEffects.register(new SEOripursuit());
     public static ISpecialEffect EMInduction = SpecialEffects.register(new SEEMInduction());
+    public static ISpecialEffect GlacialBane = SpecialEffects.register(new SEGlacialBane());
 
     public static void CommonLoader(CommonProxy proxy){
         InitEventBus.register(proxy);
@@ -37,6 +38,7 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(293,new HonkaiAbsoluteZero());
             ItemSlashBlade.specialAttacks.put(294,new HonkaiShockImpact());
             ItemSlashBlade.specialAttacks.put(298,new HonkaiMagChaosBlade());
+            ItemSlashBlade.specialAttacks.put(299,new HonkaiSnowDance());
         }
         ItemSlashBlade.specialAttacks.put(288,new RockHit_I());
         ItemSlashBlade.specialAttacks.put(289,new SaBreakTheDawn());
