@@ -5,7 +5,7 @@ import zone.rong.mixinbooter.ILateMixinLoader;
 
 import java.util.List;
 
-public class KaBladeLateMixinInit implements ILateMixinLoader {
+public class KaBladeLateMixinInit implements ILateMixinLoader{
     public List<String> getMixinConfigs() {
         return Lists.newArrayList("mixins.kablade.json");
     }
