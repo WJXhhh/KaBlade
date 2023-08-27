@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.InputStream;
 import java.util.List;
 
-@Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION)
+@Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION,dependencies = "required-after:mixinbooter;required-after:flammpfeil.slashblade")
 public class Main
 {
     public static final String MODID = "kablade";

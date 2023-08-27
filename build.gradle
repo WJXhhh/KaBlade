@@ -114,15 +114,15 @@ dependencies {
 
     // Examples using mod jars from ./libs
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-    //compileOnly(files("./libs/!mixinbooter-8.4.jar"))
-    runtimeOnly(files("./libs/!mixinbooter-8.4.jar"))
+    compileOnly(files("./libs/!mixinbooter-7.0.jar"))
+    runtimeOnly(files("./libs/!mixinbooter-7.0.jar"))
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    compileOnly('org.spongepowered:mixin:0.8.5')
+    //compileOnly('org.spongepowered:mixin:0.8.5')
     //runtimeOnly('org.spongepowered:mixin:0.8.5')
 	compileOnly(files("./libs/SlashBlade-mc1.12-r32.jar"))
-    runtimeOnly(files("./libs/SlashBlade-mc1.12-r32.jar"))
+    //runtimeOnly(files("./libs/SlashBlade-mc1.12-r32.jar"))
     //runtimeOnly(files("./libs/optifine.jar"))
     runtimeOnly(files("./libs/the_golden_autumn-12.0.3.7.jar"))
     //runtimeOnly(files("./libs/jei.jar"))
@@ -152,7 +152,6 @@ jar {
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "examplemodsareus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "TweakClass": "com.wjx.kablade.mixin.KaBladeMixinTweak"
                 //"FMLCorePlugin": "com.wjx.kablade.mixin.KaBladeEarlyMixinInit",
                 //"FMLCorePluginContainsFMLMod": true,
                 //"ForceLoadAsMod": true
