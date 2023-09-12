@@ -22,7 +22,7 @@ public class KabladeMixinTweak implements ITweaker{
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader) {
         MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.kablade.json");
+        Mixins.addConfiguration("mixins.kablade.mixin_late.json");
         CodeSource codeSource = this.getClass().getProtectionDomain().getCodeSource();
         if (codeSource != null) {
             URL location = codeSource.getLocation();

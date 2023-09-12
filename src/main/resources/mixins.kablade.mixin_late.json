@@ -1,0 +1,11 @@
+{
+  "package": "com.wjx.kablade.mixin",
+  "required": true,
+  "refmap": "mixins.mixinbooter.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.7",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "LoadControllerMixin"
+  ]
+}

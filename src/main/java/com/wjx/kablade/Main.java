@@ -37,12 +37,12 @@ import org.apache.logging.log4j.Logger;
 import java.io.InputStream;
 import java.util.List;
 
-@Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION,dependencies = "required-after:mixinbooter;required-after:flammpfeil.slashblade")
+@Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION,dependencies = "required-after:flammpfeil.slashblade")
 public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "1.3";
+    public static final String VERSION = "1.5.0";
 
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
@@ -118,11 +118,21 @@ public class Main
         if (!Loader.isModLoaded("networkmod"))
         {
             try{
-            GetUrlVersion = getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB").get(1);
+            GetUrlVersion = getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB").get(2);
 
             if(GetUrlVersion!=null){
                 String[] s = VERSION.split("\\.");
                 String[] s1 = GetUrlVersion.split("\\.");
+
+                if (Integer.parseInt(s1[0]) > Integer.parseInt(s[0])){
+                    YesUpdate = true;
+                }
+                if (!YesUpdate && Integer.parseInt(s1[1]) > Integer.parseInt(s[1])){
+                    YesUpdate = true;
+                }
+                if (!YesUpdate && Integer.parseInt(s1[2]) > Integer.parseInt(s[2])){
+                    YesUpdate = true;
+                }
 
                 if (Integer.parseInt(s1[0]) > Integer.parseInt(s[0])|| Integer.parseInt(s1[1]) > Integer.parseInt(s[1])){
                     YesUpdate = true;

@@ -32,7 +32,7 @@ apply plugin: 'maven-publish'
 // MixinGradle:
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.3-b'
+version = '1.5.0-b'
 group = 'com.wjx.kablade' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'kablade'
 
@@ -122,7 +122,7 @@ dependencies {
     //compileOnly('org.spongepowered:mixin:0.8.5')
     //runtimeOnly('org.spongepowered:mixin:0.8.5')
 	compileOnly(files("./libs/SlashBlade-mc1.12-r32.jar"))
-    runtimeOnly(files("./libs/SlashBlade-mc1.12-r32.jar"))
+    //runtimeOnly(files("./libs/SlashBlade-mc1.12-r32.jar"))
     //runtimeOnly(files("./libs/optifine.jar"))
     runtimeOnly(files("./libs/the_golden_autumn-12.0.3.7.jar"))
     //runtimeOnly(files("./libs/jei.jar"))
@@ -152,6 +152,7 @@ jar {
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "examplemodsareus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "TweakClass" : "com.wjx.kablade.mixin.KabladeMixinTweak"
                 //"FMLCorePlugin": "com.wjx.kablade.mixin.KaBladeEarlyMixinInit",
                 //"FMLCorePluginContainsFMLMod": true,
                 //"ForceLoadAsMod": true
@@ -180,7 +181,7 @@ publishing {
 
 mixin {
     add sourceSets.main, "mixins.kablade.refmap.json"
-    config 'mixins.kablade.json'
+    config 'mixins.kablade.mixin_late.json'
 
     debug.verbose = true
     debug.export = true
