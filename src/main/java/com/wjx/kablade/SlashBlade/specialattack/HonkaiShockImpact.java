@@ -29,7 +29,7 @@ public class HonkaiShockImpact extends SpecialAttackBase {
         List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax, input -> input != entityPlayer && input instanceof EntityLivingBase);
         for (Entity entity : entities){
             if (entity != null){
-                if (!entityPlayer.world.isRemote){
+                if (!entityPlayer.world.isRemote && !(entity instanceof EntityPlayer)){
                     entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),22);
                     entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,5));
                 }

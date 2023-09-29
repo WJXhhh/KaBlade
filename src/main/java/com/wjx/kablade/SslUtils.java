@@ -27,6 +27,7 @@ public class SslUtils {
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
     }
 
+    @SuppressWarnings("unused")
     static class miTM implements TrustManager,X509TrustManager {
         @Override
         public X509Certificate[] getAcceptedIssuers() {
@@ -39,12 +40,10 @@ public class SslUtils {
             return true;
         }
         @Override
-        public void checkServerTrusted(X509Certificate[] certs, String authType)
-                throws CertificateException {
+        public void checkServerTrusted(X509Certificate[] certs, String authType) {
         }
         @Override
-        public void checkClientTrusted(X509Certificate[] certs, String authType)
-                throws CertificateException {
+        public void checkClientTrusted(X509Certificate[] certs, String authType) {
         }
     }
 }

@@ -22,6 +22,7 @@ public class KaBladeEntityProperties {
         }
     }
 
+    @SuppressWarnings("unused")
     public static boolean checkNBT(Entity e){
         return e.getEntityData().hasKey("kablade_property");
     }

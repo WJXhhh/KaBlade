@@ -34,6 +34,7 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
         doMagStormAttack(entityPlayer);
     }
 
+    @SuppressWarnings("Guava")
     private void doMagStormAttack(EntityPlayer entityPlayer){
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
@@ -62,7 +63,7 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
                     if (d3 < d2 || d2 == 0.0D) {
                         if (entity1.getLowestRidingEntity() == entityPlayer.getLowestRidingEntity() && !entityPlayer.canRiderInteract()) {
                             if (d2 == 0.0D) {
-                                pointedEntity.add(entity1);;
+                                pointedEntity.add(entity1);
                             }
                         } else {
                             pointedEntity.add(entity1);
@@ -73,7 +74,7 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
             }
             if (!pointedEntity.isEmpty()){
                 for (Entity e : pointedEntity){
-                    if (e instanceof EntityLivingBase){
+                    if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
                         e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),40f);
                         ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,3));
                     }

@@ -26,7 +26,7 @@ public class HonKaiMoltenBlade extends SpecialAttackBase {
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input != entityPlayer && input instanceof EntityLivingBase);
         for (Entity entity : entities){
-            if (entity != null){
+            if (entity != null && !(entity instanceof EntityPlayer)){
                 entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),12);
                 entity.setFire(5);
             }

@@ -2,8 +2,6 @@ package com.wjx.kablade.util;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.MessageUpdateKaBladePlayerProp;
-import com.wjx.kablade.network.MessageUpdateKaBladeProp;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 

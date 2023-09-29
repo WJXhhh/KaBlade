@@ -74,7 +74,7 @@ public class HonkaiSnowDance extends SpecialAttackBase {
             EntityFreezeDomain domain = new EntityFreezeDomain(world,entityPlayer);
             world.spawnEntity(domain);
             AxisAlignedBB bb = entityPlayer.getEntityBoundingBox().grow(4,4,4).offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
-            List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input != entityPlayer&&input instanceof EntityLivingBase);
+            List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input instanceof EntityLivingBase && (!(input instanceof EntityPlayer)));
             for (Entity e : l){
                 if (e instanceof EntityLivingBase){
                     e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20f);

@@ -5,10 +5,8 @@ import com.wjx.kablade.creativeTab.*;
 import com.wjx.kablade.event.OreGen;
 import com.wjx.kablade.event.WorldEvent;
 import com.wjx.kablade.init.*;
-import com.wjx.kablade.util.SaEvent;
 import com.wjx.kablade.proxy.CommonProxy;
 import com.wjx.kablade.util.Reference;
-import com.wjx.kablade.util.SaEventManager;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
@@ -36,13 +34,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 @Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION,dependencies = "required-after:flammpfeil.slashblade")
 public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "1.5.0";
+    public static final String VERSION = "1.5.1";
 
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
@@ -61,12 +60,6 @@ public class Main
     public static CreativeTabs TABKABLADE_BLADES_HONKAI = null;
     public static CreativeTabs TABKABLADE_ORE = null;
 
-    /*static {
-        if(Loader.isModLoaded("the_golden_autumn")){
-            TABKABLADE_BLADES_GOD = new tabkablade_bladesgod("tabkablade_bladesgod");
-            TABKABLADE_BLADES_HONKAI = new tabkablade_honkai("tabkablade_honkai");
-        }
-    }*/
     private void sseee(){
         TABKABLADE = new tabkablade();
         TABKABLADE_BLADES = new tabkablade_blades("tabkablade_blades");
@@ -111,6 +104,7 @@ public class Main
     public static String GetUrlVersion;
     public static boolean YesUpdate = false;
 
+    @SuppressWarnings("CallToPrintStackTrace")
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
@@ -118,7 +112,7 @@ public class Main
         if (!Loader.isModLoaded("networkmod"))
         {
             try{
-            GetUrlVersion = getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB").get(2);
+            GetUrlVersion = Objects.requireNonNull(getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB")).get(2);
 
             if(GetUrlVersion!=null){
                 String[] s = VERSION.split("\\.");
@@ -161,25 +155,13 @@ public class Main
 
 
 
+    @SuppressWarnings("CallToPrintStackTrace")
     public static class getUpdateInfo{
-        static List<String> firstGet = null;
-        public static String unicodeToStr(String unicode) {
-            StringBuilder sb = new StringBuilder();
-            String[] hex = unicode.split("\\\\u");
-            for (int i = 1; i < hex.length; i++) {
-                int index = Integer.parseInt(hex[i], 16);
-                sb.append((char) index);
-            }
-            return sb.toString();
-        }
 
 
         public static List<String> gettextfromurl(String url){
-            String sTotalString;
             String sCurrentLine;
             List<String> list = Lists.newArrayList();
-            sCurrentLine="";
-            sTotalString="";
             InputStream l_urlStream;
             try
             {

@@ -1,7 +1,6 @@
 package com.wjx.kablade.util.special_render;
 
 import com.google.common.collect.Lists;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;

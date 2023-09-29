@@ -30,7 +30,7 @@ public class RecipeBlade extends ShapedOreRecipe {
 
     /**
      *
-     * @param result 最后得到的刀]
+     * @param result 最后得到的刀
      * @param inheritBlade 被继承的拔刀
      * @param materialBlade 所需拔刀
      * @param recipe 合成

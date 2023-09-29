@@ -1,5 +1,6 @@
 package com.wjx.kablade.util;
 
+@SuppressWarnings("unused")
 public class Reference {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";

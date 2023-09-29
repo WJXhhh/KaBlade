@@ -13,12 +13,14 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class KabladeMixinTweak implements ITweaker{
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
 
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader) {
         MixinBootstrap.init();
