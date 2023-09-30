@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
-import org.spongepowered.asm.mixin.transformer.MixinProcessor;
 import org.spongepowered.asm.mixin.transformer.Proxy;
 
 import java.lang.reflect.Field;
@@ -36,7 +35,7 @@ public class LoadControllerMixin {
             IMixinTransformer transformer = ((IMixinTransformer)field.get(null));
             Field field1 = transformer.getClass().getDeclaredField("processor");
             field1.setAccessible(true);
-            MixinProcessor processor = (MixinProcessor) field1.get(transformer);
+            Object processor = field1.get(transformer);
             Method selectMethod = processor.getClass().getDeclaredMethod("select", MixinEnvironment.class);
             selectMethod.setAccessible(true);
             selectMethod.invoke(processor, MixinEnvironment.getCurrentEnvironment());
