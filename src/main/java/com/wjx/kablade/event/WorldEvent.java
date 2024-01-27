@@ -3,7 +3,6 @@ package com.wjx.kablade.event;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wjx.kablade.Entity.AbsEntityShield;
 import com.wjx.kablade.Entity.EntityRaikiriBlade;
 import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
@@ -56,6 +55,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.util.text.translation.I18n;
@@ -209,7 +209,7 @@ public class WorldEvent {
         if (event.getItemStack().getItem() instanceof MagicBlade) {
             for(int x = 0; x < event.getToolTip().size(); ++x) {
                 if (event.getToolTip().get(x).contains(I18n.translateToLocal("attribute.name.generic.attackDamage")) || event.getToolTip().get(x).contains(I18n.translateToLocal("Attack Damage"+""))) {
-                    event.getToolTip().set(x,  ChatFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.damageguer1111.name"))+" "+ChatFormatting.BLUE + I18n.translateToLocal("attribute.name.generic.attackDamage") );
+                    event.getToolTip().set(x,  TextFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.damageguer1111.name"))+" "+TextFormatting.BLUE + I18n.translateToLocal("attribute.name.generic.attackDamage") );
                     return;
                 }
             }
