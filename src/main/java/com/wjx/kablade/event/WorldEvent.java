@@ -275,6 +275,7 @@ public class WorldEvent {
     @SubscribeEvent
     public void onLivingUpdate(LivingEvent.LivingUpdateEvent event){
         EntityLivingBase entity = event.getEntityLiving();
+        
         World world = entity.world;
         NBTTagCompound KaBladeCompound = KaBladeEntityProperties.getPropCompound(entity);
         if (!entity.world.isRemote){
@@ -424,7 +425,7 @@ public class WorldEvent {
     public void PlayerUpdateEvent(TickEvent.PlayerTickEvent event){
         EntityPlayer player = event.player;
         World world = event.player.world;
-
+        NBTTagCompound playerProperties = playerProperties;
         if(player.world.isRemote){
             if(YesUpdate && !hasSendMessage){
                 hasSendMessage = true;
@@ -514,12 +515,12 @@ public class WorldEvent {
         if (!world.isRemote){
             if (event.phase == TickEvent.Phase.START){
                 //MagChaosBladeExtraAttack
-                if (KaBladePlayerProp.getPropCompound(player).hasKey(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK)){
-                    if (KaBladePlayerProp.getPropCompound(player).getInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK) > 0){
-                        KaBladeEntityProperties.doIntegerLower(KaBladePlayerProp.getPropCompound(player),KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
+                if (playerProperties.hasKey(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK)){
+                    if (playerProperties.getInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK) > 0){
+                        KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
                     }
                     else {
-                        KaBladePlayerProp.getPropCompound(player).removeTag(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
+                        playerProperties.removeTag(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
                         MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(player));
                         Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
                         double dist = 6;
@@ -565,10 +566,10 @@ public class WorldEvent {
                 }
                 //KamiOfWar
                 {
-                    if(KaBladePlayerProp.getPropCompound(player).getInteger(KaBladePlayerProp.KAMI_OF_WAR_COUNT)>0){
-                        if (KaBladePlayerProp.getPropCompound(player).getInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK)<=0){
-                            KaBladeEntityProperties.doIntegerLower(KaBladePlayerProp.getPropCompound(player),KaBladePlayerProp.KAMI_OF_WAR_COUNT);
-                            KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK,20);
+                    if(playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_COUNT)>0){
+                        if (playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK)<=0){
+                            KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.KAMI_OF_WAR_COUNT);
+                            playerProperties.setInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK,20);
                             world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
                             world.addWeatherEffect(new EntityLightningBolt(world,player.posX, player.posY, player.posZ,true));
 
@@ -602,8 +603,15 @@ public class WorldEvent {
                             }
                         }
                         else {
-                            KaBladeEntityProperties.doIntegerLower(KaBladePlayerProp.getPropCompound(player),KaBladePlayerProp.KAMI_OF_WAR_TICK);
+                            KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.KAMI_OF_WAR_TICK);
                         }
+                    }
+                }
+                //WindEnchantmentBoost
+                {
+                    if(playerProperties.getInteger(KaBladePlayerProp.WIND_ENCHANTMENT_BOOST)>0){
+                        KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.WIND_ENCHANTMENT_BOOST);
+                        if(player.getEntityAttribute().getModifier)
                     }
                 }
             }

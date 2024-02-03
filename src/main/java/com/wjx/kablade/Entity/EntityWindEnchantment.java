@@ -58,14 +58,14 @@ public class EntityWindEnchantment extends Entity {
             AxisAlignedBB bb = this.getEntityBoundingBox().grow(10d,0,10d).expand(0d,4d,0d);
             List<Entity> entityList = this.world.getEntitiesInAABBexcluding(this,bb,input -> input instanceof EntityPlayer));
             for (Entity e : entityList){
-                if (e instanceof EntityLivingBase){
-                    ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,40,3));
+                if (e instanceof EntityPlayer){
+                    KaBladePlayerProp.getPropCompound(e).setInteger(KaBladePlayerProp.WIND_ENCHANTMENT_BOOST,5);
                 }
             }
-            if (getRenderTick() >=5){
+            if (getRenderTick() >=100){
                 setRenderTick(0);
             }
-            if (getRenderTick() < 5){
+            if (getRenderTick() < 100){
                 setRenderTick(getRenderTick() + 1);
             }
             if (this.ticksExisted > 100){

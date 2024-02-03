@@ -15,6 +15,8 @@ public class KaBladePlayerProp {
     public static final String GLACIAL_BANE_EXTRA_TICK = "GLACIAL_BANE_EXTRA_TICK".toLowerCase(Locale.ROOT);
     public static final String KAMI_OF_WAR_COUNT = "KAMI_OF_WAR_COUNT".toLowerCase(Locale.ROOT);
     public static final String KAMI_OF_WAR_TICK = "KAMI_OF_WAR_TICK".toLowerCase(Locale.ROOT);
+    public static final String WIND_ENCHANTMENT_BOOST = "WIND_ENCHANTMENT_BOOST".toLowerCase(Locale.ROOT);
+
 
     public static final String RAGING_IZUMO_COLD_DOWN = "RAGING_IZUMO_COLD_DOWN".toLowerCase(Locale.ROOT);
 
