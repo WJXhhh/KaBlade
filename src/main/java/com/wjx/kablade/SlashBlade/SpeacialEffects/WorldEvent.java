@@ -1,4 +1,4 @@
-package com.wjx.kablade.SlashBlade.SpeacialEffects;
+/*package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
 import com.lmxxc.LMXXC;
 import com.lmxxc.NBTSava;
@@ -163,4 +163,4 @@ public class WorldEvent {
 
         }
     }
-}
+}*/
