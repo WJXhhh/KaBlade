@@ -19,6 +19,8 @@ public class BladeProxy {
     public static ISpecialEffect EMInduction = SpecialEffects.register(new SEEMInduction());
     public static ISpecialEffect GlacialBane = SpecialEffects.register(new SEGlacialBane());
     public static ISpecialEffect RagingIzumo = SpecialEffects.register(new SERagingIzumo());
+    public static ISpecialEffect PowerOfWind = SpecialEffects.register(new SEPowerOfWind());
+
 
     public static void CommonLoader(CommonProxy proxy){
         InitEventBus.register(proxy);
