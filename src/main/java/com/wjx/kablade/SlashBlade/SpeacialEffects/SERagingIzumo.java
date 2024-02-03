@@ -68,7 +68,7 @@ public class SERagingIzumo implements ISpecialEffect, IRemovable {
                         bb = bb.offset(player.motionX, player.motionY, player.motionZ);
                         List<Entity> entities = world.getEntitiesInAABBexcluding(player, bb, input -> input != player && input instanceof EntityLivingBase);
                         for (Entity e : entities) {
-                            e.attackEntityFrom(DamageSource.causeExplosionDamage(player), 6f);
+                            e.attackEntityFrom(DamageSource.causeExplosionDamage(player), 8f);
                             if (e instanceof EntityLivingBase) {
                                 EntityLivingBase en = (EntityLivingBase) e;
                                 en.addPotionEffect(new PotionEffect(PotionInit.PARALY, 40, 2));

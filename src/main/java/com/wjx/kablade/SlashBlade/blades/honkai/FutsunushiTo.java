@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeTwoRecipeModding;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
@@ -38,11 +39,11 @@ public class FutsunushiTo {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 720);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 730);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/FutsunushiTo/texFutsunushiTo");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/FutsunushiTo/mdlFutsunushiTo");
-        customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",19.0F);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,16642509);
@@ -54,17 +55,16 @@ public class FutsunushiTo {
         BladeLoader.NamedHonkai.add(name);
 
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.byorai", 1);
-        //ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.bamboo_iron", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"osahoko"),
-                blackblade, prevblade,
-                "  C",
-                " B ",
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.sky_breaker", 1);
+        ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.dawn_breaker", 1);
+        IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"futsunushi_to"),blackblade,prevblade,prevblade2,
                 "A B",
+                " C ",
+                "C C",
                 'A', prevblade,
-                'B',new ItemStack(Blocks.GLOWSTONE),
+                'B',prevblade2,
                 'C', new ItemStack(ItemInit.THUNDER_CRYSTAL));
 
-        SlashBlade.addRecipe("osahoko", recipe);
+        SlashBlade.addRecipe("futsunushi_to", recipe);
     }
 }
