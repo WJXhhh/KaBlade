@@ -64,7 +64,13 @@ public class SEPowerOfWind implements ISpecialEffect,IRemovable{
                 AbstractAttributeMap map = player.getAttributeMap();
                 IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
 
+                if(instance.getModifier(powAttid)!=null){
+                    instance.removeModifier(powAttid);
                     instance.applyModifier(new AttributeModifier(powAttid, "pow_att", speed / 10, 0));
+                }else {
+                    instance.applyModifier(new AttributeModifier(powAttid, "pow_att", speed / 10, 0));
+                }
+
 
                 //player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(damage+speed/10);
 
@@ -75,7 +81,13 @@ public class SEPowerOfWind implements ISpecialEffect,IRemovable{
                 AbstractAttributeMap map = player.getAttributeMap();
                 IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
 
-                instance.applyModifier(new AttributeModifier(powAttid, "pow_att", 0, 0));
+                if(instance.getModifier(powAttid)!=null){
+                    instance.removeModifier(powAttid);
+                instance.applyModifier(new AttributeModifier(powAttid, "pow_att", 0, 0));}
+                else {
+                    instance.applyModifier(new AttributeModifier(powAttid, "pow_att", 0, 0));
+
+                }
             }
 
         }
