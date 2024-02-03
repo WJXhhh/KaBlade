@@ -40,8 +40,8 @@ public class FairySword {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
         Item_HonkaiNamed.CustomMaxDamage.set(tag, 720);
 
-        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/FairySword/texFutsunushiTo");
-        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/FutsunushiTo/mdlFutsunushiTo");
+        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/FairySword/texFairySword");
+        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/FutsunushiTo/mdlFairySword");
         customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
