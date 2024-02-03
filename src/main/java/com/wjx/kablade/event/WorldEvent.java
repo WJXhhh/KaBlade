@@ -3,6 +3,7 @@ package com.wjx.kablade.event;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.sun.javafx.geom.Vec3f;
 import com.wjx.kablade.Entity.AbsEntityShield;
 import com.wjx.kablade.Entity.EntityRaikiriBlade;
 import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
@@ -43,13 +44,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntitySelectors;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -82,6 +81,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
+import java.util.Timer;
 
 import static com.wjx.kablade.Lib.*;
 import static com.wjx.kablade.Main.*;
@@ -560,6 +560,49 @@ public class WorldEvent {
                                     ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,3));
                                 }
                             }
+                        }
+                    }
+                }
+                //KamiOfWar
+                {
+                    if(KaBladePlayerProp.getPropCompound(player).getInteger(KaBladePlayerProp.KAMI_OF_WAR_COUNT)>0){
+                        if (KaBladePlayerProp.getPropCompound(player).getInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK)<=0){
+                            KaBladeEntityProperties.doIntegerLower(KaBladePlayerProp.getPropCompound(player),KaBladePlayerProp.KAMI_OF_WAR_COUNT);
+                            KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK,20);
+                            world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
+                            world.addWeatherEffect(new EntityLightningBolt(world,player.posX, player.posY, player.posZ,true));
+
+                            for (int i = 0; i < 40; ++i)
+                            {
+                                Random r1 =new Random();
+                                Random r2 =new Random(r1.nextLong());
+                                int state1;
+                                int state2;
+                                if (r1.nextBoolean()){
+                                    state1 = 1;
+                                }
+                                else state1 = -1;
+                                if (r2.nextBoolean()){
+                                    state2 = 1;
+                                }
+                                else state2 = -1;
+                                PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, player.posX + (world.rand.nextDouble() * 2 * state1), player.posY + world.rand.nextDouble() * (double)player.height, player.posZ + (world.rand.nextDouble() * 2 * state2), 0.0D, 0.0D, 0.0D));
+                                PACKET_HANDLER.sendToAll(new MessageSpawnColorfulSmoke(player.posX + (world.rand.nextDouble() * 2 * state1), player.posY + world.rand.nextDouble() * (double)player.height, player.posZ + (world.rand.nextDouble() * 2 * state2),new Vec3f(1f,0.945f,0.333f),2));
+                            }
+                            AxisAlignedBB bb = player.getEntityBoundingBox();
+                            bb = bb.grow(5,4,5);
+                            bb = bb.offset(player.motionX,player.motionY,player.motionZ);
+                            List<Entity> entities = world.getEntitiesInAABBexcluding(player,bb, input -> input != player && input instanceof EntityLivingBase);
+                            for (Entity e : entities){
+                                e.attackEntityFrom(DamageSource.causeExplosionDamage(player),6f);
+                                if (e instanceof EntityLivingBase){
+                                    EntityLivingBase en = (EntityLivingBase)e;
+                                    en.addPotionEffect(new PotionEffect(PotionInit.PARALY,40,2));
+                                }
+                            }
+                        }
+                        else {
+                            KaBladeEntityProperties.doIntegerLower(KaBladePlayerProp.getPropCompound(player),KaBladePlayerProp.KAMI_OF_WAR_TICK);
                         }
                     }
                 }

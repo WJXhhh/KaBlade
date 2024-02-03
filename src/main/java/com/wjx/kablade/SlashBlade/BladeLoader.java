@@ -102,6 +102,7 @@ public class BladeLoader {
             loadBlade(new ThirdSacredRelic());
             loadBlade(new MagStorm());
             loadBlade(new IceEpiphyllum());
+            loadBlade(new FutsunushiTo());
 
 
 

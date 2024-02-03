@@ -13,20 +13,24 @@ public class KaBladePlayerProp {
     public static final String LOCKING_ENTITY_LEFT_TIME = "locking_entity_left_time";
     public static final String MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK = "mag_chaos_blade_extra_attack_tick";
     public static final String GLACIAL_BANE_EXTRA_TICK = "GLACIAL_BANE_EXTRA_TICK".toLowerCase(Locale.ROOT);
+    public static final String KAMI_OF_WAR_COUNT = "KAMI_OF_WAR_COUNT".toLowerCase(Locale.ROOT);
+    public static final String KAMI_OF_WAR_TICK = "KAMI_OF_WAR_TICK".toLowerCase(Locale.ROOT);
 
-    public static void initNBT(EntityPlayer e){
-        if (!e.getEntityData().hasKey("kablade_player_property")){
-            e.getEntityData().setTag("kablade_player_property",new NBTTagCompound());
+    public static final String RAGING_IZUMO_COLD_DOWN = "RAGING_IZUMO_COLD_DOWN".toLowerCase(Locale.ROOT);
+
+    public static void initNBT(EntityPlayer e) {
+        if (!e.getEntityData().hasKey("kablade_player_property")) {
+            e.getEntityData().setTag("kablade_player_property", new NBTTagCompound());
         }
     }
 
-    public static NBTTagCompound getPropCompound(EntityPlayer e){
+    public static NBTTagCompound getPropCompound(EntityPlayer e) {
         initNBT(e);
         return e.getEntityData().getCompoundTag("kablade_player_property");
     }
 
-    public static void updateNBTForClient(EntityPlayer e){
-        Main.PACKET_HANDLER.sendToAll(new MessageUpdateKaBladePlayerProp(e.getEntityId(),getPropCompound(e)));
+    public static void updateNBTForClient(EntityPlayer e) {
+        Main.PACKET_HANDLER.sendToAll(new MessageUpdateKaBladePlayerProp(e.getEntityId(), getPropCompound(e)));
     }
 
 
