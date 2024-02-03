@@ -17,6 +17,7 @@ import java.util.List;
 public class BladeLoader {
 
     public static List<String> NamedBlades = Lists.newArrayList();
+    public static List<String> AwBlades = Lists.newArrayList();
     public static List<String> NamedGod = Lists.newArrayList();
     public static List<String> NamedHonkai = Lists.newArrayList();
     public static List<String> DIZUI = Lists.newArrayList();
