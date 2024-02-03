@@ -61,7 +61,9 @@ public class Item_Caijue extends ItemSlashBladeNamed {
         }
         //super.hitEntity(stack,par2EntityLivingBase,par3EntityLivingBase);
         super.hitEntity(stack,par2EntityLivingBase,par3EntityLivingBase);
-        par2EntityLivingBase.attackEntityFrom(DamageSource.causeMobDamage(par3EntityLivingBase),64f);
+        
+        
+        par2EntityLivingBase.attackEntityFrom(DamageSource.causeMobDamage(par3EntityLivingBase),stack.getTagCompound().getFloat("baseAttackModifier"));
 
 
 
