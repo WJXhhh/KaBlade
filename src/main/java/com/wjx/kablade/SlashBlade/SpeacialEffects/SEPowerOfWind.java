@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.util.BladeAttackEventManager;
+import com.wjx.kablade.util.KaBladePlayerProp;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 import mods.flammpfeil.slashblade.specialeffect.IRemovable;
@@ -51,21 +52,30 @@ public class SEPowerOfWind implements ISpecialEffect,IRemovable{
     @SubscribeEvent
     public void updateSEATKImprove(TickEvent.PlayerTickEvent event){
 
+        EntityPlayer player= event.player;
         if(event.phase==TickEvent.Phase.START){
             if (SpecialEffects.isEffective(event.player, event.player.getHeldItemMainhand(), BladeProxy.PowerOfWind) == SpecialEffects.State.Effective){
-                EntityPlayer player= event.player;
+
+                //NBTTagCompound playerta = KaBladePlayerProp.getPropCompound(player);
                 ItemStack stack=event.player.getHeldItemMainhand();
-                NBTTagCompound origin = player.nbt
+
                 double speed=player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getBaseValue();
                 double damage=player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue();
                 AbstractAttributeMap map = player.getAttributeMap();
                 IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
-                instance.applyModifier(new AttributeModifier(powAttid,"pow_att",speed/10,0));
-                player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(damage+speed/10);
+
+                    instance.applyModifier(new AttributeModifier(powAttid, "pow_att", speed / 10, 0));
+
+                //player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(damage+speed/10);
 
 
 
 
+            }else {
+                AbstractAttributeMap map = player.getAttributeMap();
+                IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
+
+                instance.applyModifier(new AttributeModifier(powAttid, "pow_att", 0, 0));
             }
 
         }
