@@ -23,6 +23,7 @@ import com.wjx.kablade.util.*;
 import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
 import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
+import io.netty.util.AttributeMap;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
@@ -38,6 +39,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,6 +50,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -59,6 +62,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -425,7 +429,8 @@ public class WorldEvent {
     public void PlayerUpdateEvent(TickEvent.PlayerTickEvent event){
         EntityPlayer player = event.player;
         World world = event.player.world;
-        NBTTagCompound playerProperties = playerProperties;
+        MinecraftServer
+        NBTTagCompound playerProperties = KaBladePlayerProp.getPropCompound(player);
         if(player.world.isRemote){
             if(YesUpdate && !hasSendMessage){
                 hasSendMessage = true;
@@ -611,7 +616,8 @@ public class WorldEvent {
                 {
                     if(playerProperties.getInteger(KaBladePlayerProp.WIND_ENCHANTMENT_BOOST)>0){
                         KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.WIND_ENCHANTMENT_BOOST);
-                        if(player.getEntityAttribute().getModifier)
+                        AbstractAttributeMap map = player.getAttributeMap();
+                        //map.getAttributeInstanceByName(SharedMonsterAttributes.MOVEMENT_SPEED.getName()).getModifier();
                     }
                 }
             }
