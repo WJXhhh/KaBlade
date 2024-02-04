@@ -128,6 +128,8 @@ info.slashblade.dizui.6=神印记将引爆，造成伤害。受波及者将附�
 info.slashblade.godkey.3=裁决之键
 info.slashblade.godkey.12=侵蚀之键
 
+info.allweapon.break=破限 %d
+
 #舞之技
 flammpfeil.slashblade.specialattack.magic=柒·邪极魔斩
 flammpfeil.slashblade.specialattack.lacerate_blade=撕裂灵刃
@@ -172,4 +174,6 @@ msg.raikiri_shield_crash=雷切护盾已损毁
 msg.raikiri_shield_blood=雷切护盾耐久还有：
 
 #魔之印
-enchantment.slow.name=缓慢
+
+info.allweapon.break = Transcend
+enchantment.kablade_slow=Slownessenchantment.slow.name=缓慢

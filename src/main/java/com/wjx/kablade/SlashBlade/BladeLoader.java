@@ -28,6 +28,8 @@ public class BladeLoader {
     public static Item ITEM_HONKAI_NAMED = null;
     public static Item ITEM_DIZUI= null;
 
+    public static Item ITEM_AW=null;
+
     public boolean autu=false;
 
 

@@ -4,6 +4,7 @@ import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,8 +31,9 @@ public class Item_AwNamed extends ItemSlashBladeNamed {
 
     @Override
     public void addInformationSwordClass(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        if (par1ItemStack.getTagCompound() != null && par1ItemStack.getTagCompound().getCompoundTag("allweapon").getInteger("OverLimi")>0) {
-
+        if (par1ItemStack.getTagCompound() != null && par1ItemStack.getTagCompound().getCompoundTag("allweapon").getInteger("OverLimi") > 0) {
+            NBTTagCompound alTag = par1ItemStack.getTagCompound().getCompoundTag("allweapon");
+            par3List.add(I18n.format("info.allweapon.break",alTag.getInteger("OverLimi")));
         }else{
             super.addInformationSwordClass(par1ItemStack, par2EntityPlayer, par3List, par4);
         }
