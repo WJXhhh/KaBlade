@@ -53,10 +53,7 @@ public class SEPowerOfWind implements ISpecialEffect, IRemovable {
         EntityPlayer player = event.player;
         if (event.phase == TickEvent.Phase.START) {
             if (SpecialEffects.isEffective(event.player, event.player.getHeldItemMainhand(), BladeProxy.PowerOfWind) == SpecialEffects.State.Effective) {
-                ItemStack stack = event.player.getHeldItemMainhand();
-
-                double speed = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getBaseValue();
-                double damage = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue();
+                double speed = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
                 AbstractAttributeMap map = player.getAttributeMap();
                 IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
 
