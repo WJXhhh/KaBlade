@@ -24,10 +24,15 @@ public class HonKaiZaizan extends SpecialAttackBase {
         AxisAlignedBB ax = entityPlayer.getEntityBoundingBox();
        ax= ax.grow(5,1,5);
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
-        List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input != entityPlayer && input instanceof EntityLivingBase);
+        List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input instanceof EntityLivingBase);
         for (Entity entity : entities){
-            if (entity != null && !(entity instanceof EntityPlayer)){
-                entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20);
+            if (entity != null){
+                if(!(entity instanceof EntityPlayer)){
+                    entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20);
+                }
+                else{
+                    entity.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,2));
+                }
             }
         }
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,2));
