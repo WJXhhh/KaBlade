@@ -40,6 +40,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -429,7 +430,6 @@ public class WorldEvent {
     public void PlayerUpdateEvent(TickEvent.PlayerTickEvent event){
         EntityPlayer player = event.player;
         World world = event.player.world;
-        MinecraftServer
         NBTTagCompound playerProperties = KaBladePlayerProp.getPropCompound(player);
         if(player.world.isRemote){
             if(YesUpdate && !hasSendMessage){
@@ -617,7 +617,27 @@ public class WorldEvent {
                     if(playerProperties.getInteger(KaBladePlayerProp.WIND_ENCHANTMENT_BOOST)>0){
                         KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.WIND_ENCHANTMENT_BOOST);
                         AbstractAttributeMap map = player.getAttributeMap();
-                        //map.getAttributeInstanceByName(SharedMonsterAttributes.MOVEMENT_SPEED.getName()).getModifier();
+                        if (map.getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getModifier(UUID_WIND_ENCHANTMENT) == null){
+                            map.getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(new AttributeModifier(UUID_WIND_ENCHANTMENT,"wind_enchantment",0.2,1));
+                        }
+                        if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).getModifier(UUID_WIND_ENCHANTMENT) == null){
+                            map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).applyModifier(new AttributeModifier(UUID_WIND_ENCHANTMENT,"wind_enchantment",0.25,1));
+                        }
+                        if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getModifier(UUID_WIND_ENCHANTMENT) == null){
+                            map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).applyModifier(new AttributeModifier(UUID_WIND_ENCHANTMENT,"wind_enchantment",0.2,1));
+                        }
+                    }
+                    else {
+                        AbstractAttributeMap map = player.getAttributeMap();
+                        if (map.getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getModifier(UUID_WIND_ENCHANTMENT) != null){
+                            map.getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(UUID_WIND_ENCHANTMENT);
+                        }
+                        if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).getModifier(UUID_WIND_ENCHANTMENT) != null){
+                            map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).removeModifier(UUID_WIND_ENCHANTMENT);
+                        }
+                        if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getModifier(UUID_WIND_ENCHANTMENT) != null){
+                            map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).removeModifier(UUID_WIND_ENCHANTMENT);
+                        }
                     }
                 }
             }

@@ -35,6 +35,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION,dependencies = "required-after:flammpfeil.slashblade")
 public class Main
@@ -53,6 +54,8 @@ public class Main
     public static Logger logger;
 
     public static boolean hasSendMessage = false;
+
+    public static final UUID UUID_WIND_ENCHANTMENT = UUID.fromString("AC560A99-7A72-C05B-D967-319E456A078C");
 
     public static CreativeTabs TABKABLADE = null;
     public static CreativeTabs TABKABLADE_BLADES = null;
