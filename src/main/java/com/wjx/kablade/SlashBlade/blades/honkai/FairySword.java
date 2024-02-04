@@ -54,17 +54,18 @@ public class FairySword {
         BladeLoader.NamedHonkai.add(name);
 
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.byorai", 1);
-        //ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.bamboo_iron", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"osahoko"),
-                blackblade, prevblade,
-                "  C",
-                " B ",
-                "A B",
-                'A', prevblade,
-                'B',new ItemStack(Blocks.GLOWSTONE),
-                'C', new ItemStack(ItemInit.THUNDER_CRYSTAL));
+        ItemStack prevblade1 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.vorpal_sword", 1);
+        ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.dawn_breaker", 1);
+        IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"fairy"),
+                blackblade, prevblade1,prevblade2
+                "D B",
+                " C ",
+                "A D",
+                'A', prevblade1,
+                'B',prevblade2,
+                'C',new ItemStack(Items.DIAMOND)
+                'D', new ItemStack(Items.GLOW_STONE));
 
-        SlashBlade.addRecipe("osahoko", recipe);
+        SlashBlade.addRecipe("fairy", recipe);
     }
 }
