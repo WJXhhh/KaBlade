@@ -22,13 +22,12 @@ public class HonKaiZaizan extends SpecialAttackBase {
         Spear spear = new Spear();
         spear.doSpacialAttack(itemStack,entityPlayer);
         AxisAlignedBB ax = entityPlayer.getEntityBoundingBox();
-       ax= ax.grow(3,1,3);
+       ax= ax.grow(5,1,5);
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input != entityPlayer && input instanceof EntityLivingBase);
         for (Entity entity : entities){
             if (entity != null && !(entity instanceof EntityPlayer)){
                 entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20);
-                entity.setFire(5);
             }
         }
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,2));

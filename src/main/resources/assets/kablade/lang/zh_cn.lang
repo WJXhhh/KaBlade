@@ -45,7 +45,7 @@ item.wjx.blade.honkai.third_sacred.name=3rd圣遗物
 item.wjx.blade.honkai.ice_epiphyllum.name=仿灵刀·冰昙天
 item.wjx.blade.honkai.futsunushi_to.name=辉刀·经津主
 item.wjx.blade.honkai.fairy_sword.name=妖精剑·希尔文
-
+item.wjx.blade.honkai.nue.name=影鵺
 
 
 item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
@@ -152,6 +152,8 @@ flammpfeil.slashblade.specialattack.domain_suppression=领域压杀
 flammpfeil.slashblade.specialattack.mag_chaos_blade=磁暴之刃
 flammpfeil.slashblade.specialattack.snow_dance=冰天雪舞
 flammpfeil.slashblade.specialattack.kami_of_war=神威镇世
+flammpfeil.slashblade.specialattack.zaizan=罪斩
+
 
 slashblade.seffect.name.kablade.SETurbulence=§5乱流
 slashblade.seffect.name.kablade.divine_penalty=§e天罚

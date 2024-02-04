@@ -45,6 +45,7 @@ item.wjx.blade.honkai.third_sacred.name=3rd Sacred Relic
 item.wjx.blade.honkai.ice_epiphyllum.name=Ice Epiphyllum
 item.wjx.blade.honkai.futsunushi_to.name=Futsunushi To
 item.wjx.blade.honkai.fairy_sword.name=Fairy Sword
+item.wjx.blade.honkai.nue.name=Nue of the Shadow
 
 item.wjx.blade.honkai.dizui.name=§d§lSeven Thunders of Retribution: Rumble
 
@@ -147,6 +148,7 @@ flammpfeil.slashblade.specialattack.domain_suppression=Domain Suppression
 flammpfeil.slashblade.specialattack.mag_chaos_blade=Chaos Blade
 flammpfeil.slashblade.specialattack.snow_dance=Snow Dance
 flammpfeil.slashblade.specialattack.kami_of_war=Kami of War
+flammpfeil.slashblade.specialattack.zaizan=Zaizan of Guilt
 
 slashblade.seffect.name.kablade.SETurbulence=§5Turbulence
 slashblade.seffect.name.kablade.divine_penalty=§eDivine_penalty
