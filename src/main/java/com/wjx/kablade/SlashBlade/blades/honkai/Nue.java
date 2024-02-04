@@ -1,18 +1,15 @@
 package com.wjx.kablade.SlashBlade.blades.honkai;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
-import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
-import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeTwoRecipeModding;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
-import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,11 +19,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import static com.wjx.kablade.Main.bladestr;
 
-public class FutsunushiTo {
-    String name = "wjx.blade.honkai.futsunushi_to";
-    String key = "wjx.blade.honkai.futsunushi_to";
+public class DawnBreaker {
+    String name = "wjx.blade.honkai.nue";
+    String key = "wjx.blade.honkai.nue";
 
-    public FutsunushiTo(){
+    public DawnBreaker(){
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -39,32 +36,31 @@ public class FutsunushiTo {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 730);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 710);
 
-        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/FutsunushiTo/texFutsunushiTo");
-        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/FutsunushiTo/mdlFutsunushiTo");
-        customblade.getTagCompound().setFloat("baseAttackModifier",19.0F);
-        customblade.addEnchantment(Enchantments.SHARPNESS,6);
+        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Nue/texNue");
+        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Nue/mdlNue");
+
+        customblade.getTagCompound().setFloat("baseAttackModifier",20.0F);
+        customblade.addEnchantment(Enchantments.KNOCKBACK,2);
+        customblade.addEnchantment(Enchantments.SHARPNESS,5);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
-        ItemSlashBlade.SummonedSwordColor.set(tag,16642509);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
-        ItemSlashBlade.SpecialAttackType.set(tag, 300);
-        SpecialEffects.addEffect(customblade, BladeProxy.RagingIzumo);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
+        ItemSlashBlade.SpecialAttackType.set(tag,294);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
-
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.sky_breaker", 1);
-        ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.dawn_breaker", 1);
-        IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"futsunushi_to"),blackblade,prevblade,prevblade2,
-                "A B",
-                " C ",
-                "C C",
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.galactic", 1);
+        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"dawn_breaker"),
+                blackblade, prevblade,
+                "  C",
+                " B ",
+                "A  ",
                 'A', prevblade,
-                'B',prevblade2,
-                'C', new ItemStack(ItemInit.THUNDER_CRYSTAL));
+                'B',new ItemStack(Items.DIAMOND),
+                'C', new ItemStack(ItemInit.AURORA_METAL_INGOT));
 
-        SlashBlade.addRecipe("futsunushi_to", recipe);
+        SlashBlade.addRecipe("dawn_breaker", recipe);
     }
 }

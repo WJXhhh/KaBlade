@@ -11,10 +11,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.List;
 
-public class HonKaiMoltenBlade extends SpecialAttackBase {
+public class HonKaiZaizan extends SpecialAttackBase {
     @Override
     public String toString() {
-        return "molten_blade";
+        return "zaizan";
     }
 
     @Override
@@ -27,9 +27,10 @@ public class HonKaiMoltenBlade extends SpecialAttackBase {
         List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input != entityPlayer && input instanceof EntityLivingBase);
         for (Entity entity : entities){
             if (entity != null && !(entity instanceof EntityPlayer)){
-                entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),10);
+                entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20);
                 entity.setFire(5);
             }
         }
+        entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,2));
     }
 }
