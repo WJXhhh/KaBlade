@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.google.common.base.Predicates;
+import com.wjx.kablade.Entity.EntityWindEnchantment;
 import com.wjx.kablade.init.PotionInit;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -73,6 +74,10 @@ public class HonkaiWindEnchantment extends SpecialAttackBase {
             x1 = r(world.rand);
             z1 = r(world.rand);
             world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL,entityPlayer.posX + (world.rand.nextDouble() * 3 * x1),entityPlayer.posY + world.rand.nextDouble(),entityPlayer.posZ + (world.rand.nextDouble() * 3 * z1),0d,0.1d,0d);
+        }
+        if (!world.isRemote){
+            EntityWindEnchantment enchantment  = new EntityWindEnchantment(world,entityPlayer);
+            world.spawnEntity(enchantment);
         }
     }
 
