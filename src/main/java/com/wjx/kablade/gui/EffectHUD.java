@@ -34,7 +34,7 @@ public class EffectHUD extends Gui {
             NBTTagCompound tag = KaBladePlayerProp.getPropCompound(player);
             for (String props : KaBladePlayerProp.buffs) {
                 if(tag.hasKey(props)){
-                    if (tag.getInteger(props) > 1) {
+                    if (tag.getInteger(props) > 0) {
                         aliveBuff.add(props);
                     }
                 }
