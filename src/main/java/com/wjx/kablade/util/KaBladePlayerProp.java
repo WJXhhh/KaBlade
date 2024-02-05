@@ -3,10 +3,13 @@ package com.wjx.kablade.util;
 import com.google.common.collect.Lists;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.MessageUpdateKaBladePlayerProp;
+import javafx.util.Pair;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import scala.Int;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,6 +27,14 @@ public class KaBladePlayerProp {
     public static final String RAGING_IZUMO_COLD_DOWN = "RAGING_IZUMO_COLD_DOWN".toLowerCase(Locale.ROOT);
 
     public static final String FAIR_POW="FAIR_POW".toLowerCase(Locale.ROOT);//
+
+
+    public static HashMap<String,Integer> Bufftimes = new HashMap<>();
+    static {
+        Bufftimes.put(KAMI_OF_WAR_COUNT,6);
+        Bufftimes.put(WIND_ENCHANTMENT_BOOST,5);
+        Bufftimes.put(FAIR_POW,1);
+    }
 
     public static List<String> buffs = Arrays.asList(
             KAMI_OF_WAR_COUNT,

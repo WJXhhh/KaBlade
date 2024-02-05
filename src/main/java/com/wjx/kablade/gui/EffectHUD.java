@@ -8,6 +8,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class EffectHUD extends Gui {
             }
             int start = gd-15;
             for (String s : aliveBuff) {
-                drawString(mc.fontRenderer, I18n.format(KaBladePlayerProp.getTrans(s)), 5, start, getColorFromRGB(1, 255, 255, 255));
+                drawString(mc.fontRenderer, getCDText(I18n.format(KaBladePlayerProp.getTrans(s)),KaBladePlayerProp.Bufftimes.get(s),tag.getInteger(s)), 5, start, getColorFromRGB(1, 255, 255, 255));
                 start -= 10;
             }
             if(!aliveBuff.isEmpty())
@@ -60,5 +61,14 @@ public class EffectHUD extends Gui {
         color += green << 8;
         color += blue;
         return color;
+    }
+
+    public String getCDText(String text,int max,int now){
+        StringBuilder sb =new StringBuilder(TextFormatting.GREEN+text);
+        int size=text.length();
+        double bizhi = (double) now /max;
+        int insertPos = (int) Math.ceil(size*bizhi)+2;
+        sb.insert(insertPos,TextFormatting.RESET);
+        return sb.toString();
     }
 }
