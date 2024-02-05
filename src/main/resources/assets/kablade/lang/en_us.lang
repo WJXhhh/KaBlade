@@ -149,6 +149,7 @@ flammpfeil.slashblade.specialattack.mag_chaos_blade=Chaos Blade
 flammpfeil.slashblade.specialattack.snow_dance=Snow Dance
 flammpfeil.slashblade.specialattack.kami_of_war=Kami of War
 flammpfeil.slashblade.specialattack.zaizan=Zaizan of Guilt
+flammpfeil.slashblade.specialattack.wind_enchantment=Wind Enchantment
 
 slashblade.seffect.name.kablade.SETurbulence=§5Turbulence
 slashblade.seffect.name.kablade.divine_penalty=§eDivine_penalty
@@ -169,3 +170,8 @@ msg.raikiri_shield_crash=Raikiri Shield has crashed
 msg.raikiri_shield_blood=Raikiri shield durability is still left：
 #Enchantment Name
 enchantment.kablade_slow=Slowness
+
+#能之备
+prop.kami_of_war_count=Kami of War
+prop.wind_enchantment_boost=Wind Enchantment
+prop.fair_pow=Power of War

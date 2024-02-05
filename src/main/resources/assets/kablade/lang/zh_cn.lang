@@ -153,6 +153,7 @@ flammpfeil.slashblade.specialattack.mag_chaos_blade=磁暴之刃
 flammpfeil.slashblade.specialattack.snow_dance=冰天雪舞
 flammpfeil.slashblade.specialattack.kami_of_war=神威镇世
 flammpfeil.slashblade.specialattack.zaizan=罪斩
+flammpfeil.slashblade.specialattack.wind_enchantment=风之结界
 
 
 slashblade.seffect.name.kablade.SETurbulence=§5乱流
@@ -181,5 +182,5 @@ enchantment.kablade_slow=Slownessenchantment.slow.name=缓慢
 
 #能之备
 prop.kami_of_war_count=神威镇世
-prop.wind_enchantment_boost=
+prop.wind_enchantment_boost=风之结界
 prop.fair_pow=风之力
