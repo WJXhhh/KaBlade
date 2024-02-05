@@ -615,7 +615,7 @@ public class WorldEvent {
                         }
                     }else if(flagikow==0){
                         KaBladePlayerProp.updateNBTForClient(player);
-                        flagi=1;
+                        flagikow=1;
                     }
                 }
                 //WindEnchantmentBoost
