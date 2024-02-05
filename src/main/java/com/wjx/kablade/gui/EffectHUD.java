@@ -3,9 +3,9 @@ package com.wjx.kablade.gui;
 import com.google.common.collect.Lists;
 import com.wjx.kablade.util.KaBladePlayerProp;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class EffectHUD extends Gui {
 
-    private Minecraft mc;
+    private final Minecraft mc;
     EntityPlayer player = Minecraft.getMinecraft().player;
 
 
@@ -39,9 +39,9 @@ public class EffectHUD extends Gui {
 
             }
             int start = gd-5;
-            for(int i=0;i<aliveBuff.size();i++){
-                drawString(mc.fontRenderer,KaBladePlayerProp.getTrans(aliveBuff.get(i)),0,start,getColorFromRGB(1,255,255,255));
-                start-=5;
+            for (String s : aliveBuff) {
+                drawString(mc.fontRenderer, I18n.format(KaBladePlayerProp.getTrans(s)), 5, start, getColorFromRGB(1, 255, 255, 255));
+                start -= 5;
             }
 
 
