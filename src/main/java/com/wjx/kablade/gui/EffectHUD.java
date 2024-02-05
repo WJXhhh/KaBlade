@@ -17,6 +17,8 @@ public class EffectHUD extends Gui {
     private final Minecraft mc;
     EntityPlayer player = Minecraft.getMinecraft().player;
 
+    private static List<String> aliveBuff = Lists.newArrayList();
+
 
 
     public EffectHUD(){
@@ -25,7 +27,7 @@ public class EffectHUD extends Gui {
 
     public void render(RenderGameOverlayEvent event){
         if(player!=null){
-            List<String> aliveBuff = Lists.newArrayList();
+            aliveBuff.clear();
             ScaledResolution scaledresolution = new ScaledResolution(mc);
             int kd = scaledresolution.getScaledWidth();        //宽度
             int gd = scaledresolution.getScaledHeight();        //高度
@@ -36,13 +38,17 @@ public class EffectHUD extends Gui {
                         aliveBuff.add(props);
                     }
                 }
-
             }
-            int start = gd-5;
+            int start = gd-15;
             for (String s : aliveBuff) {
                 drawString(mc.fontRenderer, I18n.format(KaBladePlayerProp.getTrans(s)), 5, start, getColorFromRGB(1, 255, 255, 255));
-                start -= 5;
+                start -= 10;
             }
+            if(!aliveBuff.isEmpty())
+            {
+                drawString(mc.fontRenderer, I18n.format("prop.title"), 5, start, getColorFromRGB(1, 100, 255, 255));
+            }
+            aliveBuff.clear();
 
 
         }

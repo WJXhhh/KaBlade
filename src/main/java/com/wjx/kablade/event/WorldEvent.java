@@ -605,6 +605,7 @@ public class WorldEvent {
                         }
                         else {
                             KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.KAMI_OF_WAR_TICK);
+                            KaBladePlayerProp.updateNBTForClient(player);
                         }
                     }
                 }

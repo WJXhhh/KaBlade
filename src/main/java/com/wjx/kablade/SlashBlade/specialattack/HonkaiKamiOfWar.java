@@ -33,6 +33,7 @@ public class HonkaiKamiOfWar extends SpecialAttackBase {
         double z = entityPlayer.posZ;
         KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.KAMI_OF_WAR_COUNT,6);
         KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK,1);
+        KaBladePlayerProp.updateNBTForClient(entityPlayer);
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE,40,1));
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,140,2));
     }
