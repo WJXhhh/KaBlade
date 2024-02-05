@@ -40,14 +40,14 @@ public class FairySword {
         Item_HonkaiNamed.CustomMaxDamage.set(tag, 720);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/FairySword/texFairySword");
-        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/FutsunushiTo/mdlFairySword");
+        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/FairySword/mdlFairySword");
         customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,16642509);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
-        ItemSlashBlade.SpecialAttackType.set(tag, 300);
-        SpecialEffects.addEffect(customblade, BladeProxy.RagingIzumo);
+        ItemSlashBlade.SpecialAttackType.set(tag, 301);
+        SpecialEffects.addEffect(customblade, BladeProxy.PowerOfWind);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);

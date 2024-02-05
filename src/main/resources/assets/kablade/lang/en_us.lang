@@ -171,7 +171,11 @@ msg.raikiri_shield_blood=Raikiri shield durability is still left：
 #Enchantment Name
 enchantment.kablade_slow=Slowness
 
+
+
 #能之备
+prop.title=KaBlade:Effect
+
 prop.kami_of_war_count=Kami of War
 prop.wind_enchantment_boost=Wind Enchantment
 prop.fair_pow=Power of War

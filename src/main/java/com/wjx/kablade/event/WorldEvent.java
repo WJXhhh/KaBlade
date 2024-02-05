@@ -571,6 +571,7 @@ public class WorldEvent {
                         if (playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK)<=0){
                             KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.KAMI_OF_WAR_COUNT);
                             playerProperties.setInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK,20);
+                            KaBladePlayerProp.updateNBTForClient(player);
                             world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
                             world.addWeatherEffect(new EntityLightningBolt(world,player.posX, player.posY, player.posZ,true));
 
@@ -613,6 +614,7 @@ public class WorldEvent {
                 {
                     if(playerProperties.getInteger(KaBladePlayerProp.WIND_ENCHANTMENT_BOOST)>0){
                         KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.WIND_ENCHANTMENT_BOOST);
+                        KaBladePlayerProp.updateNBTForClient(player);
                         AbstractAttributeMap map = player.getAttributeMap();
                         if (map.getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getModifier(UUID_WIND_ENCHANTMENT) == null){
                             map.getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(new AttributeModifier(UUID_WIND_ENCHANTMENT,"wind_enchantment",0.5,1));

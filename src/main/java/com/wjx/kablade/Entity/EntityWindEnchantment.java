@@ -98,6 +98,7 @@ public class EntityWindEnchantment extends Entity {
             for (Entity e : entityList){
                 if (e instanceof EntityPlayer){
                     KaBladePlayerProp.getPropCompound((EntityPlayer) e).setInteger(KaBladePlayerProp.WIND_ENCHANTMENT_BOOST,5);
+                    KaBladePlayerProp.updateNBTForClient((EntityPlayer) e);
                 }
             }
             if (getRenderTick() >=100){
