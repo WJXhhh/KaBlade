@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
 import com.wjx.kablade.SlashBlade.BladeProxy;
+import com.wjx.kablade.util.KaBladePlayerProp;
 import mods.flammpfeil.slashblade.specialeffect.IRemovable;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
@@ -57,6 +58,8 @@ public class SEPowerOfWind implements ISpecialEffect, IRemovable {
                 AbstractAttributeMap map = player.getAttributeMap();
                 IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
 
+
+                KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.FAIR_POW,1);
                 if (instance.getModifier(powAttid) != null) {
                     instance.removeModifier(powAttid);
                     instance.applyModifier(new AttributeModifier(powAttid, "pow_att", speed / 10, 0));
@@ -67,6 +70,7 @@ public class SEPowerOfWind implements ISpecialEffect, IRemovable {
                 AbstractAttributeMap map = player.getAttributeMap();
                 IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
 
+                KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.FAIR_POW,0);
                 if (instance.getModifier(powAttid) != null) {
                     instance.removeModifier(powAttid);
                     instance.applyModifier(new AttributeModifier(powAttid, "pow_att", 0, 0));
