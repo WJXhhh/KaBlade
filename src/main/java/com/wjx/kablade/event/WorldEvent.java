@@ -114,6 +114,9 @@ public class WorldEvent {
         }
     };
 
+    int flagikow=1;
+    int flagweb=1;
+
 
 
     ResourceLocation HuntingLockerIcon = new ResourceLocation(Main.MODID + ":textures/icon/hunting_locker.png");
@@ -567,7 +570,9 @@ public class WorldEvent {
                 }
                 //KamiOfWar
                 {
+                    
                     if(playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_COUNT)>0){
+                        flagikow=0;
                         if (playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK)<=0){
                             KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.KAMI_OF_WAR_COUNT);
                             playerProperties.setInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK,20);
@@ -608,11 +613,15 @@ public class WorldEvent {
                             KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.KAMI_OF_WAR_TICK);
                             KaBladePlayerProp.updateNBTForClient(player);
                         }
+                    }else if(flagikow==0){
+                        KaBladePlayerProp.updateNBTForClient(player);
+                        flagi=1;
                     }
                 }
                 //WindEnchantmentBoost
                 {
                     if(playerProperties.getInteger(KaBladePlayerProp.WIND_ENCHANTMENT_BOOST)>0){
+                        flagweb=0;
                         KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.WIND_ENCHANTMENT_BOOST);
                         KaBladePlayerProp.updateNBTForClient(player);
                         AbstractAttributeMap map = player.getAttributeMap();
@@ -625,6 +634,7 @@ public class WorldEvent {
                         if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getModifier(UUID_WIND_ENCHANTMENT) == null){
                             map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).applyModifier(new AttributeModifier(UUID_WIND_ENCHANTMENT,"wind_enchantment",0.2,1));
                         }
+                        KaBladePlayerProp.updateNBTForClient(player);
                     }
                     else {
                         AbstractAttributeMap map = player.getAttributeMap();
@@ -637,6 +647,11 @@ public class WorldEvent {
                         if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getModifier(UUID_WIND_ENCHANTMENT) != null){
                             map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).removeModifier(UUID_WIND_ENCHANTMENT);
                         }
+                        if(flagweb==0){
+                            KaBladePlayerProp.updateNBTForClient(player);
+                            flagweb=1;
+                        }
+
                     }
                 }
             }
