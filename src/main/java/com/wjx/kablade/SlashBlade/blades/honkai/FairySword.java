@@ -3,15 +3,14 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
-import com.wjx.kablade.init.ItemInit;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeTwoRecipeModding;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
-import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +24,7 @@ public class FairySword {
     String name = "wjx.blade.honkai.fairy_sword";
     String key = "wjx.blade.honkai.fairy_sword";
 
-    public FutsunushiTo(){
+    public FairySword(){
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -57,14 +56,14 @@ public class FairySword {
         ItemStack prevblade1 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.vorpal_sword", 1);
         ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.dawn_breaker", 1);
         IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"fairy"),
-                blackblade, prevblade1,prevblade2
+                blackblade, prevblade1,prevblade2,
                 "D B",
                 " C ",
                 "A D",
                 'A', prevblade1,
                 'B',prevblade2,
-                'C',new ItemStack(Items.DIAMOND)
-                'D', new ItemStack(Items.GLOW_STONE));
+                'C',new ItemStack(Items.DIAMOND),
+                'D', new ItemStack(Items.GLOWSTONE_DUST));
 
         SlashBlade.addRecipe("fairy", recipe);
     }

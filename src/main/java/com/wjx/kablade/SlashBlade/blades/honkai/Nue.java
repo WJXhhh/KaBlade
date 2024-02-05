@@ -19,11 +19,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import static com.wjx.kablade.Main.bladestr;
 
-public class DawnBreaker {
+public class Nue {
     String name = "wjx.blade.honkai.nue";
     String key = "wjx.blade.honkai.nue";
 
-    public DawnBreaker(){
+    public Nue(){
         MinecraftForge.EVENT_BUS.register(this);
     }
 

@@ -23,7 +23,6 @@ import com.wjx.kablade.util.*;
 import com.wjx.kablade.util.handlers.PlayerThrowableHandler;
 import com.wjx.kablade.util.interfaces.IKabladeOre;
 import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
-import io.netty.util.AttributeMap;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
@@ -51,7 +50,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -63,7 +61,6 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -76,7 +73,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -85,8 +81,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-import java.util.*;
 import java.util.Timer;
+import java.util.*;
 
 import static com.wjx.kablade.Lib.*;
 import static com.wjx.kablade.Main.*;
@@ -618,7 +614,7 @@ public class WorldEvent {
                         KaBladeEntityProperties.doIntegerLower(playerProperties,KaBladePlayerProp.WIND_ENCHANTMENT_BOOST);
                         AbstractAttributeMap map = player.getAttributeMap();
                         if (map.getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getModifier(UUID_WIND_ENCHANTMENT) == null){
-                            map.getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(new AttributeModifier(UUID_WIND_ENCHANTMENT,"wind_enchantment",0.2,1));
+                            map.getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(new AttributeModifier(UUID_WIND_ENCHANTMENT,"wind_enchantment",0.5,1));
                         }
                         if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).getModifier(UUID_WIND_ENCHANTMENT) == null){
                             map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).applyModifier(new AttributeModifier(UUID_WIND_ENCHANTMENT,"wind_enchantment",0.25,1));

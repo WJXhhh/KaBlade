@@ -19,6 +19,7 @@ public class EntityInit {
         registerEntity("summoned_sword_base_plus",EntitySummonedSwordBasePlus.class,13700005,50);
         registerEntity("wine",EntityWine.class,13700006,50);
         registerEntity("freeze_domain", EntityFreezeDomain.class,13700007,50);
+        registerEntity("wind_enchantment", EntityWindEnchantment.class,13700008,50);
     }
 
     private static void registerEntitySpawn(Class<? extends Entity> entityClass, int spawnWeight, int min, int max, EnumCreatureType typeOfCreature, Biome... biomes)

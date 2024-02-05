@@ -5,7 +5,9 @@ import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -31,7 +33,7 @@ public class HonKaiZaizan extends SpecialAttackBase {
                     entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20);
                 }
                 else{
-                    entity.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,2));
+                    ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,2));
                 }
             }
         }
