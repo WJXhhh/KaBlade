@@ -32,7 +32,7 @@ apply plugin: 'maven-publish'
 // MixinGradle:
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.5.4-b'
+version = '1.6.0-a'
 group = 'com.wjx.kablade' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'kablade'
 
@@ -82,10 +82,11 @@ minecraft {
 
 fancyGradle {
     patches {
-        resources
+        resources//ver
         coremods
         codeChickenLib
         asm
+        mergetool
     }
 }
 
