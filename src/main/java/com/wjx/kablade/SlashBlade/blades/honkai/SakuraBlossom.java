@@ -38,11 +38,12 @@ public class SakuraBlossom {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
         Item_HonkaiNamed.CustomMaxDamage.set(tag, 750);
 
-        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/SakuraBlossom/texSakuraBlossom");
-        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/SakuraBlossom/mdlSakuraBlossom");
+        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/DawnBreaker/texSakuraBlossom");
+        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/DawnBreaker/mdlSakuraBlossom");
 
-        customblade.getTagCompound().setFloat("baseAttackModifier",19.0F);
-        customblade.addEnchantment(Enchantments.SHARPNESS,5);
+        customblade.getTagCompound().setFloat("baseAttackModifier",17.0F);
+        customblade.addEnchantment(Enchantments.KNOCKBACK,2);
+        customblade.addEnchantment(Enchantments.SHARPNESS,4);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);

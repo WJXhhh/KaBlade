@@ -97,6 +97,12 @@ public class WorldEvent {
         timer.schedule(task,0,5);
     }
 
+    public static Set<Vector2O<Runnable,Integer>> tickSchedule = Sets.newHashSet();
+
+    public static void addTickDelayTask(int tick,Runnable runnable){
+        tickSchedule.add(new Vector2O<>(runnable, tick));
+    }
+
 
 
     public static ArrayList<Integer> auroraBladeColor = Lists.newArrayList();
@@ -167,6 +173,18 @@ public class WorldEvent {
                          }
                      }
                  }
+                 if (!tickSchedule.isEmpty()){
+                     for (Iterator<Vector2O<Runnable, Integer>> iterator = tickSchedule.iterator(); iterator.hasNext();){
+                         Vector2O<Runnable,Integer> v = iterator.next();
+                         if(v.value <= 0){
+                             v.key.run();
+                             iterator.remove();
+                         }
+                         else {
+                             v.value--;
+                         }
+                     }
+                 }
              }
          }
      }
@@ -176,7 +194,6 @@ public class WorldEvent {
         Entity entity = event.getEntity();
         for (Class<? extends Entity> clazz : antiEntity) {
             if (clazz.isInstance(entity)) {
-                //Main.logger.info("checked "+ clazz);
                 event.setCanceled(true);
                 return;
             }
