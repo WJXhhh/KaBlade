@@ -38,8 +38,8 @@ public class SakuraBlossom {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
         Item_HonkaiNamed.CustomMaxDamage.set(tag, 750);
 
-        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/DawnBreaker/texSakuraBlossom");
-        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/DawnBreaker/mdlSakuraBlossom");
+        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/SakuraBlossom/texSakuraBlossom");
+        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/SakuraBlossom/mdlSakuraBlossom");
 
         customblade.getTagCompound().setFloat("baseAttackModifier",19.0F);
         customblade.addEnchantment(Enchantments.SHARPNESS,5);
