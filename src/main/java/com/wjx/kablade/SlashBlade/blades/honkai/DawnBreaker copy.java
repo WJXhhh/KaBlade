@@ -19,11 +19,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import static com.wjx.kablade.Main.bladestr;
 
-public class Nue {
-    String name = "wjx.blade.honkai.nue";
-    String key = "wjx.blade.honkai.nue";
+public class SakuraBlossom {
+    String name = "wjx.blade.honkai.dawn_breaker";
+    String key = "wjx.blade.honkai.dawn_breaker";
 
-    public Nue(){
+    public DawnBreaker(){
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -38,29 +38,29 @@ public class Nue {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
         Item_HonkaiNamed.CustomMaxDamage.set(tag, 750);
 
-        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Nue/texNue");
-        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Nue/mdlNue");
+        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/DawnBreaker/texDawnBreaker");
+        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/DawnBreaker/mdlDawnBreaker");
 
-        customblade.getTagCompound().setFloat("baseAttackModifier",21.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",17.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
-        customblade.addEnchantment(Enchantments.SHARPNESS,5);
+        customblade.addEnchantment(Enchantments.SHARPNESS,4);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
-        ItemSlashBlade.SpecialAttackType.set(tag,302);
+        ItemSlashBlade.SpecialAttackType.set(tag,294);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "dawn_breaker", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"nue"),
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.galactic", 1);
+        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"dawn_breaker"),
                 blackblade, prevblade,
-                " CC",
-                " BC",
+                "  C",
+                " B ",
                 "A  ",
                 'A', prevblade,
-                'B',new ItemStack(Items.FEATHER),
-                'C', new ItemStack(ItemInit.MOLYBDENUM_SWORD));
+                'B',new ItemStack(Items.DIAMOND),
+                'C', new ItemStack(ItemInit.AURORA_METAL_INGOT));
 
-        SlashBlade.addRecipe("nue", recipe);
+        SlashBlade.addRecipe("dawn_breaker", recipe);
     }
 }
