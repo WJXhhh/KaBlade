@@ -51,16 +51,16 @@ public class Nue {
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.galactic", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"dawn_breaker"),
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "dawn_breaker", 1);
+        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"nue"),
                 blackblade, prevblade,
-                "  C",
-                " B ",
+                " CC",
+                " BC",
                 "A  ",
                 'A', prevblade,
-                'B',new ItemStack(Items.DIAMOND),
-                'C', new ItemStack(ItemInit.AURORA_METAL_INGOT));
+                'B',new ItemStack(Items.FEATHER),
+                'C', new ItemStack(ItemInit.MOLYBDENUM_SWORD));
 
-        SlashBlade.addRecipe("dawn_breaker", recipe);
+        SlashBlade.addRecipe("nue", recipe);
     }
 }
