@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade;
 
+import com.wjx.kablade.AllWeapon.blade.specialattack.AL_YanjiFZ;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.*;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
@@ -45,6 +46,10 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(300,new HonkaiKamiOfWar());
             ItemSlashBlade.specialAttacks.put(301,new HonkaiWindEnchantment());
             ItemSlashBlade.specialAttacks.put(302,new HonKaiZaizan());
+
+
+            //AW
+            ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());
         }
         ItemSlashBlade.specialAttacks.put(288,new RockHit_I());
         ItemSlashBlade.specialAttacks.put(289,new SaBreakTheDawn());
