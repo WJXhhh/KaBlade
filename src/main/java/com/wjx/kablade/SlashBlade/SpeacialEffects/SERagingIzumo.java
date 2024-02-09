@@ -1,14 +1,10 @@
 package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
-import com.sun.javafx.geom.Vec3f;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.network.MessageSpawnColorfulSmoke;
 import com.wjx.kablade.network.MessageSpawnParticle;
-import com.wjx.kablade.util.BladeAttackEvent;
-import com.wjx.kablade.util.BladeAttackEventManager;
-import com.wjx.kablade.util.KaBladeEntityProperties;
-import com.wjx.kablade.util.KaBladePlayerProp;
+import com.wjx.kablade.util.*;
 import mods.flammpfeil.slashblade.specialeffect.IRemovable;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;

@@ -1,7 +1,7 @@
 package com.wjx.kablade.network;
 
-import com.sun.javafx.geom.Vec3f;
 import com.wjx.kablade.particle.ParticleColorfulSmoke;
+import com.wjx.kablade.util.Vec3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
