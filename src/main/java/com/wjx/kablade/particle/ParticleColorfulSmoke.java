@@ -1,6 +1,6 @@
 package com.wjx.kablade.particle;
 
-import com.sun.javafx.geom.Vec3f;
+import com.wjx.kablade.util.Vec3f;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;

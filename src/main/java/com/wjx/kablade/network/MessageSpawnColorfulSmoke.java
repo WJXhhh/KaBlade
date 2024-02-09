@@ -1,8 +1,7 @@
 package com.wjx.kablade.network;
 
-import com.sun.javafx.geom.Vec3f;
+import com.wjx.kablade.util.Vec3f;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class MessageSpawnColorfulSmoke implements IMessage {
@@ -13,7 +12,7 @@ public class MessageSpawnColorfulSmoke implements IMessage {
 
     }
 
-    public MessageSpawnColorfulSmoke(double xIn, double yIn, double zIn, Vec3f rgb,int life){
+    public MessageSpawnColorfulSmoke(double xIn, double yIn, double zIn, Vec3f rgb, int life){
         this.x = xIn;
         this.y =yIn;
         this.z = zIn;

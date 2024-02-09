@@ -5,6 +5,7 @@ import com.wjx.kablade.util.KaBladePlayerProp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,10 +45,12 @@ public class EffectHUD extends Gui {
             for (String s : aliveBuff) {
                 drawString(mc.fontRenderer, getCDText(I18n.format(KaBladePlayerProp.getTrans(s)),KaBladePlayerProp.Bufftimes.get(s),tag.getInteger(s)), 5, start, getColorFromRGB(1, 255, 255, 255));
                 start -= 10;
+
             }
             if(!aliveBuff.isEmpty())
             {
                 drawString(mc.fontRenderer, I18n.format("prop.title"), 5, start, getColorFromRGB(1, 100, 255, 255));
+                GlStateManager.color(1f,1f,1f);
             }
             aliveBuff.clear();
 
