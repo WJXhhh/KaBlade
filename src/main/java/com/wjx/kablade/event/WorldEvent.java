@@ -783,6 +783,7 @@ public class WorldEvent {
         World world = e.getEntityWorld();
         NBTTagCompound kec = KaBladeEntityProperties.getPropCompound(e);
         //Shield
+        if(!world.isRemote)
         {
             if (e instanceof EntityPlayer){
                 ArrayList<AbsEntityShield> list = Lists.newArrayList();

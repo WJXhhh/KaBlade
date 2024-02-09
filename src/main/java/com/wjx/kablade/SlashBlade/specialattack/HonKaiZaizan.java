@@ -47,9 +47,6 @@ public class HonKaiZaizan extends SpecialAttackBase {
                 }
             }
             WorldEvent.addTickDelayTask(12, () -> entityPlayer.addPotionEffect(s));
-            //PACKET_HANDLER.sendToServer(new MessageRePushPotion(entityPlayer,Potion.getIdFromPotion(MobEffects.STRENGTH),100,2));
-            //entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,2));
-
         }
     }
 }

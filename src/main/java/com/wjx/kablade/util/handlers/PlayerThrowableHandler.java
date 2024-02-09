@@ -36,7 +36,7 @@ public class PlayerThrowableHandler {
         return curEntities2;
     }
     public static List<Entity> getAllThrowableForPlayer(World world, EntityPlayer player){
-        List<Entity> allEntities = world.getLoadedEntityList();
+        List<Entity> allEntities = world.loadedEntityList;
         ArrayList<Entity> curEntities = Lists.newArrayList();
         if (allEntities.isEmpty()){
             return curEntities;
