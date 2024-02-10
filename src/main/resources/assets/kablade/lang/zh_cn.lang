@@ -50,12 +50,21 @@ item.wjx.blade.honkai.nue.name=影鵺
 
 item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
 
+
+
+
+#AllWeapon
+item.wjx.allweapon.liurrh=§c炎王§9「§l§c流刃若火§r§9」
+#AllWeaponSA
+flammpfeil.slashblade.specialattack.magic=§c炎§4极§e·抚斩
+
 #组之呈
 itemGroup.tabkablade=斩无不断
 itemGroup.tabkablade_blades=斩无不断:铭刀
 itemGroup.tabkablade_bladesgod=斩无不断:神锻
 itemGroup.tabkablade_honkai=斩无不断:崩坏
 itemGroup.tabkablade_ore=斩无不断:矿藏
+itemGroup.tabkablade_allweapon=斩无不断:万物皆可为兵刃
 
 
 

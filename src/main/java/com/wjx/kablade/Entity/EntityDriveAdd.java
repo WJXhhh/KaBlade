@@ -1,5 +1,6 @@
 package com.wjx.kablade.Entity;
 
+import com.wjx.kablade.util.Vec3f;
 import mods.flammpfeil.slashblade.ability.ArmorPiercing;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
@@ -47,7 +48,15 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     private static final DataParameter<Boolean> IS_MULTI_HIT;
     private static final DataParameter<Boolean> IS_SLASH_DIMENSION;
 
+    public static final DataParameter<String> PARTICLE_STYLE;
+
+    public static final DataParameter<Float> COLOR_R;
+    public static final DataParameter<Float> COLOR_G;
+    public static final DataParameter<Float> COLOR_B;
+
     public int colors=0xFFFFFF;
+
+    public Vec3f color3f = new Vec3f(1f,1f,1f);
     public float scaleX=0.25f;
     public float scaleY=1f;
     public float scaleZ =1f;
@@ -99,6 +108,11 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
         this.getDataManager().register(LIFETIME, 20);
         this.getDataManager().register(IS_MULTI_HIT, false);
         this.getDataManager().register(IS_SLASH_DIMENSION, false);
+        this.getDataManager().register(PARTICLE_STYLE,"EXPLOSION_NORMAL");
+        this.getDataManager().register(COLOR_R,1f);
+        this.getDataManager().register(COLOR_G,1f);
+        this.getDataManager().register(COLOR_B,1f);
+
     }
 
     public boolean getIsMultiHit() {
@@ -274,6 +288,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
             this.alreadyHitEntity = null;
             this.setDead();
         }
+        this.playParticle();
 
     }
 
@@ -368,8 +383,8 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     public void playParticle() {
         this.i = 0;
         while (this.i < 20) {
-            String particle = particleO;
-            if (particle != null && !particle.isEmpty()) {
+            String particle = this.dataManager.get(PARTICLE_STYLE);
+            if (!particle.isEmpty()) {
                 Random rand = new Random();
                 double var2 = rand.nextGaussian() * 0.12;
                 double var4 = rand.nextGaussian() * 0.12;
@@ -382,10 +397,14 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     }
 
     static {
-        ROLL = EntityDataManager.createKey(EntityDrive.class, DataSerializers.FLOAT);
-        LIFETIME = EntityDataManager.createKey(EntityDrive.class, DataSerializers.VARINT);
-        IS_MULTI_HIT = EntityDataManager.createKey(EntityDrive.class, DataSerializers.BOOLEAN);
-        IS_SLASH_DIMENSION = EntityDataManager.createKey(EntityDrive.class, DataSerializers.BOOLEAN);
+        ROLL = EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.FLOAT);
+        LIFETIME = EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.VARINT);
+        IS_MULTI_HIT = EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.BOOLEAN);
+        IS_SLASH_DIMENSION = EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.BOOLEAN);
+        PARTICLE_STYLE = EntityDataManager.createKey(EntityDriveAdd.class,DataSerializers.STRING);
+        COLOR_R = EntityDataManager.createKey(EntityDriveAdd.class,DataSerializers.FLOAT);
+        COLOR_G = EntityDataManager.createKey(EntityDriveAdd.class,DataSerializers.FLOAT);
+        COLOR_B = EntityDataManager.createKey(EntityDriveAdd.class,DataSerializers.FLOAT);
     }
 }
 

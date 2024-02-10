@@ -7,6 +7,7 @@ import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
 import mods.flammpfeil.slashblade.stats.AchievementList;
+import mods.flammpfeil.slashblade.util.SlashBladeHooks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,11 +40,17 @@ public class AL_LiuRRHuo {
         ItemSlashBlade.StandbyRenderType.set(Tag, 2);
         ItemSlashBlade.SummonedSwordColor.set(Tag, 0xFF0000);
         ItemSlashBlade.SpecialAttackType.set(Tag,400);
+        ItemSlashBlade.BaseAttackModifier.set(Tag,10f);
         customblade.addEnchantment(Enchantments.FIRE_ASPECT,20);
         customblade.addEnchantment(Enchantments.POWER,20);
         //customblade.addEnchantment(Enchantments.,20);
         SlashBlade.registerCustomItemStack(name,customblade);
         BladeLoader.AwBlades.add(name);
         //AchievementList.registerAchievement("name",customblade,null);
+    }
+
+    @SubscribeEvent
+    public void postinit(LoadEvent.PostInitEvent event) {
+        SlashBladeHooks.EventBus.register(this);
     }
 }

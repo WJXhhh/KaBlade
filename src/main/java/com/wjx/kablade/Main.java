@@ -8,6 +8,7 @@ import com.wjx.kablade.init.*;
 import com.wjx.kablade.proxy.CommonProxy;
 import com.wjx.kablade.util.Reference;
 import mods.flammpfeil.slashblade.SlashBlade;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -42,7 +44,9 @@ public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "1.6.0";
+    public static final String VERSION = "1.6.1";
+
+    public static final boolean EnableAllWeapon =false;
 
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
@@ -63,6 +67,11 @@ public class Main
     public static CreativeTabs TABKABLADE_BLADES_HONKAI = null;
     public static CreativeTabs TABKABLADE_ORE = null;
 
+    public static CreativeTabs TABKABLADE_BLADES_ALLWEAPON = null;
+
+    public Minecraft mc=Minecraft.getMinecraft();
+
+
     private void sseee(){
         TABKABLADE = new tabkablade();
         TABKABLADE_BLADES = new tabkablade_blades("tabkablade_blades");
@@ -78,6 +87,14 @@ public class Main
             GALoaded = true;
             TABKABLADE_BLADES_GOD = new tabkablade_bladesgod("tabkablade_bladesgod");
             TABKABLADE_BLADES_HONKAI = new tabkablade_honkai("tabkablade_honkai");
+        }
+        if(EnableAllWeapon){
+            TABKABLADE_BLADES_ALLWEAPON=new CreativeTabs("tabkablade_allweapon") {
+                @Override
+                public ItemStack createIcon() {
+                    return null;
+                }
+            };
         }
 
     }

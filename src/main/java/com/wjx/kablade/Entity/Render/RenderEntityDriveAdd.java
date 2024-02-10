@@ -1,6 +1,7 @@
 package com.wjx.kablade.Entity.Render;
 
 import com.wjx.kablade.Entity.EntityDriveAdd;
+import com.wjx.kablade.util.Vec3f;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -8,6 +9,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
+
 
 public class RenderEntityDriveAdd extends Render<EntityDriveAdd> {
     private static double[][] dVec = new double[][]{{0.0, 1.0, -0.5}, {0.0, 0.75, 0.0}, {0.1, 0.6, -0.15}, {0.0, 0.5, -0.25}, {-0.1, 0.6, -0.15}, {0.0, 0.0, 0.25}, {0.25, 0.0, 0.0}, {0.0, 0.0, -0.25}, {-0.25, 0.0, 0.0}, {0.0, -0.75, 0.0}, {0.1, -0.6, -0.15}, {0.0, -0.5, -0.25}, {-0.1, -0.6, -0.15}, {0.0, -1.0, -0.5}};
@@ -41,15 +43,22 @@ public class RenderEntityDriveAdd extends Render<EntityDriveAdd> {
         GL11.glRotatef(entityDrive.getRoll(), 0.0F, 0.0F, 1.0F);
         GL11.glScalef(entityDrive.scaleX,entityDrive.scaleY,entityDrive.scaleZ);
         //GL11.glScalef(0.25F, 1.0F, 1.0F);
+
+
+
+
+        float r = entityDrive.getDataManager().get(EntityDriveAdd.COLOR_R);
+        float g = entityDrive.getDataManager().get(EntityDriveAdd.COLOR_G);
+        float b = entityDrive.getDataManager().get(EntityDriveAdd.COLOR_B);
+
+
+
         float lifetime = (float)entityDrive.getLifeTime();
         float ticks = (float)entityDrive.ticksExisted;
         BufferBuilder wr = tessellator.getBuffer();
         wr.begin(7, DefaultVertexFormats.POSITION_COLOR);
         float alpha = (float)Math.pow((double)((lifetime - Math.min(lifetime, ticks)) / lifetime), 2.0);
-        int color = entityDrive.colors;
-        float r = (color >> 16 & 255)/255f;
-        float g = (color >> 8 & 255)/255f;
-        float b = (color & 255)/255f;
+
 
         double dScale = 1.0;
 

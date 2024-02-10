@@ -10,6 +10,7 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 
+import static com.wjx.kablade.Main.EnableAllWeapon;
 import static mods.flammpfeil.slashblade.SlashBlade.InitEventBus;
 
 public class BladeProxy {
@@ -47,9 +48,11 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(301,new HonkaiWindEnchantment());
             ItemSlashBlade.specialAttacks.put(302,new HonKaiZaizan());
 
-
+            if(EnableAllWeapon){
+                ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());
+            }
             //AW
-            ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());
+
         }
         ItemSlashBlade.specialAttacks.put(288,new RockHit_I());
         ItemSlashBlade.specialAttacks.put(289,new SaBreakTheDawn());

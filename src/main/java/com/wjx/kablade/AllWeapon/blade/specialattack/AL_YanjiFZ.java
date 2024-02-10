@@ -2,6 +2,7 @@ package com.wjx.kablade.AllWeapon.blade.specialattack;
 
 import com.wjx.kablade.Entity.EntityDriveAdd;
 import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.Vec3f;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -33,21 +34,24 @@ public class AL_YanjiFZ extends SpecialAttackBase {
             }
             if (target==null){
                 target=SATool.getEntityToWatch(entityPlayer);
-                if (target!=null){
 
-                    ItemSlashBlade blade = (ItemSlashBlade) itemStack.getItem();
-                    float baseAttack= blade.getBaseAttackModifiers(tag);
-                    EntityDriveAdd entityDrive = new EntityDriveAdd(world,entityPlayer,1.5f*baseAttack,false,0f-ItemSlashBlade.ComboSequence.Battou.swingDirection);
-                    entityDrive.colors=0xFF0000;
-                    entityDrive.scaleX=40f;
-                    entityDrive.scaleY=10.25f;
-                    entityDrive.scaleZ=10f;
-                    entityDrive.setInitialSpeed(1.5f);
-                    entityDrive.setLifeTime(50);
-                    entityDrive.particleO="flame";
-                    world.spawnEntity(entityDrive);
-                }
             }
+
+
+                ItemSlashBlade blade = (ItemSlashBlade) itemStack.getItem();
+                float baseAttack= blade.getBaseAttackModifiers(tag);
+                EntityDriveAdd entityDrive = new EntityDriveAdd(world,entityPlayer,2.5f*baseAttack,false,0f-ItemSlashBlade.ComboSequence.Battou.swingDirection);
+                entityDrive.getDataManager().set(EntityDriveAdd.COLOR_R,1f);
+                entityDrive.getDataManager().set(EntityDriveAdd.COLOR_G,0f);
+                entityDrive.getDataManager().set(EntityDriveAdd.COLOR_B,0f);
+                entityDrive.scaleX=40f;
+                entityDrive.scaleY=10.25f;
+                entityDrive.scaleZ=10f;
+                entityDrive.setInitialSpeed(1.5f);
+                entityDrive.setLifeTime(50);
+                entityDrive.getDataManager().set(EntityDriveAdd.PARTICLE_STYLE,"FLAME");
+                world.spawnEntity(entityDrive);
+
         }
     }
 }
