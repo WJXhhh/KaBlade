@@ -115,26 +115,36 @@ public class Main
         if (!Loader.isModLoaded("networkmod"))
         {
             try{
-            GetUrlVersion = Objects.requireNonNull(getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB")).get(2);
 
-            if(GetUrlVersion!=null){
-                String[] s = VERSION.split("\\.");
-                String[] s1 = GetUrlVersion.split("\\.");
+                Thread t = new Thread(){
+                    @Override
+                    public void run() {
+                        GetUrlVersion = Objects.requireNonNull(getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB")).get(2);
+                        if(GetUrlVersion!=null){
+                            String[] s = VERSION.split("\\.");
+                            String[] s1 = GetUrlVersion.split("\\.");
 
-                if (Integer.parseInt(s1[0]) > Integer.parseInt(s[0])){
-                    YesUpdate = true;
-                }
-                if (!YesUpdate && Integer.parseInt(s1[1]) > Integer.parseInt(s[1])){
-                    YesUpdate = true;
-                }
-                if (!YesUpdate && Integer.parseInt(s1[2]) > Integer.parseInt(s[2])){
-                    YesUpdate = true;
-                }
+                            if (Integer.parseInt(s1[0]) > Integer.parseInt(s[0])){
+                                YesUpdate = true;
+                            }
+                            else if(Integer.parseInt(s1[0]) == Integer.parseInt(s[0])){
+                                if (Integer.parseInt(s1[1]) > Integer.parseInt(s[1])){
+                                    YesUpdate = true;
+                                }
+                                else if(Integer.parseInt(s1[1]) == Integer.parseInt(s[1])){
+                                    if (Integer.parseInt(s1[2]) > Integer.parseInt(s[2])){
+                                        YesUpdate = true;
+                                    }
+                                }
+                            }
+                        }
+                        super.run();
+                    }
+                };
+                t.start();
+            //GetUrlVersion = Objects.requireNonNull(getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB")).get(2);
 
-                if (Integer.parseInt(s1[0]) > Integer.parseInt(s[0])|| Integer.parseInt(s1[1]) > Integer.parseInt(s[1])){
-                    YesUpdate = true;
-                }
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }}
@@ -172,8 +182,8 @@ public class Main
                 java.net.URL l_url = new java.net.URL(url);
                 SslUtils.ignoreSsl();
                 java.net.HttpURLConnection l_connection = (java.net.HttpURLConnection) l_url.openConnection();
-                l_connection.setConnectTimeout(5000);
-                l_connection.setReadTimeout(5000);
+                l_connection.setConnectTimeout(12000);
+                l_connection.setReadTimeout(12000);
                 l_connection.connect();
                 l_urlStream = l_connection.getInputStream();
                 java.io.BufferedReader l_reader = new java.io.BufferedReader(new java.io.InputStreamReader(l_urlStream));
@@ -188,8 +198,6 @@ public class Main
             }
             return null;
         }
-
-
     }
     public static class ModHelper{
         private static final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
