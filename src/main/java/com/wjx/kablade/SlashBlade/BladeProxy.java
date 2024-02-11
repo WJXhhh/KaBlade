@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade;
 
+import com.wjx.kablade.AllWeapon.blade.specialattack.AL_YanjiFZ;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.*;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
@@ -9,6 +10,7 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 
+import static com.wjx.kablade.Main.EnableAllWeapon;
 import static mods.flammpfeil.slashblade.SlashBlade.InitEventBus;
 
 public class BladeProxy {
@@ -45,7 +47,12 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(300,new HonkaiKamiOfWar());
             ItemSlashBlade.specialAttacks.put(301,new HonkaiWindEnchantment());
             ItemSlashBlade.specialAttacks.put(302,new HonKaiZaizan());
-            ItemSlashBlade.specialAttacks.put(303,new HonkaiFallingPetals());
+
+            if(EnableAllWeapon){
+                ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());
+            }
+            //AW
+
         }
         ItemSlashBlade.specialAttacks.put(288,new RockHit_I());
         ItemSlashBlade.specialAttacks.put(289,new SaBreakTheDawn());
