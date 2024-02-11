@@ -46,6 +46,7 @@ item.wjx.blade.honkai.ice_epiphyllum.name=仿灵刀·冰昙天
 item.wjx.blade.honkai.futsunushi_to.name=辉刀·经津主
 item.wjx.blade.honkai.fairy_sword.name=妖精剑·希尔文
 item.wjx.blade.honkai.nue.name=影鵺
+item.wjx.blade.honkai.sakura_blossom.name=灵刀·樱吹雪
 
 
 item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
@@ -154,6 +155,7 @@ flammpfeil.slashblade.specialattack.snow_dance=冰天雪舞
 flammpfeil.slashblade.specialattack.kami_of_war=神威镇世
 flammpfeil.slashblade.specialattack.zaizan=罪斩
 flammpfeil.slashblade.specialattack.wind_enchantment=风之结界
+flammpfeil.slashblade.specialattack.falling_petals=灼樱乱神
 
 
 slashblade.seffect.name.kablade.SETurbulence=§5乱流

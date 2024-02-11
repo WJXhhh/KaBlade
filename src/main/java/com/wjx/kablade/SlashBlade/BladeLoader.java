@@ -110,6 +110,8 @@ public class BladeLoader {
             loadBlade(new FairySword());
             loadBlade(new Nue());
 
+            loadBlade(new SakuraBlossom());
+
 
 
 

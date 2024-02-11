@@ -45,6 +45,7 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(300,new HonkaiKamiOfWar());
             ItemSlashBlade.specialAttacks.put(301,new HonkaiWindEnchantment());
             ItemSlashBlade.specialAttacks.put(302,new HonKaiZaizan());
+            ItemSlashBlade.specialAttacks.put(303,new HonkaiFallingPetals());
         }
         ItemSlashBlade.specialAttacks.put(288,new RockHit_I());
         ItemSlashBlade.specialAttacks.put(289,new SaBreakTheDawn());

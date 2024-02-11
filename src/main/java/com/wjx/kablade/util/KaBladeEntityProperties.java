@@ -13,6 +13,7 @@ public class KaBladeEntityProperties {
     public static final String THUNDER_CRYSTAL_ATTACK = "thunder_crystal_attack";
 
     public static final String FREEZE_DOMAIN_DAMAGE_BOOSTER = "FREEZE_DOMAIN_DAMAGE_BOOSTER".toLowerCase(Locale.ROOT);
+    public static final String FALLING_PETALS = "FALLING_PETALS".toLowerCase(Locale.ROOT);
 
     public static final String KABLADE_UUID = "kablade_uuid";
 

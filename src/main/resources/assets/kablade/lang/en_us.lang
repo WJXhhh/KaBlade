@@ -46,6 +46,7 @@ item.wjx.blade.honkai.ice_epiphyllum.name=Ice Epiphyllum
 item.wjx.blade.honkai.futsunushi_to.name=Futsunushi To
 item.wjx.blade.honkai.fairy_sword.name=Fairy Sword
 item.wjx.blade.honkai.nue.name=Nue of the Shadow
+item.wjx.blade.honkai.sakura_blossom.name=Sakura Blossom
 
 item.wjx.blade.honkai.dizui.name=§d§lSeven Thunders of Retribution: Rumble
 
@@ -150,6 +151,7 @@ flammpfeil.slashblade.specialattack.snow_dance=Snow Dance
 flammpfeil.slashblade.specialattack.kami_of_war=Kami of War
 flammpfeil.slashblade.specialattack.zaizan=Zaizan of Guilt
 flammpfeil.slashblade.specialattack.wind_enchantment=Wind Enchantment
+flammpfeil.slashblade.specialattack.falling_petals=Falling Petals
 
 slashblade.seffect.name.kablade.SETurbulence=§5Turbulence
 slashblade.seffect.name.kablade.divine_penalty=§eDivine_penalty

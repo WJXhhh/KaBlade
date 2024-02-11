@@ -36,18 +36,18 @@ public class SakuraBlossom {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 750);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 760);
 
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/SakuraBlossom/texSakuraBlossom");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/SakuraBlossom/mdlSakuraBlossom");
 
-        customblade.getTagCompound().setFloat("baseAttackModifier",17.0F);
+        customblade.getTagCompound().setFloat("baseAttackModifier",19.0F);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,4);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
-        ItemSlashBlade.SpecialAttackType.set(tag,294);
+        ItemSlashBlade.SpecialAttackType.set(tag,303);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
@@ -60,7 +60,6 @@ public class SakuraBlossom {
                 'A', prevblade,
                 'B',new ItemStack(Items.DIAMOND),
                 'C', new ItemStack(ItemInit.AURORA_METAL_INGOT));
-
-        SlashBlade.addRecipe("dawn_breaker", recipe);
+        //SlashBlade.addRecipe("dawn_breaker", recipe);
     }
 }
