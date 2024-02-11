@@ -1,8 +1,6 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.event.WorldEvent;
-import com.wjx.kablade.network.MessageRePushPotion;
-import com.wjx.kablade.network.MessageSlashPotion;
 import mods.flammpfeil.slashblade.specialattack.Spear;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -10,14 +8,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.List;
-
-import static com.wjx.kablade.Main.PACKET_HANDLER;
 
 public class HonKaiZaizan extends SpecialAttackBase {
     @Override

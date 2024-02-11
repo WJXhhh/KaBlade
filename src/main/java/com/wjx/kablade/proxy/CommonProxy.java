@@ -27,7 +27,6 @@ public class CommonProxy{
         PACKET_HANDLER.registerMessage(MessageHandlerDizuiKuo.class,MessageDizuiKuo.class,7,Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerMagChaosBladeEffectUpdate.class, MessageMagChaosBladeEffectUpdate.class,8,Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerSpawnColorfulSmoke.class, MessageSpawnColorfulSmoke.class,9,Side.CLIENT);
-        PACKET_HANDLER.registerMessage(MessageHandlerRePushPotion.class,MessageRePushPotion.class,10,Side.SERVER);
     }
 
     public void registerItemRenderer(Item item, int meta, String id){
