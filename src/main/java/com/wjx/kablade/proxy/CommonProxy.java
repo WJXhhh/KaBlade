@@ -32,7 +32,6 @@ public class CommonProxy{
     public void registerItemRenderer(Item item, int meta, String id){
 
     }
-    public void registerVariantRenderer(Item item, int meta, String filename, String id){}
 
     public void init(FMLInitializationEvent event){
 
@@ -47,11 +46,6 @@ public class CommonProxy{
         EnchantmentInit.registerEnchantments();
         new CapabilityLoader(event);
         if(Loader.isModLoaded("flammpfeil.slashblade")){
-            //SlashEvent(this);
-            /*if(Loader.isModLoaded("the_golden_autumn")){
-                Main.TABKABLADE_BLADES_GOD = new tabkablade_bladesgod("tabkablade_bladesgod");
-                Main.TABKABLADE_BLADES_HONKAI = new tabkablade_honkai("tabkablade_honkai");
-            }*/
             BladeProxy.CommonLoader(this);
         }
         registerMessage();

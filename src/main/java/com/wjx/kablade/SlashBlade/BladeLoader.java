@@ -38,8 +38,9 @@ public class BladeLoader {
 
 
     private void RegistOther(){
-        if(Loader.isModLoaded("the_golden_autumn"))
-        autu=true;
+        if(Loader.isModLoaded("the_golden_autumn")) {
+            autu=true;
+        }
 
     }
     public BladeLoader() {

@@ -44,7 +44,9 @@ public class ArcLight {
         ItemSlashBlade.ModelName.set(Tag, "kablade/arcLight/mdlArcLight");
 
         ItemSlashBlade.setBaseAttackModifier(Tag,7);
-        customBlade.getTagCompound().setFloat("baseAttackModifier",7.0F);
+        if (customBlade.getTagCompound() != null) {
+            customBlade.getTagCompound().setFloat("baseAttackModifier",7.0F);
+        }
         ItemSlashBlade.SpecialAttackType.set(Tag,289);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.SMITE,3);

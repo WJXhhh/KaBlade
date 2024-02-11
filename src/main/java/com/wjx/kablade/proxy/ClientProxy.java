@@ -2,8 +2,6 @@ package com.wjx.kablade.proxy;
 
 import com.wjx.kablade.Entity.Render.Layer.LayerFreeze;
 import com.wjx.kablade.SlashBlade.BladeProxy;
-import com.wjx.kablade.network.*;
-import com.wjx.kablade.util.Reference;
 import com.wjx.kablade.util.handlers.RenderHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -11,17 +9,14 @@ import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Map;
-
-import static com.wjx.kablade.Main.PACKET_HANDLER;
+import java.util.Objects;
 
 public class ClientProxy extends CommonProxy{
 
@@ -29,12 +24,7 @@ public class ClientProxy extends CommonProxy{
 
     @Override
     public void registerItemRenderer(Item item, int meta, String id) {
-        ModelLoader.setCustomModelResourceLocation(item,meta,new ModelResourceLocation(item.getRegistryName(),id));
-    }
-
-    @Override
-    public void registerVariantRenderer(Item item,int meta,String filename,String id){
-        ModelLoader.setCustomModelResourceLocation(item,meta,new ModelResourceLocation(new ResourceLocation(Reference.MODID,filename),id));
+        ModelLoader.setCustomModelResourceLocation(item,meta,new ModelResourceLocation(Objects.requireNonNull(item.getRegistryName()),id));
     }
 
     @Override
