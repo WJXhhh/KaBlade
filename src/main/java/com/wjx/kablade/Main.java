@@ -13,6 +13,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Biomes;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -46,7 +48,7 @@ public class Main
     public static final String NAME = "Ka Blades";
     public static final String VERSION = "1.6.1";
 
-    public static final boolean EnableAllWeapon =false;
+    public static final boolean EnableAllWeapon =true;
 
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
@@ -90,9 +92,10 @@ public class Main
         }
         if(EnableAllWeapon){
             TABKABLADE_BLADES_ALLWEAPON=new CreativeTabs("tabkablade_allweapon") {
+                final ItemStack stack=new ItemStack(Items.AIR);
                 @Override
                 public ItemStack createIcon() {
-                    return null;
+                    return stack;
                 }
             };
         }

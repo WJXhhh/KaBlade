@@ -54,9 +54,9 @@ item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
 
 
 #AllWeapon
-item.wjx.allweapon.liurrh=§c炎王§9「§l§c流刃若火§r§9」
+item.wjx.allweapon.liurrh.name=§c炎王§9「§l§c流刃若火§r§9」
 #AllWeaponSA
-flammpfeil.slashblade.specialattack.magic=§c炎§4极§e·抚斩
+flammpfeil.slashblade.specialattack.fuzhan=§c炎§4极§e·抚斩
 
 #组之呈
 itemGroup.tabkablade=斩无不断
