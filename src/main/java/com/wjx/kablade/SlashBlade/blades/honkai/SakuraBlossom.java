@@ -8,6 +8,7 @@ import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -51,15 +52,15 @@ public class SakuraBlossom {
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.galactic", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"dawn_breaker"),
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.dawn_breaker", 1);
+        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"sakura_blossom"),
                 blackblade, prevblade,
-                "  C",
-                " B ",
-                "A  ",
+                "C C",
+                "BBB",
+                " A ",
                 'A', prevblade,
-                'B',new ItemStack(Items.DIAMOND),
-                'C', new ItemStack(ItemInit.AURORA_METAL_INGOT));
-        //SlashBlade.addRecipe("dawn_breaker", recipe);
+                'B',new ItemStack(ItemInit.PETAL),
+                'C', new ItemStack(ItemSlashBlade.getItemFromBlock(Blocks.GRASS)));
+        SlashBlade.addRecipe("sakura_blossom", recipe);
     }
 }
