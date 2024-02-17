@@ -508,7 +508,7 @@ public class WorldEvent {
                 ItemStack stack = player.getHeldItemMainhand();
                 if (stack.getItem() instanceof ItemSlashBlade) {
                     if (stack.hasTagCompound()) {
-                        if (stack.getTagCompound() != null && stack.getTagCompound().getBoolean("isAurora")) {
+                        if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("isAurora")) {
                             ItemSlashBlade.SummonedSwordColor.set(stack.getTagCompound(), auroraBladeColor.get(auroraBladeColorIndex));
                         }
                     }

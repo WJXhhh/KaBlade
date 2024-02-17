@@ -4,6 +4,7 @@ import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.util.BladeAttackEvent;
 import com.wjx.kablade.util.BladeAttackEventManager;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.IRemovable;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
@@ -44,9 +45,11 @@ public class SEEMInduction implements ISpecialEffect, IRemovable {
     public static final BladeAttackEvent EMInduction = new BladeAttackEvent() {
         @Override
         public void run(ItemStack stack, EntityPlayer player, Entity entity) {
-            if (SpecialEffects.isEffective(player,stack, BladeProxy.EMInduction) == SpecialEffects.State.Effective){
-                if (entity instanceof EntityLivingBase){
-                    ((EntityLivingBase) entity).addPotionEffect(new PotionEffect(PotionInit.PARALY,60,1));
+            if (stack.getItem() instanceof ItemSlashBlade){
+                if (SpecialEffects.isEffective(player,stack, BladeProxy.EMInduction) == SpecialEffects.State.Effective){
+                    if (entity instanceof EntityLivingBase){
+                        ((EntityLivingBase) entity).addPotionEffect(new PotionEffect(PotionInit.PARALY,60,1));
+                    }
                 }
             }
         }

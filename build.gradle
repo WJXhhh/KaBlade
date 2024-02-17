@@ -32,7 +32,7 @@ apply plugin: 'maven-publish'
 // MixinGradle:
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.6.1-a'
+version = '1.6.1-b'
 group = 'com.wjx.kablade' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'kablade'
 
@@ -125,7 +125,7 @@ dependencies {
 	compileOnly(files("./libs/SlashBlade-mc1.12-r32.jar"))
     //runtimeOnly(files("./libs/SlashBlade-mc1.12-r32.jar"))
     //runtimeOnly(files("./libs/optifine.jar"))
-    runtimeOnly(files("./libs/the_golden_autumn-12.0.3.8.jar"))
+    runtimeOnly(files("./libs/the_golden_autumn-12.0.3.10.jar"))
     //runtimeOnly(files("./libs/jei.jar"))
     //runtimeOnly(files("./libs/vanilafix.jar"))
 }

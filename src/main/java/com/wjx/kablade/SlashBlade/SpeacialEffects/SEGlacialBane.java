@@ -1,29 +1,23 @@
 package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
-import com.google.common.base.Predicates;
-import com.wjx.kablade.Entity.EntityFreezeDomain;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.network.MessageSpawnParticle;
-import com.wjx.kablade.util.*;
-import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
+import com.wjx.kablade.util.BladeAttackEvent;
+import com.wjx.kablade.util.BladeAttackEventManager;
+import com.wjx.kablade.util.KaBladePlayerProp;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.IRemovable;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -76,7 +70,7 @@ public class SEGlacialBane implements ISpecialEffect, IRemovable {
         @Override
         public void run(ItemStack stack, EntityPlayer player, Entity entity) {
             if (entity != null && player != null){
-                if (entity instanceof EntityLivingBase){
+                if (entity instanceof EntityLivingBase && stack.getItem() instanceof ItemSlashBlade){
                     EntityLivingBase target = (EntityLivingBase) entity;
                     if (!target.world.isRemote){
                         if (SpecialEffects.isEffective(player,stack,BladeProxy.GlacialBane) == SpecialEffects.State.Effective){

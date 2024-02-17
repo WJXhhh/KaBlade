@@ -20,7 +20,7 @@ public class HonKaiFrostBlade extends SpecialAttackBase {
             int in = world.rand.nextBoolean() ? 1 : 0;
             int in2 = world.rand.nextBoolean() ? 1 : 0;
             entity.setPosition(entityPlayer.posX + (world.rand.nextDouble() * in),entityPlayer.getEyeHeight() + entityPlayer.posY + (world.rand.nextDouble()/2),entityPlayer.posZ + (world.rand.nextDouble() * in2));
-            assert itemStack.getTagCompound() != null;
+            assert itemStack.hasTagCompound();
             entity.setColor(itemStack.getTagCompound().getInteger("SummonedSwordColor"));
             world.spawnEntity(entity);
         }

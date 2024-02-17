@@ -5,6 +5,7 @@ import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.network.MessageSpawnColorfulSmoke;
 import com.wjx.kablade.network.MessageSpawnParticle;
 import com.wjx.kablade.util.*;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.IRemovable;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
@@ -37,43 +38,46 @@ public class SERagingIzumo implements ISpecialEffect, IRemovable {
     public static BladeAttackEvent event = new BladeAttackEvent() {
         @Override
         public void run(ItemStack stack, EntityPlayer player, Entity entity) {
-            if (SpecialEffects.isEffective(player,stack, BladeProxy.RagingIzumo) == SpecialEffects.State.Effective){
-                if (KaBladePlayerProp.getPropCompound(player).getInteger(RAGING_IZUMO_COLD_DOWN) <= 0) {
-                    if (Math.random()<0.1){
-                        KaBladePlayerProp.getPropCompound(player).setInteger(RAGING_IZUMO_COLD_DOWN, 20);
-                        World world = player.world;
-                        world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
-                        world.addWeatherEffect(new EntityLightningBolt(world, player.posX, player.posY, player.posZ, true));
+            if (stack.getItem() instanceof ItemSlashBlade){
+                if (SpecialEffects.isEffective(player,stack, BladeProxy.RagingIzumo) == SpecialEffects.State.Effective){
+                    if (KaBladePlayerProp.getPropCompound(player).getInteger(RAGING_IZUMO_COLD_DOWN) <= 0) {
+                        if (Math.random()<0.1){
+                            KaBladePlayerProp.getPropCompound(player).setInteger(RAGING_IZUMO_COLD_DOWN, 20);
+                            World world = player.world;
+                            world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
+                            world.addWeatherEffect(new EntityLightningBolt(world, player.posX, player.posY, player.posZ, true));
 
-                        for (int i = 0; i < 40; ++i) {
-                            Random r1 = new Random();
-                            Random r2 = new Random(r1.nextLong());
-                            int state1;
-                            int state2;
-                            if (r1.nextBoolean()) {
-                                state1 = 1;
-                            } else state1 = -1;
-                            if (r2.nextBoolean()) {
-                                state2 = 1;
-                            } else state2 = -1;
-                            PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, player.posX + (world.rand.nextDouble() * 2 * state1), player.posY + world.rand.nextDouble() * (double) player.height, player.posZ + (world.rand.nextDouble() * 2 * state2), 0.0D, 0.0D, 0.0D));
-                            PACKET_HANDLER.sendToAll(new MessageSpawnColorfulSmoke(player.posX + (world.rand.nextDouble() * 2 * state1), player.posY + world.rand.nextDouble() * (double) player.height, player.posZ + (world.rand.nextDouble() * 2 * state2), new Vec3f(1f, 0.945f, 0.333f), 2));
-                        }
-                        AxisAlignedBB bb = player.getEntityBoundingBox();
-                        bb = bb.grow(5, 4, 5);
-                        bb = bb.offset(player.motionX, player.motionY, player.motionZ);
-                        List<Entity> entities = world.getEntitiesInAABBexcluding(player, bb, input -> input != player && input instanceof EntityLivingBase);
-                        for (Entity e : entities) {
-                            e.attackEntityFrom(DamageSource.causeExplosionDamage(player), 8f);
-                            if (e instanceof EntityLivingBase) {
-                                EntityLivingBase en = (EntityLivingBase) e;
-                                en.addPotionEffect(new PotionEffect(PotionInit.PARALY, 40, 2));
+                            for (int i = 0; i < 40; ++i) {
+                                Random r1 = new Random();
+                                Random r2 = new Random(r1.nextLong());
+                                int state1;
+                                int state2;
+                                if (r1.nextBoolean()) {
+                                    state1 = 1;
+                                } else state1 = -1;
+                                if (r2.nextBoolean()) {
+                                    state2 = 1;
+                                } else state2 = -1;
+                                PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, player.posX + (world.rand.nextDouble() * 2 * state1), player.posY + world.rand.nextDouble() * (double) player.height, player.posZ + (world.rand.nextDouble() * 2 * state2), 0.0D, 0.0D, 0.0D));
+                                PACKET_HANDLER.sendToAll(new MessageSpawnColorfulSmoke(player.posX + (world.rand.nextDouble() * 2 * state1), player.posY + world.rand.nextDouble() * (double) player.height, player.posZ + (world.rand.nextDouble() * 2 * state2), new Vec3f(1f, 0.945f, 0.333f), 2));
                             }
+                            AxisAlignedBB bb = player.getEntityBoundingBox();
+                            bb = bb.grow(5, 4, 5);
+                            bb = bb.offset(player.motionX, player.motionY, player.motionZ);
+                            List<Entity> entities = world.getEntitiesInAABBexcluding(player, bb, input -> input != player && input instanceof EntityLivingBase);
+                            for (Entity e : entities) {
+                                e.attackEntityFrom(DamageSource.causeExplosionDamage(player), 8f);
+                                if (e instanceof EntityLivingBase) {
+                                    EntityLivingBase en = (EntityLivingBase) e;
+                                    en.addPotionEffect(new PotionEffect(PotionInit.PARALY, 40, 2));
+                                }
+                            }
+                            player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,2));
                         }
-                        player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,2));
                     }
                 }
             }
+
         }
     };
 

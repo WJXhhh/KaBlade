@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.util.KaBladePlayerProp;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.IRemovable;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
@@ -22,7 +23,7 @@ public class SEPowerOfWind implements ISpecialEffect, IRemovable {
 
     public UUID powAttid = UUID.fromString("739B518D-F9EF-04F7-AD8E-98AE7D3C5FE8");
 
-    int flagpow=1;
+    int flagpow = 1;
 
     @Override
     public boolean canCopy(ItemStack itemStack) {
@@ -55,40 +56,38 @@ public class SEPowerOfWind implements ISpecialEffect, IRemovable {
 
         EntityPlayer player = event.player;
         if (event.phase == TickEvent.Phase.START) {
-            if (SpecialEffects.isEffective(event.player, event.player.getHeldItemMainhand(), BladeProxy.PowerOfWind) == SpecialEffects.State.Effective) {
-                flagpow=0;
-                double speed = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
-                AbstractAttributeMap map = player.getAttributeMap();
-                IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
-
-
-                KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.FAIR_POW,1);
-                KaBladePlayerProp.updateNBTForClient(player);
-                if (instance.getModifier(powAttid) != null) {
-                    instance.removeModifier(powAttid);
-                    instance.applyModifier(new AttributeModifier(powAttid, "pow_att", speed / 10, 0));
-                } else {
-                    instance.applyModifier(new AttributeModifier(powAttid, "pow_att", speed / 10, 0));
-                }
-            } else {
-                
-                AbstractAttributeMap map = player.getAttributeMap();
-                IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
-
-                KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.FAIR_POW,0);
-                if(flagpow==0){
+            if (event.player.getHeldItemMainhand().getItem() instanceof ItemSlashBlade) {
+                if (SpecialEffects.isEffective(event.player, event.player.getHeldItemMainhand(), BladeProxy.PowerOfWind) == SpecialEffects.State.Effective) {
+                    flagpow = 0;
+                    double speed = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
+                    AbstractAttributeMap map = player.getAttributeMap();
+                    IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
+                    KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.FAIR_POW, 1);
                     KaBladePlayerProp.updateNBTForClient(player);
-                    flagpow=1;
-                }
-                if (instance.getModifier(powAttid) != null) {
-                    instance.removeModifier(powAttid);
-                    instance.applyModifier(new AttributeModifier(powAttid, "pow_att", 0, 0));
+                    if (instance.getModifier(powAttid) != null) {
+                        instance.removeModifier(powAttid);
+                        instance.applyModifier(new AttributeModifier(powAttid, "pow_att", speed / 10, 0));
+                    } else {
+                        instance.applyModifier(new AttributeModifier(powAttid, "pow_att", speed / 10, 0));
+                    }
                 } else {
-                    instance.applyModifier(new AttributeModifier(powAttid, "pow_att", 0, 0));
+                    AbstractAttributeMap map = player.getAttributeMap();
+                    IAttributeInstance instance = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
 
+                    KaBladePlayerProp.getPropCompound(player).setInteger(KaBladePlayerProp.FAIR_POW, 0);
+                    if (flagpow == 0) {
+                        KaBladePlayerProp.updateNBTForClient(player);
+                        flagpow = 1;
+                    }
+                    if (instance.getModifier(powAttid) != null) {
+                        instance.removeModifier(powAttid);
+                        instance.applyModifier(new AttributeModifier(powAttid, "pow_att", 0, 0));
+                    } else {
+                        instance.applyModifier(new AttributeModifier(powAttid, "pow_att", 0, 0));
+
+                    }
                 }
             }
-
         }
     }
 }
