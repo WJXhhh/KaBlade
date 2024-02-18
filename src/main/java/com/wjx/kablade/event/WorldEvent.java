@@ -25,6 +25,7 @@ import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -1031,6 +1032,24 @@ public class WorldEvent {
             GlStateManager.popMatrix();
             GlStateManager.disableBlend();
             GlStateManager.enableLighting();
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlantBreakEvent(BlockEvent.BreakEvent event){
+        World world=event.getWorld();
+        if(!world.isRemote){
+            Block block = event.getState().getBlock();
+            if(block==Blocks.GRASS||block==Blocks.LEAVES||block==Blocks.LEAVES2){
+                if(Math.random()<0.03)
+                {
+                    int x = event.getPos().getX();
+                    int y = event.getPos().getY();
+                    int z = event.getPos().getZ();
+                    EntityItem drop = new EntityItem(world, x, y + 0.5, z, new ItemStack(ItemInit.PETAL));
+                    world.spawnEntity(drop);
+                }
+            }
         }
     }
 }

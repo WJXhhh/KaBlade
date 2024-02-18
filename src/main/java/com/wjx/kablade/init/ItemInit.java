@@ -10,7 +10,6 @@ import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -24,7 +23,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.wjx.kablade.Main.*;
+import static com.wjx.kablade.Main.TABKABLADE;
 
 public class ItemInit {
     public static List<Item> ITEMS = new ArrayList<>();
@@ -86,6 +85,20 @@ public class ItemInit {
                 }
             }
             return super.onLeftClickEntity(stack, player, entity);
+        }
+    };
+
+
+    public static Item PETAL=new ItemBase("petal",TABKABLADE){
+        @Override
+        public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+            super.addInformation(stack, worldIn, tooltip, flagIn);
+            tooltip.add(I18n.translateToLocal("info.item.petal"));
+        }
+
+        @Override
+        public int getItemBurnTime(ItemStack itemStack) {
+            return 50;
         }
     };
 

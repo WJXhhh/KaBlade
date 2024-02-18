@@ -86,6 +86,7 @@ item.gravity_nugget.name=重力微粒
 item.gravity_crystal.name=重力结晶
 item.thunder_crystal.name=雷霆凝晶
 item.iron_coil.name=铁线圈
+item.petal.name=落英
 
 item.chromium_sword.name=铬剑
 item.chromium_axe.name=铬斧
@@ -125,6 +126,7 @@ info.item.gravity_crystal=重力微粒的大块聚合体，通过某些手段已
 info.item.aurora_fragment=世间极光崩落，落入地中，自此世间本源再无极光
 info.item.aurora_metal_ingot=由极光的力量制作的金属锭，但估计要用其他合适的材料装配才能发挥出完整力量吧
 info.item.thunder_crystal=表面看似静宁的晶体，充满了雷霆的力量。似乎并不太稳定？
+info.item.petal=凡间之草木皆可沾染
 
 info.slashblade.dizui.1=前文明抗崩坏组织逐火之蛾以第三律者·雷之律者的核心打造的神之键
 info.slashblade.dizui.2=雷电是虚数空间所赋予它的权柄，又可为谁所用？
