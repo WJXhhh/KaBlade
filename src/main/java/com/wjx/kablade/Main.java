@@ -46,7 +46,7 @@ public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "1.6.1";
+    public static final String VERSION = "1.6.2";
 
     public static final boolean EnableAllWeapon =false;
 
@@ -68,11 +68,7 @@ public class Main
     public static CreativeTabs TABKABLADE_BLADES_GOD = null;
     public static CreativeTabs TABKABLADE_BLADES_HONKAI = null;
     public static CreativeTabs TABKABLADE_ORE = null;
-
     public static CreativeTabs TABKABLADE_BLADES_ALLWEAPON = null;
-
-    public Minecraft mc=Minecraft.getMinecraft();
-
 
     private void sseee(){
         TABKABLADE = new tabkablade();
