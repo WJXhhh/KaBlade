@@ -46,6 +46,7 @@ public class SkyBreaker {
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/SkyBreaker/mdlSkyBreaker");
 
         customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.7f);
         customblade.addEnchantment(Enchantments.SMITE,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

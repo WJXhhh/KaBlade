@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,13 +30,14 @@ public class SaCutMetal extends SpecialAttackBase {
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,60,2));
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox().grow(8,4,8).offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input != entityPlayer&&input instanceof EntityLivingBase);
+        float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (8f / 5.0f));
         for (Entity e: l){
             if (e instanceof EntityLivingBase){
                 EntityLivingBase en = (EntityLivingBase) e;
-                en.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),8);
+                en.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),8 + extraDamage);
                 double armor;
                 armor =en.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue();
-                en.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer), (float) (armor*1.5d));
+                en.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer), (float) (armor*0.5d));
                 double x = en.posX;
                 double y = en.posY;
                 double z = en.posZ;

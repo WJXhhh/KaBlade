@@ -46,6 +46,7 @@ public class Osahoko {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Osahoko/texOsahoko");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Osahoko/mdlOsahoko");
         customblade.getTagCompound().setFloat("baseAttackModifier",13.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.9f);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,5460948);

@@ -48,7 +48,7 @@ public class ArcLight {
             customBlade.getTagCompound().setFloat("baseAttackModifier",7.0F);
         }
         ItemSlashBlade.SpecialAttackType.set(Tag,289);
-        //ItemSlashBlade.SpecialAttackType.set(tag, 257);
+        ItemSlashBlade.AttackAmplifier.set(Tag,1.5f);
         customBlade.addEnchantment(Enchantments.SMITE,3);
         customBlade.addEnchantment(Enchantments.POWER,1);
         Item_KaNamed.IsDefaultBewitched.set(Tag, true);

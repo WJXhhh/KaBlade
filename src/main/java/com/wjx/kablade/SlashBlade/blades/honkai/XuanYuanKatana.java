@@ -51,6 +51,7 @@ public class XuanYuanKatana {
         ItemSlashBlade.SpecialAttackType.set(tag,285);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
         customblade.getTagCompound().setFloat("baseAttackModifier",14.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.7f);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,65518);

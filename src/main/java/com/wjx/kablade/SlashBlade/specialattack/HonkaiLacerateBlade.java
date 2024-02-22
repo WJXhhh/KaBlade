@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.specialattack;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.entity.EntitySummonedBlade;
 import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +25,8 @@ public class HonkaiLacerateBlade extends SpecialAttackBase {
             World world = entityPlayer.world;
             if(!world.isRemote)
         {
-            EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 10f,true,90f);
+            float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (10f / 5.0f));
+            EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 10f + extraDamage,true,90f);
             entityDrive.setPosition(entityPlayer.posX,entityPlayer.posY + entityPlayer.getEyeHeight(),entityPlayer.posZ);
             world.spawnEntity(entityDrive);
             if(entityPlayer.getAttackingEntity()!=null ){

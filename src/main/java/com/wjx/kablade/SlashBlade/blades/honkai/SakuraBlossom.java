@@ -43,6 +43,7 @@ public class SakuraBlossom {
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/SakuraBlossom/mdlSakuraBlossom");
 
         customblade.getTagCompound().setFloat("baseAttackModifier",19.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,2.1f);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,4);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

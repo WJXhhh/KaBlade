@@ -47,6 +47,7 @@ public class BambooIron {
 
         ItemSlashBlade.setBaseAttackModifier(Tag,6);
         customBlade.getTagCompound().setFloat("baseAttackModifier",6.0F);
+        ItemSlashBlade.AttackAmplifier.set(Tag,1.2f);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         Item_KaNamed.IsDefaultBewitched.set(Tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);

@@ -45,6 +45,7 @@ public class ThermalCutter {
         ItemSlashBlade.SpecialAttackType.set(tag,286);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
         customblade.getTagCompound().setFloat("baseAttackModifier",11.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.5f);
         customblade.addEnchantment(Enchantments.FIRE_ASPECT,2);
         ItemSlashBladeNamed.SummonedSwordColor.set(tag,0xDAA520);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

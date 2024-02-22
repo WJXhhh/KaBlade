@@ -7,6 +7,7 @@ import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.network.MessageMagChaosBladeEffectUpdate;
 import com.wjx.kablade.util.KaBladePlayerProp;
 import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -38,6 +39,7 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
     private void doMagStormAttack(EntityPlayer entityPlayer){
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
+            float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (40f / 5.0f));
             MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(entityPlayer));
             Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
             KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK,6);
@@ -75,7 +77,7 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
             if (!pointedEntity.isEmpty()){
                 for (Entity e : pointedEntity){
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
-                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),40f);
+                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),40f + extraDamage);
                         ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,3));
                     }
                 }

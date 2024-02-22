@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.Spear;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -27,10 +28,11 @@ public class HonkaiShockImpact extends SpecialAttackBase {
         ax= ax.grow(3,1,3);
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax, input -> input != entityPlayer && input instanceof EntityLivingBase);
+        float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (22f / 5.0f));
         for (Entity entity : entities){
             if (entity != null){
                 if (!entityPlayer.world.isRemote && !(entity instanceof EntityPlayer)){
-                    entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),22);
+                    entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),22 + extraDamage);
                     entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,5));
                 }
             }

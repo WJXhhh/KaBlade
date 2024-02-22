@@ -44,6 +44,7 @@ public class NotedVine {
 
         ItemSlashBlade.setBaseAttackModifier(Tag,6);
         customBlade.getTagCompound().setFloat("baseAttackModifier",6.0F);
+        ItemSlashBlade.AttackAmplifier.set(Tag,1.1f);
         Item_KaNamed.IsDefaultBewitched.set(Tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(Tag, 1);

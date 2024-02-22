@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.google.common.base.Predicates;
 import com.wjx.kablade.init.PotionInit;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -65,7 +66,7 @@ public class HonkaiAbsoluteZero extends SpecialAttackBase {
                 if (pointedEntity instanceof EntityLivingBase){
                     if (!world.isRemote){
                         ((EntityLivingBase) pointedEntity).addPotionEffect(new PotionEffect(PotionInit.FREEZE,140,1));
-                        pointedEntity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20);
+                        pointedEntity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20 + ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (20f / 5.0f)));
                     }
                 }
             }

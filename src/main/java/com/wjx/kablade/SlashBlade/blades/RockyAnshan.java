@@ -44,6 +44,7 @@ public class RockyAnshan {
 
         ItemSlashBlade.setBaseAttackModifier(Tag,5);
         customBlade.getTagCompound().setFloat("baseAttackModifier",5F);
+        ItemSlashBlade.AttackAmplifier.set(Tag,1.2f);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.UNBREAKING,2);
         Item_KaNamed.IsDefaultBewitched.set(Tag, false);

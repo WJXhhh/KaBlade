@@ -52,21 +52,9 @@ public class ByoDen {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Byoto/tex/DenTamashi");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Byoto/mdlbyoto");
 
-        //ItemSlashBlade.setBaseAttackModifier(tag,2);
-        //ItemSlashBlade.KillCount.set(tag, 0);
 
-        //customblade.addEnchantment(Enchantments.LOOTING,100);
-        //customblade.addEnchantment(Enchantments.INFINITY,100);
-
-        //tag.setInteger("HideFlags",1);
-
-
-
-
-        //ItemSlashBlade.BaseAttackModifier.set(tag, 32768.0F);
-        //ItemSlashBlade.setBaseAttackModifier(tag,32768.0F);
         customblade.getTagCompound().setFloat("baseAttackModifier",12.0F);
-        //ItemSlashBlade.SpecialAttackType.set(tag, 257);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.5f);
         customblade.addEnchantment(Enchantments.SMITE,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);

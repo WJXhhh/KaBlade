@@ -41,12 +41,6 @@ public class hangtublade {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
 
-
-        //ItemStack customblade = new ItemStack(STAR,1,0);
-        //NBTTagCompound tag = new NBTTagCompound();
-        //customblade.setTagCompound(tag);
-
-        //tag.setBoolean("Unbreakable",true);
         Item_KaNamed.CurrentItemName.set(tag, name);
         Item_KaNamed.CustomMaxDamage.set(tag, 60);
 
@@ -54,20 +48,9 @@ public class hangtublade {
         ItemSlashBlade.ModelName.set(tag, "kablade/HangTu/mdl");
 
         ItemSlashBlade.setBaseAttackModifier(tag,2);
-        //ItemSlashBlade.KillCount.set(tag, 0);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.1f);
 
-        //customblade.addEnchantment(Enchantments.LOOTING,100);
-        //customblade.addEnchantment(Enchantments.INFINITY,100);
-
-        //tag.setInteger("HideFlags",1);
-
-
-
-
-        //ItemSlashBlade.BaseAttackModifier.set(tag, 32768.0F);
-        //ItemSlashBlade.setBaseAttackModifier(tag,32768.0F);
         customblade.getTagCompound().setFloat("baseAttackModifier",2.0F);
-        //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         Item_KaNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);

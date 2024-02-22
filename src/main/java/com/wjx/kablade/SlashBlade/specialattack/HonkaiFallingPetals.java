@@ -4,6 +4,7 @@ import com.google.common.base.Predicates;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.event.WorldEvent;
 import com.wjx.kablade.util.KaBladeEntityProperties;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SakuraEnd;
 import mods.flammpfeil.slashblade.specialattack.Spear;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -46,10 +47,11 @@ public class HonkaiFallingPetals extends SpecialAttackBase {
         Entity pointedEntity = null;
         List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && entity instanceof EntityLiving));
         double d2 = dist;
+        float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (15f / 5.0f));
         for (Entity entity1 : list) {
             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
             RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(vec3d, vec3d2);
-            entity1.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),15f);
+            entity1.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),15f + extraDamage);
 
             if (axisalignedbb.contains(vec3d)) {
                 if (d2 >= 0.0D) {

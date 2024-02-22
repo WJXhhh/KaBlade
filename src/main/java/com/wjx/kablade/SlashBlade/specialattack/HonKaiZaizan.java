@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.event.WorldEvent;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.Spear;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -31,10 +32,11 @@ public class HonKaiZaizan extends SpecialAttackBase {
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         if(!entityPlayer.world.isRemote){
             List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input instanceof EntityLivingBase);
+            float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (20f / 5.0f));
             for (Entity entity : entities){
                 if (entity != null){
                     if(!(entity instanceof EntityPlayer)){
-                        entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20);
+                        entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20 + extraDamage);
                     }
                     else{
                         ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,2));

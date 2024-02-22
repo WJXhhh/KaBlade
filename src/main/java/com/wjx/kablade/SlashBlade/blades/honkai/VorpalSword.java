@@ -44,6 +44,7 @@ public class VorpalSword {
         ItemSlashBlade.SpecialAttackType.set(tag,291);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
         customblade.getTagCompound().setFloat("baseAttackModifier",16.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.9f);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,3);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

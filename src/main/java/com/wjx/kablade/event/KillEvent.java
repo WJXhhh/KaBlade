@@ -40,7 +40,7 @@ public class KillEvent {
             if(!target.isDead){
                 world.removeEntity(target);
                 if(!target.isDead){
-                    world.getLoadedEntityList().remove(target);
+                    world.loadedEntityList.remove(target);
                 }
             }
                 WorldEvent.antiEntity.remove(clazz);

@@ -47,6 +47,7 @@ public class Originyer {
 
         ItemSlashBlade.setBaseAttackModifier(Tag,8);
         customBlade.getTagCompound().setFloat("baseAttackModifier",13.0F);
+        ItemSlashBlade.AttackAmplifier.set(Tag,1.8f);
         ItemSlashBlade.SpecialAttackType.set(Tag,297);
         ItemSlashBlade.SummonedSwordColor.set(Tag,65535);
         customBlade.addEnchantment(Enchantments.SHARPNESS,5);

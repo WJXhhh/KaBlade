@@ -45,6 +45,7 @@ public class PulseKatanaType17 {
         ItemSlashBlade.SpecialAttackType.set(tag,285);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
         customblade.getTagCompound().setFloat("baseAttackModifier",11.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.5f);
         customblade.addEnchantment(Enchantments.KNOCKBACK,1);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,65518);

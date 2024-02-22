@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,6 +30,7 @@ public class RockHit_I extends SpecialAttackBase {
         double x = entityPlayer.posX;
         double y = entityPlayer.posY;
         double z = entityPlayer.posZ;
+        float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (6f / 5.0f));
         world.playSound(null, x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
         for (int i = 0; i < 40; ++i)
         {
@@ -52,7 +54,7 @@ public class RockHit_I extends SpecialAttackBase {
         bb = bb.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> entities = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input != entityPlayer && input instanceof EntityLivingBase);
         for (Entity e : entities){
-            e.attackEntityFrom(DamageSource.causeExplosionDamage(entityPlayer),6f);
+            e.attackEntityFrom(DamageSource.causeExplosionDamage(entityPlayer),6f + extraDamage);
             if (e instanceof EntityLivingBase){
                 EntityLivingBase en = (EntityLivingBase)e;
                 en.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,40,2));

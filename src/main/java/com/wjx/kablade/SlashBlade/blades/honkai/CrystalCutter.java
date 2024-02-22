@@ -45,6 +45,7 @@ public class CrystalCutter {
         ItemSlashBlade.SpecialAttackType.set(tag,287);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
         customblade.getTagCompound().setFloat("baseAttackModifier",11.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.5f);
         customblade.addEnchantment(Enchantments.SMITE,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);

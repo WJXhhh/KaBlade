@@ -48,6 +48,7 @@ public class CutIron {
         ItemSlashBlade.setBaseAttackModifier(Tag,8);
         customBlade.getTagCompound().setFloat("baseAttackModifier",8.0F);
         ItemSlashBlade.SpecialAttackType.set(Tag,290);
+        ItemSlashBlade.AttackAmplifier.set(Tag,1.5f);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.SHARPNESS,4);
         customBlade.addEnchantment(Enchantments.POWER,1);

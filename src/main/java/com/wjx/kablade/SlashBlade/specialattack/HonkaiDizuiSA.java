@@ -5,6 +5,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.network.MessageRemoteLighting;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import com.wjx.kablade.Entity.EntitySummonSwordFree;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.client.renderer.entity.RenderLightningBolt;
 import net.minecraft.entity.Entity;
@@ -39,8 +40,10 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
         {
             for(int i =0;i<3;i++)
             {
-                EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 50f, true, 30f);
-                EntityDrive entityDrive2 = new EntityDrive(world, entityPlayer, 50f, true, 60f);
+                float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (50f / 5.0f));
+
+                EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 30f);
+                EntityDrive entityDrive2 = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 60f);
                 entityDrive.setPosition(entityPlayer.posX,entityPlayer.posY+entityPlayer.eyeHeight,entityPlayer.posZ);
                 entityDrive2.setPosition(entityPlayer.posX,entityPlayer.posY+entityPlayer.eyeHeight,entityPlayer.posZ);
                 world.spawnEntity(entityDrive);
@@ -65,14 +68,15 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
             if(entityPlayer.getAttackingEntity()!=null ){
                 entityPlayer.getAttackingEntity().addPotionEffect(new PotionEffect(MobEffects.WITHER,100,1));
             }
-            EntitySummonSwordFree s1 = new  EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,0f);
-            EntitySummonSwordFree s2 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,45f);
-            EntitySummonSwordFree s3 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,90f);
-            EntitySummonSwordFree s4 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,135f);
-            EntitySummonSwordFree s5 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,180f);
-            EntitySummonSwordFree s6 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,225f);
-            EntitySummonSwordFree s7 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,270f);
-            EntitySummonSwordFree s8 = new EntitySummonSwordFree(world,entityPlayer,20,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,315f);
+            float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (20f / 5.0f));
+            EntitySummonSwordFree s1 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,0f);
+            EntitySummonSwordFree s2 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,45f);
+            EntitySummonSwordFree s3 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,90f);
+            EntitySummonSwordFree s4 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,135f);
+            EntitySummonSwordFree s5 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,180f);
+            EntitySummonSwordFree s6 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,225f);
+            EntitySummonSwordFree s7 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,270f);
+            EntitySummonSwordFree s8 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,315f);
             s1.setColor(0xFF1493);
             s2.setColor(0xFF1493);
             s3.setColor(0xFF1493);
@@ -93,12 +97,13 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox();
         bb = bb.grow(16.0D, 5.0D, 16.0D);
         bb = bb.offset(entityPlayer.motionX, entityPlayer.motionY, entityPlayer.motionZ);
+        float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (5f / 5.0f));
         List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb, input -> input != entityPlayer && input.isEntityAlive());
-        if (list.size()!=0){
+        if (!list.isEmpty()){
             for (Entity entity: list){
                 if (entity instanceof EntityLivingBase){
                    world.spawnEntity(new EntityLightningBolt(world,entity.posX,entity.posY,entity.posZ,true));
-                   entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),5);
+                   entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),5 + extraDamage);
                    double x = entity.posX;
                     double y = entity.posY;
                     double z = entity.posZ;

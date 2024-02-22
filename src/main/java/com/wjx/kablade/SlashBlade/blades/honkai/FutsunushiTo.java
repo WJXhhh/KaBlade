@@ -44,6 +44,7 @@ public class FutsunushiTo {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/FutsunushiTo/texFutsunushiTo");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/FutsunushiTo/mdlFutsunushiTo");
         customblade.getTagCompound().setFloat("baseAttackModifier",19.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,2.3f);
         customblade.addEnchantment(Enchantments.SHARPNESS,6);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,16642509);

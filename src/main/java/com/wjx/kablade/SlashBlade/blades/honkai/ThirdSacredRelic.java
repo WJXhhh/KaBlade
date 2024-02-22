@@ -45,6 +45,7 @@ public class ThirdSacredRelic {
         ItemSlashBlade.SpecialAttackType.set(tag,7);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
         customblade.getTagCompound().setFloat("baseAttackModifier",19.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,2.1f);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

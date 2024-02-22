@@ -6,6 +6,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.event.WorldEvent;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.Drive;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -31,17 +32,19 @@ public class SaAuroraShining extends SpecialAttackBase {
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
+        float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (2f / 5.0f));
         for (int i=0;i<10;i++){
-            EntitySummonedSwordBasePlus s = new EntitySummonedSwordBasePlus(world,entityPlayer,4);
+            EntitySummonedSwordBasePlus s = new EntitySummonedSwordBasePlus(world,entityPlayer,4 + extraDamage);
             s.getDataManager().set(EntitySummonedSwordBasePlus.BRIGHT,15728880);
             s.getDataManager().set(EntitySummonedSwordBasePlus.BRIGHTNESS,15f);
             int color = WorldEvent.auroraBladeColor.get(new Random().nextInt(60));
             s.setColor(color);
-            EntityDrive d = new EntityDrive(world,entityPlayer,2);
+            EntityDrive d = new EntityDrive(world,entityPlayer,2 + extraDamage);
             d.setPosition(entityPlayer.posX,entityPlayer.posY+entityPlayer.eyeHeight,entityPlayer.posZ);
             world.spawnEntity(s);
             world.spawnEntity(d);
         }
+        float extraDamage2 = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (8f / 5.0f));
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox().grow(20,10,20).offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb,input -> input != entityPlayer&&input instanceof EntityLivingBase);
             for (Entity e : l){
@@ -49,7 +52,7 @@ public class SaAuroraShining extends SpecialAttackBase {
                     EntityLivingBase ee = (EntityLivingBase) e;
                     ee.addPotionEffect(new PotionEffect(MobEffects.GLOWING,120,2));
                     if (!world.isRemote)
-                    ee.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),8);
+                    ee.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),8 + extraDamage2);
                     ee.setFire(5);
                 }
             }

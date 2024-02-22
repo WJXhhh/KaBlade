@@ -11,7 +11,7 @@ import java.util.List;
 
 public class PlayerThrowableHandler {
     public static List<Entity> getThrowableEntityForPlayer(World world, EntityPlayer player,Class<? extends Entity> throwableEntityClass){
-        List<Entity> allEntities = world.getLoadedEntityList();
+        List<Entity> allEntities = world.loadedEntityList;
         ArrayList<Entity> curEntities = Lists.newArrayList();
         if (allEntities.isEmpty()){
             return curEntities;

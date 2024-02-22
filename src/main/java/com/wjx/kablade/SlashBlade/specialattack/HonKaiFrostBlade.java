@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.Entity.SummonBladeOfFrostBlade;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,8 +16,9 @@ public class HonKaiFrostBlade extends SpecialAttackBase {
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.world;
+        float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (3f / 5.0f));
         for (int i =0;i<6;i++){
-            SummonBladeOfFrostBlade entity = new SummonBladeOfFrostBlade(entityPlayer.world,entityPlayer,3);
+            SummonBladeOfFrostBlade entity = new SummonBladeOfFrostBlade(entityPlayer.world,entityPlayer,extraDamage);
             int in = world.rand.nextBoolean() ? 1 : 0;
             int in2 = world.rand.nextBoolean() ? 1 : 0;
             entity.setPosition(entityPlayer.posX + (world.rand.nextDouble() * in),entityPlayer.getEyeHeight() + entityPlayer.posY + (world.rand.nextDouble()/2),entityPlayer.posZ + (world.rand.nextDouble() * in2));

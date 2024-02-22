@@ -49,20 +49,9 @@ public class MuraHori {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Muramasa/tex/HorikawaKunihiro");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Muramasa/mdlmura");
 
-        //ItemSlashBlade.setBaseAttackModifier(tag,2);
-        //ItemSlashBlade.KillCount.set(tag, 0);
 
-        //customblade.addEnchantment(Enchantments.LOOTING,100);
-        //customblade.addEnchantment(Enchantments.INFINITY,100);
-
-        //tag.setInteger("HideFlags",1);
-
-
-
-
-        //ItemSlashBlade.BaseAttackModifier.set(tag, 32768.0F);
-        //ItemSlashBlade.setBaseAttackModifier(tag,32768.0F);
         customblade.getTagCompound().setFloat("baseAttackModifier",7.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.3f);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, false);
         ItemSlashBladeNamed.NamedBlades.add(this.name);

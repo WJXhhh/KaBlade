@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.Main;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.Spear;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.block.Block;
@@ -38,10 +39,11 @@ public class HonKaiFrostComet extends SpecialAttackBase {
             bb = bb.grow(5.0D, 1.0D, 5.0D);
             bb = bb.offset(entityPlayer.motionX, entityPlayer.motionY, entityPlayer.motionZ);
             List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb, input -> input != entityPlayer && input.isEntityAlive());
+            float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (1.0f));
             if (list.size() != 0) {
                 for (Entity entity : list) {
                     if (entity instanceof EntityLivingBase) {
-                        entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer), 5);
+                        entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer), extraDamage);
                         Block ice = Blocks.PACKED_ICE;
                         world.setBlockState(new BlockPos(entity.posX, entity.posY, entity.posZ), ice.getDefaultState());
                         world.setBlockState(new BlockPos(entity.posX, entity.posY + 1, entity.posZ), ice.getDefaultState());

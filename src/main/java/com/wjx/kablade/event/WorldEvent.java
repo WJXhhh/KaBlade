@@ -330,17 +330,23 @@ public class WorldEvent {
                     KaBladeCompound.setInteger(KaBladeEntityProperties.PROP_WINE_BIND, KaBladeEntityProperties.getPropCompound(entity).getInteger(KaBladeEntityProperties.PROP_WINE_BIND) - 1);
                     KaBladeEntityProperties.updateNBTForClient(entity);
                     Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeEntityProperties.PROP_WINE_BIND_ATTACKER));
+                    float extraDamage = 0f;
+                    if(attacker instanceof EntityLivingBase && ((EntityLivingBase) attacker).getHeldItemMainhand().getItem() instanceof ItemSlashBlade){
+                        extraDamage = ItemSlashBlade.AttackAmplifier.get(((EntityLivingBase) attacker).getHeldItemMainhand().getTagCompound()) * (0.5f + (4f / 5.0f));
+                    }
                     if (world.getTotalWorldTime() % 20 == 0 && attacker != null && !attacker.isDead) {
-                        entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) attacker), 3);
-                        EntitySummonedSwordBasePlus sword = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker, 4, entity.posX + 1, entity.posY + entity.getEyeHeight() + 1, entity.posZ, 0f, 0f);
-                        EntitySummonedSwordBasePlus sword2 = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker, 4, entity.posX - 1, entity.posY + entity.getEyeHeight() + 1, entity.posZ, 0f, 0f);
-                        sword.setColor(3388211);
-                        sword2.setColor(3388211);
-                        world.spawnEntity(sword);
-                        world.spawnEntity(sword2);
+                        if (attacker instanceof EntityLivingBase){
+                            entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) attacker), 3 + extraDamage);
+                            EntitySummonedSwordBasePlus sword = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker, 4 + extraDamage, entity.posX + 1, entity.posY + entity.getEyeHeight() + 1, entity.posZ, 0f, 0f);
+                            EntitySummonedSwordBasePlus sword2 = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker, 4 + extraDamage, entity.posX - 1, entity.posY + entity.getEyeHeight() + 1, entity.posZ, 0f, 0f);
+                            sword.setColor(3388211);
+                            sword2.setColor(3388211);
+                            world.spawnEntity(sword);
+                            world.spawnEntity(sword2);
+                        }
                     }
                     boolean hasLocked = false;
-                    for (Entity e : world.getLoadedEntityList()) {
+                    for (Entity e : world.loadedEntityList) {
                         if (e instanceof EntityWine) {
                             if (e.getDataManager().get(EntityWine.targetID) == entity.getEntityId()) {
                                 hasLocked = true;
@@ -453,6 +459,9 @@ public class WorldEvent {
             player.getEntityData().setInteger("chop_willow", 10);
         }
         if (player.getEntityData().getBoolean("start_chop_willow")) {
+
+            float extraDamage = ItemSlashBlade.AttackAmplifier.get((player.getHeldItemMainhand().getTagCompound())) * (0.5f + (4f / 5.0f));
+
             if (player.getEntityData().getInteger("chop_willow") > -1) {
                 player.getEntityData().setInteger("chop_willow", player.getEntityData().getInteger("chop_willow") - 1);
             } else {
@@ -465,7 +474,7 @@ public class WorldEvent {
                 List<Entity> list = world.getEntitiesInAABBexcluding(player, bb, input -> input != player && input.isEntityAlive());
                 for (Entity entity : list) {
                     if (entity instanceof EntityLivingBase) {
-                        entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 4);
+                        entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 4 + extraDamage);
                         RightEntityCount++;
                     }
                 }
@@ -524,6 +533,7 @@ public class WorldEvent {
                     if (playerProperties.getInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK) > 0) {
                         KaBladeEntityProperties.doIntegerLower(playerProperties, KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
                     } else {
+                        float extraDamage = ItemSlashBlade.AttackAmplifier.get(event.player.getHeldItemMainhand().getTagCompound()) * (0.5f + (20f / 5.0f));
                         playerProperties.removeTag(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
                         MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(player));
                         Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
@@ -561,7 +571,7 @@ public class WorldEvent {
                         if (!pointedEntity.isEmpty()) {
                             for (Entity e : pointedEntity) {
                                 if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)) {
-                                    e.attackEntityFrom(DamageSource.causePlayerDamage(player), 20f);
+                                    e.attackEntityFrom(DamageSource.causePlayerDamage(player), 20f + extraDamage);
                                     ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY, 100, 3));
                                 }
                             }
@@ -574,6 +584,7 @@ public class WorldEvent {
                     if (playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_COUNT) > 0) {
                         flagikow = 0;
                         if (playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK) <= 0) {
+                            float extraDamage = ItemSlashBlade.AttackAmplifier.get(event.player.getHeldItemMainhand().getTagCompound()) * (0.5f + (8f / 5.0f));
                             KaBladeEntityProperties.doIntegerLower(playerProperties, KaBladePlayerProp.KAMI_OF_WAR_COUNT);
                             playerProperties.setInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK, 20);
                             KaBladePlayerProp.updateNBTForClient(player);
@@ -599,7 +610,7 @@ public class WorldEvent {
                             bb = bb.offset(player.motionX, player.motionY, player.motionZ);
                             List<Entity> entities = world.getEntitiesInAABBexcluding(player, bb, input -> input != player && input instanceof EntityLivingBase);
                             for (Entity e : entities) {
-                                e.attackEntityFrom(DamageSource.causeExplosionDamage(player), 8f);
+                                e.attackEntityFrom(DamageSource.causeExplosionDamage(player), 8f + extraDamage);
                                 if (e instanceof EntityLivingBase) {
                                     EntityLivingBase en = (EntityLivingBase) e;
                                     en.addPotionEffect(new PotionEffect(PotionInit.PARALY, 40, 2));

@@ -46,6 +46,7 @@ public class Phoenix {
 
         ItemSlashBlade.SpecialAttackType.set(tag, 286);
         customblade.getTagCompound().setFloat("baseAttackModifier",14.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.7f);
         customblade.addEnchantment(Enchantments.FIRE_ASPECT,3);
         ItemSlashBladeNamed.SummonedSwordColor.set(tag,0xDAA520);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

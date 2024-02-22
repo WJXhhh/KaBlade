@@ -43,6 +43,7 @@ public class BambooLumi {
 
         ItemSlashBlade.setBaseAttackModifier(Tag,6);
         customBlade.getTagCompound().setFloat("baseAttackModifier",6.0F);
+        ItemSlashBlade.AttackAmplifier.set(Tag,1.3f);
         //ItemSlashBlade.SpecialAttackType.set(tag, 257);
         customBlade.addEnchantment(Enchantments.SMITE,2);
         Item_KaNamed.IsDefaultBewitched.set(Tag, false);

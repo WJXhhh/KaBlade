@@ -49,19 +49,8 @@ public class MuraYoto {
         //tag.setBoolean("Unbreakable",true);
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
         Item_HonkaiNamed.CustomMaxDamage.set(tag, 400);
-
-        //ItemSlashBlade.TextureName.set(tag, "kablade/BambooLumi/tex");
-        //ItemSlashBlade.ModelName.set(tag, "kablade/BambooIron/blade");
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Muramasa/tex/YotoMuramasa");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Muramasa/mdlmura");
-
-       // ItemSlashBlade.setBaseAttackModifier(tag,2);
-        //ItemSlashBlade.KillCount.set(tag, 0);
-
-        //customblade.addEnchantment(Enchantments.LOOTING,100);
-        //customblade.addEnchantment(Enchantments.INFINITY,100);
-
-        //tag.setInteger("HideFlags",1);
 
 
 
@@ -69,6 +58,7 @@ public class MuraYoto {
         //ItemSlashBlade.BaseAttackModifier.set(tag, 32768.0F);
         //ItemSlashBlade.setBaseAttackModifier(tag,32768.0F);
         customblade.getTagCompound().setFloat("baseAttackModifier",9.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.3f);
         ItemSlashBlade.SpecialAttackType.set(tag, 281);
         customblade.addEnchantment(Enchantments.SHARPNESS,1);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

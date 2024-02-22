@@ -42,6 +42,7 @@ public class FairySword {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/FairySword/texFairySword");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/FairySword/mdlFairySword");
         customblade.getTagCompound().setFloat("baseAttackModifier",18.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,2.1f);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,16642509);

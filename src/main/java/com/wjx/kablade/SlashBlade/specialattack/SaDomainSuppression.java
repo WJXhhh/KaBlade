@@ -5,6 +5,7 @@ import com.wjx.kablade.Entity.EntitySummonSwordFree;
 import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.MessageSpawnParticle;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -75,6 +76,9 @@ public class SaDomainSuppression extends SpecialAttackBase {
                     pointedEntity.motionY = 0.5f;
                     float a = 0f;
                     float radius = 2f;
+                    float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (20f / 5.0f));
+                    float extraDamage2 = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (4f / 5.0f));
+                    float extraDamage3 = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (3f / 5.0f));
 
                     for (int i = 0;i < 6;i++){
                         double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
@@ -103,7 +107,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
                                 ay = -90f -(float) k;
                             }
                         }
-                        EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,20f,px,py,pz,(float) ap1,(float)ay);
+                        EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,20f + extraDamage,px,py,pz,(float) ap1,(float)ay);
                         p.setColor(65535);
                         world.spawnEntity(p);
                         a += 60;
@@ -136,7 +140,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
                                 ay = -90f -(float) k;
                             }
                         }
-                        EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,4f,px,py,pz,(float) ap1,(float)ay);
+                        EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,4f + extraDamage2,px,py,pz,(float) ap1,(float)ay);
                         p.setColor(65535);
                         world.spawnEntity(p);
                         a += 60;
@@ -145,7 +149,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
                         double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
                         double py = pointedEntity.posY + pointedEntity.getEyeHeight();
                         double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        EntitySummonSwordFree p = new EntitySummonSwordFree(world,entityPlayer,3f,px,py,pz,-90f,0f);
+                        EntitySummonSwordFree p = new EntitySummonSwordFree(world,entityPlayer,3f + extraDamage3,px,py,pz,-90f,0f);
                         p.setColor(65535);
                         world.spawnEntity(p);
                         a+=36;

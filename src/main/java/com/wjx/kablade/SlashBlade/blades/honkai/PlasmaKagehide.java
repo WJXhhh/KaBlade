@@ -54,6 +54,7 @@ public class PlasmaKagehide {
 
         ItemSlashBlade.SpecialAttackType.set(tag, 293);
         customblade.getTagCompound().setFloat("baseAttackModifier",16.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.7f);
         customblade.addEnchantment(Enchantments.SMITE,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

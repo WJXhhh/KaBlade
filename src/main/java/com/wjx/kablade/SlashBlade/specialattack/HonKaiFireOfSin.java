@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import mods.flammpfeil.slashblade.entity.EntityDrive;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,8 +22,9 @@ public class HonKaiFireOfSin extends SpecialAttackBase {
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.world;
+        float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (10f / 5.0f));
         if (!world.isRemote){
-            EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 10f,true,90f);
+            EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 10f + extraDamage,true,90f);
             double d0 = (double)4 / 2.0D;
             entityDrive.setPosition(entityPlayer.posX,entityPlayer.posY + entityPlayer.getEyeHeight(),entityPlayer.posZ);
             entityDrive.setEntityBoundingBox(new AxisAlignedBB(entityDrive.posX - d0, entityDrive.posY, entityDrive.posZ - d0, entityDrive.posX + d0, entityDrive.posY + (double)entityDrive.height, entityDrive.posZ + d0));

@@ -44,6 +44,7 @@ public class BlackSteel {
 
         ItemSlashBlade.setBaseAttackModifier(Tag,6);
         customBlade.getTagCompound().setFloat("baseAttackModifier",6.0F);
+        ItemSlashBlade.AttackAmplifier.set(Tag,1.2f);
         Item_KaNamed.IsDefaultBewitched.set(Tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(Tag, 1);

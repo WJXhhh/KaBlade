@@ -43,6 +43,7 @@ public class IceEpiphyllum {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/IceEpiphyllum/texIceEpiphyllum");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/IceEpiphyllum/mdlIceEpiphyllum");
         customblade.getTagCompound().setFloat("baseAttackModifier",22.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,2.5f);
         customblade.addEnchantment(Enchantments.SHARPNESS,3);
         ItemSlashBlade.SpecialAttackType.set(tag,299);
         ItemSlashBlade.SummonedSwordColor.set(tag,65535);

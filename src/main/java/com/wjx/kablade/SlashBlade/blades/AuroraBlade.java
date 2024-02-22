@@ -47,6 +47,7 @@ public class AuroraBlade {
         customBlade.getTagCompound().setFloat("baseAttackModifier",11.0F);
         customBlade.getTagCompound().setBoolean("isAurora",true);
         ItemSlashBlade.SpecialAttackType.set(Tag,295);
+        ItemSlashBlade.AttackAmplifier.set(Tag,1.8f);
         customBlade.addEnchantment(Enchantments.SMITE,4);
         customBlade.addEnchantment(Enchantments.POWER,2);
         Item_KaNamed.IsDefaultBewitched.set(Tag, true);

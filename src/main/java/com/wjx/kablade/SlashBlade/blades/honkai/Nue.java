@@ -42,6 +42,7 @@ public class Nue {
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Nue/mdlNue");
 
         customblade.getTagCompound().setFloat("baseAttackModifier",21.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,2.1f);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,5);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

@@ -52,22 +52,8 @@ public class MuraUson {
         //ItemSlashBlade.ModelName.set(tag, "kablade/BambooIron/blade");
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Muramasa/tex/YotoUson");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Muramasa/mdlmura");
-
-       // ItemSlashBlade.setBaseAttackModifier(tag,2);
-        //ItemSlashBlade.KillCount.set(tag, 0);
-
-        //customblade.addEnchantment(Enchantments.LOOTING,100);
-        //customblade.addEnchantment(Enchantments.INFINITY,100);
-
-        //tag.setInteger("HideFlags",1);
-
-
-
-
-        //ItemSlashBlade.BaseAttackModifier.set(tag, 32768.0F);
-        //ItemSlashBlade.setBaseAttackModifier(tag,32768.0F);
         customblade.getTagCompound().setFloat("baseAttackModifier",8.0F);
-        //ItemSlashBlade.SpecialAttackType.set(tag, 257);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.5f);
         customblade.addEnchantment(Enchantments.SHARPNESS,1);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);

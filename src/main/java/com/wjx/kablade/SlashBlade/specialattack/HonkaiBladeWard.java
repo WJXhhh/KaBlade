@@ -19,13 +19,13 @@ public class HonkaiBladeWard extends SpecialAttackBase {
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         List<Entity> entities = PlayerThrowableHandler.getThrowableEntityForPlayer(entityPlayer.world,entityPlayer, EntityRaikiriBlade.class);
-        if (entities.size() >= 1){
+        if (!entities.isEmpty()){
             for (Entity e :entities){
                 e.setDead();
             }
         }
         World w = entityPlayer.world;
         if (!w.isRemote)
-        w.spawnEntity(new EntityRaikiriBlade(w,entityPlayer));
+            w.spawnEntity(new EntityRaikiriBlade(w,entityPlayer));
     }
 }

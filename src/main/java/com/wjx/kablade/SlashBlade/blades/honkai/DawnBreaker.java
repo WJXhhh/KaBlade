@@ -42,6 +42,7 @@ public class DawnBreaker {
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/DawnBreaker/mdlDawnBreaker");
 
         customblade.getTagCompound().setFloat("baseAttackModifier",17.0F);
+        ItemSlashBlade.AttackAmplifier.set(tag,1.9f);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,4);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
