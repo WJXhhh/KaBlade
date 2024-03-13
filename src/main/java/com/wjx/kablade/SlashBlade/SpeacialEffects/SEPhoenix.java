@@ -39,7 +39,7 @@ public class SEPhoenix implements ISpecialEffect, IRemovable {
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event){
-        Entity a = event.getSource()>getTrueSource();
+        Entity a = event.getSource().getTrueSource();
         if(a instanceof EntityLivingBase){
             EntityLivingBase attacker = (EntityLivingBase) event.getSource().getTrueSource();
             EntityLivingBase e = event.getEntityLiving();
