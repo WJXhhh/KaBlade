@@ -40,22 +40,21 @@ public class SEPhoenix implements ISpecialEffect, IRemovable {
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event){
         Entity a = event.getSource()>getTrueSource();
-        if(a instanceof EntityLivingBase){EntityLivingBase attacker = (EntityLivingBase) event.getSource().getTrueSource();
-        EntityLivingBase e = event.getEntityLiving();
-        if (!e.world.isRemote){
-            if (attacker != null){
-                if (attacker instanceof EntityPlayer && attacker.getHeldItemMainhand().getItem() instanceof ItemSlashBlade){
-                    if (SpecialEffects.isEffective((EntityPlayer) attacker,attacker.getHeldItemMainhand(),this) == SpecialEffects.State.Effective){
-                        if (e.isBurning()){
-                            event.setAmount(event.getAmount() * 1.2f);
+        if(a instanceof EntityLivingBase){
+            EntityLivingBase attacker = (EntityLivingBase) event.getSource().getTrueSource();
+            EntityLivingBase e = event.getEntityLiving();
+            if (!e.world.isRemote){
+                if (attacker != null){
+                    if (attacker instanceof EntityPlayer && attacker.getHeldItemMainhand().getItem() instanceof ItemSlashBlade){
+                        if (SpecialEffects.isEffective((EntityPlayer) attacker,attacker.getHeldItemMainhand(),this) == SpecialEffects.State.Effective){
+                            if (e.isBurning()){
+                                event.setAmount(event.getAmount() * 1.2f);
+                            }
+                            else e.setFire(5);
                         }
-                        else e.setFire(5);
                     }
                 }
             }
         }
-            
-        }
-        
     }
 }
