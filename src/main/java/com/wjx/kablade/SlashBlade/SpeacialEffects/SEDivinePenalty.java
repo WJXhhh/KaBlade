@@ -45,7 +45,12 @@ public class SEDivinePenalty implements ISpecialEffect, IRemovable {
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event){
+        if(event.getSource().getTrueSource() instanceof EntityLivingBase)
+        {
         EntityLivingBase attacker = (EntityLivingBase) event.getSource().getTrueSource();
+        
+            
+        
         EntityLivingBase e = event.getEntityLiving();
         if (!e.world.isRemote){
             if (e instanceof EntityPlayer && attacker != null){
@@ -67,6 +72,7 @@ public class SEDivinePenalty implements ISpecialEffect, IRemovable {
                 }
 
             }
+        }
         }
     }
 
