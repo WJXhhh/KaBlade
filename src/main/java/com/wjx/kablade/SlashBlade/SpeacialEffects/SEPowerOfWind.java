@@ -56,8 +56,8 @@ public class SEPowerOfWind implements ISpecialEffect, IRemovable {
 
         EntityPlayer player = event.player;
         if (event.phase == TickEvent.Phase.START) {
-            if (event.player.getHeldItemMainhand().getItem() instanceof ItemSlashBlade) {
-                if (SpecialEffects.isEffective(event.player, event.player.getHeldItemMainhand(), BladeProxy.PowerOfWind) == SpecialEffects.State.Effective) {
+
+                if (event.player.getHeldItemMainhand().getItem() instanceof ItemSlashBlade && SpecialEffects.isEffective(event.player, event.player.getHeldItemMainhand(), BladeProxy.PowerOfWind) == SpecialEffects.State.Effective) {
                     flagpow = 0;
                     double speed = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
                     AbstractAttributeMap map = player.getAttributeMap();
@@ -87,7 +87,7 @@ public class SEPowerOfWind implements ISpecialEffect, IRemovable {
 
                     }
                 }
-            }
+
         }
     }
 }
