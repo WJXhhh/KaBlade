@@ -35,7 +35,7 @@ public class SlashBladeRecipeModding extends ShapedOreRecipe {
         boolean result = super.matches(inv, world);
 
         if (!world.isRemote)
-        Main.ModHelper.sendMessageToAll("FirstResult:" + result);
+        //Main.ModHelper.sendMessageToAll("FirstResult:" + result);
 
         if(result && !requiredStateBlade.isEmpty()){
             requiredStateBlade.setItemDamage(OreDictionary.WILDCARD_VALUE);
@@ -77,7 +77,7 @@ public class SlashBladeRecipeModding extends ShapedOreRecipe {
         }
 
         if (!world.isRemote)
-            Main.ModHelper.sendMessageToAll("SecondResult:" + result);
+            //Main.ModHelper.sendMessageToAll("SecondResult:" + result);
 
         return result;
     }
