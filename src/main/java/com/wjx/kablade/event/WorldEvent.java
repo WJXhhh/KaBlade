@@ -73,7 +73,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -331,11 +330,11 @@ public class WorldEvent {
                     KaBladeEntityProperties.updateNBTForClient(entity);
                     Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeEntityProperties.PROP_WINE_BIND_ATTACKER));
                     float extraDamage = 0f;
-                    if(attacker instanceof EntityLivingBase && ((EntityLivingBase) attacker).getHeldItemMainhand().getItem() instanceof ItemSlashBlade){
+                    if (attacker instanceof EntityLivingBase && ((EntityLivingBase) attacker).getHeldItemMainhand().getItem() instanceof ItemSlashBlade) {
                         extraDamage = ItemSlashBlade.AttackAmplifier.get(((EntityLivingBase) attacker).getHeldItemMainhand().getTagCompound()) * (0.5f + (4f / 5.0f));
                     }
                     if (world.getTotalWorldTime() % 20 == 0 && attacker != null && !attacker.isDead) {
-                        if (attacker instanceof EntityLivingBase){
+                        if (attacker instanceof EntityLivingBase) {
                             entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) attacker), 3 + extraDamage);
                             EntitySummonedSwordBasePlus sword = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker, 4 + extraDamage, entity.posX + 1, entity.posY + entity.getEyeHeight() + 1, entity.posZ, 0f, 0f);
                             EntitySummonedSwordBasePlus sword2 = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker, 4 + extraDamage, entity.posX - 1, entity.posY + entity.getEyeHeight() + 1, entity.posZ, 0f, 0f);
@@ -518,7 +517,7 @@ public class WorldEvent {
                 ItemStack stack = player.getHeldItemMainhand();
                 if (stack.getItem() instanceof ItemSlashBlade) {
                     if (stack.hasTagCompound()) {
-                        if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("isAurora")) {
+                        if (stack.getTagCompound() != null && stack.getTagCompound().getBoolean("isAurora")) {
                             ItemSlashBlade.SummonedSwordColor.set(stack.getTagCompound(), auroraBladeColor.get(auroraBladeColorIndex));
                         }
                     }
@@ -833,12 +832,12 @@ public class WorldEvent {
             }
             //SakuraBrand
             if (!world.isRemote) {
-                if (event.getSource().getImmediateSource() != null && KaBladeEntityProperties.getPropCompound(event.getEntityLiving()).getInteger(KaBladeEntityProperties.FALLING_PETALS)>0) {
+                if (event.getSource().getImmediateSource() != null && KaBladeEntityProperties.getPropCompound(event.getEntityLiving()).getInteger(KaBladeEntityProperties.FALLING_PETALS) > 0) {
                     if (event.getSource().getImmediateSource() instanceof EntityLivingBase) {
                         EntityLivingBase attacker = (EntityLivingBase) event.getSource().getImmediateSource();
-                        if (attacker instanceof EntityPlayer){
-                            event.setAmount(event.getAmount()*2f);
-                            event.getEntityLiving().addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,40,2));
+                        if (attacker instanceof EntityPlayer) {
+                            event.setAmount(event.getAmount() * 2f);
+                            event.getEntityLiving().addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 40, 2));
                         }
                     }
                 }
@@ -928,45 +927,51 @@ public class WorldEvent {
         }
         //RenderMagChaosBladeEffect
         if (!MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.isEmpty()) {
-            for (MagChaosBladeEffectRenderer renderer : MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers) {
-                Entity e = Minecraft.getMinecraft().world.getEntityByID(renderer.playerID);
-                if (e instanceof EntityPlayer) {
-                    EntityPlayer targetPlayer = (EntityPlayer) e;
-                    EntityPlayer ownerPlayer = Minecraft.getMinecraft().player;
-                    double vx, vy, vz;
-                    if (targetPlayer == ownerPlayer) {
-                        vx = 0d;
-                        vy = 0d;
-                        vz = 0d;
-                    } else {
-                        vx = targetPlayer.posX - ownerPlayer.posX;
-                        vy = targetPlayer.posY - ownerPlayer.posY;
-                        vz = targetPlayer.posZ - ownerPlayer.posZ;
+            try {
+
+
+                for (MagChaosBladeEffectRenderer renderer : MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers) {
+                    Entity e = Minecraft.getMinecraft().world.getEntityByID(renderer.playerID);
+                    if (e instanceof EntityPlayer) {
+                        EntityPlayer targetPlayer = (EntityPlayer) e;
+                        EntityPlayer ownerPlayer = Minecraft.getMinecraft().player;
+                        double vx, vy, vz;
+                        if (targetPlayer == ownerPlayer) {
+                            vx = 0d;
+                            vy = 0d;
+                            vz = 0d;
+                        } else {
+                            vx = targetPlayer.posX - ownerPlayer.posX;
+                            vy = targetPlayer.posY - ownerPlayer.posY;
+                            vz = targetPlayer.posZ - ownerPlayer.posZ;
+                        }
+                        GlStateManager.disableLighting();
+                        GlStateManager.enableBlend();
+                        GlStateManager.pushMatrix();
+                        GlStateManager.translate(vx, vy, vz);
+                        GlStateManager.rotate(targetPlayer.rotationYaw, 0f, -1f, 0f);
+                        GlStateManager.rotate(-90f, 1f, 0f, 0f);
+                        GlStateManager.translate(0f, -2f, 0f);
+                        GlStateManager.translate(0f, 0f, 1f);
+                        GlStateManager.rotate(180f, 0f, 0f, 1f);
+                        GlStateManager.scale(4f, 4f, 4f);
+                        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(MagChaosBladeEffectIcon);
+                        Tessellator tessellator = Tessellator.getInstance();
+                        BufferBuilder buffer = tessellator.getBuffer();
+                        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
+                        buffer.pos(-0.5d, -0.25d, 0).tex(0, 1).normal(0.0f, 1.0f, 0.0f).endVertex();
+                        buffer.pos(0.5d, -0.25d, 0).tex(1, 1).normal(0.0f, 1.0f, 0.0f).endVertex();
+                        buffer.pos(0.5d, 0.75d, 0).tex(1, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
+                        buffer.pos(-0.5d, 0.75d, 0).tex(0, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
+                        tessellator.draw();
+                        GlStateManager.popMatrix();
+                        GlStateManager.disableBlend();
+                        GlStateManager.enableLighting();
                     }
-                    GlStateManager.disableLighting();
-                    GlStateManager.enableBlend();
-                    GlStateManager.pushMatrix();
-                    GlStateManager.translate(vx, vy, vz);
-                    GlStateManager.rotate(targetPlayer.rotationYaw, 0f, -1f, 0f);
-                    GlStateManager.rotate(-90f, 1f, 0f, 0f);
-                    GlStateManager.translate(0f, -2f, 0f);
-                    GlStateManager.translate(0f, 0f, 1f);
-                    GlStateManager.rotate(180f, 0f, 0f, 1f);
-                    GlStateManager.scale(4f, 4f, 4f);
-                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(MagChaosBladeEffectIcon);
-                    Tessellator tessellator = Tessellator.getInstance();
-                    BufferBuilder buffer = tessellator.getBuffer();
-                    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
-                    buffer.pos(-0.5d, -0.25d, 0).tex(0, 1).normal(0.0f, 1.0f, 0.0f).endVertex();
-                    buffer.pos(0.5d, -0.25d, 0).tex(1, 1).normal(0.0f, 1.0f, 0.0f).endVertex();
-                    buffer.pos(0.5d, 0.75d, 0).tex(1, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
-                    buffer.pos(-0.5d, 0.75d, 0).tex(0, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
-                    tessellator.draw();
-                    GlStateManager.popMatrix();
-                    GlStateManager.disableBlend();
-                    GlStateManager.enableLighting();
                 }
+            } catch (Exception e) {
+                logger.error("MagChaosBladeEffectRenderer has a error but no large effect!\n" + e.getMessage());
             }
         }
     }
@@ -1047,13 +1052,12 @@ public class WorldEvent {
     }
 
     @SubscribeEvent
-    public void onPlantBreakEvent(BlockEvent.BreakEvent event){
-        World world=event.getWorld();
-        if(!world.isRemote){
+    public void onPlantBreakEvent(BlockEvent.BreakEvent event) {
+        World world = event.getWorld();
+        if (!world.isRemote) {
             Block block = event.getState().getBlock();
-            if(block==Blocks.GRASS||block==Blocks.LEAVES||block==Blocks.LEAVES2){
-                if(Math.random()<0.03)
-                {
+            if (block == Blocks.GRASS || block == Blocks.LEAVES || block == Blocks.LEAVES2) {
+                if (Math.random() < 0.03) {
                     int x = event.getPos().getX();
                     int y = event.getPos().getY();
                     int z = event.getPos().getZ();
