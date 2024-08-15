@@ -88,7 +88,7 @@ import static com.wjx.kablade.Lib.*;
 import static com.wjx.kablade.Main.*;
 import static com.wjx.kablade.SlashBlade.BladeLoader.ITEM_MAGIC;
 
-@Mod.EventBusSubscriber
+//@Mod.EventBusSubscriber
 public class WorldEvent {
 
     public WorldEvent() {
