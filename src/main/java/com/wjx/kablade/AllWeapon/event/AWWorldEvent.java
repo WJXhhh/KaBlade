@@ -1,9 +1,12 @@
 package com.wjx.kablade.AllWeapon.event;
 
+import com.wjx.kablade.AllWeapon.recipes.AWRec;
 import mods.flammpfeil.slashblade.ItemSlashBlade;
 import mods.flammpfeil.slashblade.entity.EntityBladeStand;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -19,7 +22,12 @@ public class AWWorldEvent {
             if(entity instanceof EntityBladeStand){
                 EntityBladeStand stand = (EntityBladeStand) entity;
                 if(stand.hasBlade()){
-
+                    ItemStack blade = stand.getBlade();
+                    ItemStack result = AWRec.ToRec(blade, event.getWorld(), new Vec3d(stand.posX,stand.posY,stand.posZ),player.getHeldItemMainhand());
+                    if(result != ItemStack.EMPTY){
+                        stand.setBlade(result);
+                        player.getHeldItemMainhand().shrink(1);
+                    }
                 }
             }
         }
