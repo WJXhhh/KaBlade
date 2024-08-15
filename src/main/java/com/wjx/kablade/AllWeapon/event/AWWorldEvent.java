@@ -1,5 +1,6 @@
 package com.wjx.kablade.AllWeapon.event;
 
+import net.minecraftforge.common.MinecraftForge;
 import com.wjx.kablade.AllWeapon.recipes.AWRec;
 import com.wjx.kablade.Main;
 import mods.flammpfeil.slashblade.ItemSlashBlade;
@@ -14,8 +15,13 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber
+//@Mod.EventBusSubscriber
 public class AWWorldEvent {
+
+    public AWWorldEvent(){
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
 
     @SubscribeEvent
     public static void recipeEvent(PlayerInteractEvent.EntityInteract event){

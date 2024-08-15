@@ -5,6 +5,7 @@ import com.wjx.kablade.capability.CapabilityLoader;
 import com.wjx.kablade.event.WorldEvent;
 import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.network.*;
+import com.wjx.kablade.AllWeapon.event.AWWorldEvent;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -36,6 +37,9 @@ public class CommonProxy{
     public void init(FMLInitializationEvent event){
 
         new WorldEvent();
+        if(Main.EnableAllWeapon){
+            new AWWorldEvent();
+        }
 
     }
 
