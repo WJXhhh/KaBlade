@@ -47,7 +47,7 @@ public class HonkaiFallingPetals extends SpecialAttackBase {
         Entity pointedEntity = null;
         List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && entity instanceof EntityLiving));
         double d2 = dist;
-        float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (15f / 5.0f));
+        float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get((itemStack.getTagCompound()))) * 15f)*5f;
         for (Entity entity1 : list) {
             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
             RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(vec3d, vec3d2);

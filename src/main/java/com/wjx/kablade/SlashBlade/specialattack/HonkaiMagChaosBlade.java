@@ -39,7 +39,7 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
     private void doMagStormAttack(EntityPlayer entityPlayer){
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
-            float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (40f / 5.0f));
+            float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())) * 40f) * 5f;
             MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(entityPlayer));
             Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
             KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK,6);
@@ -48,9 +48,9 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
             Vec3d vec3d1 = entityPlayer.getLook(1.0F);
             Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
             List<Entity> pointedEntity = Lists.newArrayList();
-            List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+            List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(3.0D, 1.0D, 3.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
             double d2 = dist;
-            for (Entity entity1 : list) {
+            /*for (Entity entity1 : list) {
                 AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
                 RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(vec3d, vec3d2);
 
@@ -73,9 +73,9 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
                         }
                     }
                 }
-            }
-            if (!pointedEntity.isEmpty()){
-                for (Entity e : pointedEntity){
+            }*/
+            if (!list.isEmpty()){
+                for (Entity e : list){
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
                         e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),40f + extraDamage);
                         ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,3));

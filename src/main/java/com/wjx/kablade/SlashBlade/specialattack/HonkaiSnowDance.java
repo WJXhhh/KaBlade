@@ -39,7 +39,7 @@ public class HonkaiSnowDance extends SpecialAttackBase {
             Vec3d vec3d1 = entityPlayer.getLook(1.0F);
             Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
             Entity pointedEntity = null;
-            float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (20f / 5.0f));
+            float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())) * 20f) * 5f;
             List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
             double d2 = dist;
             for (Entity entity1 : list) {

@@ -53,7 +53,7 @@ public class MuraUson {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/Muramasa/tex/YotoUson");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/Muramasa/mdlmura");
         customblade.getTagCompound().setFloat("baseAttackModifier",8.0F);
-        ItemSlashBlade.AttackAmplifier.set(tag,1.5f);
+        Item_HonkaiNamed.AttackAmplifier.set(tag,1.5f);
         customblade.addEnchantment(Enchantments.SHARPNESS,1);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);

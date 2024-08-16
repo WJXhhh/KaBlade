@@ -1,5 +1,6 @@
 package com.wjx.kablade.proxy;
 
+import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.capability.CapabilityLoader;
 import com.wjx.kablade.event.WorldEvent;

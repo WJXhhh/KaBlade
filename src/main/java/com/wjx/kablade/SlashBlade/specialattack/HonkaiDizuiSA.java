@@ -40,7 +40,7 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
         {
             for(int i =0;i<3;i++)
             {
-                float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (50f / 5.0f));
+                float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get((itemStack.getTagCompound()))) * 50f)*5f;
 
                 EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 30f);
                 EntityDrive entityDrive2 = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 60f);
@@ -68,7 +68,7 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
             if(entityPlayer.getAttackingEntity()!=null ){
                 entityPlayer.getAttackingEntity().addPotionEffect(new PotionEffect(MobEffects.WITHER,100,1));
             }
-            float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (20f / 5.0f));
+            float extraDamage = (float)Math.log((-ItemSlashBlade.AttackAmplifier.get((itemStack.getTagCompound()))) * 20f)*5f;
             EntitySummonSwordFree s1 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,0f);
             EntitySummonSwordFree s2 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,45f);
             EntitySummonSwordFree s3 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,90f);
@@ -97,7 +97,7 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox();
         bb = bb.grow(16.0D, 5.0D, 16.0D);
         bb = bb.offset(entityPlayer.motionX, entityPlayer.motionY, entityPlayer.motionZ);
-        float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (5f / 5.0f));
+        float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get((itemStack.getTagCompound()))) * 5f)*5f;
         List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb, input -> input != entityPlayer && input.isEntityAlive());
         if (!list.isEmpty()){
             for (Entity entity: list){

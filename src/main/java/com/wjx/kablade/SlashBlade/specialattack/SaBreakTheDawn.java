@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -26,7 +27,7 @@ public class SaBreakTheDawn extends SpecialAttackBase {
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
-        float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (1.0f));
+        float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),1f) ;
         for (int i=0;i<5;i++){
             EntitySummonedSwordBase s = new EntitySummonedSwordBase(world,entityPlayer,5 + extraDamage);
             s.setColor(0xfff8ca);

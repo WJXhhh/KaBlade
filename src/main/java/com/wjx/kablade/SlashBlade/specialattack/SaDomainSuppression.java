@@ -5,6 +5,7 @@ import com.wjx.kablade.Entity.EntitySummonSwordFree;
 import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.MessageSpawnParticle;
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -76,9 +77,9 @@ public class SaDomainSuppression extends SpecialAttackBase {
                     pointedEntity.motionY = 0.5f;
                     float a = 0f;
                     float radius = 2f;
-                    float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (20f / 5.0f));
-                    float extraDamage2 = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (4f / 5.0f));
-                    float extraDamage3 = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (3f / 5.0f));
+                    float extraDamage = MathFunc.amplifierCalc(-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),20f);
+                    float extraDamage2 = MathFunc.amplifierCalc(-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),4f);
+                    float extraDamage3 = MathFunc.amplifierCalc(-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),3f);
 
                     for (int i = 0;i < 6;i++){
                         double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;

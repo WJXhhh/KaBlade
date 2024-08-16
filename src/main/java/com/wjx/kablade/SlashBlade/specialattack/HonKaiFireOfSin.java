@@ -22,7 +22,7 @@ public class HonKaiFireOfSin extends SpecialAttackBase {
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.world;
-        float extraDamage = ItemSlashBlade.AttackAmplifier.get(itemStack.getTagCompound()) * (0.5f + (10f / 5.0f));
+        float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get((itemStack.getTagCompound()))) * 10f)*5f;
         if (!world.isRemote){
             EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 10f + extraDamage,true,90f);
             double d0 = (double)4 / 2.0D;

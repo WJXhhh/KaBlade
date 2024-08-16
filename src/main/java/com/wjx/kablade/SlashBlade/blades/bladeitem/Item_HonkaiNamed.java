@@ -26,6 +26,10 @@ public class Item_HonkaiNamed extends ItemSlashBladeNamed {
             for(String bladename : BladeLoader.NamedHonkai){
                 ItemStack blade = SlashBlade.findItemStack(bladestr,bladename,1);
                 NBTTagCompound tag = getItemTagCompound(blade);
+                if(blade.getTranslationKey().equals("item.wjx.blade.honkai.murauson")){
+                    NBTTagCompound s = blade.getTagCompound();
+                    s.isEmpty();
+                }
                 if(!blade.isEmpty()) {
 
                         subItems.add(blade);

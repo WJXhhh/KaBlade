@@ -331,7 +331,7 @@ public class WorldEvent {
                     Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeEntityProperties.PROP_WINE_BIND_ATTACKER));
                     float extraDamage = 0f;
                     if (attacker instanceof EntityLivingBase && ((EntityLivingBase) attacker).getHeldItemMainhand().getItem() instanceof ItemSlashBlade) {
-                        extraDamage = ItemSlashBlade.AttackAmplifier.get(((EntityLivingBase) attacker).getHeldItemMainhand().getTagCompound()) * (0.5f + (4f / 5.0f));
+                        extraDamage = (float)Math.log(-ItemSlashBlade.AttackAmplifier.get(((EntityLivingBase) attacker).getHeldItemMainhand().getTagCompound()) *4f) * 5f;
                     }
                     if (world.getTotalWorldTime() % 20 == 0 && attacker != null && !attacker.isDead) {
                         if (attacker instanceof EntityLivingBase) {
@@ -459,7 +459,7 @@ public class WorldEvent {
         }
         if (player.getEntityData().getBoolean("start_chop_willow")) {
 
-            float extraDamage = ItemSlashBlade.AttackAmplifier.get((player.getHeldItemMainhand().getTagCompound())) * (0.5f + (4f / 5.0f));
+            float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get((player.getHeldItemMainhand().getTagCompound()))) * 4f)*5f;
 
             if (player.getEntityData().getInteger("chop_willow") > -1) {
                 player.getEntityData().setInteger("chop_willow", player.getEntityData().getInteger("chop_willow") - 1);
@@ -532,7 +532,7 @@ public class WorldEvent {
                     if (playerProperties.getInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK) > 0) {
                         KaBladeEntityProperties.doIntegerLower(playerProperties, KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
                     } else {
-                        float extraDamage = ItemSlashBlade.AttackAmplifier.get(event.player.getHeldItemMainhand().getTagCompound()) * (0.5f + (20f / 5.0f));
+                        float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get(event.player.getHeldItemMainhand().getTagCompound())) * 20f)*5f;
                         playerProperties.removeTag(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
                         MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(player));
                         Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
@@ -583,7 +583,7 @@ public class WorldEvent {
                     if (playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_COUNT) > 0) {
                         flagikow = 0;
                         if (playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK) <= 0) {
-                            float extraDamage = ItemSlashBlade.AttackAmplifier.get(event.player.getHeldItemMainhand().getTagCompound()) * (0.5f + (8f / 5.0f));
+                            float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get(event.player.getHeldItemMainhand().getTagCompound())) * 8f)*5f;
                             KaBladeEntityProperties.doIntegerLower(playerProperties, KaBladePlayerProp.KAMI_OF_WAR_COUNT);
                             playerProperties.setInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK, 20);
                             KaBladePlayerProp.updateNBTForClient(player);

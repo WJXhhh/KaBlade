@@ -24,17 +24,19 @@ public class AWWorldEvent {
 
 
     @SubscribeEvent
-    public static void recipeEvent(PlayerInteractEvent.EntityInteract event){
+    public void recipeEvent(PlayerInteractEvent.EntityInteract event){
         Entity entity = event.getTarget();
         EntityPlayer player = event.getEntityPlayer();
         //Main.logger.warn("right! ");
         if(entity!=null&&player!=null){
             if(entity instanceof EntityBladeStand){
                 EntityBladeStand stand = (EntityBladeStand) entity;
+                int type = stand.getStandType();//耀魂碎片:0 耀魂铁锭:1 耀魂宝珠:2 破碎的耀魂:3
+                int dimension = stand.dimension;//主世界:0 下界:-1
                 if(stand.hasBlade()){
                    // Main.logger.warn("chechehecech");
                     ItemStack blade = stand.getBlade();
-                    ItemStack result = AWRec.ToRec(blade, event.getWorld(), new Vec3d(stand.posX,stand.posY,stand.posZ),player.getHeldItemMainhand());
+                    ItemStack result = AWRec.ToRec(blade, event.getWorld(), new Vec3d(stand.posX,stand.posY,stand.posZ),player.getHeldItemMainhand(),type,dimension);
                     if(result != ItemStack.EMPTY){
                         //Main.logger.warn("resssttt");
                         stand.setBlade(result);

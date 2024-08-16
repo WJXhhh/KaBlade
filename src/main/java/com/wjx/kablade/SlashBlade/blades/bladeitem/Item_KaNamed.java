@@ -25,6 +25,7 @@ public class Item_KaNamed extends ItemSlashBladeNamed {
         if (this.isInCreativeTab(tab)) {
             for(String bladename : BladeLoader.NamedBlades){
                 ItemStack blade = SlashBlade.findItemStack(bladestr,bladename,1);
+
                 NBTTagCompound tag = getItemTagCompound(blade);
                 if(!blade.isEmpty()) {
 

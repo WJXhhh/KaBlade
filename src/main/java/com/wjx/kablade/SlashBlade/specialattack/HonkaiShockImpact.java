@@ -28,7 +28,7 @@ public class HonkaiShockImpact extends SpecialAttackBase {
         ax= ax.grow(3,1,3);
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax, input -> input != entityPlayer && input instanceof EntityLivingBase);
-        float extraDamage = ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()) * (0.5f + (22f / 5.0f));
+        float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())) * 22f) * 5f;
         for (Entity entity : entities){
             if (entity != null){
                 if (!entityPlayer.world.isRemote && !(entity instanceof EntityPlayer)){
