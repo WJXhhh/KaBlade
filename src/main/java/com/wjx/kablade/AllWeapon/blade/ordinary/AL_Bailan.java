@@ -13,11 +13,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class AL_LiuRRHuo {
+public class AL_Bailan {
+    String name = "wjx.allweapon.bailan";
 
-    String name = "wjx.allweapon.liurrh";
-
-    public AL_LiuRRHuo(){
+    public AL_Bailan(){
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -31,16 +30,16 @@ public class AL_LiuRRHuo {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event){
         Item_AwNamed.CurrentItemName.set(Tag,name);
-        Item_AwNamed.CustomMaxDamage.set(Tag,230);
-        ItemSlashBlade.TextureName.set(Tag, "allweapon/lrrh/texture");
-        ItemSlashBlade.ModelName.set(Tag, "allweapon/lrrh/model");
+        Item_AwNamed.CustomMaxDamage.set(Tag,200);
+        ItemSlashBlade.TextureName.set(Tag, "allweapon/bailan/texture");
+        //ItemSlashBlade.ModelName.set(Tag, "allweapon/lrrh/model");
         ItemSlashBladeNamed.IsDefaultBewitched.set(Tag, true);
         ItemSlashBlade.StandbyRenderType.set(Tag, 2);
-        ItemSlashBlade.SummonedSwordColor.set(Tag, 0xFF0000);
-        ItemSlashBlade.SpecialAttackType.set(Tag,400);
-        ItemSlashBlade.BaseAttackModifier.set(Tag,10f);
-        customblade.addEnchantment(Enchantments.FIRE_ASPECT,20);
-        customblade.addEnchantment(Enchantments.POWER,20);
+        ItemSlashBlade.SummonedSwordColor.set(Tag, 0x33ee33);
+        ItemSlashBlade.SpecialAttackType.set(Tag,401);
+        ItemSlashBlade.BaseAttackModifier.set(Tag,5f);
+        //customblade.addEnchantment(Enchantments.FIRE_ASPECT,20);
+        //customblade.addEnchantment(Enchantments.POWER,20);
         //customblade.addEnchantment(Enchantments.,20);
         SlashBlade.registerCustomItemStack(name,customblade);
         BladeLoader.AwBlades.add(name);

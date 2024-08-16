@@ -10,6 +10,7 @@
     "MixinItemSlashBladeDoAttack2",
     "MixinItemSlashBladeLeftAttack1",
     "MixinItemSlashBladeSA",
-    "MixinSlashBladeLeftAttack2"
+    "MixinSlashBladeLeftAttack2",
+    "MixinBladeStand"
   ]
 }

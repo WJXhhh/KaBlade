@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade;
 
 import com.wjx.kablade.AllWeapon.blade.specialattack.AL_YanjiFZ;
+import com.wjx.kablade.AllWeapon.blade.specialattack.AL_Yuqi;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.*;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
@@ -9,6 +10,7 @@ import com.wjx.kablade.proxy.CommonProxy;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
+import net.minecraft.item.Item;
 
 import static com.wjx.kablade.Main.EnableAllWeapon;
 import static mods.flammpfeil.slashblade.SlashBlade.InitEventBus;
@@ -51,6 +53,7 @@ public class BladeProxy {
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());
+                ItemSlashBlade.specialAttacks.put(401,new AL_Yuqi());
             }
             //AW
 

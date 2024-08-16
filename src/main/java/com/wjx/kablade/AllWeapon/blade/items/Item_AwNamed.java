@@ -31,14 +31,16 @@ public class Item_AwNamed extends ItemSlashBladeNamed {
 
     @Override
     public void addInformationSwordClass(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        if (par1ItemStack.hasTagCompound() && par1ItemStack.getTagCompound().getCompoundTag("allweapon").getInteger("OverLimi") > 0) {
+        if (par1ItemStack.getTagCompound() != null && par1ItemStack.hasTagCompound() && par1ItemStack.getTagCompound().hasKey("allweapon") && par1ItemStack.getTagCompound().getCompoundTag("allweapon").getInteger("OverLimi") > 0) {
             NBTTagCompound alTag = par1ItemStack.getTagCompound().getCompoundTag("allweapon");
-            par3List.add(I18n.format("info.allweapon.break",alTag.getInteger("OverLimi")));
-        }else{
-            super.addInformationSwordClass(par1ItemStack, par2EntityPlayer, par3List, par4);
+            par3List.add(I18n.format("info.allweapon.break", alTag.getInteger("OverLimi")));
         }
+        super.addInformationSwordClass(par1ItemStack, par2EntityPlayer, par3List, par4);
+
 
     }
+
+
 
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
