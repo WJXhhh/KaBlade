@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.wjx.kablade.AllWeapon.blade.items.Item_AwNamed;
 import com.wjx.kablade.AllWeapon.blade.ordinary.AL_Bailan;
 import com.wjx.kablade.AllWeapon.blade.ordinary.AL_LiuRRHuo;
+import com.wjx.kablade.AllWeapon.blade.ordinary.AL_Lvluo;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.blades.*;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_Caijue;
@@ -127,6 +128,7 @@ public class BladeLoader {
             if(EnableAllWeapon){
                 loadBlade(new AL_LiuRRHuo());
                 loadBlade(new AL_Bailan());
+                loadBlade(new AL_Lvluo());
             }
 
 

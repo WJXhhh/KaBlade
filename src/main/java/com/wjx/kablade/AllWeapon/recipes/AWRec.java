@@ -4,6 +4,7 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.block.BlockFlower;
+import net.minecraft.block.BlockLeaves;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -37,6 +38,23 @@ public class AWRec {
                             ItemSlashBlade.KillCount.set(rt, ItemSlashBlade.KillCount.get(tag));
                             ItemSlashBlade.ProudSoul.set(rt, ItemSlashBlade.ProudSoul.get(tag));
                             ItemSlashBlade.RepairCount.set(rt, ItemSlashBlade.RepairCount.get(tag));
+                            world.setBlockState(new BlockPos( Math.floor(pos.x),  Math.round(pos.y),  Math.floor(pos.z)),Blocks.AIR.getDefaultState(),3);
+                            return res;
+                        }
+                    }
+                }
+                //绿萝
+                if(hit==1&&world.getBlockState(new BlockPos( Math.floor(pos.x),  Math.round(pos.y-1),  Math.floor(pos.z))).getBlock() instanceof BlockLeaves &&standType==1){
+                    {
+                        if(ItemSlashBlade.RepairCount.get(tag)>=40)
+                        {
+                            ItemStack res = SlashBlade.findItemStack(bladestr, "wjx.allweapon.lvluo", 1);
+                            //logger.warn(res.getDisplayName());
+                            NBTTagCompound rt = res.getTagCompound();
+                            ItemSlashBlade.KillCount.set(rt, ItemSlashBlade.KillCount.get(tag));
+                            ItemSlashBlade.ProudSoul.set(rt, ItemSlashBlade.ProudSoul.get(tag));
+                            ItemSlashBlade.RepairCount.set(rt, ItemSlashBlade.RepairCount.get(tag));
+                            world.setBlockState(new BlockPos( Math.floor(pos.x),  Math.round(pos.y-1),  Math.floor(pos.z)),Blocks.AIR.getDefaultState(),3);
                             return res;
                         }
                     }
