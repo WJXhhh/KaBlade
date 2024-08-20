@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade;
 import com.google.common.collect.Lists;
 import com.wjx.kablade.AllWeapon.blade.items.Item_AwNamed;
 import com.wjx.kablade.AllWeapon.blade.ordinary.AL_Bailan;
+import com.wjx.kablade.AllWeapon.blade.ordinary.AL_Chanshizhe;
 import com.wjx.kablade.AllWeapon.blade.ordinary.AL_LiuRRHuo;
 import com.wjx.kablade.AllWeapon.blade.ordinary.AL_Lvluo;
 import com.wjx.kablade.Main;
@@ -129,6 +130,7 @@ public class BladeLoader {
                 loadBlade(new AL_LiuRRHuo());
                 loadBlade(new AL_Bailan());
                 loadBlade(new AL_Lvluo());
+                loadBlade(new AL_Chanshizhe());
             }
 
 

@@ -88,6 +88,14 @@ public class ItemInit {
         }
     };
 
+    public static Item ELECTRO_SIGNET = new ItemBase("electro_signet",TABKABLADE){
+        @Override
+        public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+            super.addInformation(stack, worldIn, tooltip, flagIn);
+            tooltip.add(I18n.translateToLocal("info.item.electro_signet"));
+        }
+    };
+
 
     public static Item PETAL=new ItemBase("petal",TABKABLADE){
         @Override
@@ -150,5 +158,7 @@ public class ItemInit {
     public static Item ICON_HONKAI = new ItemBase("honkai_icon");
     public static Item ICON_GOD= new ItemBase("god_icon");
     public static Item ICON_ORE = new ItemBase("ore_icon");
+
+    public static Item ICON_AW = new ItemBase("icon_aw");
 
 }

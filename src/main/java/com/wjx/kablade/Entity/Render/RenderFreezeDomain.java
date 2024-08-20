@@ -4,6 +4,7 @@ import com.wjx.kablade.Entity.EntityFreezeDomain;
 import com.wjx.kablade.Main;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -28,6 +29,9 @@ public class RenderFreezeDomain extends Render<EntityFreezeDomain> {
     public void doRender(EntityFreezeDomain entity, double x, double y, double z, float entityYaw, float partialTicks) {
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
+        float lastx = OpenGlHelper.lastBrightnessX;
+        float lasty = OpenGlHelper.lastBrightnessY;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
         GlStateManager.pushMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
@@ -43,6 +47,8 @@ public class RenderFreezeDomain extends Render<EntityFreezeDomain> {
         bufferBuilder.pos(-8,0,8).tex(0,1).endVertex();
         tessellator.draw();
         GlStateManager.popMatrix();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastx, lasty);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GlStateManager.disableBlend();
         GlStateManager.enableLighting();
         super.doRender(entity, x, y, z, entityYaw, partialTicks);

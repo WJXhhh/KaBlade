@@ -28,7 +28,8 @@ public class EffectHUD extends Gui {
     }
 
     public void render(RenderGameOverlayEvent event){
-        if(player!=null){
+
+        if(event.getType()== RenderGameOverlayEvent.ElementType.TEXT &&player!=null){
             aliveBuff.clear();
             ScaledResolution scaledresolution = new ScaledResolution(mc);
             int kd = scaledresolution.getScaledWidth();        //宽度
@@ -43,14 +44,18 @@ public class EffectHUD extends Gui {
             }
             int start = gd-15;
             for (String s : aliveBuff) {
+                GlStateManager.pushMatrix();
                 drawString(mc.fontRenderer, getCDText(I18n.format(KaBladePlayerProp.getTrans(s)),KaBladePlayerProp.Bufftimes.get(s),tag.getInteger(s)), 5, start, getColorFromRGB(1, 255, 255, 255));
+                GlStateManager.popMatrix();
                 start -= 10;
 
             }
             if(!aliveBuff.isEmpty())
             {
+                GlStateManager.pushMatrix();
                 drawString(mc.fontRenderer, I18n.format("prop.title"), 5, start, getColorFromRGB(1, 100, 255, 255));
                 GlStateManager.color(1f,1f,1f);
+                GlStateManager.popMatrix();
             }
             aliveBuff.clear();
 

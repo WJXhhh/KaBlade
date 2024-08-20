@@ -46,7 +46,7 @@ public class AL_YanjiFZ extends SpecialAttackBase {
                 entityDrive.scaleX=40f;
                 entityDrive.scaleY=10.25f;
                 entityDrive.scaleZ=10f;
-                entityDrive.setInitialSpeed(1.5f);
+                entityDrive.setInitialSpeed(1.05f);
                 entityDrive.setLifeTime(50);
                 entityDrive.getDataManager().set(EntityDriveAdd.PARTICLE_STYLE,"FLAME");
                 world.spawnEntity(entityDrive);

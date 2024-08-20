@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade;
 
+import com.wjx.kablade.AllWeapon.blade.specialattack.AL_Xingbao;
 import com.wjx.kablade.AllWeapon.blade.specialattack.AL_YanjiFZ;
 import com.wjx.kablade.AllWeapon.blade.specialattack.AL_Yuqi;
 import com.wjx.kablade.Main;
@@ -24,6 +25,7 @@ public class BladeProxy {
     public static ISpecialEffect GlacialBane = SpecialEffects.register(new SEGlacialBane());
     public static ISpecialEffect RagingIzumo = SpecialEffects.register(new SERagingIzumo());
     public static ISpecialEffect PowerOfWind = SpecialEffects.register(new SEPowerOfWind());
+    public static ISpecialEffect ThunderBlitz = SpecialEffects.register(new SEThunderBlitz());
 
 
     public static void CommonLoader(CommonProxy proxy){
@@ -50,10 +52,12 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(301,new HonkaiWindEnchantment());
             ItemSlashBlade.specialAttacks.put(302,new HonKaiZaizan());
             ItemSlashBlade.specialAttacks.put(303,new HonkaiFallingPetals());
+            ItemSlashBlade.specialAttacks.put(304,new HonkaiThunderEdge());
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());
                 ItemSlashBlade.specialAttacks.put(401,new AL_Yuqi());
+                ItemSlashBlade.specialAttacks.put(402,new AL_Xingbao());
             }
             //AW
 

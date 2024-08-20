@@ -2,8 +2,10 @@ package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
+import com.wjx.kablade.Entity.EntityThunderEdgeAttack;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.PotionInit;
+import com.wjx.kablade.network.MessageDizuiKuo;
 import com.wjx.kablade.network.MessageMagChaosBladeEffectUpdate;
 import com.wjx.kablade.util.KaBladePlayerProp;
 import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
@@ -17,32 +19,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
 
-public class HonkaiMagChaosBlade extends SpecialAttackBase {
+public class HonkaiThunderEdge extends SpecialAttackBase {
     @Override
     public String toString() {
-        return "mag_chaos_blade";
+        return "thunder_edge";
     }
 
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
-        doMagStormAttack(entityPlayer);
-    }
-
-    @SuppressWarnings("Guava")
-    private void doMagStormAttack(EntityPlayer entityPlayer){
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
-            float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())) * 40f) * 5f;
-            MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(entityPlayer));
-            Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
-            KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK,6);
+            float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())) * 50f) * 5f;
+            EntityThunderEdgeAttack t = new EntityThunderEdgeAttack(world,entityPlayer);
+            world.spawnEntity(t);
             double dist = 6;
             Vec3d vec3d = entityPlayer.getPositionEyes(1.0F);
             Vec3d vec3d1 = entityPlayer.getLook(1.0F);
@@ -53,8 +47,11 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
             if (!list.isEmpty()){
                 for (Entity e : list){
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
-                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),40f + extraDamage);
-                        ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,3));
+                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),50f + extraDamage);
+                        ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,5));
+                        e.getEntityData().setBoolean("dizui",true);
+                        e.getEntityData().setInteger("dizuitime", 300);
+                        Main.PACKET_HANDLER.sendToAll(new MessageDizuiKuo(e.getEntityId()));
                     }
                 }
             }

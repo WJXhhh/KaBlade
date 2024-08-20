@@ -29,7 +29,7 @@ public class AL_Yuqi extends SpecialAttackBase {
                 entityDriveAdd.getDataManager().set(EntityDriveAdd.COLOR_B,1f);
                 entityDriveAdd.setInitialSpeed(0.008f);
                 entityDriveAdd.setLifeTime(80);
-                entityDriveAdd.getDataManager().set(EntityDriveAdd.PARTICLE_STYLE,"item_snowball");
+                //entityDriveAdd.getDataManager().set(EntityDriveAdd.PARTICLE_STYLE,"item_snowball");
                 world.spawnEntity(entityDriveAdd);
                 ItemSlashBlade.setComboSequence(tag, ItemSlashBlade.ComboSequence.Battou);
             }

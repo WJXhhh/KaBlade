@@ -4,6 +4,7 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.block.BlockFlower;
+import net.minecraft.block.BlockGlowstone;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -24,7 +25,8 @@ public class AWRec {
         NBTTagCompound tag = blade.getTagCompound();
         //logger.warn("check "+(tag==null)+" "+stack.getItem().getClass()+" "+mainhand.getDisplayName()+" "+world.getBlockState(new BlockPos( pos.x,  pos.y,  pos.z)).getBlock().getLocalizedName()+" "+(stack.getItem().getClass() == ItemSlashBladeNamed.class)+" "+pos.x+" "+pos.z);
         if(tag!=null){
-            if(stack.getItem().getClass() == ItemSlashBladeNamed.class){
+            ItemStack targetBlade = SlashBlade.findItemStack(bladestr,"slashbladeNamed",1);
+            if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())){
 
 
                 //白兰剑
@@ -59,6 +61,7 @@ public class AWRec {
                         }
                     }
                 }
+
             }
         }
 

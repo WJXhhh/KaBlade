@@ -65,18 +65,6 @@ public class MagicBlade extends ItemSlashBladeNamed {
 
     }
 
-    public boolean func_77644_a(ItemStack stack, EntityLivingBase target, EntityLivingBase player) {
-        if(target!=null){
-            if(target instanceof EntityPlayer){
-             KillEvent.killplayer( target,(EntityPlayer)player);
-            }else {
-             KillEvent.killutil(target,player);
-            }
-        }
-
-        return true;
-    }
-
     @SideOnly(Side.CLIENT)
     public void addInformationSpecialAttack(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         EnumSet<SwordType> swordType = this.getSwordType(par1ItemStack);

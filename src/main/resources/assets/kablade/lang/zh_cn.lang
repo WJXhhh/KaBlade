@@ -59,9 +59,11 @@ item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
 item.wjx.allweapon.liurrh.name=§c炎王§9「§l§c流刃若火§r§9」
 item.wjx.allweapon.bailan.name=§a白兰剑§9「§l§e君§r§9」
 item.wjx.allweapon.lvluo.name=§a生机§9「§l§a绿萝§r§9」
+item.wjx.allweapon.chanshizhe.name=夜空之剑§9「§l§8阐释者§r§9」
 #AllWeaponSA
 flammpfeil.slashblade.specialattack.fuzhan=§c炎§4极§e·抚斩
-
+flammpfeil.slashblade.specialattack.yuqi=§a玉颀
+flammpfeil.slashblade.specialattack.xingbao=§c星爆气流斩
 #组之呈
 itemGroup.tabkablade=斩无不断
 itemGroup.tabkablade_blades=斩无不断:铭刀
@@ -88,6 +90,7 @@ item.chromoly_ingot.name=铬钼钢锭
 item.gravity_nugget.name=重力微粒
 item.gravity_crystal.name=重力结晶
 item.thunder_crystal.name=雷霆凝晶
+item.electro_signet.name=雷之印章
 item.iron_coil.name=铁线圈
 item.petal.name=落英
 
@@ -123,12 +126,13 @@ info.damageguer1111.name=陨月沉星
 info.slashblade.deamon=魔
 info.infinity=无尽
 
-info.item.chromoly_ingot=加入Cr（<10%）， Mo等合金元素以显著提高高温强度极限和蠕变极限的钢种，高强度的材料可以辅助锻刀
+info.item.chromoly_ingot=加f入Cr（<10%）， Mo等合金元素以显著提高高温强度极限和蠕变极限的钢种，高强度的材料可以辅助锻刀
 info.item.gravity_nugget=存在于岩石之中的奇异物质，拥有着强大的引力
 info.item.gravity_crystal=重力微粒的大块聚合体，通过某些手段已经可以自由控制它内部的能量
 info.item.aurora_fragment=世间极光崩落，落入地中，自此世间本源再无极光
 info.item.aurora_metal_ingot=由极光的力量制作的金属锭，但估计要用其他合适的材料装配才能发挥出完整力量吧
 info.item.thunder_crystal=表面看似静宁的晶体，充满了雷霆的力量。似乎并不太稳定？
+info.item.electro_signet=雷电力量的集合体，其似乎相对稳定。（提示：击杀高压爬行者获得。你可以通过使用雷霆凝晶来快速将爬行者转变为高压爬行者）
 info.item.petal=凡间之草木皆可沾染
 
 info.slashblade.dizui.1=前文明抗崩坏组织逐火之蛾以第三律者·雷之律者的核心打造的神之键
@@ -170,6 +174,7 @@ flammpfeil.slashblade.specialattack.kami_of_war=神威镇世
 flammpfeil.slashblade.specialattack.zaizan=罪斩
 flammpfeil.slashblade.specialattack.wind_enchantment=风之结界
 flammpfeil.slashblade.specialattack.falling_petals=灼樱乱神
+flammpfeil.slashblade.specialattack.thunder_edge=雷刃
 
 
 slashblade.seffect.name.kablade.SETurbulence=§5乱流
@@ -180,6 +185,7 @@ slashblade.seffect.name.kablade.em_induction=§b电磁感应
 slashblade.seffect.name.kablade.glacial_bane=§b苦寒地狱
 slashblade.seffect.name.kablade.raging_izumo=§e出云
 slashblade.seffect.name.kablade.power_of_wind=§a风之力
+slashblade.seffect.name.kablade.thunder_blitz=§d万雷轰临
 
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞

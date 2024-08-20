@@ -1,5 +1,6 @@
 package com.wjx.kablade.proxy;
 
+import com.wjx.kablade.AllWeapon.awlib.ArrayLib;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.capability.CapabilityLoader;
@@ -12,14 +13,18 @@ import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.entity.EntityBladeStand;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import net.minecraft.block.Block;
+import net.minecraft.block.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -27,6 +32,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
+
 
 import static com.wjx.kablade.Main.PACKET_HANDLER;
 import static com.wjx.kablade.Main.bladestr;
@@ -65,9 +71,10 @@ public class CommonProxy{
                         ItemStack blade = stand.getBlade();
                         World world = stand.world;
                         NBTTagCompound tag = blade.getTagCompound();
-                        if (blade.getItem().getClass() == ItemSlashBladeNamed.class) {//流刃若火
+                        ItemStack targetBlade = SlashBlade.findItemStack(bladestr,"slashbladeNamed",1);
+                        if (blade.getTranslationKey().equals(targetBlade.getTranslationKey())) {//流刃若火
                             if (world.getBlockState(new BlockPos(Math.floor(stand.posX),Math.round(stand.posY), Math.floor(stand.posZ))).getBlock().equals(Blocks.LAVA) && type == 1 && dimension == -1) {
-                                if (mods.flammpfeil.slashblade.item.ItemSlashBlade.RepairCount.get(tag) >= 100) {
+                                if (mods.flammpfeil.slashblade.item.ItemSlashBlade.RepairCount.get(tag) >= 50) {
                                     NBTTagList list = blade.getEnchantmentTagList();
                                     boolean flag = false;
                                     for (int i = 0; i < list.tagCount(); i++) {
@@ -92,6 +99,70 @@ public class CommonProxy{
                     }
                 }
 
+            });
+
+
+
+            BladeStandHurtManager.events.add(new BladeStandHurtManager.BladeStandHurtEvent() {
+                @Override
+                public void run(EntityBladeStand curEntity, DamageSource damageSource) {
+                    if(damageSource.getTrueSource() instanceof EntityPlayer && curEntity.hasBlade()){
+                        EntityPlayer player = (EntityPlayer) damageSource.getTrueSource();
+                        ItemStack blade = curEntity.getBlade();
+                        ItemStack targetBlade = SlashBlade.findItemStack(bladestr,"slashbladeNamed",1);
+                        NBTTagCompound tag = blade.getTagCompound();
+                        if(player.getHeldItemMainhand().getItem().equals(Items.DIAMOND_SWORD)&&blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
+                        {
+                            Class[][] rec = new Class[][]{
+                                    {BlockJukebox.class, BlockAir.class, BlockLilyPad.class},
+                                    {BlockAir.class, BlockGlowstone.class, BlockAir.class},
+                                    {BlockCactus.class, BlockAir.class, BlockIce.class}
+
+                            };
+                            Vec3d pos =new Vec3d(Math.floor(curEntity.posX),Math.round(curEntity.posY-1), Math.floor(curEntity.posZ));
+                            boolean flag = false;
+                            World world = curEntity.world;
+                            Block ur = world.getBlockState(new BlockPos(pos.x+1, pos.y, pos.z+1)).getBlock();
+                            Block ul = world.getBlockState(new BlockPos(pos.x+1, pos.y, pos.z-1)).getBlock();
+                            Block dr = world.getBlockState(new BlockPos(pos.x-1, pos.y, pos.z+1)).getBlock();
+                            Block dl = world.getBlockState(new BlockPos(pos.x-1, pos.y, pos.z-1)).getBlock();
+                            if(ur.getClass()==rec[0][2]&&ul.getClass()==rec[0][0]&&dr.getClass()==rec[2][2]&&dl.getClass()==rec[2][0]){
+                                flag=true;
+                            }
+
+                            Class[][] rec1 = ArrayLib.RotateClockwise(rec,3,3);
+                            if(ur.getClass()==rec1[0][2]&&ul.getClass()==rec1[0][0]&&dr.getClass()==rec1[2][2]&&dl.getClass()==rec1[2][0]){
+                                flag=true;
+                            }
+
+                            Class[][] rec2 = ArrayLib.RotateClockwise(rec1,3,3);
+                            if(ur.getClass()==rec2[0][2]&&ul.getClass()==rec2[0][0]&&dr.getClass()==rec2[2][2]&&dl.getClass()==rec2[2][0]){
+                                flag=true;
+                            }
+
+                            Class[][] rec3 = ArrayLib.RotateClockwise(rec2,3,3);
+                            if(ur.getClass()==rec3[0][2]&&ul.getClass()==rec3[0][0]&&dr.getClass()==rec3[2][2]&&dl.getClass()==rec3[2][0]){
+                                flag=true;
+                            }
+
+                            if(flag && ItemSlashBlade.RepairCount.get(blade.getTagCompound())>=50&& ItemSlashBlade.ProudSoul.get(blade.getTagCompound())>=1000){
+                                ItemStack res = SlashBlade.findItemStack(bladestr, "wjx.allweapon.chanshizhe", 1);
+                                world.setBlockState(new BlockPos(pos.x+1, pos.y, pos.z+1),Blocks.AIR.getDefaultState());
+                                world.setBlockState(new BlockPos(pos.x+1, pos.y, pos.z-1),Blocks.AIR.getDefaultState());
+                                world.setBlockState(new BlockPos(pos.x-1, pos.y, pos.z+1),Blocks.AIR.getDefaultState());
+                                world.setBlockState(new BlockPos(pos.x-1, pos.y, pos.z-1),Blocks.AIR.getDefaultState());
+                                world.setBlockState(new BlockPos(pos.x, pos.y, pos.z),Blocks.AIR.getDefaultState());
+                                player.getHeldItemMainhand().shrink(1);
+                                NBTTagCompound rt = res.getTagCompound();
+                                mods.flammpfeil.slashblade.item.ItemSlashBlade.KillCount.set(rt, mods.flammpfeil.slashblade.item.ItemSlashBlade.KillCount.get(tag));
+                                mods.flammpfeil.slashblade.item.ItemSlashBlade.ProudSoul.set(rt, mods.flammpfeil.slashblade.item.ItemSlashBlade.ProudSoul.get(tag));
+                                mods.flammpfeil.slashblade.item.ItemSlashBlade.RepairCount.set(rt, ItemSlashBlade.RepairCount.get(tag));
+                                curEntity.setBlade(res);
+                            }
+                        }
+
+                    }
+                }
             });
 
 

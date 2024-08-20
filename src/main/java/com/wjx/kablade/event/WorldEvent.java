@@ -30,6 +30,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.enchantment.Enchantment;
@@ -42,6 +43,7 @@ import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -69,6 +71,7 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -246,6 +249,16 @@ public class WorldEvent {
                     event.setCanceled(true);
                 }
 
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void entityDrop(LivingDropsEvent event){
+        EntityLivingBase entityLivingBase = event.getEntityLiving();
+        if(entityLivingBase instanceof EntityCreeper){
+            if (((EntityCreeper) entityLivingBase).getPowered()){
+                entityLivingBase.entityDropItem(new ItemStack(ItemInit.ELECTRO_SIGNET),0f);
             }
         }
     }
@@ -907,6 +920,9 @@ public class WorldEvent {
                             GlStateManager.disableTexture2D();
                             GlStateManager.disableLighting();
                             GlStateManager.enableBlend();
+                            float lastx = OpenGlHelper.lastBrightnessX;
+                            float lasty = OpenGlHelper.lastBrightnessY;
+                            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
                             GlStateManager.pushMatrix();
                             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                             GlStateManager.scale(1f, 1f, 1f);
@@ -918,6 +934,8 @@ public class WorldEvent {
                             RenderRaikiriBlade.mainModel.render(e1, event.getPartialTicks(), 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
                             GlStateManager.popMatrix();
                             GlStateManager.disableBlend();
+                            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastx, lasty);
+                            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
                             GlStateManager.enableLighting();
                             GlStateManager.enableTexture2D();
                         }

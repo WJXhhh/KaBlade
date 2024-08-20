@@ -658,10 +658,6 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
         return false;
     }
 
-    public boolean func_180799_ab() {
-        return false;
-    }
-
     @SideOnly(Side.CLIENT)
     public int getBrightnessForRender() {
         float f1 = 0.5F;
@@ -716,9 +712,6 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
 
     @SideOnly(Side.CLIENT)
     public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-    }
-
-    public void func_181015_d(BlockPos p_181015_1_) {
     }
 
     public boolean isBurning() {

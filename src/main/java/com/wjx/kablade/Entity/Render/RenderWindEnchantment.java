@@ -4,6 +4,7 @@ import com.wjx.kablade.Entity.EntityWindEnchantment;
 import com.wjx.kablade.Main;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -33,6 +34,9 @@ public class RenderWindEnchantment extends Render<EntityWindEnchantment> {
         int renderTick = entity.getDataManager().get(EntityWindEnchantment.renderTick);
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
+        float lastx = OpenGlHelper.lastBrightnessX;
+        float lasty = OpenGlHelper.lastBrightnessY;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
         GlStateManager.pushMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
@@ -153,6 +157,8 @@ public class RenderWindEnchantment extends Render<EntityWindEnchantment> {
         bufferBuilder.pos(-10,0,10).tex(0,1).endVertex();
         tessellator.draw();
         GlStateManager.popMatrix();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastx, lasty);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GlStateManager.disableBlend();
         GlStateManager.enableLighting();
         super.doRender(entity, x, y, z, entityYaw, partialTicks);

@@ -88,7 +88,7 @@ public class Main
         }
         if(EnableAllWeapon){
             TABKABLADE_BLADES_ALLWEAPON=new CreativeTabs("tabkablade_allweapon") {
-                final ItemStack stack=new ItemStack(Items.AIR);
+                final ItemStack stack=new ItemStack(ItemInit.ICON_AW);
                 @Override
                 public ItemStack createIcon() {
                     return stack;

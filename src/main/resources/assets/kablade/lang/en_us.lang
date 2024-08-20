@@ -75,6 +75,7 @@ item.chromoly_ingot.name=Chromoly Ingot
 item.gravity_nugget.name=Gravity Nugget
 item.gravity_crystal.name=Gravity Crystal
 item.thunder_crystal.name=Thunder Crystal
+item.electro_signet.name=Electro Signet
 item.iron_coil.name=Iron Coil
 item.petal.name=Petal
 
@@ -115,6 +116,7 @@ info.item.gravity_crystal=A large aggregate of gravity nugget that can be freely
 info.item.aurora_fragment=The aurora in the world collapses, merging into the earth, and there is no aurora in the origin of the world anymore
 info.item.aurora_metal_ingot=A metal ingot made by the power of the aurora, but it is estimated that it will need to be assembled with other suitable materials to fully exert its power
 info.item.thunder_crystal=The crystal that appears calm on the surface is full of the power of thunder.
+info.item.electro_signet=It is the collective force of lightning,which seems relatively stable.(Tips:Get it from killing Charged Creeper.You can create it easily by using Thunder Crystal on Creeper)
 
 info.slashblade.dizui.1=The former anti-Honkai organization The Moth That Chases The Flames created the divine key with the core of the Third Herrscher - Herrscher of Thunder
 info.slashblade.dizui.2=Thunder is the authority given to it by the imaginary space, and who can use it for?
@@ -154,6 +156,7 @@ flammpfeil.slashblade.specialattack.kami_of_war=Kami of War
 flammpfeil.slashblade.specialattack.zaizan=Zaizan of Guilt
 flammpfeil.slashblade.specialattack.wind_enchantment=Wind Enchantment
 flammpfeil.slashblade.specialattack.falling_petals=Falling Petals
+flammpfeil.slashblade.specialattack.thunder_edge=Thunder Edge
 
 slashblade.seffect.name.kablade.SETurbulence=§5Turbulence
 slashblade.seffect.name.kablade.divine_penalty=§eDivine_penalty
@@ -163,6 +166,7 @@ slashblade.seffect.name.kablade.em_induction=§bEM Induction
 slashblade.seffect.name.kablade.glacial_bane=§bGlacial Bane
 slashblade.seffect.name.kablade.raging_izumo=§eRaging Izumo
 slashblade.seffect.name.kablade.power_of_wind=§aPower of Wind
+slashblade.seffect.name.kablade.thunder_blitz=§dThunder Blitz
 
 #生之称
 entity.vorpal_black_hole.name=Vorpal Black Hole

@@ -45,6 +45,13 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     protected float AttackLevel;
     private static final DataParameter<Float> ROLL;
     private static final DataParameter<Integer> LIFETIME;
+    private static final DataParameter<Integer> CHANGETIME =EntityDataManager.createKey(EntityDriveAdd.class,DataSerializers.VARINT);
+
+    private static final DataParameter<Float> NEXTSPEED=EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.FLOAT);
+
+    private static final DataParameter<Float> INITIALSPEED=EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.FLOAT);
+
+    public static final DataParameter<Boolean> PL_PARTICAL=EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> IS_MULTI_HIT;
     private static final DataParameter<Boolean> IS_SLASH_DIMENSION;
 
@@ -53,6 +60,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     public static final DataParameter<Float> COLOR_R;
     public static final DataParameter<Float> COLOR_G;
     public static final DataParameter<Float> COLOR_B;
+
 
     public int colors=0xFFFFFF;
 
@@ -112,6 +120,10 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
         this.getDataManager().register(COLOR_R,1f);
         this.getDataManager().register(COLOR_G,1f);
         this.getDataManager().register(COLOR_B,1f);
+        this.getDataManager().register(CHANGETIME,0);
+        this.getDataManager().register(NEXTSPEED,0f);
+        this.getDataManager().register(INITIALSPEED,1.05f);
+        this.getDataManager().register(PL_PARTICAL,true);
 
     }
 
@@ -143,6 +155,32 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
         return (Boolean)this.getDataManager().get(IS_SLASH_DIMENSION);
     }
 
+    public int getChangeTime(){
+        return this.getDataManager().get(CHANGETIME);
+    }
+
+    public float getNextSpeed(){
+        return this.getDataManager().get(NEXTSPEED);
+    }
+
+    public float getInitSpeed(){
+        if(this.getDataManager().get(INITIALSPEED)!=null){
+            return this.getDataManager().get(INITIALSPEED);
+        }
+        return 0;
+    }
+
+    public void setChangetime(int x){
+        this.getDataManager().set(CHANGETIME,x);
+    }
+    public void setNextspeed(float x){
+        this.getDataManager().set(NEXTSPEED,x);
+    }
+
+    public void setInitSpeed(float x){
+        this.getDataManager().set(INITIALSPEED,x);
+    }
+
     public void setIsSlashDimension(boolean isSlashDimension) {
         this.getDataManager().set(IS_SLASH_DIMENSION, isSlashDimension);
     }
@@ -150,6 +188,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     public void setInitialSpeed(float f) {
         this.setLocationAndAngles(this.thrower.posX, this.thrower.posY + (double)this.thrower.getEyeHeight() / 2.0, this.thrower.posZ, this.thrower.rotationYaw, this.thrower.rotationPitch);
         this.setDriveVector(f);
+        this.setInitSpeed(f);
         Vec3d motion = this.thrower.getLookVec();
         if (motion == null) {
             motion = new Vec3d(this.motionX, this.motionY, this.motionZ);
@@ -288,7 +327,44 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
             this.alreadyHitEntity = null;
             this.setDead();
         }
-        this.playParticle();
+
+        double m_x = this.motionX;
+        double m_y = this.motionY;
+        double m_z = this.motionZ;
+        this.posX += this.motionX;
+        this.posY += this.motionY;
+        this.posZ += this.motionZ;
+
+        int changeTime = this.getChangeTime();
+        if (changeTime != 0 && this.ticksExisted >= changeTime) {
+            float nextSpeed = this.getNextSpeed();
+
+            this.motionX = m_x *= (double)nextSpeed;
+            this.motionY = m_y *= (double)nextSpeed;
+            this.motionZ = m_z *= (double)nextSpeed;
+            this.posX += m_x;
+            this.posY += m_y;
+            this.posZ += m_z;
+        } else {
+            float initSpeed = this.getInitSpeed();
+            if (initSpeed >= 1.05f) {
+                this.motionX = m_x *= (double)initSpeed;
+                this.motionY = m_y *= (double)initSpeed;
+                this.motionZ = m_z *= (double)initSpeed;
+                this.posX += m_x;
+                this.posY += m_y;
+                this.posZ += m_z;
+            } else {
+                this.posX += this.motionX * 0.1;
+                this.posY += this.motionY * 0.1;
+                this.posZ += this.motionZ * 0.1;
+            }
+        }
+
+        if(this.getDataManager().get(PL_PARTICAL))
+        {
+            this.playParticle();
+        }
 
     }
 

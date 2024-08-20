@@ -44,7 +44,7 @@ public class KeyOfCastigation {
         customblade.getTagCompound().setFloat("baseAttackModifier",25.0F);
         ItemSlashBlade.AttackAmplifier.set(tag,2.5f);
         customblade.addEnchantment(Enchantments.SHARPNESS,4);
-        ItemSlashBlade.SpecialAttackType.set(tag,298);
+        ItemSlashBlade.SpecialAttackType.set(tag,304);
         ItemSlashBlade.SummonedSwordColor.set(tag,10158335);
         customblade.addEnchantment(Enchantments.POWER,3);
         customblade.addEnchantment(Enchantments.SMITE,4);
@@ -52,8 +52,20 @@ public class KeyOfCastigation {
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
-        SpecialEffects.addEffect(customblade, BladeProxy.EMInduction);
+        SpecialEffects.addEffect(customblade, BladeProxy.ThunderBlitz);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
+        ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.mag_storm", 1);
+        ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.nue", 1);
+        IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"key_of_cas"),
+                blackblade, prevblade,prevblade2,
+                "C C",
+                "CBC",
+                " A ",
+                'A', prevblade,
+                'B',prevblade2,
+                'C', new ItemStack(ItemInit.ELECTRO_SIGNET));
+        SlashBlade.addRecipe("key_of_cas", recipe);
     }
 }
