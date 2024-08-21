@@ -41,7 +41,7 @@ public class RenderEntityDriveAdd extends Render<EntityDriveAdd> {
         GL11.glRotatef(entityDrive.rotationYaw, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(-entityDrive.rotationPitch, 1.0F, 0.0F, 0.0F);
         GL11.glRotatef(entityDrive.getRoll(), 0.0F, 0.0F, 1.0F);
-        GL11.glScalef(entityDrive.scaleX,entityDrive.scaleY,entityDrive.scaleZ);
+        GL11.glScalef(entityDrive.getDataManager().get(EntityDriveAdd.SCALE_X),entityDrive.getDataManager().get(EntityDriveAdd.SCALE_Y),entityDrive.getDataManager().get(EntityDriveAdd.SCALE_Z));
         //GL11.glScalef(0.25F, 1.0F, 1.0F);
 
 

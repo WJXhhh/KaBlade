@@ -48,7 +48,7 @@ public class AWRec {
                 //绿萝
                 if(hit==1&&world.getBlockState(new BlockPos( Math.floor(pos.x),  Math.round(pos.y-1),  Math.floor(pos.z))).getBlock() instanceof BlockLeaves &&standType==1){
                     {
-                        if(ItemSlashBlade.RepairCount.get(tag)>=40)
+                        if(ItemSlashBlade.RepairCount.get(tag)>=10)
                         {
                             ItemStack res = SlashBlade.findItemStack(bladestr, "wjx.allweapon.lvluo", 1);
                             //logger.warn(res.getDisplayName());

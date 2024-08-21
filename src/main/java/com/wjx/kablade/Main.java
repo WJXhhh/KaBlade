@@ -46,9 +46,11 @@ public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "1.7.0";
+    public static final String VERSION = "1.7.1";
 
     public static boolean EnableAllWeapon =true;
+
+    public static boolean EnableAWDemo =false;
 
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
@@ -135,7 +137,7 @@ public class Main
                 Thread t = new Thread(){
                     @Override
                     public void run() {
-                        GetUrlVersion = Objects.requireNonNull(getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB")).get(2);
+                        GetUrlVersion = Objects.requireNonNull(getUpdateInfo.gettextfromurl("https://gitee.com/wjx4r/FML_GERB_NetData/raw/master/OtherMODUpdate/KaBlade.txt")).get(2);
                         if(GetUrlVersion!=null){
                             String[] s = VERSION.split("\\.");
                             String[] s1 = GetUrlVersion.split("\\.");
@@ -200,6 +202,7 @@ public class Main
                 java.net.HttpURLConnection l_connection = (java.net.HttpURLConnection) l_url.openConnection();
                 l_connection.setConnectTimeout(12000);
                 l_connection.setReadTimeout(12000);
+                l_connection.setRequestMethod("GET");
                 l_connection.connect();
                 l_urlStream = l_connection.getInputStream();
                 java.io.BufferedReader l_reader = new java.io.BufferedReader(new java.io.InputStreamReader(l_urlStream));

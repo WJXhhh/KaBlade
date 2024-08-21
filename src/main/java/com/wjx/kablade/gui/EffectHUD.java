@@ -17,7 +17,7 @@ import java.util.List;
 public class EffectHUD extends Gui {
 
     private final Minecraft mc;
-    EntityPlayer player = Minecraft.getMinecraft().player;
+
 
     private static List<String> aliveBuff = Lists.newArrayList();
 
@@ -28,12 +28,13 @@ public class EffectHUD extends Gui {
     }
 
     public void render(RenderGameOverlayEvent event){
-
+        EntityPlayer player = Minecraft.getMinecraft().player;
         if(event.getType()== RenderGameOverlayEvent.ElementType.TEXT &&player!=null){
             aliveBuff.clear();
             ScaledResolution scaledresolution = new ScaledResolution(mc);
             int kd = scaledresolution.getScaledWidth();        //宽度
-            int gd = scaledresolution.getScaledHeight();        //高度
+            int gd = scaledresolution.getScaledHeight();
+            //高度
             NBTTagCompound tag = KaBladePlayerProp.getPropCompound(player);
             for (String props : KaBladePlayerProp.buffs) {
                 if(tag.hasKey(props)){

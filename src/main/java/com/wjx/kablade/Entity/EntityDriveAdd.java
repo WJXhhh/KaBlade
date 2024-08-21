@@ -45,6 +45,10 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     protected float AttackLevel;
     private static final DataParameter<Float> ROLL;
     private static final DataParameter<Integer> LIFETIME;
+
+    public static final DataParameter<Float> SCALE_X=EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.FLOAT);
+    public static final DataParameter<Float> SCALE_Y=EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.FLOAT);
+    public static final DataParameter<Float> SCALE_Z=EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> CHANGETIME =EntityDataManager.createKey(EntityDriveAdd.class,DataSerializers.VARINT);
 
     private static final DataParameter<Float> NEXTSPEED=EntityDataManager.createKey(EntityDriveAdd.class, DataSerializers.FLOAT);
@@ -124,6 +128,9 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
         this.getDataManager().register(NEXTSPEED,0f);
         this.getDataManager().register(INITIALSPEED,1.05f);
         this.getDataManager().register(PL_PARTICAL,true);
+        this.getDataManager().register(SCALE_X,0.25f);
+        this.getDataManager().register(SCALE_Y,1f);
+        this.getDataManager().register(SCALE_Z,1f);
 
     }
 

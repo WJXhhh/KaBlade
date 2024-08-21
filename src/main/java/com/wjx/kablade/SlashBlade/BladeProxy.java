@@ -1,8 +1,6 @@
 package com.wjx.kablade.SlashBlade;
 
-import com.wjx.kablade.AllWeapon.blade.specialattack.AL_Xingbao;
-import com.wjx.kablade.AllWeapon.blade.specialattack.AL_YanjiFZ;
-import com.wjx.kablade.AllWeapon.blade.specialattack.AL_Yuqi;
+import com.wjx.kablade.AllWeapon.blade.specialattack.*;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.*;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
@@ -58,6 +56,8 @@ public class BladeProxy {
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());
                 ItemSlashBlade.specialAttacks.put(401,new AL_Yuqi());
                 ItemSlashBlade.specialAttacks.put(402,new AL_Xingbao());
+                ItemSlashBlade.specialAttacks.put(403,new AL_WeiZhan());
+                ItemSlashBlade.specialAttacks.put(404,new AL_Liedi());
             }
             //AW
 

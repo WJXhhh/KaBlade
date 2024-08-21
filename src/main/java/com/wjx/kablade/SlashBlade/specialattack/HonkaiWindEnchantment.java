@@ -64,7 +64,7 @@ public class HonkaiWindEnchantment extends SpecialAttackBase {
             if (pointedEntity != null){
                 if (pointedEntity instanceof EntityLivingBase){
                     if (!world.isRemote){
-                        ((EntityLivingBase) pointedEntity).addPotionEffect(new PotionEffect(PotionInit.FREEZE,140,1));
+                        //((EntityLivingBase) pointedEntity).addPotionEffect(new PotionEffect(PotionInit.FREEZE,140,1));
                         pointedEntity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20);
                     }
                 }

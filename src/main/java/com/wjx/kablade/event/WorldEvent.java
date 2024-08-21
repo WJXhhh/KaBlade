@@ -965,6 +965,9 @@ public class WorldEvent {
                         }
                         GlStateManager.disableLighting();
                         GlStateManager.enableBlend();
+                        float lastx = OpenGlHelper.lastBrightnessX;
+                        float lasty = OpenGlHelper.lastBrightnessY;
+                        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
                         GlStateManager.pushMatrix();
                         GlStateManager.translate(vx, vy, vz);
                         GlStateManager.rotate(targetPlayer.rotationYaw, 0f, -1f, 0f);
@@ -984,6 +987,8 @@ public class WorldEvent {
                         buffer.pos(-0.5d, 0.75d, 0).tex(0, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
                         tessellator.draw();
                         GlStateManager.popMatrix();
+                        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastx, lasty);
+                        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
                         GlStateManager.disableBlend();
                         GlStateManager.enableLighting();
                     }

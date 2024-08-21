@@ -2,10 +2,7 @@ package com.wjx.kablade.SlashBlade;
 
 import com.google.common.collect.Lists;
 import com.wjx.kablade.AllWeapon.blade.items.Item_AwNamed;
-import com.wjx.kablade.AllWeapon.blade.ordinary.AL_Bailan;
-import com.wjx.kablade.AllWeapon.blade.ordinary.AL_Chanshizhe;
-import com.wjx.kablade.AllWeapon.blade.ordinary.AL_LiuRRHuo;
-import com.wjx.kablade.AllWeapon.blade.ordinary.AL_Lvluo;
+import com.wjx.kablade.AllWeapon.blade.ordinary.*;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.blades.*;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_Caijue;
@@ -19,6 +16,7 @@ import net.minecraftforge.fml.common.Loader;
 
 import java.util.List;
 
+import static com.wjx.kablade.Main.EnableAWDemo;
 import static com.wjx.kablade.Main.EnableAllWeapon;
 
 public class BladeLoader {
@@ -131,6 +129,13 @@ public class BladeLoader {
                 loadBlade(new AL_Bailan());
                 loadBlade(new AL_Lvluo());
                 loadBlade(new AL_Chanshizhe());
+                loadBlade(new AL_BaiQiYue());
+                loadBlade(new AL_BaiYueding());
+                loadBlade(new AL_Baishoujianwang());
+                if(EnableAWDemo){
+                    loadBlade(new AL_Shangguyujin());
+                    loadBlade(new AL_Shangguyizhi());
+                }
             }
 
 

@@ -49,6 +49,7 @@ public class SakuraBlossom {
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
+        ItemSlashBlade.SummonedSwordColor.set(tag,0xff83d2);
         ItemSlashBlade.SpecialAttackType.set(tag,303);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);

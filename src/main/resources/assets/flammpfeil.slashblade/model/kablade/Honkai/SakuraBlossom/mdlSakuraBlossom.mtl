@@ -14,6 +14,10 @@ Ks 1 1 1
 Ns 50
 illum 7
 
+newmtl mat1_1
+Kd 0.80000001192093 0.80000001192093 0.80000001192093
+illum 7
+
 newmtl Default_1
 Ka 1 1 1
 Kd 1 1 1
@@ -21,14 +25,14 @@ Ks 1 1 1
 Ns 50
 illum 7
 
-newmtl ??
+newmtl default
 Ka 1 1 1
 Kd 1 1 1
 Ks 1 1 1
 Ns 50
 illum 7
 
-newmtl default
+newmtl ??
 Ka 1 1 1
 Kd 1 1 1
 Ks 1 1 1
