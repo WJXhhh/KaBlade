@@ -63,6 +63,8 @@ item.wjx.allweapon.chanshizhe.name=夜空之剑§9「§l§8阐释者§r§9」
 item.wjx.allweapon.baiqiyue.name=§f白の契约
 item.wjx.allweapon.baiyueding.name=§f白の约定
 item.wjx.allweapon.baishoujianwang.name=§7百兽剑王§9「§l§7巨狮§r§9」
+item.wjx.allweapon.fengzhiying.name=§e不可视之刃§9「§l§f风之影§r§9」·风
+item.wjx.allweapon.guangjian.name=§e光剑§9「§l§5监视者§r§9」
 #AWD
 item.wjx.allweapon.shangguyujin.name=§9上古的余烬
 item.wjx.allweapon.shangguyizhi.name=§9上古的意志
@@ -72,6 +74,8 @@ flammpfeil.slashblade.specialattack.yuqi=§a玉颀
 flammpfeil.slashblade.specialattack.xingbao=§c星爆气流斩
 flammpfeil.slashblade.specialattack.weizhan=§e一闪
 flammpfeil.slashblade.specialattack.liedi=§7裂地猛冲
+flammpfeil.slashblade.specialattack.fengxuan=§a风之棺
+flammpfeil.slashblade.specialattack.qicaizhan=§c虹§a极§e斩
 #组之呈
 itemGroup.tabkablade=斩无不断
 itemGroup.tabkablade_blades=斩无不断:铭刀

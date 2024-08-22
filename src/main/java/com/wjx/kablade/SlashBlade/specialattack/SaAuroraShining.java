@@ -33,7 +33,7 @@ public class SaAuroraShining extends SpecialAttackBase {
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
-        float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),2f);
+        float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),2f);
         for (int i=0;i<10;i++){
             EntitySummonedSwordBasePlus s = new EntitySummonedSwordBasePlus(world,entityPlayer,4 + extraDamage);
             s.getDataManager().set(EntitySummonedSwordBasePlus.BRIGHT,15728880);
@@ -45,7 +45,7 @@ public class SaAuroraShining extends SpecialAttackBase {
             world.spawnEntity(s);
             world.spawnEntity(d);
         }
-        float extraDamage2 = MathFunc.amplifierCalc(ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),8f);
+        float extraDamage2 = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),8f);
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox().grow(20,10,20).offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb,input -> input != entityPlayer&&input instanceof EntityLivingBase);
             for (Entity e : l){

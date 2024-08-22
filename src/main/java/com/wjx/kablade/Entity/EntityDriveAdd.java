@@ -66,7 +66,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     public static final DataParameter<Float> COLOR_B;
 
 
-    public int colors=0xFFFFFF;
+    public int colors=0x000000;
 
     public Vec3f color3f = new Vec3f(1f,1f,1f);
     public float scaleX=0.25f;
@@ -75,6 +75,14 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
 
     public String particleO;
 
+    public void setColor(int argb){
+        int j = argb >> 16 & 255;
+        int k = argb >> 8 & 255;
+        int l = argb & 255;
+        this.getDataManager().set(EntityDriveAdd.COLOR_R,j/255f);
+        this.getDataManager().set(EntityDriveAdd.COLOR_G,k/255f);
+        this.getDataManager().set(EntityDriveAdd.COLOR_B,l/255f);
+    }
     public EntityDriveAdd(World par1World) {
         super(par1World);
         this.blade = ItemStack.EMPTY;

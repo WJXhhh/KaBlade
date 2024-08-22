@@ -16,6 +16,7 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityFreezeDomain.class, RenderFreezeDomain::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityWindEnchantment.class, RenderWindEnchantment::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityDriveAdd.class,RenderEntityDriveAdd::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntitySlashDimensionAdd.class,RenderSlashDimensionAdd::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityThunderEdgeAttack.class,RenderThunderEdgeAttack::new);
     }
 }

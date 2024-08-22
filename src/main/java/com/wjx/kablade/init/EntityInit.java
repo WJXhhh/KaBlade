@@ -25,8 +25,10 @@ public class EntityInit {
 
 
 
+
         //AW
         registerEntity("entity_driveadd",EntityDriveAdd.class,13700101,50);
+        registerEntity("entity_slash_dimension_add", EntitySlashDimensionAdd.class,13700102,50);
     }
 
     private static void registerEntitySpawn(Class<? extends Entity> entityClass, int spawnWeight, int min, int max, EnumCreatureType typeOfCreature, Biome... biomes)

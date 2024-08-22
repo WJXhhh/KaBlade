@@ -30,7 +30,7 @@ public class AL_Xingbao extends SpecialAttackBase {
             float baseModif = ItemSlashBlade.BaseAttackModifier.get(tag)/5;
             int level = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, itemStack);
             float magicDamage = baseModif;
-            magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.AttackAmplifier.get(tag),0.5f);
+            magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),1f);
             Random rand = new Random();
             for (int i = 0; i < 21; ++i) {
                 float a = rand.nextInt(360);

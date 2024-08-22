@@ -77,9 +77,9 @@ public class SaDomainSuppression extends SpecialAttackBase {
                     pointedEntity.motionY = 0.5f;
                     float a = 0f;
                     float radius = 2f;
-                    float extraDamage = MathFunc.amplifierCalc(-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),20f);
-                    float extraDamage2 = MathFunc.amplifierCalc(-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),4f);
-                    float extraDamage3 = MathFunc.amplifierCalc(-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),3f);
+                    float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),20f);
+                    float extraDamage2 = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),4f);
+                    float extraDamage3 = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),3f);
 
                     for (int i = 0;i < 6;i++){
                         double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;

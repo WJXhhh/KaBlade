@@ -31,7 +31,7 @@ public class RockHit_I extends SpecialAttackBase {
         double x = entityPlayer.posX;
         double y = entityPlayer.posY;
         double z = entityPlayer.posZ;
-        float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),6f);
+        float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),6f);
         world.playSound(null, x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
         for (int i = 0; i < 40; ++i)
         {

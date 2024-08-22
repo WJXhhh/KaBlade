@@ -6,6 +6,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.network.MessageMagChaosBladeEffectUpdate;
 import com.wjx.kablade.util.KaBladePlayerProp;
+import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -39,7 +40,7 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
     private void doMagStormAttack(EntityPlayer entityPlayer){
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
-            float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())) * 40f) * 5f;
+            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),40f);
             MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(entityPlayer));
             Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
             KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK,6);

@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.specialattack;
 import com.wjx.kablade.Entity.EntitySummonSwordFree;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.MessageRemoteLighting;
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import com.wjx.kablade.Entity.EntitySummonSwordFree;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -40,7 +41,7 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
         {
             for(int i =0;i<3;i++)
             {
-                float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get((itemStack.getTagCompound()))) * 50f)*5f;
+                float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),25f);
 
                 EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 30f);
                 EntityDrive entityDrive2 = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 60f);
@@ -68,7 +69,7 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
             if(entityPlayer.getAttackingEntity()!=null ){
                 entityPlayer.getAttackingEntity().addPotionEffect(new PotionEffect(MobEffects.WITHER,100,1));
             }
-            float extraDamage = (float)Math.log((-ItemSlashBlade.AttackAmplifier.get((itemStack.getTagCompound()))) * 20f)*5f;
+            float extraDamage = (float)MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),20f);
             EntitySummonSwordFree s1 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,0f);
             EntitySummonSwordFree s2 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,45f);
             EntitySummonSwordFree s3 = new EntitySummonSwordFree(world,entityPlayer,20 + extraDamage,entityPlayer.posX,entityPlayer.posY + 0.7d,entityPlayer.posZ,0,90f);
@@ -97,7 +98,7 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox();
         bb = bb.grow(16.0D, 5.0D, 16.0D);
         bb = bb.offset(entityPlayer.motionX, entityPlayer.motionY, entityPlayer.motionZ);
-        float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get((itemStack.getTagCompound()))) * 5f)*5f;
+        float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),5f);
         List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb, input -> input != entityPlayer && input.isEntityAlive());
         if (!list.isEmpty()){
             for (Entity entity: list){

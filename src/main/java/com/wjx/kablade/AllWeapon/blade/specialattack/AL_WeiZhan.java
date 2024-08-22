@@ -32,7 +32,7 @@ public class AL_WeiZhan extends SpecialAttackBase {
             float baseModif = ItemSlashBlade.BaseAttackModifier.get(tag)/3;
             int level = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, itemStack);
             float magicDamage = baseModif;
-            magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.AttackAmplifier.get(tag),0.5f);
+            magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),0.5f);
             Entity target = null;
             int entityId = ItemSlashBlade.TargetEntityId.get(tag);
             if (entityId != 0) {

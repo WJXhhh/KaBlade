@@ -58,6 +58,8 @@ public class BladeProxy {
                 ItemSlashBlade.specialAttacks.put(402,new AL_Xingbao());
                 ItemSlashBlade.specialAttacks.put(403,new AL_WeiZhan());
                 ItemSlashBlade.specialAttacks.put(404,new AL_Liedi());
+                ItemSlashBlade.specialAttacks.put(405,new AL_Fengxuan());
+                ItemSlashBlade.specialAttacks.put(406,new AL_Qicai());
             }
             //AW
 

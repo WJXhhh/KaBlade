@@ -8,6 +8,7 @@ import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.network.MessageDizuiKuo;
 import com.wjx.kablade.network.MessageMagChaosBladeEffectUpdate;
 import com.wjx.kablade.util.KaBladePlayerProp;
+import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -34,7 +35,7 @@ public class HonkaiThunderEdge extends SpecialAttackBase {
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
-            float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())) * 50f) * 5f;
+            float extraDamage = (float) MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(itemStack.getTagCompound()),3f);
             EntityThunderEdgeAttack t = new EntityThunderEdgeAttack(world,entityPlayer);
             world.spawnEntity(t);
             double dist = 6;

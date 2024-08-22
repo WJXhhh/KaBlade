@@ -14,8 +14,10 @@ import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.entity.EntityBladeStand;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.block.*;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -28,7 +30,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -112,7 +116,7 @@ public class CommonProxy{
                         ItemStack blade = curEntity.getBlade();
                         ItemStack targetBlade = SlashBlade.findItemStack(bladestr,"slashbladeNamed",1);
                         NBTTagCompound tag = blade.getTagCompound();
-                        if(player.getHeldItemMainhand().getItem().equals(Items.DIAMOND_SWORD)&&blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
+                        if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
                         {
                             Class[][] rec = new Class[][]{
                                     {BlockJukebox.class, BlockAir.class, BlockLilyPad.class},
@@ -154,7 +158,6 @@ public class CommonProxy{
                                 world.setBlockState(new BlockPos(pos.x-1, pos.y, pos.z+1),Blocks.AIR.getDefaultState());
                                 world.setBlockState(new BlockPos(pos.x-1, pos.y, pos.z-1),Blocks.AIR.getDefaultState());
                                 world.setBlockState(new BlockPos(pos.x, pos.y, pos.z),Blocks.AIR.getDefaultState());
-                                player.getHeldItemMainhand().shrink(1);
                                 NBTTagCompound rt = res.getTagCompound();
                                 mods.flammpfeil.slashblade.item.ItemSlashBlade.KillCount.set(rt, mods.flammpfeil.slashblade.item.ItemSlashBlade.KillCount.get(tag));
                                 mods.flammpfeil.slashblade.item.ItemSlashBlade.ProudSoul.set(rt, mods.flammpfeil.slashblade.item.ItemSlashBlade.ProudSoul.get(tag));
@@ -316,6 +319,69 @@ public class CommonProxy{
                     }
                 }
             });
+
+
+            BladeStandHurtManager.events.add(new BladeStandHurtManager.BladeStandHurtEvent() {
+                @Override
+                public void run(EntityBladeStand curEntity, DamageSource damageSource) {
+                    if(damageSource.getTrueSource() instanceof EntityPlayer && curEntity.hasBlade()){
+                        ItemStack blade = curEntity.getBlade();
+                        ItemStack targetBlade = SlashBlade.findItemStack(bladestr,"slashbladeNamed",1);
+                        NBTTagCompound tag = blade.getTagCompound();
+                        if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
+                        {
+
+
+                            if(curEntity.posY>=250 && ItemSlashBlade.RepairCount.get(blade.getTagCompound())>=50&& EnchantmentHelper.getEnchantmentLevel(Enchantments.FEATHER_FALLING,blade)>=4){
+                                ItemStack res = SlashBlade.findItemStack(bladestr, "wjx.allweapon.fengzhiying", 1);
+
+
+                                NBTTagCompound rt = res.getTagCompound();
+                                mods.flammpfeil.slashblade.item.ItemSlashBlade.KillCount.set(rt, mods.flammpfeil.slashblade.item.ItemSlashBlade.KillCount.get(tag));
+                                mods.flammpfeil.slashblade.item.ItemSlashBlade.ProudSoul.set(rt, mods.flammpfeil.slashblade.item.ItemSlashBlade.ProudSoul.get(tag));
+                                mods.flammpfeil.slashblade.item.ItemSlashBlade.RepairCount.set(rt, ItemSlashBlade.RepairCount.get(tag));
+                                curEntity.setBlade(res);
+                            }
+                        }
+
+                    }
+                }
+            });
+
+            BladeStandHurtManager.events.add(new BladeStandHurtManager.BladeStandHurtEvent() {
+                @Override
+                public void run(EntityBladeStand curEntity, DamageSource damageSource) {
+                    if(damageSource.getDamageType().equals("lightningBolt") && curEntity.hasBlade()){
+                        ItemStack blade = curEntity.getBlade();
+                        ItemStack targetBlade = SlashBlade.findItemStack(bladestr,"slashbladeNamed",1);
+                        NBTTagCompound tag = blade.getTagCompound();
+                        if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
+                        {
+                            BlockPos pos = new BlockPos(Math.floor(curEntity.posX),Math.round(curEntity.posY), Math.floor(curEntity.posZ));
+                            int s = curEntity.world.getLightFor(EnumSkyBlock.SKY,pos);
+                            int b = curEntity.world.getLightFor(EnumSkyBlock.BLOCK,pos);
+                            int l = Math.max(s,b);
+                            /*Chunk chunk = curEntity.world.getChunk(new BlockPos(Math.floor(curEntity.posX),Math.round(curEntity.posY-1), Math.floor(curEntity.posZ)));
+                            int a = chunk.getLightSubtracted(new BlockPos(Math.floor(curEntity.posX+1),Math.round(curEntity.posY-1), Math.floor(curEntity.posZ)),15);
+                            IBlockState state = curEntity.world.getBlockState(new BlockPos(Math.floor(curEntity.posX),Math.round(curEntity.posY-1), Math.floor(curEntity.posZ)));*/
+                            boolean k = l >= 10;
+                            if(ItemSlashBlade.RepairCount.get(blade.getTagCompound())>=50&& EnchantmentHelper.getEnchantmentLevel(Enchantments.FEATHER_FALLING,blade)>=4&&k){
+                                ItemStack res = SlashBlade.findItemStack(bladestr, "wjx.allweapon.guangjian", 1);
+
+
+                                NBTTagCompound rt = res.getTagCompound();
+                                mods.flammpfeil.slashblade.item.ItemSlashBlade.KillCount.set(rt, mods.flammpfeil.slashblade.item.ItemSlashBlade.KillCount.get(tag));
+                                mods.flammpfeil.slashblade.item.ItemSlashBlade.ProudSoul.set(rt, mods.flammpfeil.slashblade.item.ItemSlashBlade.ProudSoul.get(tag));
+                                mods.flammpfeil.slashblade.item.ItemSlashBlade.RepairCount.set(rt, ItemSlashBlade.RepairCount.get(tag));
+                                curEntity.setBlade(res);
+                            }
+                        }
+
+                    }
+                }
+            });
+
+
 
 
 

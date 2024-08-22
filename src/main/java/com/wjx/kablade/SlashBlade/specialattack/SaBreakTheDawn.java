@@ -27,7 +27,7 @@ public class SaBreakTheDawn extends SpecialAttackBase {
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
-        float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),1f) ;
+        float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),1f) ;
         for (int i=0;i<5;i++){
             EntitySummonedSwordBase s = new EntitySummonedSwordBase(world,entityPlayer,5 + extraDamage);
             s.setColor(0xfff8ca);

@@ -32,7 +32,7 @@ public class LoadControllerMixin {
 
             Field field =  Proxy.class.getDeclaredField("transformer");
             field.setAccessible(true);
-            IMixinTransformer transformer = ((IMixinTransformer)field.get(null));
+            Object transformer = field.get(null);
             Field field1 = transformer.getClass().getDeclaredField("processor");
             field1.setAccessible(true);
             Object processor = field1.get(transformer);

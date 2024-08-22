@@ -22,7 +22,7 @@ public class AL_Yuqi extends SpecialAttackBase {
         if(!world.isRemote){
             NBTTagCompound tag = itemStack.getTagCompound();
             if(tag!=null){
-                float magicDamage = MathFunc.amplifierCalc(ItemSlashBlade.AttackAmplifier.get(tag),10f)+ItemSlashBlade.BaseAttackModifier.get(tag);
+                float magicDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),10f)+ItemSlashBlade.BaseAttackModifier.get(tag);
                 EntityDriveAdd entityDriveAdd = new EntityDriveAdd(world, entityPlayer, magicDamage, false, 0.0f - ItemSlashBlade.ComboSequence.Battou.swingDirection);
                 entityDriveAdd.getDataManager().set(EntityDriveAdd.COLOR_R,1f);
                 entityDriveAdd.getDataManager().set(EntityDriveAdd.COLOR_G,1f);

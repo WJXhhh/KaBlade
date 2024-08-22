@@ -5,6 +5,7 @@ import com.wjx.kablade.Entity.EntityFreezeDomain;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.network.MessageSpawnParticle;
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -39,7 +40,7 @@ public class HonkaiSnowDance extends SpecialAttackBase {
             Vec3d vec3d1 = entityPlayer.getLook(1.0F);
             Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
             Entity pointedEntity = null;
-            float extraDamage = (float) Math.log((-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())) * 20f) * 5f;
+            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),20f);
             List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
             double d2 = dist;
             for (Entity entity1 : list) {

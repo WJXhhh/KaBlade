@@ -31,7 +31,7 @@ public class SaCutMetal extends SpecialAttackBase {
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,60,2));
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox().grow(8,4,8).offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input != entityPlayer&&input instanceof EntityLivingBase);
-        float extraDamage = MathFunc.amplifierCalc(-ItemSlashBlade.AttackAmplifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),8f);
+        float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),8f);
         for (Entity e: l){
             if (e instanceof EntityLivingBase){
                 EntityLivingBase en = (EntityLivingBase) e;
