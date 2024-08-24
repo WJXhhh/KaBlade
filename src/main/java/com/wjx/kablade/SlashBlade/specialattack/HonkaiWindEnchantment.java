@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.specialattack;
 import com.google.common.base.Predicates;
 import com.wjx.kablade.Entity.EntityWindEnchantment;
 import com.wjx.kablade.init.PotionInit;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -65,6 +66,8 @@ public class HonkaiWindEnchantment extends SpecialAttackBase {
                 if (pointedEntity instanceof EntityLivingBase){
                     if (!world.isRemote){
                         //((EntityLivingBase) pointedEntity).addPotionEffect(new PotionEffect(PotionInit.FREEZE,140,1));
+                        ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, pointedEntity, entityPlayer, true);
+                        entityPlayer.onCriticalHit(pointedEntity);
                         pointedEntity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20);
                     }
                 }

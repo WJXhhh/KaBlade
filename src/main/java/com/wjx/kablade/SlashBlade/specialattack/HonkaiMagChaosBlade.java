@@ -33,11 +33,11 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
 
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
-        doMagStormAttack(entityPlayer);
+        doMagStormAttack(entityPlayer,itemStack);
     }
 
     @SuppressWarnings("Guava")
-    private void doMagStormAttack(EntityPlayer entityPlayer){
+    private void doMagStormAttack(EntityPlayer entityPlayer,ItemStack itemStack){
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
             float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),10f);
@@ -54,6 +54,8 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
             if (!list.isEmpty()){
                 for (Entity e : list){
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
+                        ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, e, entityPlayer, true);
+                        entityPlayer.onCriticalHit(e);
                         e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),40f + extraDamage);
                         ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,3));
                     }

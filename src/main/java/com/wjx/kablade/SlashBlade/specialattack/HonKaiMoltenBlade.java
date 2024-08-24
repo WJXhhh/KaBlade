@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.util.MathFunc;
+import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.Spear;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -30,6 +31,9 @@ public class HonKaiMoltenBlade extends SpecialAttackBase {
         List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input != entityPlayer && input instanceof EntityLivingBase);
         for (Entity entity : entities){
             if (entity != null && !(entity instanceof EntityPlayer)){
+                ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, entity, entityPlayer, true);
+                entityPlayer.onCriticalHit(entity);
+                StylishRankManager.setNextAttackType(entity, StylishRankManager.AttackTypes.PhantomSword);
                 entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),10 + extraDamage);
                 entity.setFire(5);
             }

@@ -65,6 +65,8 @@ public class HonkaiAbsoluteZero extends SpecialAttackBase {
             if (pointedEntity != null){
                 if (pointedEntity instanceof EntityLivingBase){
                     if (!world.isRemote){
+                        ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, pointedEntity, entityPlayer, true);
+                        entityPlayer.onCriticalHit(pointedEntity);
                         ((EntityLivingBase) pointedEntity).addPotionEffect(new PotionEffect(PotionInit.FREEZE,140,1));
                         pointedEntity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20 + (float)Math.log((-ItemSlashBlade.AttackAmplifier.get((itemStack.getTagCompound()))) * 20f)*5);
                     }

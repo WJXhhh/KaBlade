@@ -37,6 +37,8 @@ public class HonKaiZaizan extends SpecialAttackBase {
             for (Entity entity : entities){
                 if (entity != null){
                     if(!(entity instanceof EntityPlayer)){
+                        ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, entity, entityPlayer, true);
+                        entityPlayer.onCriticalHit(entity);
                         entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20 + extraDamage);
                     }
                     else{
