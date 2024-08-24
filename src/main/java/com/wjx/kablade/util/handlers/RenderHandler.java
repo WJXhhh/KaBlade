@@ -18,5 +18,7 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityDriveAdd.class,RenderEntityDriveAdd::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySlashDimensionAdd.class,RenderSlashDimensionAdd::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityThunderEdgeAttack.class,RenderThunderEdgeAttack::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntitySummonedButterfly.class,RenderSummonedButterFly::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntitySummonedSwordPotionEffectAdd.class,RenderSummonedSwordPotion::new);
     }
 }

@@ -26,7 +26,7 @@ public class HonKaiMoltenBlade extends SpecialAttackBase {
         AxisAlignedBB ax = entityPlayer.getEntityBoundingBox();
        ax= ax.grow(3,1,3);
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
-        float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),10f);
+        float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),15f);
         List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input != entityPlayer && input instanceof EntityLivingBase);
         for (Entity entity : entities){
             if (entity != null && !(entity instanceof EntityPlayer)){

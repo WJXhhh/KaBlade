@@ -257,11 +257,13 @@ public class EntitySlashDimensionAdd extends Entity implements IThrowableEntity 
                                 double var4 = rand.nextGaussian() * 0.02D;
                                 double var6 = rand.nextGaussian() * 0.02D;
                                 double var8 = 10.0D;
-                                this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL
-                                        , curEntity.posX + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var2 * var8
-                                        , curEntity.posY + (double)(rand.nextFloat() * curEntity.height) - var4 * var8
-                                        , curEntity.posZ + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var6 * var8
-                                        , var2, var4, var6);
+
+                                    this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL
+                                            , curEntity.posX + (double) (rand.nextFloat() * curEntity.width * 2.0F) - (double) curEntity.width - var2 * var8
+                                            , curEntity.posY + (double) (rand.nextFloat() * curEntity.height) - var4 * var8
+                                            , curEntity.posZ + (double) (rand.nextFloat() * curEntity.width * 2.0F) - (double) curEntity.width - var6 * var8
+                                            , var2, var4, var6);
+
                             }
                         }
 

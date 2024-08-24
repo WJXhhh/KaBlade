@@ -33,12 +33,22 @@ public class LoadControllerMixin {
             Field field =  Proxy.class.getDeclaredField("transformer");
             field.setAccessible(true);
             Object transformer = field.get(null);
-            Field field1 = transformer.getClass().getDeclaredField("processor");
-            field1.setAccessible(true);
-            Object processor = field1.get(transformer);
-            Method selectMethod = processor.getClass().getDeclaredMethod("select", MixinEnvironment.class);
-            selectMethod.setAccessible(true);
-            selectMethod.invoke(processor, MixinEnvironment.getCurrentEnvironment());
+            Field field1;
+            try{
+                field1 = transformer.getClass().getDeclaredField("processor");
+                field1.setAccessible(true);
+                Object processor = field1.get(transformer);
+                Method selectMethod = processor.getClass().getDeclaredMethod("select", MixinEnvironment.class);
+                selectMethod.setAccessible(true);
+                selectMethod.invoke(processor, MixinEnvironment.getCurrentEnvironment());
+            }
+            catch (NoSuchFieldException e){
+                Method selectMethod = transformer.getClass().getDeclaredMethod("select", MixinEnvironment.class);
+                selectMethod.setAccessible(true);
+                selectMethod.invoke(transformer, MixinEnvironment.getCurrentEnvironment());
+            }
+
+
         }
     }
 

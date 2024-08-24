@@ -30,7 +30,7 @@ public class AL_Qicai extends SpecialAttackBase {
             float baseModif = ItemSlashBlade.BaseAttackModifier.get(tag)/3;
             int level = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, itemStack);
             float magicDamage = baseModif;
-            magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),1f);
+            magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),4f);
             float[] speeds = new float[]{0.55f, 0.5f, 0.45f, 0.4f, 0.35f, 0.3f, 0.25f};
             int[] colors = new int[]{0xFF0000, 0xFF7F00, 0xFFFF00, 65280, 65535, 0x4D4DFF, 0x9932CD};
 

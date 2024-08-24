@@ -185,10 +185,10 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
         return 0;
     }
 
-    public void setChangetime(int x){
+    public void setChangeTime(int x){
         this.getDataManager().set(CHANGETIME,x);
     }
-    public void setNextspeed(float x){
+    public void setNextSpeed(float x){
         this.getDataManager().set(NEXTSPEED,x);
     }
 
@@ -473,7 +473,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     int i;
     public void playParticle() {
         this.i = 0;
-        while (this.i < 20) {
+        while (this.i < 10) {
             String particle = this.dataManager.get(PARTICLE_STYLE);
             if (!particle.isEmpty()) {
                 Random rand = new Random();
@@ -481,7 +481,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
                 double var4 = rand.nextGaussian() * 0.12;
                 double var6 = rand.nextGaussian() * 0.12;
                 double var8 = 10.0;
-                this.world.spawnParticle(EnumParticleTypes.valueOf(particle), this.posX + (double)(rand.nextFloat() * this.width * 2.0f) - (double)this.width - var2 * var8, this.posY + (double)(rand.nextFloat() * this.height) - var4 * var8, this.posZ + (double)(rand.nextFloat() * this.width * 2.0f) - (double)this.width - var6 * var8, var2, var4, var6);
+                this.world.spawnParticle(EnumParticleTypes.valueOf(EnumParticleTypes.class,particle), this.posX + (double)(rand.nextFloat() * this.width * 2.0f) - (double)this.width - var2 * var8, this.posY + (double)(rand.nextFloat() * this.height) - var4 * var8, this.posZ + (double)(rand.nextFloat() * this.width * 2.0f) - (double)this.width - var6 * var8, var2, var4, var6);
             }
             ++this.i;
         }

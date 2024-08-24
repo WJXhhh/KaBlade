@@ -40,7 +40,7 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
     private void doMagStormAttack(EntityPlayer entityPlayer){
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
-            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),40f);
+            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),10f);
             MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(entityPlayer));
             Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
             KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK,6);

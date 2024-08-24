@@ -537,7 +537,7 @@ public class WorldEvent {
                 }
             }
         }
-
+        //MagChaos
         if (!world.isRemote) {
             if (event.phase == TickEvent.Phase.START) {
                 //MagChaosBladeExtraAttack
@@ -545,7 +545,7 @@ public class WorldEvent {
                     if (playerProperties.getInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK) > 0) {
                         KaBladeEntityProperties.doIntegerLower(playerProperties, KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
                     } else {
-                        float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(event.player.getHeldItemMainhand().getTagCompound())),20f);
+                        float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(event.player.getHeldItemMainhand().getTagCompound())),10f);
                         playerProperties.removeTag(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK);
                         MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(player));
                         Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
@@ -596,7 +596,7 @@ public class WorldEvent {
                     if (playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_COUNT) > 0) {
                         flagikow = 0;
                         if (playerProperties.getInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK) <= 0) {
-                            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(event.player.getHeldItemMainhand().getTagCompound())),8f);
+                            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(event.player.getHeldItemMainhand().getTagCompound())),3f);
                             KaBladeEntityProperties.doIntegerLower(playerProperties, KaBladePlayerProp.KAMI_OF_WAR_COUNT);
                             playerProperties.setInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK, 20);
                             KaBladePlayerProp.updateNBTForClient(player);

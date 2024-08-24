@@ -134,6 +134,14 @@ public class BladeLoader {
                 loadBlade(new AL_Baishoujianwang());
                 loadBlade(new AL_FengZhiYing());
                 loadBlade(new AL_Guangjian());
+                loadBlade(new AL_Huami());
+                loadBlade(new AL_Jiyi());
+                loadBlade(new AL_Xuezou());
+                loadBlade(new AL_Youming());
+                loadBlade(new AL_Zhanyue());
+                loadBlade(new AL_Htkg());
+                loadBlade(new AL_Jie());
+                loadBlade(new AL_Fengshen());
                 if(EnableAWDemo){
                     loadBlade(new AL_Shangguyujin());
                     loadBlade(new AL_Shangguyizhi());

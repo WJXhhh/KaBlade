@@ -12,6 +12,7 @@ import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 import net.minecraft.item.Item;
 
 import static com.wjx.kablade.Main.EnableAllWeapon;
+import static com.wjx.kablade.Main.p;
 import static mods.flammpfeil.slashblade.SlashBlade.InitEventBus;
 
 public class BladeProxy {
@@ -60,6 +61,10 @@ public class BladeProxy {
                 ItemSlashBlade.specialAttacks.put(404,new AL_Liedi());
                 ItemSlashBlade.specialAttacks.put(405,new AL_Fengxuan());
                 ItemSlashBlade.specialAttacks.put(406,new AL_Qicai());
+                ItemSlashBlade.specialAttacks.put(407,new AL_Huanyingdie());
+                ItemSlashBlade.specialAttacks.put(408,new AL_Xuepo());
+                ItemSlashBlade.specialAttacks.put(409,new AL_Yueyatianchong());
+                ItemSlashBlade.specialAttacks.put(410,new AL_Zhuixing());
             }
             //AW
 

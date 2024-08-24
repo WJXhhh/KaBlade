@@ -1,6 +1,7 @@
 package com.wjx.kablade.AllWeapon.blade.specialattack;
 
 import com.wjx.kablade.Entity.EntityDriveAdd;
+import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -39,7 +40,9 @@ public class AL_YanjiFZ extends SpecialAttackBase {
 
                 ItemSlashBlade blade = (ItemSlashBlade) itemStack.getItem();
                 float baseAttack= blade.getBaseAttackModifiers(tag);
-                EntityDriveAdd entityDrive = new EntityDriveAdd(world,entityPlayer,2.5f*baseAttack,false,0f-ItemSlashBlade.ComboSequence.Battou.swingDirection);
+                float magicDamage = baseAttack;
+                magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),6f);
+                EntityDriveAdd entityDrive = new EntityDriveAdd(world,entityPlayer,2.5f*magicDamage,false,0f-ItemSlashBlade.ComboSequence.Battou.swingDirection);
                 entityDrive.getDataManager().set(EntityDriveAdd.COLOR_R,1f);
                 entityDrive.getDataManager().set(EntityDriveAdd.COLOR_G,0f);
                 entityDrive.getDataManager().set(EntityDriveAdd.COLOR_B,0f);

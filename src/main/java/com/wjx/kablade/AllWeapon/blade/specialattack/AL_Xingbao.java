@@ -30,7 +30,7 @@ public class AL_Xingbao extends SpecialAttackBase {
             float baseModif = ItemSlashBlade.BaseAttackModifier.get(tag)/5;
             int level = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, itemStack);
             float magicDamage = baseModif;
-            magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),1f);
+            magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),2f);
             Random rand = new Random();
             for (int i = 0; i < 21; ++i) {
                 float a = rand.nextInt(360);
@@ -39,8 +39,8 @@ public class AL_Xingbao extends SpecialAttackBase {
                 entityDrive.getDataManager().set(EntityDriveAdd.COLOR_R,1f);
                 entityDrive.getDataManager().set(EntityDriveAdd.COLOR_G,0f);
                 entityDrive.getDataManager().set(EntityDriveAdd.COLOR_B,0f);
-                entityDrive.setChangetime(20);
-                entityDrive.setNextspeed(1.5f);
+                entityDrive.setChangeTime(20);
+                entityDrive.setNextSpeed(1.3f);
                 entityDrive.setLocationAndAngles(entityPlayer.posX + (double)rand.nextInt(25) * 0.1, entityPlayer.posY + (double)rand.nextInt(13) + (double)entityPlayer.getEyeHeight() / 2.0, entityPlayer.posZ + (double)rand.nextInt(25) * 0.1, entityPlayer.rotationYaw, 0.0f);
                 entityDrive.getDataManager().set(EntityDriveAdd.SCALE_X,2f);
                 entityDrive.getDataManager().set(EntityDriveAdd.SCALE_Y,2f);

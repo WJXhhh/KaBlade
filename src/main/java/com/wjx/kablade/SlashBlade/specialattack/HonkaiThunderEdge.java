@@ -35,7 +35,7 @@ public class HonkaiThunderEdge extends SpecialAttackBase {
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
-            float extraDamage = (float) MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(itemStack.getTagCompound()),3f);
+            float extraDamage = (float) MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(itemStack.getTagCompound()),10f);
             EntityThunderEdgeAttack t = new EntityThunderEdgeAttack(world,entityPlayer);
             world.spawnEntity(t);
             double dist = 6;
@@ -48,7 +48,7 @@ public class HonkaiThunderEdge extends SpecialAttackBase {
             if (!list.isEmpty()){
                 for (Entity e : list){
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
-                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),50f + extraDamage);
+                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),(50f + extraDamage)*1.2f);
                         ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,5));
                         e.getEntityData().setBoolean("dizui",true);
                         e.getEntityData().setInteger("dizuitime", 300);

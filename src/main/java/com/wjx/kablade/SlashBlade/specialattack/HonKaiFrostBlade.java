@@ -17,7 +17,7 @@ public class HonKaiFrostBlade extends SpecialAttackBase {
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.world;
-        float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),3f);
+        float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),1f);
         for (int i =0;i<6;i++){
             SummonBladeOfFrostBlade entity = new SummonBladeOfFrostBlade(entityPlayer.world,entityPlayer,extraDamage);
             int in = world.rand.nextBoolean() ? 1 : 0;

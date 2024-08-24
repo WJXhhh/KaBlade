@@ -77,7 +77,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
                     pointedEntity.motionY = 0.5f;
                     float a = 0f;
                     float radius = 2f;
-                    float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),20f);
+                    float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),10f);
                     float extraDamage2 = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),4f);
                     float extraDamage3 = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),3f);
 
@@ -108,7 +108,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
                                 ay = -90f -(float) k;
                             }
                         }
-                        EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,20f + extraDamage,px,py,pz,(float) ap1,(float)ay);
+                        EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,10f + extraDamage,px,py,pz,(float) ap1,(float)ay);
                         p.setColor(65535);
                         world.spawnEntity(p);
                         a += 60;
