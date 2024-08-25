@@ -73,6 +73,7 @@ item.wjx.allweapon.zhanyue.name=§f白§9「§l§c天锁斩月§r§9」
 item.wjx.allweapon.fengshen.name=§6奉神刀§9「§l§6鹿§r§9」
 item.wjx.allweapon.htkg.name=§f花天§7狂骨§9「§l§3花天§r§9」
 item.wjx.allweapon.jie.name=§5灾厄之源§9「§l§8劫§r§9」
+item.wjx.allweapon.yingyue.name=§7欺骗者§9「§l§8影§f月§r§9」·月
 #AWD
 item.wjx.allweapon.shangguyujin.name=§9上古的余烬
 item.wjx.allweapon.shangguyizhi.name=§9上古的意志
@@ -88,6 +89,7 @@ flammpfeil.slashblade.specialattack.huanyingdie=§a百谷幻 §d蝶
 flammpfeil.slashblade.specialattack.xuepo=§b冰魂雪魄
 flammpfeil.slashblade.specialattack.yueyatianchong=§f白·§4月牙天冲
 flammpfeil.slashblade.specialattack.baoku=§6追星剑
+flammpfeil.slashblade.specialattack.suiji=§c随机大傻子！
 #组之呈
 itemGroup.tabkablade=斩无不断
 itemGroup.tabkablade_blades=斩无不断:铭刀
