@@ -330,12 +330,13 @@ public class CommonProxy{
                 public void run(EntityBladeStand curEntity, DamageSource damageSource) {
                     if(damageSource.getTrueSource() instanceof EntityPlayer && curEntity.hasBlade()){
                         ItemStack blade = curEntity.getBlade();
+                        //Main.logger.warn("playerHit!");
                         ItemStack targetBlade = SlashBlade.findItemStack(bladestr,"slashbladeNamed",1);
                         NBTTagCompound tag = blade.getTagCompound();
                         if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
                         {
-
-
+                            //Main.logger.warn("Blade Matched!");
+                           // logger.warn("put dat:"+curEntity.posY+" "+ItemSlashBlade.RepairCount.get(blade.getTagCompound())+" "+EnchantmentHelper.getEnchantmentLevel(Enchantments.FEATHER_FALLING,blade));
                             if(curEntity.posY>=250 && ItemSlashBlade.RepairCount.get(blade.getTagCompound())>=50&& EnchantmentHelper.getEnchantmentLevel(Enchantments.FEATHER_FALLING,blade)>=4){
                                 ItemStack res = SlashBlade.findItemStack(bladestr, "wjx.allweapon.fengzhiying", 1);
 

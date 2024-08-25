@@ -1,5 +1,6 @@
 package com.wjx.kablade.mixin;
 
+import com.wjx.kablade.Main;
 import com.wjx.kablade.util.BladeAttackEvent;
 import com.wjx.kablade.util.BladeAttackEventManager;
 import com.wjx.kablade.util.BladeStandHurtManager;
@@ -17,9 +18,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(EntityBladeStand.class)
 public  class MixinBladeStand {
 
-    @Inject(method = "attackEntityFrom",at = @At(value = "RETURN"),locals = LocalCapture.CAPTURE_FAILSOFT, remap = false)
+    @Inject(method = "attackEntityFrom",at = @At(value = "RETURN"),locals = LocalCapture.CAPTURE_FAILSOFT, remap = true)
     private void attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_, CallbackInfoReturnable<Boolean> cir) {
             EntityBladeStand entityBladeStand = (EntityBladeStand) (Object) this;
+       // Main.logger.warn("try run HurtEvent!");
             for(BladeStandHurtManager.BladeStandHurtEvent event : BladeStandHurtManager.events){
                 event.run(entityBladeStand,p_70097_1_);
             }
