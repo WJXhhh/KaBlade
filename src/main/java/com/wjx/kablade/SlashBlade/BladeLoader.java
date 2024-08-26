@@ -122,6 +122,8 @@ public class BladeLoader {
 
             loadBlade(new KeyOfCastigation());
 
+            loadBlade(new FloridSakura());
+
 
 
             if(EnableAllWeapon){

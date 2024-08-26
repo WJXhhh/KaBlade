@@ -8,8 +8,8 @@ import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.IOException;
+import java.net.*;
 import java.security.CodeSource;
 import java.util.List;
 
@@ -29,12 +29,14 @@ public class KabladeMixinTweak implements ITweaker{
         if (codeSource != null) {
             URL location = codeSource.getLocation();
             try {
-                File file = new File(location.toURI());
+                File file = new File(toURI(location));
                 if (file.isFile()) {
                     CoreModManager.getIgnoredMods().remove(file.getName());
                 }
             } catch (URISyntaxException e) {
                 e.printStackTrace();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         } else {
             LogManager.getLogger().warn("No CodeSource, if this is not a development environment we might run into problems!");
@@ -50,5 +52,15 @@ public class KabladeMixinTweak implements ITweaker{
     @Override
     public String[] getLaunchArguments() {
         return new String[0];
+    }
+
+    public static URI toURI(URL url) throws IOException, URISyntaxException {
+        URLConnection connection = url.openConnection();
+        if (connection instanceof JarURLConnection) {
+            JarURLConnection jarURLConnection = (JarURLConnection) connection;
+            return jarURLConnection.getJarFileURL().toURI();
+        } else  {
+            return url.toURI();
+        }
     }
 }

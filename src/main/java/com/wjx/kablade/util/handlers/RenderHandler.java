@@ -3,6 +3,7 @@ package com.wjx.kablade.util.handlers;
 import com.wjx.kablade.Entity.*;
 import com.wjx.kablade.Entity.Render.*;
 import mods.flammpfeil.slashblade.client.renderer.entity.RenderPhantomSwordBase;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class RenderHandler {
@@ -20,5 +21,6 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityThunderEdgeAttack.class,RenderThunderEdgeAttack::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySummonedButterfly.class,RenderSummonedButterFly::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySummonedSwordPotionEffectAdd.class,RenderSummonedSwordPotion::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityCrimsonSakuraAttack.class,RenderCrimsonSakuraAttack::new);
     }
 }

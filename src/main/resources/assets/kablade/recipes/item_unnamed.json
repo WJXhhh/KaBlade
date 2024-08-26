@@ -1,0 +1,16 @@
+{
+  "group": "kablade",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "kablade:kanamed"
+    },
+    {
+      "item": "kablade:kanamed"
+    }
+  ],
+
+  "result": {
+    "item": "flammpfeil.slashblade:slashbladenamed"
+  }
+}

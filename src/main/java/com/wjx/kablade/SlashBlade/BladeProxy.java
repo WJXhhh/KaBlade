@@ -52,6 +52,7 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(302,new HonKaiZaizan());
             ItemSlashBlade.specialAttacks.put(303,new HonkaiFallingPetals());
             ItemSlashBlade.specialAttacks.put(304,new HonkaiThunderEdge());
+            ItemSlashBlade.specialAttacks.put(305,new HonkaiCrimsonSakura());
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());
