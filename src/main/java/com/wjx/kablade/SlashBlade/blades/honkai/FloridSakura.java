@@ -3,14 +3,17 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeThreeRecipeModding;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -57,7 +60,7 @@ public class FloridSakura {
         SpecialEffects.addEffect(customblade, BladeProxy.Phoenix);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
-        ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
+        /*ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.thermal_cutter", 1);
         IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"phoenix"),
                 blackblade, prevblade,
@@ -70,6 +73,23 @@ public class FloridSakura {
                         'C', new ItemStack(Items.FEATHER),
                 });
 
-        //SlashBlade.addRecipe("phoenix", recipe);
+        //SlashBlade.addRecipe("phoenix", recipe);*/
+        ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.phoenix", 1);
+        ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.third_sacred", 1);
+        ItemStack prevblade3 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.sakura_blossom", 1);
+        IRecipe recipe = new SlashBladeThreeRecipeModding(new ResourceLocation(bladestr,"florid_sakura"),
+                blackblade, prevblade,prevblade2,prevblade3,
+                new Object[]{
+                        "D C",
+                        " B ",
+                        "A D",
+                        'D', Item.getItemFromBlock(Blocks.REDSTONE_BLOCK),
+                        'A', prevblade,
+                        'B', prevblade2,
+                        'C', prevblade3,
+                });
+
+        SlashBlade.addRecipe("florid_sakura", recipe);
     }
 }
