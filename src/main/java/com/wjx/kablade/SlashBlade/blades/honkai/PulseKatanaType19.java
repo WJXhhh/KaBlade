@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
@@ -53,7 +54,7 @@ public class PulseKatanaType19 {
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.murayoto", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"pulse_katana_t19"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"pulse_katana_t19"),
                 blackblade, prevblade,
                 "  C",
                 " B ",

@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
@@ -53,7 +54,7 @@ public class DawnBreaker {
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.galactic", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"dawn_breaker"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"dawn_breaker"),
                 blackblade, prevblade,
                 "  C",
                 " B ",

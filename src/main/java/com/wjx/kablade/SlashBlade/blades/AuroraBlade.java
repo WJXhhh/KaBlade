@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.blades;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
@@ -58,7 +59,7 @@ public class AuroraBlade {
         BladeLoader.NamedBlades.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.arc_light", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"aurora_blade"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"aurora_blade"),
                 blackblade, prevblade,
                 "BCB",
                 " A ",

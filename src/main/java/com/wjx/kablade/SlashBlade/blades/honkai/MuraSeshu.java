@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
 import com.wjx.kablade.init.BlockInit;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
@@ -61,7 +62,7 @@ public class MuraSeshu {
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"muraseshu"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"muraseshu"),
                 blackblade, ItemStack.EMPTY,
                 new Object[]{
                         "  B",

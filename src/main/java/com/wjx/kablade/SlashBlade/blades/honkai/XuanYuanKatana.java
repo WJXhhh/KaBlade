@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
 import com.wjx.kablade.enchantments.EnchantmentSlow;
 import com.wjx.kablade.init.EnchantmentInit;
 import com.wjx.kablade.init.ItemInit;
@@ -61,7 +62,7 @@ public class XuanYuanKatana {
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.pulse_katana_t17", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"xuanyuan_katana"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"xuanyuan_katana"),
                 blackblade, prevblade,
                 "  C",
                 " B ",

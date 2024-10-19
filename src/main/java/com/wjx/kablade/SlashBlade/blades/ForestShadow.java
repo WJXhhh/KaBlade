@@ -56,7 +56,7 @@ public class ForestShadow {
         BladeLoader.NamedBlades.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.noted_vine", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"forest_shadow"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"forest_shadow"),
                 blackblade, prevblade,
                 new Object[]{
                         " C ",

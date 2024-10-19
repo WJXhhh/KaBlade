@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.blades;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
@@ -52,7 +53,7 @@ public class BlackSteel {
         BladeLoader.NamedBlades.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prev_blade = SlashBlade.findItemStack(bladestr,"wjx.blade.hangtu",1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"black_steel"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"black_steel"),
                 blackblade, prev_blade,
                 new Object[]{
                         "BCB",

@@ -36,6 +36,8 @@ public class SlashBladeTwoRecipeModding extends ShapedOreRecipe {
 
         boolean result = super.matches(inv, world);
 
+        boolean m1= false,m2 = false;
+
         if(result && !requiredStateBlade.isEmpty()){
             requiredStateBlade.setItemDamage(OreDictionary.WILDCARD_VALUE);
             for(int idx = 0; idx < inv.getSizeInventory(); idx++){
@@ -52,11 +54,14 @@ public class SlashBladeTwoRecipeModding extends ShapedOreRecipe {
                     if(!curIs.getTranslationKey().equals(requiredStateBlade.getTranslationKey())){
                         if (curIs.getTranslationKey().equals(requiredStateBlade2.getTranslationKey())){
                             if(getCur(requiredStateBlade2, curIs)){
+                                m2 = true;
                                 continue;
                             }
                         }
                         return false;
                     }
+
+                    m1 = true;
 
                     Map<Enchantment,Integer> oldItemEnchants = EnchantmentHelper.getEnchantments(requiredStateBlade);
                     for(Map.Entry<Enchantment,Integer> enchant: oldItemEnchants.entrySet())
@@ -84,7 +89,7 @@ public class SlashBladeTwoRecipeModding extends ShapedOreRecipe {
         }
 
 
-        return result;
+        return result && m1 && m2;
     }
 
     boolean getCur(ItemStack s1,ItemStack s2){
@@ -164,7 +169,6 @@ public class SlashBladeTwoRecipeModding extends ShapedOreRecipe {
                         int srcLevel = oldItemEnchants.get(enchantIndex);
 
                         srcLevel = Math.max(srcLevel, destLevel);
-                        srcLevel = Math.min(srcLevel, enchantment.getMaxLevel());
 
 
                         boolean canApplyFlag = enchantment.canApply(result);

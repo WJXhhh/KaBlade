@@ -62,7 +62,7 @@ public class FloridSakura {
         BladeLoader.NamedHonkai.add(name);
         /*ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.thermal_cutter", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"phoenix"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"phoenix"),
                 blackblade, prevblade,
                 new Object[]{
                         " BC",

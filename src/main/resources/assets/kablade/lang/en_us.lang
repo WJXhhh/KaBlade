@@ -189,3 +189,12 @@ prop.title=KaBlade:Effect
 prop.kami_of_war_count=Kami of War
 prop.wind_enchantment_boost=Wind Enchantment
 prop.fair_pow=Power of War
+
+#Config
+config.kablade.general=常规设置
+config.kablade.msize=钼矿石生成最小尺寸
+config.kablade.csize=铬矿石生成最小尺寸
+config.kablade.asize=极光矿石生成最小尺寸
+config.kablade.mchance=钼矿石生成概率
+config.kablade.cchance=铬矿石生成概率
+config.kablade.achance=极光矿石生成概率

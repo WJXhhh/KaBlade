@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.blades;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
@@ -60,7 +61,7 @@ public class Originyer {
         BladeLoader.NamedBlades.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.cut_iron", 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"originyer"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"originyer"),
                 blackblade, prevblade,
                 "BDB",
                 "CAC",

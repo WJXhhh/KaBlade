@@ -39,6 +39,9 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
         boolean result = super.matches(inv, world);
 
 
+        boolean m1 = false,m2= false,m3= false;
+
+
         if(result && !requiredStateBlade.isEmpty()){
             requiredStateBlade.setItemDamage(OreDictionary.WILDCARD_VALUE);
             for(int idx = 0; idx < inv.getSizeInventory(); idx++){
@@ -48,23 +51,26 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
                         && curIs.hasTagCompound()){
 
 
-
                     NBTTagCompound reqTag = ItemSlashBlade.getItemTagCompound(requiredStateBlade);
                     NBTTagCompound srcTag = ItemSlashBlade.getItemTagCompound(curIs);
 
                     if(!curIs.getTranslationKey().equals(requiredStateBlade.getTranslationKey())){
                         if (curIs.getTranslationKey().equals(requiredStateBlade2.getTranslationKey())){
-                            if(getCur(requiredStateBlade2, curIs)){
+                            if(getCur(requiredStateBlade2, curIs)) {
+                                m2 = true;
                                 continue;
                             }
                         }
                         else if(curIs.getTranslationKey().equals(requiredStateBlade3.getTranslationKey())){
                             if(getCur(requiredStateBlade3, curIs)){
+                                m3 = true;
                                 continue;
                             }
                         }
                         return false;
                     }
+
+                    m1 = true;
 
 
                     Map<Enchantment,Integer> oldItemEnchants = EnchantmentHelper.getEnchantments(requiredStateBlade);
@@ -92,7 +98,7 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
             }
         }
 
-        return result;
+        return result && m1 && m2 && m3;
     }
 
     boolean getCur(ItemStack s1,ItemStack s2){
@@ -166,26 +172,24 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
                     Map<Enchantment,Integer> oldItemEnchants = EnchantmentHelper.getEnchantments(curIs);
                     for(Enchantment enchantIndex : oldItemEnchants.keySet())
                     {
-                        Enchantment enchantment = enchantIndex;
 
-                        int destLevel = newItemEnchants.containsKey(enchantIndex) ? newItemEnchants.get(enchantIndex) : 0;
+                        int destLevel = newItemEnchants.getOrDefault(enchantIndex, 0);
                         int srcLevel = oldItemEnchants.get(enchantIndex);
 
                         srcLevel = Math.max(srcLevel, destLevel);
-                        srcLevel = Math.min(srcLevel, enchantment.getMaxLevel());
 
 
-                        boolean canApplyFlag = enchantment.canApply(result);
+                        boolean canApplyFlag = enchantIndex.canApply(result);
                         if(canApplyFlag){
                             for(Enchantment curEnchantIndex : newItemEnchants.keySet()){
-                                if (curEnchantIndex != enchantIndex && !enchantment.isCompatibleWith(curEnchantIndex) /*canApplyTogether*/)
+                                if (curEnchantIndex != enchantIndex && !enchantIndex.isCompatibleWith(curEnchantIndex) /*canApplyTogether*/)
                                 {
                                     canApplyFlag = false;
                                     break;
                                 }
                             }
                             if (canApplyFlag)
-                                newItemEnchants.put(enchantIndex, Integer.valueOf(srcLevel));
+                                newItemEnchants.put(enchantIndex, srcLevel);
                         }
                     }
                     EnchantmentHelper.setEnchantments(newItemEnchants, result);

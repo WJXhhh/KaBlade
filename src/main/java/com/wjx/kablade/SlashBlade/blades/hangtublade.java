@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.RecipeBlade;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
 import com.wjx.kablade.init.BlockInit;
 import com.wjx.kablade.init.ItemInit;
 import com.wjx.kablade.util.Reference;
@@ -57,7 +58,7 @@ public class hangtublade {
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedBlades.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"hangtu"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"hangtu"),
                 blackblade, ItemStack.EMPTY,
                 new Object[]{
                         "  B",

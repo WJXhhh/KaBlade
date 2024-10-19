@@ -36,7 +36,7 @@ public class AL_Bailan {
         ItemSlashBladeNamed.IsDefaultBewitched.set(Tag, true);
         ItemSlashBlade.StandbyRenderType.set(Tag, 2);
         ItemSlashBlade.SummonedSwordColor.set(Tag, 0x33ee33);
-        ItemSlashBlade.SpecialAttackType.set(Tag,401);
+        ItemSlashBlade.SpecialAttackType.set(Tag,412);
         ItemSlashBlade.BaseAttackModifier.set(Tag,5f);
         //customblade.addEnchantment(Enchantments.FIRE_ASPECT,20);
         //customblade.addEnchantment(Enchantments.POWER,20);

@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.RecipeBlade;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
+import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
 import com.wjx.kablade.init.BlockInit;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
@@ -55,7 +56,7 @@ public class BambooIron {
         SlashBlade.registerCustomItemStack(this.name, customBlade);
         BladeLoader.NamedBlades.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        IRecipe recipe = new RecipeAwakeBlade(new ResourceLocation(bladestr,"bamboo_iron"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"bamboo_iron"),
                 blackblade, new ItemStack(SlashBlade.bladeBambooLight),
                 new Object[]{
                         "  B",

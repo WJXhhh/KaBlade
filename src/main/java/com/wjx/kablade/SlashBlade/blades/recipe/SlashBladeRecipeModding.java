@@ -140,7 +140,6 @@ public class SlashBladeRecipeModding extends ShapedOreRecipe {
                         int srcLevel = oldItemEnchants.get(enchantIndex);
 
                         srcLevel = Math.max(srcLevel, destLevel);
-                        srcLevel = Math.min(srcLevel, enchantment.getMaxLevel());
 
 
                         boolean canApplyFlag = enchantment.canApply(result);
