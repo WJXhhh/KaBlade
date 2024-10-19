@@ -34,7 +34,7 @@ public class SlashBladeRecipeModding extends ShapedOreRecipe {
 
         boolean result = super.matches(inv, world);
 
-        if (!world.isRemote)
+        //if (!world.isRemote)
         //Main.ModHelper.sendMessageToAll("FirstResult:" + result);
 
         if(result && !requiredStateBlade.isEmpty()){
