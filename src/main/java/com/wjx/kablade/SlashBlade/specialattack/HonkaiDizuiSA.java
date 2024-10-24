@@ -44,8 +44,8 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
             {
                 float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),25f);
 
-                EntityDriveAdd entityDrive = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 30f);
-                EntityDriveAdd entityDrive2 = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 60f);
+                EntityDriveAdd entityDrive = new EntityDriveAdd(world, entityPlayer, 50f + extraDamage, true, 30f);
+                EntityDriveAdd entityDrive2 = new EntityDriveAdd(world, entityPlayer, 50f + extraDamage, true, 60f);
                 entityDrive.setPosition(entityPlayer.posX,entityPlayer.posY+entityPlayer.eyeHeight,entityPlayer.posZ);
                 entityDrive2.setPosition(entityPlayer.posX,entityPlayer.posY+entityPlayer.eyeHeight,entityPlayer.posZ);
                 entityDrive.getDataManager().set(EntityDriveAdd.COLOR_R,0.9f);
