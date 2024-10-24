@@ -196,7 +196,7 @@ tasks.withType(JavaCompile).configureEach {
 
 task writeMetadata {
     doLast {
-        def fileName = 'your-file-name'
+        def fileName = project.archivesBaseName
         def version = project.version
         new File("${buildDir}/metadata.txt").text = "${fileName}-${version}"
     }
