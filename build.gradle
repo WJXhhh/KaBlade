@@ -193,3 +193,12 @@ mixin {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
+
+task writeMetadata {
+    doLast {
+        def fileName = 'your-file-name'
+        def version = project.version
+        new File("${buildDir}/metadata.txt").text = "${fileName}-${version}"
+    }
+}
+
