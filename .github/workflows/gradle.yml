@@ -32,7 +32,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          distribution: 'oracle'
+          distribution: 'temurin'
           java-version: '8'
 
       - name: Grant execute permission for gradlew
