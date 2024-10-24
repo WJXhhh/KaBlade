@@ -3,7 +3,6 @@ package com.wjx.kablade.util;
 import com.google.common.collect.Lists;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.MessageUpdateKaBladePlayerProp;
-import javafx.util.Pair;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import scala.Int;
