@@ -57,9 +57,9 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
                 entityDrive.getDataManager().set(EntityDriveAdd.SCALE_X,2f);
                 entityDrive.getDataManager().set(EntityDriveAdd.SCALE_Y,2f);
                 entityDrive.getDataManager().set(EntityDriveAdd.SCALE_Z,2f);
-                entityDrive1.getDataManager().set(EntityDriveAdd.SCALE_X,2f);
-                entityDrive1.getDataManager().set(EntityDriveAdd.SCALE_Y,2f);
-                entityDrive1.getDataManager().set(EntityDriveAdd.SCALE_Z,2f);
+                entityDrive2.getDataManager().set(EntityDriveAdd.SCALE_X,2f);
+                entityDrive2.getDataManager().set(EntityDriveAdd.SCALE_Y,2f);
+                entityDrive2.getDataManager().set(EntityDriveAdd.SCALE_Z,2f);
                 world.spawnEntity(entityDrive);
                 world.spawnEntity(entityDrive2);
             }
