@@ -44,8 +44,14 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: Read Metadata
+        id: metadata
+        run: |
+          ARTIFACT_NAME=$(cat ${GITHUB_WORKSPACE}/build/metadata.txt)
+          echo "artifact-name=$ARTIFACT_NAME" >> $GITHUB_ENV
+
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.metadata.outputs.artifact-name }}
+          name: ${{ env.artifact-name }}
           path: build/libs/
