@@ -18,6 +18,10 @@ buildscript {
         classpath "org.spongepowered:mixingradle:0.7.+"
     }
 }
+
+plugins {
+    id 'java'
+}
         
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'wtf.gofancy.fancygradle'
@@ -123,6 +127,8 @@ dependencies {
     runtimeOnly(files("./libs/the_golden_autumn-12.0.3.10.jar"))
     //runtimeOnly(files("./libs/jei.jar"))
     //runtimeOnly(files("./libs/vanilafix.jar"))
+    implementation 'org.openjfx:javafx-controls:8.0.222'
+    implementation 'org.openjfx:javafx-fxml:8.0.222'
 }
 
 sourceSets {
