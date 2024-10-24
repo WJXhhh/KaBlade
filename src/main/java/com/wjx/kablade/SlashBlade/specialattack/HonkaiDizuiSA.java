@@ -43,10 +43,22 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
             {
                 float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),25f);
 
-                EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 30f);
-                EntityDrive entityDrive2 = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 60f);
+                EntityDriveAdd entityDrive = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 30f);
+                EntityDriveAdd entityDrive2 = new EntityDrive(world, entityPlayer, 50f + extraDamage, true, 60f);
                 entityDrive.setPosition(entityPlayer.posX,entityPlayer.posY+entityPlayer.eyeHeight,entityPlayer.posZ);
                 entityDrive2.setPosition(entityPlayer.posX,entityPlayer.posY+entityPlayer.eyeHeight,entityPlayer.posZ);
+                entityDrive.getDataManager().set(EntityDriveAdd.COLOR_R,0.9f);
+                entityDrive.getDataManager().set(EntityDriveAdd.COLOR_G,0.1f);
+                entityDrive.getDataManager().set(EntityDriveAdd.COLOR_B,0.9f);
+                entityDrive2.getDataManager().set(EntityDriveAdd.COLOR_R,0.9f);
+                entityDrive2.getDataManager().set(EntityDriveAdd.COLOR_G,0.1f);
+                entityDrive2.getDataManager().set(EntityDriveAdd.COLOR_B,0.9f);
+                entityDrive.getDataManager().set(EntityDriveAdd.SCALE_X,2f);
+                entityDrive.getDataManager().set(EntityDriveAdd.SCALE_Y,2f);
+                entityDrive.getDataManager().set(EntityDriveAdd.SCALE_Z,2f);
+                entityDrive1.getDataManager().set(EntityDriveAdd.SCALE_X,2f);
+                entityDrive1.getDataManager().set(EntityDriveAdd.SCALE_Y,2f);
+                entityDrive1.getDataManager().set(EntityDriveAdd.SCALE_Z,2f);
                 world.spawnEntity(entityDrive);
                 world.spawnEntity(entityDrive2);
             }
