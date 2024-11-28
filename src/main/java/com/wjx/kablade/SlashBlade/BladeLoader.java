@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade;
 import com.google.common.collect.Lists;
 import com.wjx.kablade.AllWeapon.blade.items.Item_AwNamed;
 import com.wjx.kablade.AllWeapon.blade.ordinary.*;
+import com.wjx.kablade.SPLight.blade.items.Item_SLNamed;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.blades.*;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_Caijue;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static com.wjx.kablade.Main.EnableAWDemo;
 import static com.wjx.kablade.Main.EnableAllWeapon;
+import static com.wjx.kablade.Main.EnableSPLight;
 
 public class BladeLoader {
 
@@ -34,6 +36,8 @@ public class BladeLoader {
     public static Item ITEM_DIZUI= null;
 
     public static Item ITEM_AW=null;
+
+    public static Item ITEM_SL = null;
 
     public boolean autu=false;
 
@@ -53,6 +57,8 @@ public class BladeLoader {
             ITEM_DIZUI= new Item_Caijue(Item.ToolMaterial.IRON, 1.0F, "honkaidizui").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
             if(EnableAllWeapon)
                 ITEM_AW=new Item_AwNamed(Item.ToolMaterial.DIAMOND,1.0F,"awnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_ALLWEAPON).setNoRepair();
+            if(EnableSPLight)
+                ITEM_SL = new Item_SLNamed(Item.ToolMaterial.DIAMOND,1.0F,"slnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_ALLWEAPON).setNoRepair();
         }
 
 

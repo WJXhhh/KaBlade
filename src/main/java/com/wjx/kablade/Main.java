@@ -52,6 +52,8 @@ public class Main
 
     public static boolean EnableAWDemo =false;
 
+    public static boolean EnableSPLight = true;
+
     public static final SimpleNetworkWrapper PACKET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel("kablade");
 
     public static String bladestr= SlashBlade.modid;
