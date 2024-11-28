@@ -32,7 +32,7 @@ public class Item_SLNamed extends ItemSlashBladeNamed {
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
         if (this.isInCreativeTab(tab)) {
-            for(String bladename : BladeLoader.AwBlades){
+            for(String bladename : BladeLoader.SLBlades){
                 ItemStack blade = SlashBlade.findItemStack(bladestr,bladename,1);
                 NBTTagCompound tag = getItemTagCompound(blade);
                 if(!blade.isEmpty()) {
