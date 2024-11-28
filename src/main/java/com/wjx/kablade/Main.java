@@ -73,6 +73,7 @@ public class Main
     public static CreativeTabs TABKABLADE_BLADES_HONKAI = null;
     public static CreativeTabs TABKABLADE_ORE = null;
     public static CreativeTabs TABKABLADE_BLADES_ALLWEAPON = null;
+    public static CreativeTabs TABKABLADE_BLADES_SP_LIGHT = null;
 
     private void sseee(){
         TABKABLADE = new tabkablade();
@@ -92,6 +93,15 @@ public class Main
         }
         if(EnableAllWeapon){
             TABKABLADE_BLADES_ALLWEAPON=new CreativeTabs("tabkablade_allweapon") {
+                final ItemStack stack=new ItemStack(ItemInit.ICON_AW);
+                @Override
+                public ItemStack createIcon() {
+                    return stack;
+                }
+            };
+        }
+        if(EnableSPLight){
+            TABKABLADE_BLADES_SP_LIGHT=new CreativeTabs("tabkablade_sp_light") {
                 final ItemStack stack=new ItemStack(ItemInit.ICON_AW);
                 @Override
                 public ItemStack createIcon() {

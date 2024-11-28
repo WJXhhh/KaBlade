@@ -54,7 +54,7 @@ public class BladeLoader {
         if(autu){
             ITEM_MAGIC = new MagicBlade(Item.ToolMaterial.IRON, 32768.0F, "magicslashblade").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_GOD).setNoRepair();
             ITEM_HONKAI_NAMED=new Item_HonkaiNamed(Item.ToolMaterial.IRON, 1.0F, "honkainamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
-            ITEM_DIZUI= new Item_Caijue(Item.ToolMaterial.IRON, 1.0F, "honkaidizui").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
+            ITEM_DIZUI= new Item_Caijue(Item.ToolMaterial.IRON, 1.0F, "honkaidizui").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_SP_LIGHT).setNoRepair();
             if(EnableAllWeapon)
                 ITEM_AW=new Item_AwNamed(Item.ToolMaterial.DIAMOND,1.0F,"awnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_ALLWEAPON).setNoRepair();
             if(EnableSPLight)
