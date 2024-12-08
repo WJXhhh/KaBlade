@@ -1,11 +1,9 @@
 package com.wjx.kablade.ExSA.entity;
 
 import com.wjx.kablade.Entity.EntityDriveAdd;
-import mods.flammpfeil.slashblade.ability.ArmorPiercing;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorDestructable;
-import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.ReflectionAccessHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,7 +19,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IThrowableEntity;
 
-import javax.xml.crypto.Data;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -68,7 +65,7 @@ public class ExSaEntityDrive extends EntityDriveAdd {
     public void playSound() {
         if (!this.getPlayed()) {
             String sound = this.getSound();
-            if (sound != null && !sound.equals("") && this.thrower instanceof EntityPlayer) {
+            if (sound != null && !sound.isEmpty() && this.thrower instanceof EntityPlayer) {
                 this.thrower.playSound(new SoundEvent(new ResourceLocation(sound)), 1.0f, 1.5f);
             }
             setPlayed();
@@ -84,7 +81,7 @@ public class ExSaEntityDrive extends EntityDriveAdd {
             DamageSource ds = new EntityDamageSource(DamageSource.MAGIC.getDamageType(), this.getThrower()).setDamageBypassesArmor().setMagicDamage();
             target.attackEntityFrom(ds, damage);
             if (this.blade != null && target instanceof EntityLivingBase) {
-                ((ItemSlashBlade)((Object)this.blade.getItem())).hitEntity(this.blade, (EntityLivingBase)target, (EntityLivingBase)this.thrower);
+                this.blade.getItem().hitEntity(this.blade, (EntityLivingBase)target, (EntityLivingBase)this.thrower);
             }
         }
     }
@@ -149,7 +146,7 @@ public class ExSaEntityDrive extends EntityDriveAdd {
                         double var4 = rand.nextGaussian() * 0.02;
                         double var6p = rand.nextGaussian() * 0.02;
                         double var8 = 10.0;
-                        this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, curEntity.posX + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var2 * var8, curEntity.posY + (double)(rand.nextFloat() * curEntity.height) - var4 * var8, curEntity.posZ + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var6p * var8, var2, var4, var6p, new int[0]);
+                        this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, curEntity.posX + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var2 * var8, curEntity.posY + (double)(rand.nextFloat() * curEntity.height) - var4 * var8, curEntity.posZ + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var6p * var8, var2, var4, var6p);
                     }
 
                     StylishRankManager.doAttack(this.thrower);
@@ -203,18 +200,18 @@ public class ExSaEntityDrive extends EntityDriveAdd {
         if (changeTime != 0 && this.ticksExisted >= changeTime) {
             float nextSpeed = this.getNextSpeed();
             playSound();
-            this.motionX = m_x *= (double)nextSpeed;
-            this.motionY = m_y *= (double)nextSpeed;
-            this.motionZ = m_z *= (double)nextSpeed;
+            this.motionX = m_x *= nextSpeed;
+            this.motionY = m_y *= nextSpeed;
+            this.motionZ = m_z *= nextSpeed;
             this.posX += m_x;
             this.posY += m_y;
             this.posZ += m_z;
         } else {
             float initSpeed = this.getInitSpeed();
             if (initSpeed >= 1.05f) {
-                this.motionX = m_x *= (double)initSpeed;
-                this.motionY = m_y *= (double)initSpeed;
-                this.motionZ = m_z *= (double)initSpeed;
+                this.motionX = m_x *= initSpeed;
+                this.motionY = m_y *= initSpeed;
+                this.motionZ = m_z *= initSpeed;
                 this.posX += m_x;
                 this.posY += m_y;
                 this.posZ += m_z;
