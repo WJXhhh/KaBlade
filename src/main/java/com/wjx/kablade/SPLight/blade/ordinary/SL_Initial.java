@@ -36,6 +36,8 @@ public class SL_Initial {
         ItemSlashBladeNamed.IsDefaultBewitched.set(Tag, true);
         ItemSlashBlade.BaseAttackModifier.set(Tag,7f);
         customBlade.addEnchantment(Enchantments.LOOT,1);
+        customblade.addEnchantment(Enchantments.POWER,2);
+        customblade.addEnchantment(Enchantments.UNBREAKING,1);
         //customblade.addEnchantment(Enchantments.FIRE_ASPECT,20);
         //customblade.addEnchantment(Enchantments.POWER,20);
         //customblade.addEnchantment(Enchantments.,20);
