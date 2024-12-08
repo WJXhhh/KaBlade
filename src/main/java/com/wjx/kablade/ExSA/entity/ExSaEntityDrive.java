@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -21,6 +22,7 @@ import net.minecraftforge.fml.common.registry.IThrowableEntity;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class ExSaEntityDrive extends EntityDriveAdd {
@@ -66,13 +68,13 @@ public class ExSaEntityDrive extends EntityDriveAdd {
         if (!this.getPlayed()) {
             String sound = this.getSound();
             if (sound != null && !sound.isEmpty() && this.thrower instanceof EntityPlayer) {
-                this.thrower.playSound(new SoundEvent(new ResourceLocation(sound)), 1.0f, 1.5f);
+                this.thrower.playSound(Objects.requireNonNull(SoundEvent.REGISTRY.getObject(new ResourceLocation(sound))), 1.0f, 1.5f);
             }
             setPlayed();
         }
     }
 
-    public void onImpact(Entity target, float damage) {
+    public void onImpact(Entity target, float damage) throws NoSuchFieldException, IllegalAccessException {
         if (target != null) {
             if (target.world.isRemote) {
                 return;
