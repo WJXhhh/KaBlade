@@ -1,6 +1,7 @@
 package com.wjx.kablade.init;
 
 import com.wjx.kablade.Entity.*;
+import com.wjx.kablade.ExSA.entity.ExSaEntityDrive;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.util.Reference;
 import net.minecraft.entity.Entity;
@@ -32,6 +33,10 @@ public class EntityInit {
         registerEntity("entity_slash_dimension_add", EntitySlashDimensionAdd.class,13700102,50);
         registerEntity("entity_butterfly", EntitySummonedButterfly.class,13700103,50);
         registerEntity("summoned_sword_base_potion", EntitySummonedSwordPotionEffectAdd.class,13700104,50);
+
+
+        //EXSA
+        registerEntity("entity_drive_exsa", ExSaEntityDrive.class,13700201,50);
     }
 
     private static void registerEntitySpawn(Class<? extends Entity> entityClass, int spawnWeight, int min, int max, EnumCreatureType typeOfCreature, Biome... biomes)
