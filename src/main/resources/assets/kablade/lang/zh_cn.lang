@@ -92,6 +92,9 @@ flammpfeil.slashblade.specialattack.xuepo=§b冰魂雪魄
 flammpfeil.slashblade.specialattack.yueyatianchong=§f白·§4月牙天冲
 flammpfeil.slashblade.specialattack.baoku=§6追星剑
 flammpfeil.slashblade.specialattack.suiji=§c随机大傻子！
+
+#SPLight
+item.wjx.splight.initial.name=§b龙一「空」
 #组之呈
 itemGroup.tabkablade=斩无不断
 itemGroup.tabkablade_blades=斩无不断:铭刀
@@ -99,7 +102,7 @@ itemGroup.tabkablade_bladesgod=斩无不断:神锻
 itemGroup.tabkablade_honkai=斩无不断:崩坏
 itemGroup.tabkablade_ore=斩无不断:矿藏
 itemGroup.tabkablade_allweapon=斩无不断:万物皆可为兵刃
-itemGroup.tabkablade_splight=斩无不断:龙一文字改
+itemGroup.tabkablade_sp_light=斩无不断:龙一文字改
 
 
 

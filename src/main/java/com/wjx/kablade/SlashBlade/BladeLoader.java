@@ -5,6 +5,7 @@ import com.wjx.kablade.AllWeapon.blade.items.Item_AwNamed;
 import com.wjx.kablade.AllWeapon.blade.ordinary.*;
 import com.wjx.kablade.SPLight.blade.items.Item_SLNamed;
 import com.wjx.kablade.Main;
+import com.wjx.kablade.SPLight.blade.ordinary.SL_Initial;
 import com.wjx.kablade.SlashBlade.blades.*;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_Caijue;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
@@ -55,11 +56,11 @@ public class BladeLoader {
         if(autu){
             ITEM_MAGIC = new MagicBlade(Item.ToolMaterial.IRON, 32768.0F, "magicslashblade").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_GOD).setNoRepair();
             ITEM_HONKAI_NAMED=new Item_HonkaiNamed(Item.ToolMaterial.IRON, 1.0F, "honkainamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
-            ITEM_DIZUI= new Item_Caijue(Item.ToolMaterial.IRON, 1.0F, "honkaidizui").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_SP_LIGHT).setNoRepair();
+            ITEM_DIZUI= new Item_Caijue(Item.ToolMaterial.IRON, 1.0F, "honkaidizui").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
             if(EnableAllWeapon)
                 ITEM_AW=new Item_AwNamed(Item.ToolMaterial.DIAMOND,1.0F,"awnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_ALLWEAPON).setNoRepair();
             if(EnableSPLight)
-                ITEM_SL = new Item_SLNamed(Item.ToolMaterial.DIAMOND,1.0F,"slnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_ALLWEAPON).setNoRepair();
+                ITEM_SL = new Item_SLNamed(Item.ToolMaterial.DIAMOND,1.0F,"slnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_SP_LIGHT).setNoRepair();
         }
 
 
@@ -156,6 +157,10 @@ public class BladeLoader {
                     loadBlade(new AL_Shangguyujin());
                     loadBlade(new AL_Shangguyizhi());
                 }
+            }
+
+            if(EnableSPLight){
+                loadBlade(new SL_Initial());
             }
 
 

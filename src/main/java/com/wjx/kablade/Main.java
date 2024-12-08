@@ -102,7 +102,7 @@ public class Main
         }
         if(EnableSPLight){
             TABKABLADE_BLADES_SP_LIGHT=new CreativeTabs("tabkablade_sp_light") {
-                final ItemStack stack=new ItemStack(ItemInit.ICON_AW);
+                final ItemStack stack=new ItemStack(ItemInit.ICON_SL);
                 @Override
                 public ItemStack createIcon() {
                     return stack;

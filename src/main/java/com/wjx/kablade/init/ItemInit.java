@@ -158,7 +158,7 @@ public class ItemInit {
     public static Item ICON_HONKAI = new ItemBase("honkai_icon");
     public static Item ICON_GOD= new ItemBase("god_icon");
     public static Item ICON_ORE = new ItemBase("ore_icon");
-
     public static Item ICON_AW = new ItemBase("icon_aw");
+    public static Item ICON_SL = new ItemBase("icon_sl");
 
 }
