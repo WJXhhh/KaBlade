@@ -169,7 +169,11 @@ public class ExSaEntityDrive extends EntityDriveAdd {
                     StylishRankManager.setNextAttackType(this.thrower, StylishRankManager.AttackTypes.Drive);
                 }
                 for (Entity ccc : list) {
-                    this.onImpact(ccc, magicDamage);
+                    try {
+                        this.onImpact(ccc, magicDamage);
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
 
