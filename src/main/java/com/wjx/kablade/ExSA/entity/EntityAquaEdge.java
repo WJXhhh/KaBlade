@@ -63,7 +63,6 @@ public class EntityAquaEdge extends ExSaEntityDrive{
             Field f =  EntityEnderman.class.getDeclaredField("SCREAMING");
             f.setAccessible(true);
             curEntity.getDataManager().set((DataParameter<Boolean>)f.get(null),false);
-            ReflectionHelper.setPrivateValue(EntityEnderman.class, (EntityEnderman)((Object)curEntity), false, new String[]{"isAggressive", "field_104003_g"});
         }
     }
 }
