@@ -3,14 +3,19 @@ package com.wjx.kablade.ExSA.entity;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorDestructable;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IThrowableEntity;
@@ -20,14 +25,8 @@ import java.util.List;
 import java.util.Random;
 
 public class EntityLightningSword extends EntityPhantomSwordEx{
-    public EntityLightningSword(World par1World) {
-        super(par1World);
-    }
 
-    public EntityLightningSword(World par1World, EntityLivingBase entityLiving, float AttackLevel, float roll) {
-        super(par1World, entityLiving, AttackLevel, roll);
-    }
-    /*public static String AttackType = StylishRankManager.AttackTypes.registerAttackType("LightningSword", -0.5F);
+    public static String AttackType = StylishRankManager.AttackTypes.registerAttackType("LightningSword", -0.5F);
     double hitX;
     double hitY;
     double hitZ;
@@ -100,7 +99,7 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
                             var4 = rand.nextGaussian() * 0.02D;
                             double var6 = rand.nextGaussian() * 0.02D;
                             double var8 = 10.0D;
-                            this.world.spawnParticle("explode", curEntity.posX + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var2 * var8, curEntity.posY + (double)(rand.nextFloat() * curEntity.height) - var4 * var8, curEntity.posZ + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var6 * var8, var2, var4, var6);
+                            this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, curEntity.posX + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var2 * var8, curEntity.posY + (double)(rand.nextFloat() * curEntity.height) - var4 * var8, curEntity.posZ + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var6 * var8, var2, var4, var6);
                         }
 
                         StylishRankManager.doAttack(this.thrower);
@@ -133,19 +132,19 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
                         if (!i$.hasNext()) {
                             if (hitEntity != null && !hitEntity.isDead) {
                                 if (!this.world.isRemote) {
-                                    this.world.addWeatherEffect(new EntityLightningBolt(this.world, hitEntity.posX, hitEntity.posY, hitEntity.posZ, hitEntity, EntitySelectorAttackable.getInstance(), this.thrower));
+                                    this.world.addWeatherEffect(new EntityLightningBolt(this.world, hitEntity.posX, hitEntity.posY, hitEntity.posZ,false));
                                 }
 
                                 StylishRankManager.doAttack(this.thrower);
                                 this.setDead();
                             }
 
-                            int nPosX = MathHelper.floor_double(this.posX);
-                            int nPosY = MathHelper.floor_double(this.posY);
-                            int nPosZ = MathHelper.floor_double(this.posZ);
+                            int nPosX = MathHelper.floor(this.posX);
+                            int nPosY = MathHelper.floor(this.posY);
+                            int nPosZ = MathHelper.floor(this.posZ);
                             if (this.ridingEntity2 == null) {
-                                Block nBlock = this.worldObj.getBlock(nPosX, nPosY, nPosZ);
-                                if (!nBlock.isAir(this.worldObj, nPosX, nPosY, nPosZ) && nBlock.getCollisionBoundingBoxFromPool(this.worldObj, nPosX, nPosY, nPosZ) != null) {
+                                Block nBlock = this.world.getBlockState(new BlockPos(nPosX, nPosY, nPosZ)).getBlock();
+                                if (!(nBlock == Blocks.AIR) && nBlock.getCollisionBoundingBox(this.world.getBlockState(new BlockPos(nPosX, nPosY, nPosZ)),this.world,new BlockPos(nPosX, nPosY, nPosZ)) != null) {
                                     this.setDead();
                                     return;
                                 }
@@ -170,7 +169,7 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
                         curEntity = (Entity)i$.next();
                     } while(!curEntity.canBeCollidedWith());
 
-                    var4 = (double)curEntity.getDistanceToEntity(this);
+                    var4 = (double)curEntity.getDistance(this);
                 } while(!(var4 < d0) && d0 != 0.0D);
 
                 hitEntity = curEntity;
@@ -195,7 +194,7 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
     public void doTargeting() {
         int targetid = this.getTargetEntityId();
         if (targetid != 0) {
-            Entity target = this.worldObj.getEntityByID(targetid);
+            Entity target = this.world.getEntityByID(targetid);
             if (target != null && this.thrower != null && !this.thrower.isDead) {
                 if (!this.initIniYP) {
                     this.initIniYP = true;
@@ -223,10 +222,10 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
             EntityLivingBase entitylivingbase = (EntityLivingBase)target;
             d2 = entitylivingbase.posY + (double)entitylivingbase.getEyeHeight() - (viewer.posY + (double)viewer.getEyeHeight());
         } else {
-            d2 = (target.boundingBox.minY + target.boundingBox.maxY) / 2.0D - (viewer.posY + (double)viewer.getEyeHeight());
+            d2 = (target.getEntityBoundingBox().minY + target.getEntityBoundingBox().maxY) / 2.0D - (viewer.posY + (double)viewer.getEyeHeight());
         }
 
-        double d3 = (double)MathHelper.sqrt_double(d0 * d0 + d1 * d1);
+        double d3 = (double)MathHelper.sqrt(d0 * d0 + d1 * d1);
         float f2 = (float)(Math.atan2(d1, d0) * 180.0D / 3.141592653589793D) - 90.0F;
         float f3 = (float)(-(Math.atan2(d2, d3) * 180.0D / 3.141592653589793D));
         this.iniPitch = this.updateRotation(this.iniPitch, f3, pitchStep);
@@ -234,7 +233,7 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
     }
 
     private float updateRotation(float par1, float par2, float par3) {
-        float f3 = MathHelper.wrapAngleTo180_float(par2 - par1);
+        float f3 = MathHelper.wrapDegrees(par2 - par1);
         if (f3 > par3) {
             f3 = par3;
         }
@@ -253,7 +252,7 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
         this.motionX = (double)(-MathHelper.sin(fYawDtoR) * MathHelper.cos(fPitDtoR) * fYVecOfst);
         this.motionY = (double)(-MathHelper.sin(fPitDtoR) * fYVecOfst);
         this.motionZ = (double)(MathHelper.cos(fYawDtoR) * MathHelper.cos(fPitDtoR) * fYVecOfst);
-        float f3 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+        float f3 = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ) * 180.0D / 3.141592653589793D);
         this.rotationPitch = (float)(Math.atan2(this.motionY, (double)f3) * 180.0D / 3.141592653589793D);
         if (init) {
@@ -261,5 +260,5 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
             this.prevRotationPitch = this.rotationPitch;
         }
 
-    }*/
+    }
 }
