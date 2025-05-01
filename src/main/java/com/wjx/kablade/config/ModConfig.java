@@ -54,5 +54,9 @@ public class ModConfig {
         @Config.LangKey("config.kablade.achance")
         @Config.Comment("Generate AURORA ore chance")
         public int AURORA_CHANCE = 13;
+
+        @Config.LangKey("config.kablade.en_new_sa_id")
+        @Config.Comment("Use new id of Special Attack to avoid conflicting with other mod.")
+        public boolean enable_new_sa_id = true;
     }
 }
