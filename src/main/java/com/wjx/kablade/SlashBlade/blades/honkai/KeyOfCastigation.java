@@ -4,6 +4,7 @@ import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeTwoRecipeModding;
+import com.wjx.kablade.config.ModConfig;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
@@ -44,7 +45,12 @@ public class KeyOfCastigation {
         customblade.getTagCompound().setFloat("baseAttackModifier",25.0F);
         ItemSlashBlade.AttackAmplifier.set(tag,2.5f);
         customblade.addEnchantment(Enchantments.SHARPNESS,4);
-        ItemSlashBlade.SpecialAttackType.set(tag,304);
+        if (ModConfig.GeneralConf.Enable_New_SA_Id){
+            ItemSlashBlade.SpecialAttackType.set(tag, 454);
+        }
+        else {
+            ItemSlashBlade.SpecialAttackType.set(tag,304);
+        }
         ItemSlashBlade.SummonedSwordColor.set(tag,10158335);
         customblade.addEnchantment(Enchantments.POWER,3);
         customblade.addEnchantment(Enchantments.SMITE,4);

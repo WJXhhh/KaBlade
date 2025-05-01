@@ -4,6 +4,7 @@ import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeThreeRecipeModding;
+import com.wjx.kablade.config.ModConfig;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
@@ -46,7 +47,12 @@ public class FloridSakura {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/FloridSakura/texFloridSakura");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/FloridSakura/mdlFloridSakura");
 
-        ItemSlashBlade.SpecialAttackType.set(tag, 305);
+        if (ModConfig.GeneralConf.Enable_New_SA_Id){
+            ItemSlashBlade.SpecialAttackType.set(tag, 455);
+        }
+        else {
+            ItemSlashBlade.SpecialAttackType.set(tag,305);
+        }
         customblade.getTagCompound().setFloat("baseAttackModifier",24.0F);
         ItemSlashBlade.AttackAmplifier.set(tag,1.7f);
         customblade.addEnchantment(Enchantments.FIRE_ASPECT,4);
@@ -60,20 +66,6 @@ public class FloridSakura {
         SpecialEffects.addEffect(customblade, BladeProxy.Phoenix);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
-        /*ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.thermal_cutter", 1);
-        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"phoenix"),
-                blackblade, prevblade,
-                new Object[]{
-                        " BC",
-                        " A ",
-                        "CB ",
-                        'A',prevblade,
-                        'B',new ItemStack(Items.LAVA_BUCKET),
-                        'C', new ItemStack(Items.FEATHER),
-                });
-
-        //SlashBlade.addRecipe("phoenix", recipe);*/
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.phoenix", 1);
         ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.third_sacred", 1);

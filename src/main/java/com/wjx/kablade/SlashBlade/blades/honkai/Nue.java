@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.blades.honkai;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
+import com.wjx.kablade.config.ModConfig;
 import com.wjx.kablade.init.ItemInit;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.RecipeAwakeBlade;
@@ -49,7 +50,13 @@ public class Nue {
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
-        ItemSlashBlade.SpecialAttackType.set(tag,302);
+
+        if (ModConfig.GeneralConf.Enable_New_SA_Id){
+            ItemSlashBlade.SpecialAttackType.set(tag, 452);
+        }
+        else {
+            ItemSlashBlade.SpecialAttackType.set(tag,302);
+        }
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);

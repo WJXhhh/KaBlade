@@ -3,6 +3,7 @@ package com.wjx.kablade.Entity;
 import com.google.common.collect.Maps;
 import com.wjx.kablade.util.KaBladePlayerProp;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -10,16 +11,19 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IThrowableEntity;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class EntityWindEnchantment extends Entity {
+public class EntityWindEnchantment extends Entity implements IThrowableEntity {
     public EntityWindEnchantment(World worldIn){
         super(worldIn);
         this.ticksExisted = 0;
     }
+
+    public EntityLivingBase thrower;
 
     public HashMap<String,Float> getRate = Maps.newHashMap();
 
@@ -29,6 +33,7 @@ public class EntityWindEnchantment extends Entity {
         super(worldIn);
         this.ticksExisted = 0;
         this.setPositionAndUpdate(player.posX,player.posY,player.posZ);
+        this.thrower = player;
     }
 
     {
@@ -111,5 +116,15 @@ public class EntityWindEnchantment extends Entity {
                 this.setDead();
             }
         }
+    }
+
+    @Override
+    public Entity getThrower() {
+        return this.thrower;
+    }
+
+    @Override
+    public void setThrower(Entity entity) {
+        this.thrower = (EntityLivingBase) entity;
     }
 }

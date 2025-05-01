@@ -4,6 +4,7 @@ import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeTwoRecipeModding;
+import com.wjx.kablade.config.ModConfig;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -47,7 +48,13 @@ public class FairySword {
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBlade.SummonedSwordColor.set(tag,16642509);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
-        ItemSlashBlade.SpecialAttackType.set(tag, 301);
+        if (ModConfig.GeneralConf.Enable_New_SA_Id){
+            ItemSlashBlade.SpecialAttackType.set(tag, 451);
+        }
+        else {
+            ItemSlashBlade.SpecialAttackType.set(tag, 301);
+        }
+
         SpecialEffects.addEffect(customblade, BladeProxy.PowerOfWind);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
         SlashBlade.registerCustomItemStack(this.name, customblade);

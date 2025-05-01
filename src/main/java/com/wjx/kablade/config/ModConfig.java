@@ -57,6 +57,6 @@ public class ModConfig {
 
         @Config.LangKey("config.kablade.en_new_sa_id")
         @Config.Comment("Use new id of Special Attack to avoid conflicting with other mod.")
-        public boolean enable_new_sa_id = true;
+        public boolean Enable_New_SA_Id = true;
     }
 }

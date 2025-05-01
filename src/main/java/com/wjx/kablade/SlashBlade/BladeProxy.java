@@ -5,6 +5,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.*;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.SlashBlade.specialattack.*;
+import com.wjx.kablade.config.ModConfig;
 import com.wjx.kablade.proxy.CommonProxy;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
@@ -48,11 +49,20 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(298,new HonkaiMagChaosBlade());
             ItemSlashBlade.specialAttacks.put(299,new HonkaiSnowDance());
             ItemSlashBlade.specialAttacks.put(300,new HonkaiKamiOfWar());
-            ItemSlashBlade.specialAttacks.put(301,new HonkaiWindEnchantment());
-            ItemSlashBlade.specialAttacks.put(302,new HonKaiZaizan());
-            ItemSlashBlade.specialAttacks.put(303,new HonkaiFallingPetals());
-            ItemSlashBlade.specialAttacks.put(304,new HonkaiThunderEdge());
-            ItemSlashBlade.specialAttacks.put(305,new HonkaiCrimsonSakura());
+            if (ModConfig.GeneralConf.Enable_New_SA_Id){
+                ItemSlashBlade.specialAttacks.put(451,new HonkaiWindEnchantment());
+                ItemSlashBlade.specialAttacks.put(452,new HonKaiZaizan());
+                ItemSlashBlade.specialAttacks.put(453,new HonkaiFallingPetals());
+                ItemSlashBlade.specialAttacks.put(454,new HonkaiThunderEdge());
+                ItemSlashBlade.specialAttacks.put(455,new HonkaiCrimsonSakura());
+            }
+            else {
+                ItemSlashBlade.specialAttacks.put(301,new HonkaiWindEnchantment());
+                ItemSlashBlade.specialAttacks.put(302,new HonKaiZaizan());
+                ItemSlashBlade.specialAttacks.put(303,new HonkaiFallingPetals());
+                ItemSlashBlade.specialAttacks.put(304,new HonkaiThunderEdge());
+                ItemSlashBlade.specialAttacks.put(305,new HonkaiCrimsonSakura());
+            }
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());

@@ -3,11 +3,9 @@ package com.wjx.kablade.event;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.wjx.kablade.Entity.AbsEntityShield;
-import com.wjx.kablade.Entity.EntityRaikiriBlade;
-import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
-import com.wjx.kablade.Entity.EntityWine;
+import com.wjx.kablade.Entity.*;
 import com.wjx.kablade.Entity.Render.RenderRaikiriBlade;
+import com.wjx.kablade.Entity.Render.RenderWindEnchantment;
 import com.wjx.kablade.Lib;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
@@ -939,6 +937,11 @@ public class WorldEvent {
                             GlStateManager.enableLighting();
                             GlStateManager.enableTexture2D();
                         }
+                        //RenderWindEnchantment
+                        if (e1 instanceof EntityWindEnchantment){
+                            RenderWindEnchantment renderer = new RenderWindEnchantment(null);
+                            renderer.doRender2((EntityWindEnchantment) e1, e1.posX - Minecraft.getMinecraft().player.posX, e1.posY - Minecraft.getMinecraft().player.posY + 0.5, e1.posZ - Minecraft.getMinecraft().player.posZ, 0, event.getPartialTicks());
+                        }
                     }
                 }
             }
@@ -997,6 +1000,7 @@ public class WorldEvent {
                 logger.error("MagChaosBladeEffectRenderer has a error but no large effect!\n" + e.getMessage());
             }
         }
+
     }
 
     @SubscribeEvent
