@@ -42,9 +42,11 @@ public class HonkaiCrimsonSakura extends SpecialAttackBase {
             if (!list.isEmpty()){
                 for (Entity e : list){
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
-                        ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, e, entityPlayer, true);
+
                         entityPlayer.onCriticalHit(e);
                         e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),(50f + extraDamage)*1.2f);
+                        if (pointedEntity instanceof EntityLivingBase)
+                            itemStack.hitEntity((EntityLivingBase) pointedEntity,entityPlayer);
                         ///((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,5));
                         //Main.PACKET_HANDLER.sendToAll(new MessageDizuiKuo(e.getEntityId()));
                     }

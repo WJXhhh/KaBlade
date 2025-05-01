@@ -48,9 +48,10 @@ public class HonkaiThunderEdge extends SpecialAttackBase {
             if (!list.isEmpty()){
                 for (Entity e : list){
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
-                        ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, e, entityPlayer, true);
                         entityPlayer.onCriticalHit(e);
                         e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),(50f + extraDamage)*1.2f);
+                        if (e instanceof EntityLivingBase)
+                            itemStack.hitEntity((EntityLivingBase) e,entityPlayer);
                         ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,5));
                         e.getEntityData().setBoolean("dizui",true);
                         e.getEntityData().setInteger("dizuitime", 300);

@@ -2,6 +2,8 @@ package com.wjx.kablade.init;
 
 import com.wjx.kablade.Entity.*;
 import com.wjx.kablade.ExSA.entity.EntityAquaEdge;
+import com.wjx.kablade.ExSA.entity.EntityFlareEdge;
+import com.wjx.kablade.ExSA.entity.EntityPhantomSwordEx;
 import com.wjx.kablade.ExSA.entity.ExSaEntityDrive;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.util.Reference;
@@ -39,6 +41,8 @@ public class EntityInit {
         //EXSA
         registerEntity("entity_drive_exsa", ExSaEntityDrive.class,13700201,50);
         registerEntity("entity_aqua_edge_exsa", EntityAquaEdge.class,13700202,50);
+        registerEntity("entity_flare_edge_exsa", EntityFlareEdge.class,13700203,50);
+        registerEntity("entity_phantom_sword_exsa", EntityPhantomSwordEx.class,13700204,50);
     }
 
     private static void registerEntitySpawn(Class<? extends Entity> entityClass, int spawnWeight, int min, int max, EnumCreatureType typeOfCreature, Biome... biomes)

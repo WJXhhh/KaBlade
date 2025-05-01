@@ -55,9 +55,10 @@ public class RockHit_I extends SpecialAttackBase {
         bb = bb.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         List<Entity> entities = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input != entityPlayer && input instanceof EntityLivingBase);
         for (Entity e : entities){
-            ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, e, entityPlayer, true);
             entityPlayer.onCriticalHit(e);
             e.attackEntityFrom(DamageSource.causeExplosionDamage(entityPlayer),6f + extraDamage);
+            if (e instanceof EntityLivingBase)
+                itemStack.hitEntity((EntityLivingBase) e,entityPlayer);
             if (e instanceof EntityLivingBase){
                 EntityLivingBase en = (EntityLivingBase)e;
                 en.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,40,2));

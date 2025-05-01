@@ -79,6 +79,9 @@ public class BladeProxy {
         ItemSlashBlade.specialAttacks.put(295,new SaAuroraShining());
         ItemSlashBlade.specialAttacks.put(296,new SaWineBind());
         ItemSlashBlade.specialAttacks.put(297,new SaDomainSuppression());
+
+
+        ItemSlashBlade.specialAttacks.put(350,new OverSlash());
     }
     public static void ClientLoader(){
         new ItemSlashUtil();

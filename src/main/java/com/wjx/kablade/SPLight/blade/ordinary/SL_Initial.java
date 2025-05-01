@@ -7,6 +7,7 @@ import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
 import mods.flammpfeil.slashblade.util.SlashBladeHooks;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,7 +36,7 @@ public class SL_Initial {
         ItemSlashBlade.IsNoScabbard.set(Tag,true);
         ItemSlashBladeNamed.IsDefaultBewitched.set(Tag, true);
         ItemSlashBlade.BaseAttackModifier.set(Tag,7f);
-        customBlade.addEnchantment(Enchantments.LOOT,1);
+        customblade.addEnchantment(Enchantments.LOOTING,1);
         customblade.addEnchantment(Enchantments.POWER,2);
         customblade.addEnchantment(Enchantments.UNBREAKING,1);
         //customblade.addEnchantment(Enchantments.FIRE_ASPECT,20);

@@ -35,6 +35,8 @@ public class HonKaiMoltenBlade extends SpecialAttackBase {
                 entityPlayer.onCriticalHit(entity);
                 StylishRankManager.setNextAttackType(entity, StylishRankManager.AttackTypes.PhantomSword);
                 entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),10 + extraDamage);
+                if (entity instanceof EntityLivingBase)
+                    itemStack.hitEntity((EntityLivingBase) entity,entityPlayer);
                 entity.setFire(5);
             }
         }

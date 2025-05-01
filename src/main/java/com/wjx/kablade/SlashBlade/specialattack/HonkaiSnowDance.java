@@ -80,9 +80,10 @@ public class HonkaiSnowDance extends SpecialAttackBase {
             List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input instanceof EntityLivingBase && (!(input instanceof EntityPlayer)));
             for (Entity e : l){
                 if (e instanceof EntityLivingBase){
-                    ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, e, entityPlayer, true);
                     entityPlayer.onCriticalHit(e);
                     e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20f + extraDamage);
+                    if (e instanceof EntityLivingBase)
+                        itemStack.hitEntity((EntityLivingBase) e,entityPlayer);
                 }
             }
             for (int i = 0;i<60;i++){

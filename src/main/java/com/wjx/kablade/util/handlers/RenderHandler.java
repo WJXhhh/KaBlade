@@ -3,7 +3,10 @@ package com.wjx.kablade.util.handlers;
 import com.wjx.kablade.Entity.*;
 import com.wjx.kablade.Entity.Render.*;
 import com.wjx.kablade.ExSA.entity.EntityAquaEdge;
+import com.wjx.kablade.ExSA.entity.EntityFlareEdge;
+import com.wjx.kablade.ExSA.entity.EntityPhantomSwordEx;
 import com.wjx.kablade.ExSA.entity.ExSaEntityDrive;
+import com.wjx.kablade.ExSA.entity.render.RenderPhantomSwordEx;
 import mods.flammpfeil.slashblade.client.renderer.entity.RenderPhantomSwordBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -26,5 +29,7 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityCrimsonSakuraAttack.class,RenderCrimsonSakuraAttack::new);
         RenderingRegistry.registerEntityRenderingHandler(ExSaEntityDrive.class,RenderEntityDriveAdd::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityAquaEdge.class,RenderEntityDriveAdd::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityFlareEdge.class,RenderEntityDriveAdd::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityPhantomSwordEx.class, RenderPhantomSwordEx::new);
     }
 }
