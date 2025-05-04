@@ -1,6 +1,7 @@
 package com.wjx.kablade;
 
 import com.google.common.collect.Lists;
+import com.wjx.kablade.config.ModConfig;
 import com.wjx.kablade.creativeTab.*;
 import com.wjx.kablade.event.OreGen;
 import com.wjx.kablade.event.WorldEvent;
@@ -120,6 +121,7 @@ public class Main
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        ModConfig.init(event);
         sseee();
         logger = event.getModLog();
         //int i;
@@ -130,6 +132,7 @@ public class Main
 
         EntityInit.registerEntity();
         WorldEvent.loadEvent();
+
 
 
     }
@@ -183,6 +186,8 @@ public class Main
         GameRegistry.addSmelting(new ItemStack(BlockInit.MOLYBDENITE,1),new ItemStack(ItemInit.MOLYBDENUM_INGOT,1),0.7f);
         GameRegistry.addSmelting(new ItemStack(ItemInit.CRUDE_CHROMOLY,1),new ItemStack(ItemInit.CHROMOLY_INGOT,1),0.6f);
         GameRegistry.addSmelting(new ItemStack(ItemInit.GRAVITY_NUGGET,9),new ItemStack(ItemInit.GRAVITY_CRYSTAL,1),1f);
+
+
 
         // some example code
         //logger.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());

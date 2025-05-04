@@ -1,62 +1,89 @@
 package com.wjx.kablade.config;
 
 import com.wjx.kablade.Main;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Config(modid = Main.MODID, category = "")
+@Mod.EventBusSubscriber(modid = Main.MODID)
 public class ModConfig {
 
-    @Mod.EventBusSubscriber(modid = Main.MODID)
-    private static class EventHandler {
-
-        private EventHandler() {
-        }
-
-        @SubscribeEvent
-        public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
-            if (event.getModID().equals(Main.MODID)) {
-                ConfigManager.sync(Main.MODID, Config.Type.INSTANCE);
-            }
-        }
-
-
-    }
-
-    @Config.LangKey("config.kablade.general")
-    @Config.Comment("Kablade general configuration")
-    public static final GeneralConf GeneralConf = new GeneralConf();
+    private static Configuration config;
 
     public static class GeneralConf {
-        @Config.LangKey("config.kablade.msize")
-        @Config.Comment("Generate MOLYBDENITE ore least size")
-        public int MOLYBDENITE_SIZE = 7;
+        public static int MOLYBDENITE_SIZE;
+        public static int MOLYBDENITE_CHANCE;
+        public static int CHROMIUM_SIZE;
+        public static int CHROMIUM_CHANCE;
+        public static int AURORA_SIZE;
+        public static int AURORA_CHANCE;
+        public static boolean Enable_New_SA_Id;
+    }
 
-        @Config.LangKey("config.kablade.mchance")
-        @Config.Comment("Generate Molybdenite ore chance")
-        public int MOLYBDENITE_CHANCE = 10;
 
-        @Config.LangKey("config.kablade.csize")
-        @Config.Comment("Generate CHROMIUM ore least size")
-        public int CHROMIUM_SIZE = 7;
+    public static void init(FMLPreInitializationEvent event) {
+        // 创建并加载配置文件
+        config = new Configuration(event.getSuggestedConfigurationFile());
+        if (!config.getConfigFile().exists()) {
+            // 如果配置文件不存在，则创建默认配置文件
+            syncConfig();
+            config.save();
+        } else {
+            // 如果配置文件已存在，则加载现有配置
+            syncConfig();
+        }
+    }
 
-        @Config.LangKey("config.kablade.cchance")
-        @Config.Comment("Generate CHROMIUM ore chance")
-        public int CHROMIUM_CHANCE = 10;
+    private static void syncConfig() {
+        String category = "general";
+        config.addCustomCategoryComment(category, "Kablade general configuration");
 
-        @Config.LangKey("config.kablade.asize")
-        @Config.Comment("Generate AURORA ore least size")
-        public int AURORA_SIZE = 7;
+        GeneralConf.MOLYBDENITE_SIZE = config.getInt(
+                "MOLYBDENITE_SIZE", category, 7, 1, 100,
+                "Generate MOLYBDENITE ore least size"
+        );
 
-        @Config.LangKey("config.kablade.achance")
-        @Config.Comment("Generate AURORA ore chance")
-        public int AURORA_CHANCE = 13;
+        GeneralConf.MOLYBDENITE_CHANCE = config.getInt(
+                "MOLYBDENITE_CHANCE", category, 10, 1, 100,
+                "Generate Molybdenite ore chance"
+        );
 
-        @Config.LangKey("config.kablade.en_new_sa_id")
-        @Config.Comment("Use new id of Special Attack to avoid conflicting with other mod.")
-        public boolean Enable_New_SA_Id = true;
+        GeneralConf.CHROMIUM_SIZE = config.getInt(
+                "CHROMIUM_SIZE", category, 7, 1, 100,
+                "Generate CHROMIUM ore least size"
+        );
+
+        GeneralConf.CHROMIUM_CHANCE = config.getInt(
+                "CHROMIUM_CHANCE", category, 10, 1, 100,
+                "Generate CHROMIUM ore chance"
+        );
+
+        GeneralConf.AURORA_SIZE = config.getInt(
+                "AURORA_SIZE", category, 7, 1, 100,
+                "Generate AURORA ore least size"
+        );
+
+        GeneralConf.AURORA_CHANCE = config.getInt(
+                "AURORA_CHANCE", category, 13, 1, 100,
+                "Generate AURORA ore chance"
+        );
+
+        GeneralConf.Enable_New_SA_Id = config.getBoolean(
+                "Enable_New_SA_Id", category, true,
+                "Use new id of Special Attack to avoid conflicting with other mod."
+        );
+
+        if (config.hasChanged()) {
+            config.save();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
+        if (event.getModID().equals(Main.MODID)) {
+            syncConfig();
+        }
     }
 }
