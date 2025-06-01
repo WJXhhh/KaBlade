@@ -1,5 +1,6 @@
 package com.wjx.kablade.mixin;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -25,6 +26,10 @@ public class LoadControllerMixin {
             ModClassLoader KaBladeMixinModClassLoader1 = (ModClassLoader) eventData[0];
 
             Mixins.addConfiguration("mixins.kablade.json");
+
+            if(Loader.isModLoaded("lastsmith")){
+                Mixins.addConfiguration("mixins.kablade_lastsmith.json");
+            }
 
             for (ModContainer container : this.loader.getActiveModList()) {
                 KaBladeMixinModClassLoader1.addFile(container.getSource());

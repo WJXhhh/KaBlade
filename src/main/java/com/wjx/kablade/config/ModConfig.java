@@ -20,6 +20,7 @@ public class ModConfig {
         public static int AURORA_SIZE;
         public static int AURORA_CHANCE;
         public static boolean Enable_New_SA_Id;
+        public static String[] TLS_forbidden;
     }
 
 
@@ -74,6 +75,8 @@ public class ModConfig {
                 "Enable_New_SA_Id", category, true,
                 "Use new id of Special Attack to avoid conflicting with other mod."
         );
+
+        GeneralConf.TLS_forbidden = config.getStringList("TLS_forbidden",category,new String[]{"kablade"},"To prevent TLS changing some SlashBlade id.");
 
         if (config.hasChanged()) {
             config.save();
