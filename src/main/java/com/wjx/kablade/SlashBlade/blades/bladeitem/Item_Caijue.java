@@ -49,8 +49,8 @@ public class Item_Caijue extends ItemSlashBladeNamed {
             entity.getEntityData().setBoolean("dizui", true);
             entity.getEntityData().setInteger("dizuitime", 300);
         }
-        super.onLeftClickEntity(stack, player, entity);
-        return true;
+        return super.onLeftClickEntity(stack, player, entity);
+
     }
 
     @Override
