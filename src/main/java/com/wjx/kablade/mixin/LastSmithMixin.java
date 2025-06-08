@@ -34,6 +34,10 @@ public class LastSmithMixin {
     @Final
     private static String[] defaultBewitched;
 
+    /**
+     * @author
+     * @reason
+     */
     @Overwrite
     public static void onSlashBladeRegister(RegisterSlashBladeEvent event) {
         SlashBlade.BladeRegistry.forEach((name, blade) -> {

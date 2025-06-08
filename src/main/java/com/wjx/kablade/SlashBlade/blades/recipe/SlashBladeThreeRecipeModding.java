@@ -42,7 +42,7 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
         boolean m1 = false,m2= false,m3= false;
 
 
-        if(result && !requiredStateBlade.isEmpty()){
+        if(result && !requiredStateBlade.isEmpty()){ //Start match specific blade
             requiredStateBlade.setItemDamage(OreDictionary.WILDCARD_VALUE);
             for(int idx = 0; idx < inv.getSizeInventory(); idx++){
                 ItemStack curIs = inv.getStackInSlot(idx);
@@ -53,6 +53,10 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
 
                     NBTTagCompound reqTag = ItemSlashBlade.getItemTagCompound(requiredStateBlade);
                     NBTTagCompound srcTag = ItemSlashBlade.getItemTagCompound(curIs);
+
+
+
+
 
                     if(!curIs.getTranslationKey().equals(requiredStateBlade.getTranslationKey())){
                         if (curIs.getTranslationKey().equals(requiredStateBlade2.getTranslationKey())){
@@ -93,7 +97,6 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
 
 
 
-                    break;
                 }
             }
         }
