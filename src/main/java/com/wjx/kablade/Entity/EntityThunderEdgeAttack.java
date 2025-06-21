@@ -27,7 +27,7 @@ public class EntityThunderEdgeAttack extends Entity implements IThrowableEntity 
 
     public int counter = 0;
 
-    public double thickness = 1.75;
+    public double thickness = 2;
 
     public float ang = 15f;
 

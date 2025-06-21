@@ -35,33 +35,49 @@ public class RenderThunderEdgeAttack extends Render<Entity> {
 
     public static double ferh = 1d/59d;
 
-    public void drawPoint(int i,BufferBuilder bufferBuilder,double thickness){
+    /**
+     * 绘制顶点到缓冲构建器中，根据索引奇偶性应用不同的缩放和纹理坐标
+     *
+     * @param i           顶点索引，用于确定当前处理的顶点位置
+     * @param bufferBuilder 缓冲构建器对象，用于构建渲染数据（不可为空）
+     * @param thickness   厚度系数，用于奇数索引顶点的缩放计算
+     * @return void
+     */
+    public void drawPoint(int i, BufferBuilder bufferBuilder, double thickness) {
 
-        if(bufferBuilder==null)
+        /* 检查缓冲构建器有效性 */
+        if (bufferBuilder == null)
             logger.error("bn");
-        int xxx = i/2;
+
+        /* 计算顶点索引并获取对应三维向量 */
+        int xxx = i / 2;
         Vector3d vecx = inVertex.get(xxx);
 
-        if(vecx==null)
+        /* 检查顶点数据有效性 */
+        if (vecx == null)
             logger.error("ven");
 
-
-        if(i%2==0){
-            int xx = i/2;
+        /* 根据顶点索引奇偶性分发处理逻辑 */
+        if (i % 2 == 0) {
+            /* 偶数索引顶点处理：固定缩放系数，纹理坐标V分量为0 */
+            int xx = i / 2;
             Vector3d vec = inVertex.get(xx);
-            bufferBuilder.pos(vec.x * 1.75,0,vec.z * 1.75).tex(ferh*xx,0).endVertex();
-
-        }else{
-            int xx = i/2;
+            bufferBuilder.pos(vec.x * 2.25, 0, vec.z * 2.25).tex(ferh * xx, 0).endVertex();
+        } else {
+            /* 奇数索引顶点处理：使用动态厚度参数，纹理坐标V分量为1 */
+            int xx = i / 2;
             Vector3d vec = inVertex.get(xx);
-            bufferBuilder.pos(vec.x * thickness,0,vec.z * thickness).tex(ferh*xx,1).endVertex();
+            bufferBuilder.pos(vec.x * thickness, 0, vec.z * thickness).tex(ferh * xx, 1).endVertex();
         }
     }
 
+
     static{
-
-
-
+        /* 初始化inVertex顶点列表：
+         * 以3度为步长逆序生成180°至0°的弧度值
+         * 计算单位圆上对应角度的cos/sin值作为x/z坐标
+         * 创建Vector3d对象并设置x/z分量，添加到inVertex集合
+         * 用于生成半圆形的顶点坐标序列 */
         double inR = 180d;
         for(;inR>=0;inR-=3d){
             double th = Math.toRadians(inR);
@@ -73,10 +89,15 @@ public class RenderThunderEdgeAttack extends Render<Entity> {
             inVertex.add(v);
         }
 
+        /* 预加载闪电边缘攻击特效的纹理资源：
+         * 从0到19依次加载20张连续编号的PNG纹理
+         * 路径格式为textures/entity/thunder_edge_attack/thunder_edge_light_X.png
+         * 存储到EffectTEXS列表用于后续动画渲染 */
         for(int i = 0;i<=19;i++){
             EffectTEXS.add(new ResourceLocation(Main.MODID + ":textures/entity/thunder_edge_attack/thunder_edge_light_"+i+".png"));
         }
     }
+
 
     public RenderThunderEdgeAttack(RenderManager renderManager) {
         super(renderManager);
@@ -278,32 +299,6 @@ public class RenderThunderEdgeAttack extends Render<Entity> {
         tessellator.draw();
 
         GlStateManager.popMatrix();
-        /*GlStateManager.pushMatrix();
-        GlStateManager.color(1f,1f,1f,((EntityThunderEdgeAttack) entity).alpha);
-        GlStateManager.translate(x,y + 0.75,z);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-        GlStateManager.rotate(15f,0f,0f,1f);
-        GlStateManager.rotate(-entity.rotationYaw + ((EntityThunderEdgeAttack) entity).ang,0f,1f,0f);
-
-        bufferBuilder.begin(4, DefaultVertexFormats.POSITION_TEX);
-        this.bindTexture(TEXTURE1);
-
-
-        double tIn1 = ((EntityThunderEdgeAttack) entity).thickness;
-        if(((EntityThunderEdgeAttack) entity).tC > 30){
-            tIn = ((EntityThunderEdgeAttack) entity).thick2;
-        }
-        for (int i = 117; i >= ((EntityThunderEdgeAttack) entity).progress; i--) {
-
-            drawPoint(i, bufferBuilder,tIn);
-            drawPoint(i + 1, bufferBuilder,tIn1);
-            drawPoint(i + 2, bufferBuilder,tIn1);
-
-        }
-
-        tessellator.draw();
-
-        GlStateManager.popMatrix();*/
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastx, lasty);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GL11.glEnable(GL_LIGHTING);

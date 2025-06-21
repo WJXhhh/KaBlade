@@ -54,7 +54,7 @@ public class RenderCrimsonSakuraAttack extends Render<Entity> {
         if(i%2==0){
             int xx = i/2;
             Vector3d vec = inVertex.get(xx);
-            bufferBuilder.pos(vec.x * 1.75,ry,vec.z * 1.75).tex(ferh*xx,0).endVertex();
+            bufferBuilder.pos(vec.x * 2.25,ry,vec.z * 2.25).tex(ferh*xx,0).endVertex();
 
         }else{
             int xx = i/2;
@@ -135,32 +135,6 @@ public class RenderCrimsonSakuraAttack extends Render<Entity> {
         tessellator.draw();
 
         GlStateManager.popMatrix();
-        /*GlStateManager.pushMatrix();
-        GlStateManager.color(1f,1f,1f,((EntityCrimsonSakuraAttack) entity).alpha);
-        GlStateManager.translate(x,y + 0.75,z);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-        GlStateManager.rotate(15f,0f,0f,1f);
-        GlStateManager.rotate(-entity.rotationYaw + ((EntityCrimsonSakuraAttack) entity).ang,0f,1f,0f);
-
-        bufferBuilder.begin(4, DefaultVertexFormats.POSITION_TEX);
-        this.bindTexture(TEXTURE1);
-
-
-        double tIn1 = ((EntityCrimsonSakuraAttack) entity).thickness;
-        if(((EntityCrimsonSakuraAttack) entity).tC > 30){
-            tIn = ((EntityCrimsonSakuraAttack) entity).thick2;
-        }
-        for (int i = 117; i >= ((EntityCrimsonSakuraAttack) entity).progress; i--) {
-
-            drawPoint(i, bufferBuilder,tIn);
-            drawPoint(i + 1, bufferBuilder,tIn1);
-            drawPoint(i + 2, bufferBuilder,tIn1);
-
-        }
-
-        tessellator.draw();
-
-        GlStateManager.popMatrix();*/
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastx, lasty);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GL11.glEnable(GL_LIGHTING);

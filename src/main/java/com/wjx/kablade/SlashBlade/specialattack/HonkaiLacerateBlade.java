@@ -26,7 +26,7 @@ public class HonkaiLacerateBlade extends SpecialAttackBase {
             World world = entityPlayer.world;
             if(!world.isRemote)
         {
-            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),10f);
+            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),3f);
             EntityDrive entityDrive = new EntityDrive(world, entityPlayer, 10f + extraDamage,true,90f);
             entityDrive.setPosition(entityPlayer.posX,entityPlayer.posY + entityPlayer.getEyeHeight(),entityPlayer.posZ);
             world.spawnEntity(entityDrive);
