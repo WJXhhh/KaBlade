@@ -6,16 +6,16 @@ item.wjx.blade.hangtu.name=§rAnonymity -RimmedEarth-
 item.wjx.blade.bamboo_iron.name=§rIron -BambooLight-
 item.wjx.blade.bamboo_battler.name=Battler -BambooLight-
 item.wjx.blade.bamboo_lumi.name=Lumen -BambooLight-
-item.wjx.blade.rocky_anshan.name=Noted「Hearty」
-item.wjx.blade.rocky_shanchang.name=Noted「White Rock」
-item.wjx.blade.rocky_huagang.name=Noted「Jagged」
+item.wjx.blade.rocky_anshan.name=Noted[Hearty]
+item.wjx.blade.rocky_shanchang.name=Noted[White Rock]
+item.wjx.blade.rocky_huagang.name=Noted[Jagged]
 item.wjx.blade.rocky_ex.name=Rocky Ex
-item.wjx.blade.arc_light.name=ArcLight Blade「Light Flowing」
-item.wjx.blade.cut_iron.name=composite Blade「Iron Cutter」
-item.wjx.blade.aurora_blade.name=Aurora Blade「Sky Shining」
-item.wjx.blade.noted_vine.name=Noted Blade「Vine」
-item.wjx.blade.black_steel.name=Black Blade「Bleak」
-item.wjx.blade.forest_shadow.name=Faeries Blade「Forest Shadow」
+item.wjx.blade.arc_light.name=ArcLight Blade[Light Flowing]
+item.wjx.blade.cut_iron.name=composite Blade[Iron Cutter]
+item.wjx.blade.aurora_blade.name=Aurora Blade[Sky Shining]
+item.wjx.blade.noted_vine.name=Noted Blade[Vine]
+item.wjx.blade.black_steel.name=Black Blade[Bleak]
+item.wjx.blade.forest_shadow.name=Faeries Blade[Forest Shadow]
 item.wjx.blade.originyer.name=Originyer
 
 
@@ -52,6 +52,36 @@ item.wjx.blade.honkai.florid_sakura.name=Demonblade - Florid Sakura
 
 item.wjx.blade.honkai.dizui.name=§d§lSeven Thunders of Retribution: Rumble
 
+#AllWeapon
+item.wjx.allweapon.liurrh.name=§cFlame King§9[§l§cFlowing Blade of the Sun§r§9]
+item.wjx.allweapon.bailan.name=§aBailan Sword§9[§l§eLord§r§9]
+item.wjx.allweapon.lvluo.name=§aVitality§9[§l§aGreen Vine§r§9]
+item.wjx.allweapon.chanshizhe.name=Night Sky Sword§9[§l§8Interpreter§r§9]
+item.wjx.allweapon.baiqiyue.name=§fWhite's Contract
+item.wjx.allweapon.baiyueding.name=§fWhite's Promise
+item.wjx.allweapon.baishoujianwang.name=§7Beast King Sword§9[§l§7Great Lion§r§9]
+item.wjx.allweapon.fengzhiying.name=§eInvisible Blade§9[§l§fWind Shadow§r§9]·Wind
+item.wjx.allweapon.guangjian.name=§eLight Sword§9[§l§5Guardian§r§9]
+item.wjx.allweapon.huami.name=§aFairy of Flowers§9[§l§dMikui§r§9]·Flower
+item.wjx.allweapon.jiyi.name=§4Blazing Inferno§cUltimate§1Certain§bChill§9[§l§fExtreme Will§r§9]
+item.wjx.allweapon.xuezou.name=§bPiercing Cold Blade§9[§l§fSnow Walk§r§9]·Snow
+item.wjx.allweapon.youming.name=§0Death God§9[§l§7Shadow's Name§r§9]
+item.wjx.allweapon.zhanyue.name=§fWhite§9[§l§cHeaven-locking Crescent Blade§r§9]
+item.wjx.allweapon.fengshen.name=§6Offering Deity Blade§9[§l§6Deer§r§9]
+item.wjx.allweapon.htkg.name=§fFloral Madness§7Bone of狂骨§9[§l§3Floral Heaven§r§9]
+item.wjx.allweapon.jie.name=§5Source of Calamity§9[§l§8Calamity§r§9]
+item.wjx.allweapon.yingyue.name=§7Deceiver§9[§l§8Shadow§fMoon§r§9]·Moon
+#AWD
+item.wjx.allweapon.shangguyujin.name=§9Ancient Remains
+item.wjx.allweapon.shangguyizhi.name=§9Ancient Will
+
+
+#SPLight
+item.wjx.splight.initial.name=§bDragon One [Emptiness]
+item.wjx.splight.normal.name=§dDragon One [Word]
+
+
+
 #组之呈
 itemGroup.tabkablade=KaBlade
 itemGroup.tabkablade_blades=KaBlade:Blades
@@ -59,7 +89,8 @@ itemGroup.tabkablade_bladesgod=KaBlade:Ultimate Blades
 itemGroup.tabkablade_honkai=KaBlade:Honkai Impact 3 Blades
 itemGroup.tabkablade_ore=KaBlade:Ore
 itemGroup.tabkablade_allweapon=KaBlade:AllWeapon
-itemGroup.tabkablade_splight=KaBlade:SP Light
+itemGroup.tabkablade_sp_light=KaBlade:SP Light
+
 
 
 #物之名
@@ -127,6 +158,7 @@ info.slashblade.dizui.3=Those who are hit by this sword will be given an additio
 info.slashblade.dizui.4=[Thunderbolt Call]
 info.slashblade.dizui.5=Cleave X-shaped blade light forward, causing a large amount of damage.
 info.slashblade.dizui.6=If there is an additional [Narukami] status nearby, the [Narukami] will detonate, causing damage. Affected individuals will be attached to the [Narukami] state
+info.item.petal=All plants in the mortal world can be tainted.
 
 
 
@@ -172,6 +204,22 @@ slashblade.seffect.name.kablade.raging_izumo=§eRaging Izumo
 slashblade.seffect.name.kablade.power_of_wind=§aPower of Wind
 slashblade.seffect.name.kablade.thunder_blitz=§dThunder Blitz
 
+#AllWeaponSA
+flammpfeil.slashblade.specialattack.fuzhan=§cBlazing Inferno§4·Embrace Slash
+flammpfeil.slashblade.specialattack.yuqi=§aJade Beauty
+flammpfeil.slashblade.specialattack.xingbao=§cStarburst Stream
+flammpfeil.slashblade.specialattack.weizhan=§eFlash
+flammpfeil.slashblade.specialattack.liedi=§7Earth-splitting Charge
+flammpfeil.slashblade.specialattack.fengxuan=§aWind Coffin
+flammpfeil.slashblade.specialattack.qicaizhan=§cRainbow§aUltimate§eSlash
+flammpfeil.slashblade.specialattack.huanyingdie=§aHundred Valleys Phantom§dButterfly
+flammpfeil.slashblade.specialattack.huanyingdies=§aPhantom Butterfly
+flammpfeil.slashblade.specialattack.xuepo=§bSoul of Frost
+flammpfeil.slashblade.specialattack.yueyatianchong=§fWhite·§4Crescent Moon Sky Rush
+flammpfeil.slashblade.specialattack.baoku=§6Chasing Star Sword
+flammpfeil.slashblade.specialattack.suiji=§cRandom Fool!
+
+
 #生之称
 entity.vorpal_black_hole.name=Vorpal Black Hole
 entity.wine.name=Wine
@@ -193,10 +241,10 @@ prop.wind_enchantment_boost=Wind Enchantment
 prop.fair_pow=Power of War
 
 #Config
-config.kablade.general=常规设置
-config.kablade.msize=钼矿石生成最小尺寸
-config.kablade.csize=铬矿石生成最小尺寸
-config.kablade.asize=极光矿石生成最小尺寸
-config.kablade.mchance=钼矿石生成概率
-config.kablade.cchance=铬矿石生成概率
-config.kablade.achance=极光矿石生成概率
+config.kablade.general=General Settings
+config.kablade.msize=Molybdenum Ore Minimum Generation Size
+config.kablade.csize=Chromium Ore Minimum Generation Size
+config.kablade.asize=Aurora Ore Minimum Generation Size
+config.kablade.mchance=Molybdenum Ore Generation Chance
+config.kablade.cchance=Chromium Ore Generation Chance
+config.kablade.achance=Aurora Ore Generation Chance

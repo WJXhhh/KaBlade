@@ -95,6 +95,8 @@ flammpfeil.slashblade.specialattack.suiji=§c随机大傻子！
 
 #SPLight
 item.wjx.splight.initial.name=§b龙一「空」
+item.wjx.splight.normal.name=§d龙一「文字」
+
 #组之呈
 itemGroup.tabkablade=斩无不断
 itemGroup.tabkablade_blades=斩无不断:铭刀

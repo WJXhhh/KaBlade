@@ -34,6 +34,7 @@ public class SL_Normal {
         ItemSlashBlade.ModelName.set(Tag,"named/sange/sange");
         ItemSlashBlade.TextureName.set(Tag, "splight/splight/normal/texture");
         //ItemSlashBlade.IsNoScabbard.set(Tag,true);
+        ItemSlashBlade.SpecialAttackType.set(Tag,350);
         ItemSlashBladeNamed.IsDefaultBewitched.set(Tag, true);
         ItemSlashBlade.BaseAttackModifier.set(Tag,8f);
         customblade.addEnchantment(Enchantments.LOOTING,1);
