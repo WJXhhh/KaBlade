@@ -15,10 +15,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class SL_Normal {
-    String name = "wjx.splight.normal";
+public class SL_Origin {
+    String name = "wjx.splight.origin";
 
-    public SL_Normal(){
+    public SL_Origin(){
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -32,18 +32,19 @@ public class SL_Normal {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event){
         Item_AwNamed.CurrentItemName.set(Tag,name);
-        Item_AwNamed.CustomMaxDamage.set(Tag,60);
-        ItemSlashBlade.ModelName.set(Tag,"named/sange/sange");
-        ItemSlashBlade.TextureName.set(Tag, "splight/splight/normal/texture");
+        Item_AwNamed.CustomMaxDamage.set(Tag,191);
+        ItemSlashBlade.ModelName.set(Tag,"splight/splight/origin/model");
+        ItemSlashBlade.TextureName.set(Tag, "splight/splight/origin/texture");
         //ItemSlashBlade.IsNoScabbard.set(Tag,true);
-        ItemSlashBlade.SpecialAttackType.set(Tag,350);
+        ItemSlashBlade.SpecialAttackType.set(Tag,351);
         ItemSlashBladeNamed.IsDefaultBewitched.set(Tag, true);
-        ItemSlashBlade.BaseAttackModifier.set(Tag,8f);
-        customblade.addEnchantment(Enchantments.LOOTING,1);
-        customblade.addEnchantment(Enchantments.POWER,3);
-        customblade.addEnchantment(Enchantments.UNBREAKING,1);
-        customblade.addEnchantment(Enchantments.SHARPNESS,3);
-        SpecialEffects.addEffect(customblade, BladeProxy.SPLighting);
+        ItemSlashBlade.BaseAttackModifier.set(Tag,14f);
+        customblade.addEnchantment(Enchantments.LOOTING,2);
+        customblade.addEnchantment(Enchantments.POWER,5);
+        customblade.addEnchantment(Enchantments.UNBREAKING,3);
+        customblade.addEnchantment(Enchantments.SHARPNESS,4);
+        customblade.addEnchantment(Enchantments.BANE_OF_ARTHROPODS,2);
+        SpecialEffects.addEffect(customblade, BladeProxy.BurstDrive);
         //customblade.addEnchantment(Enchantments.FIRE_ASPECT,20);
         //customblade.addEnchantment(Enchantments.POWER,20);
         //customblade.addEnchantment(Enchantments.,20);

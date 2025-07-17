@@ -17,9 +17,11 @@ public class KaBladePlayerProp {
     public static final String LOCKING_ENTITY_UUID = "locking_entity_uuid";
     public static final String LOCKING_ENTITY_LEFT_TIME = "locking_entity_left_time";
     public static final String MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK = "mag_chaos_blade_extra_attack_tick";
+    public static final String MAG_CHAOS_BLADE_EXTRA_ATTACK_EX_DAMAGE = "MAG_CHAOS_BLADE_EXTRA_ATTACK_EX_DAMAGE".toLowerCase(Locale.ROOT);
     public static final String GLACIAL_BANE_EXTRA_TICK = "GLACIAL_BANE_EXTRA_TICK".toLowerCase(Locale.ROOT);
     public static final String KAMI_OF_WAR_COUNT = "KAMI_OF_WAR_COUNT".toLowerCase(Locale.ROOT);//
     public static final String KAMI_OF_WAR_TICK = "KAMI_OF_WAR_TICK".toLowerCase(Locale.ROOT);
+    public static final String KAMI_OF_WAR_EX_DAMAGE = "KAMI_OF_WAR_EX_DAMAGE".toLowerCase(Locale.ROOT);
     public static final String WIND_ENCHANTMENT_BOOST = "WIND_ENCHANTMENT_BOOST".toLowerCase(Locale.ROOT);//
 
 

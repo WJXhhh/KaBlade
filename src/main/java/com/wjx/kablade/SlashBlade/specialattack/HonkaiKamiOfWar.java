@@ -2,6 +2,8 @@ package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.util.KaBladePlayerProp;
+import com.wjx.kablade.util.MathFunc;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,6 +35,9 @@ public class HonkaiKamiOfWar extends SpecialAttackBase {
         double z = entityPlayer.posZ;
         KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.KAMI_OF_WAR_COUNT,6);
         KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.KAMI_OF_WAR_TICK,1);
+        float extraDamage = MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),3f);
+        KaBladePlayerProp.getPropCompound(entityPlayer).setFloat(KaBladePlayerProp.KAMI_OF_WAR_EX_DAMAGE,extraDamage);
+
         KaBladePlayerProp.updateNBTForClient(entityPlayer);
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE,40,1));
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,140,2));

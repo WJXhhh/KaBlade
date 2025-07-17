@@ -15,10 +15,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class SL_Normal {
-    String name = "wjx.splight.normal";
+public class SL_Young1 {
+    String name = "wjx.splight.young1";
 
-    public SL_Normal(){
+    public SL_Young1(){
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -32,13 +32,13 @@ public class SL_Normal {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event){
         Item_AwNamed.CurrentItemName.set(Tag,name);
-        Item_AwNamed.CustomMaxDamage.set(Tag,60);
-        ItemSlashBlade.ModelName.set(Tag,"named/sange/sange");
-        ItemSlashBlade.TextureName.set(Tag, "splight/splight/normal/texture");
+        Item_AwNamed.CustomMaxDamage.set(Tag,114);
+        ItemSlashBlade.ModelName.set(Tag,"splight/splight/young/model");
+        ItemSlashBlade.TextureName.set(Tag, "splight/splight/young/texture_o");
         //ItemSlashBlade.IsNoScabbard.set(Tag,true);
-        ItemSlashBlade.SpecialAttackType.set(Tag,350);
+        ItemSlashBlade.SpecialAttackType.set(Tag,4);
         ItemSlashBladeNamed.IsDefaultBewitched.set(Tag, true);
-        ItemSlashBlade.BaseAttackModifier.set(Tag,8f);
+        ItemSlashBlade.BaseAttackModifier.set(Tag,7f);
         customblade.addEnchantment(Enchantments.LOOTING,1);
         customblade.addEnchantment(Enchantments.POWER,3);
         customblade.addEnchantment(Enchantments.UNBREAKING,1);

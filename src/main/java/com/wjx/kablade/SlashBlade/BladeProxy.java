@@ -1,8 +1,12 @@
 package com.wjx.kablade.SlashBlade;
 
 import com.wjx.kablade.AllWeapon.blade.specialattack.*;
+import com.wjx.kablade.ExSA.special_attack.LightningSwordsEx;
+import com.wjx.kablade.ExSA.special_attack.OverSlash;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.*;
+import com.wjx.kablade.SlashBlade.SpeacialEffects.Kirisaya.BurstDrive;
+import com.wjx.kablade.SlashBlade.SpeacialEffects.SPLight.SPLighting;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.SlashBlade.specialattack.*;
 import com.wjx.kablade.config.ModConfig;
@@ -10,10 +14,8 @@ import com.wjx.kablade.proxy.CommonProxy;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
-import net.minecraft.item.Item;
 
 import static com.wjx.kablade.Main.EnableAllWeapon;
-import static com.wjx.kablade.Main.p;
 import static mods.flammpfeil.slashblade.SlashBlade.InitEventBus;
 
 public class BladeProxy {
@@ -26,6 +28,10 @@ public class BladeProxy {
     public static ISpecialEffect RagingIzumo = SpecialEffects.register(new SERagingIzumo());
     public static ISpecialEffect PowerOfWind = SpecialEffects.register(new SEPowerOfWind());
     public static ISpecialEffect ThunderBlitz = SpecialEffects.register(new SEThunderBlitz());
+    public static ISpecialEffect BurstDrive = SpecialEffects.register(new BurstDrive());
+
+    //SPLight
+    public static ISpecialEffect SPLighting = SpecialEffects.register(new SPLighting());
 
 
     public static void CommonLoader(CommonProxy proxy){
@@ -92,6 +98,8 @@ public class BladeProxy {
 
 
         ItemSlashBlade.specialAttacks.put(350,new OverSlash());
+        ItemSlashBlade.specialAttacks.put(351,new LightningSwordsEx());
+
     }
     public static void ClientLoader(){
         new ItemSlashUtil();

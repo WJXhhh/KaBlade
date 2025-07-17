@@ -23,6 +23,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
@@ -60,18 +61,21 @@ public class SPLighting implements ISpecialEffect {
     }
 
     @SubscribeEvent
-    public void onUpdateItemSlashBlade(SlashBladeEvent.OnUpdateEvent event) {
+    public void onUpdateItemSlashBlade(LivingEvent.LivingUpdateEvent event) {
         int check;
-        if (!SpecialEffects.isPlayer(event.entity)) {
+        if (!SpecialEffects.isPlayer(event.getEntityLiving())) {
             return;
         }
-        EntityPlayer player = (EntityPlayer)event.entity;
-        ItemStack blade = event.blade;
+        EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+        if (!(player.getHeldItemMainhand().getItem() instanceof ItemSlashBlade)) {
+            return;
+        }
+        ItemStack blade = player.getHeldItemMainhand();
         NBTTagCompound tag = ItemSlashBlade.getItemTagCompound(blade);
         if (ItemSlashBlade.IsBroken.get(tag)) {
             return;
         }
-        switch (SpecialEffects.isEffective(player, event.blade, this).ordinal()) {
+        switch (SpecialEffects.isEffective(player, blade, this).ordinal()) {
             case 0: {
                 return;
             }
@@ -83,7 +87,7 @@ public class SPLighting implements ISpecialEffect {
                 double d1 = player.getRNG().nextGaussian() * 0.02;
                 double d2 = player.getRNG().nextGaussian() * 0.02;
                 double d3 = 10.0;
-                event.world.spawnParticle(EnumParticleTypes.SPELL_WITCH, player.posX + (double)(player.getRNG().nextFloat() * player.width * 2.0f) - (double)player.width - d0 * d3, player.posY, player.posZ + (double)(player.getRNG().nextFloat() * player.width * 2.0f) - (double)player.width - d2 * d3, d0, d1, d2);
+                player.world.spawnParticle(EnumParticleTypes.SPELL_WITCH, player.posX + (double)(player.getRNG().nextFloat() * player.width * 2.0f) - (double)player.width - d0 * d3, player.posY, player.posZ + (double)(player.getRNG().nextFloat() * player.width * 2.0f) - (double)player.width - d2 * d3, d0, d1, d2);
             }
         }
         ItemSlashBlade.ComboSequence seq = ItemSlashBlade.getComboSequence(tag);
@@ -95,7 +99,7 @@ public class SPLighting implements ISpecialEffect {
         if (player.swingProgressInt != check) {
             return;
         }
-        this.doAddAttack(event.blade, player, seq);
+        this.doAddAttack(blade, player, seq);
     }
 
     public void doAddAttack(ItemStack stack, EntityPlayer player, ItemSlashBlade.ComboSequence setCombo) {

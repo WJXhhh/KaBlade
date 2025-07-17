@@ -44,6 +44,7 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
             MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.add(new MagChaosBladeEffectRenderer(entityPlayer));
             Main.PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
             KaBladePlayerProp.getPropCompound(entityPlayer).setInteger(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_TICK,6);
+            KaBladePlayerProp.getPropCompound(entityPlayer).setFloat(KaBladePlayerProp.MAG_CHAOS_BLADE_EXTRA_ATTACK_EX_DAMAGE,extraDamage);
             double dist = 6;
             Vec3d vec3d = entityPlayer.getPositionEyes(1.0F);
             Vec3d vec3d1 = entityPlayer.getLook(1.0F);

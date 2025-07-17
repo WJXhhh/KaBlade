@@ -5,8 +5,7 @@ import com.wjx.kablade.AllWeapon.blade.items.Item_AwNamed;
 import com.wjx.kablade.AllWeapon.blade.ordinary.*;
 import com.wjx.kablade.SPLight.blade.items.Item_SLNamed;
 import com.wjx.kablade.Main;
-import com.wjx.kablade.SPLight.blade.ordinary.SL_Initial;
-import com.wjx.kablade.SPLight.blade.ordinary.SL_Normal;
+import com.wjx.kablade.SPLight.blade.ordinary.*;
 import com.wjx.kablade.SlashBlade.blades.*;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_Caijue;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
@@ -163,6 +162,9 @@ public class BladeLoader {
             if(EnableSPLight){
                 loadBlade(new SL_Initial());
                 loadBlade(new SL_Normal());
+                loadBlade(new SL_Young1());
+                loadBlade(new SL_Young2());
+                loadBlade(new SL_Origin());
             }
 
 

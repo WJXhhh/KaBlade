@@ -48,6 +48,7 @@ public class EntityPhantomSwordEx extends EntitySummonedSword {
 
     public EntityPhantomSwordEx(World par1World) {
         super(par1World);
+        ticksExisted = 0;
     }
 
     public EntityPhantomSwordEx(World par1World, EntityLivingBase entityLiving, float AttackLevel, float roll) {
@@ -133,7 +134,7 @@ public class EntityPhantomSwordEx extends EntitySummonedSword {
     }
 
     public void onUpdate() {
-        if (this.thrower == null) {
+        if (false) {
             this.setDead();
         } else if (this.ridingEntity2 != null) {
             this.updateRidden();
