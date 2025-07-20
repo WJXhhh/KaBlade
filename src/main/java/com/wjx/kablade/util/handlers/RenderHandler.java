@@ -7,6 +7,7 @@ import com.wjx.kablade.ExSA.entity.render.RenderPhantomSwordEx;
 import mods.flammpfeil.slashblade.client.renderer.entity.RenderPhantomSwordBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import com.wjx.kablade.ExSA.entity.render.RenderDriveEx;
 
 public class RenderHandler {
     public static void registerEntityRenders() {
@@ -29,5 +30,6 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityFlareEdge.class,RenderEntityDriveAdd::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityPhantomSwordEx.class, RenderPhantomSwordEx::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityLightningSword.class, RenderPhantomSwordEx::new);
+        RenderingRegistry.registerEntityRenderingHandler(ExSaEntityDrive.class,RenderDriveEx::new);
     }
 }

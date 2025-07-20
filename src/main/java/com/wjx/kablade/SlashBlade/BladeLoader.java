@@ -165,6 +165,8 @@ public class BladeLoader {
                 loadBlade(new SL_Young1());
                 loadBlade(new SL_Young2());
                 loadBlade(new SL_Origin());
+                loadBlade(new SL_Blackwatch());
+                loadBlade(new SL_Senta());
             }
 
 

@@ -81,7 +81,7 @@ public class BurstDrive implements ISpecialEffect
         float baseModif = ((ItemSlashBlade)stack.getItem()).getBaseAttackModifiers(tag);
         int level = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
 
-        float magicDamage = baseModif + level;
+        float magicDamage = baseModif/2f + level;
         int rank = StylishRankManager.getStylishRank(player);
         if (rank >= 5) {
             magicDamage += (float) (ItemSlashBlade.AttackAmplifier.get(tag)*(level/5.0 + 0.5f));

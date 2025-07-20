@@ -49,9 +49,6 @@ public class LightningSwordsEx extends SpecialAttackBase {
                 int i;
                 ItemSlashBlade.setComboSequence(tag, ItemSlashBlade.ComboSequence.SlashDim);
                 int cost = -100;
-                if (!ItemSlashBlade.ProudSoul.tryAdd(tag, -40, false)) {
-                    itemStack.damageItem(10, entityPlayer);
-                }
                 StylishRankManager.setNextAttackType(entityPlayer, AttackType);
                 blade.attackTargetEntity(itemStack, target, entityPlayer, Boolean.TRUE);
                 entityPlayer.onCriticalHit(target);

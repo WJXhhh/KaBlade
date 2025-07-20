@@ -96,13 +96,17 @@ flammpfeil.slashblade.specialattack.suiji=§c随机大傻子！
 #SPLight
 item.wjx.splight.initial.name=§b龙一「空」
 item.wjx.splight.normal.name=§d龙一「文字」
-item.wjx.splight.young1.name=§d龙一 [麻雀]
-item.wjx.splight.young2.name=§d龙一 [青年]
+item.wjx.splight.young1.name=§d龙一「麻雀」
+item.wjx.splight.young2.name=§d龙一「青年」
 item.wjx.splight.origin.name=§6真·龙一「文字」
+item.wjx.splight.blackwatch.name=§6龙一「黑色守望」
+item.wjx.splight.senta.name=§6龙一「战队超人」
 
 slashblade.seffect.name.SPLighting=§6§l神威
 slashblade.seffect.name.BurstDrive=爆裂之刃
 flammpfeil.slashblade.specialattack.lightningswordsex=「§8§lSP§7」云轮风暴
+flammpfeil.slashblade.specialattack.lavedriveex=「§8§lEx§7」熔岩幻影剑
+flammpfeil.slashblade.specialattack.aquaedgeex=「§8§lEx§7」水岚风暴
 
 #组之呈
 itemGroup.tabkablade=斩无不断
@@ -260,4 +264,4 @@ config.kablade.csize=铬矿石生成最小尺寸
 config.kablade.asize=极光矿石生成最小尺寸
 config.kablade.mchance=钼矿石生成概率
 config.kablade.cchance=铬矿石生成概率
-config.kablade.achance=极光矿石生成概率
+config.kablade.achance=极光矿石生成概率flammpfeil.slashblade.specialattack.overslash=Over Slash

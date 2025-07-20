@@ -148,7 +148,7 @@ public class ExSaEntityDrive extends EntityDriveAdd {
                         double var4 = rand.nextGaussian() * 0.02;
                         double var6p = rand.nextGaussian() * 0.02;
                         double var8 = 10.0;
-                        this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, curEntity.posX + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var2 * var8, curEntity.posY + (double)(rand.nextFloat() * curEntity.height) - var4 * var8, curEntity.posZ + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var6p * var8, var2, var4, var6p);
+                        //this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, curEntity.posX + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var2 * var8, curEntity.posY + (double)(rand.nextFloat() * curEntity.height) - var4 * var8, curEntity.posZ + (double)(rand.nextFloat() * curEntity.width * 2.0F) - (double)curEntity.width - var6p * var8, var2, var4, var6p);
                     }
 
                     StylishRankManager.doAttack(this.thrower);

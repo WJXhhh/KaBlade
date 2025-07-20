@@ -1,6 +1,8 @@
 package com.wjx.kablade.SlashBlade;
 
 import com.wjx.kablade.AllWeapon.blade.specialattack.*;
+import com.wjx.kablade.ExSA.special_attack.AquaEdgeEx;
+import com.wjx.kablade.ExSA.special_attack.LaveDriveEx;
 import com.wjx.kablade.ExSA.special_attack.LightningSwordsEx;
 import com.wjx.kablade.ExSA.special_attack.OverSlash;
 import com.wjx.kablade.Main;
@@ -99,6 +101,8 @@ public class BladeProxy {
 
         ItemSlashBlade.specialAttacks.put(350,new OverSlash());
         ItemSlashBlade.specialAttacks.put(351,new LightningSwordsEx());
+        ItemSlashBlade.specialAttacks.put(352,new LaveDriveEx());
+        ItemSlashBlade.specialAttacks.put(353,new AquaEdgeEx());
 
     }
     public static void ClientLoader(){

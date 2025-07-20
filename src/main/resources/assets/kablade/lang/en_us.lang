@@ -81,13 +81,18 @@ item.wjx.splight.initial.name=§bDragon One [Emptiness]
 item.wjx.splight.normal.name=§dDragon One [Word]
 item.wjx.splight.young1.name=§dDragon One [Sparrow]
 item.wjx.splight.young2.name=§dDragon One [Youth]
-item.wjx.splight.origin.name=§6R·Dragon One「Word」
+item.wjx.splight.origin.name=§6R·Dragon One [Word]
+item.wjx.splight.blackwatch.name=§6Dragon One [Black Watch]
+item.wjx.splight.senta.name=§6Dragon One [Senta]
 
 slashblade.seffect.name.SPLighting=§6§lSPLighting
 slashblade.seffect.name.BurstDrive=Burst Drive
 
 flammpfeil.slashblade.specialattack.overslash=Over Slash
-flammpfeil.slashblade.specialattack.lightningswordsex=「§8§lSP§7」Lightning Sword EX
+flammpfeil.slashblade.specialattack.lightningswordsex=「§8§lSP§7」Lightning Sword
+flammpfeil.slashblade.specialattack.lavedriveex=「§8§lEx§7」Lava Phantom Sword
+flammpfeil.slashblade.specialattack.aquaedgeex=「§8§lEx§7」Aqua Edge
+
 
 
 

@@ -25,6 +25,8 @@ public class OverSlash extends SpecialAttackBase {
         return "overslash";
     }
 
+    String AttackType = StylishRankManager.AttackTypes.registerAttackType("LaveDriveEx", 0.5f);
+
     @Override
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.world;
@@ -47,7 +49,7 @@ public class OverSlash extends SpecialAttackBase {
             bb = bb.expand(5.0, 0.25, 5.0);
             List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, bb, EntitySelectorAttackable.getInstance());
             for (Entity curEntity : list) {
-                StylishRankManager.setNextAttackType(entityPlayer, "OverSlash");
+                StylishRankManager.setNextAttackType(entityPlayer, AttackType);
                 blade.attackTargetEntity(itemStack, curEntity, entityPlayer, true);
                 entityPlayer.onCriticalHit(curEntity);
             }
