@@ -61,7 +61,7 @@ public class AquaEdgeEx extends SpecialAttackBase {
             }
             float baseModif = blade.getBaseAttackModifiers(tag);
             int level = Math.max(1, EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, itemStack));
-            float magicDamage = baseModif*0.2f;
+            float magicDamage = baseModif*0.27f;
             int rank = StylishRankManager.getStylishRank(player);
             if (5 <= rank) {
                 magicDamage += (ItemSlashBlade.AttackAmplifier.get(tag) * (0.2F + (float)level / 5.0F))*0.5f;

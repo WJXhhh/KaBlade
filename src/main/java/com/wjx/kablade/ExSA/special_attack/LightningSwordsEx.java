@@ -60,7 +60,7 @@ public class LightningSwordsEx extends SpecialAttackBase {
                 }
                 int rank = StylishRankManager.getStylishRank((Entity)entityPlayer);
                 int level  = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, itemStack);
-                float magicDamage = 1.0f + ItemSlashBlade.AttackAmplifier.get(tag) * ((float)level / 5.0f) * (1.5f + 0.2f * (float)rank);
+                float magicDamage = 1.0f + ItemSlashBlade.BaseAttackModifier.get(tag)*0.5f * ((float)level / 5.0f) * (1.5f + 0.2f * (float)rank);
                 int count = 3;
                 double rad = Math.PI * 2 / (double)(count += rank);
                 for (i = 0; i < count; ++i) {

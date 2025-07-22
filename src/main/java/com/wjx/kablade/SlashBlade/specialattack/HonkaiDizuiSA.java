@@ -55,10 +55,10 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
                 entityDrive2.getDataManager().set(EntityDriveAdd.COLOR_G,0.1f);
                 entityDrive2.getDataManager().set(EntityDriveAdd.COLOR_B,0.9f);
                 entityDrive.getDataManager().set(EntityDriveAdd.SCALE_X,2f);
-                entityDrive.getDataManager().set(EntityDriveAdd.SCALE_Y,2f);
+                entityDrive.getDataManager().set(EntityDriveAdd.SCALE_Y,1f);
                 entityDrive.getDataManager().set(EntityDriveAdd.SCALE_Z,2f);
                 entityDrive2.getDataManager().set(EntityDriveAdd.SCALE_X,2f);
-                entityDrive2.getDataManager().set(EntityDriveAdd.SCALE_Y,2f);
+                entityDrive2.getDataManager().set(EntityDriveAdd.SCALE_Y,1f);
                 entityDrive2.getDataManager().set(EntityDriveAdd.SCALE_Z,2f);
                 entityDrive.getDataManager().set(EntityDriveAdd.PL_PARTICAL,false);
                 entityDrive2.getDataManager().set(EntityDriveAdd.PL_PARTICAL,false);
