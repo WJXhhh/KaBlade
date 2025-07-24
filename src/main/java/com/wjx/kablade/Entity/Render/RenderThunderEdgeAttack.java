@@ -104,6 +104,8 @@ public class RenderThunderEdgeAttack extends Render<Entity> {
         this.shadowSize = 0f;
     }
 
+
+
     @Nullable
     @Override
     protected ResourceLocation getEntityTexture(Entity entity) {

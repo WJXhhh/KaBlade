@@ -10,6 +10,7 @@ import com.wjx.kablade.network.MessageMagChaosBladeEffectUpdate;
 import com.wjx.kablade.util.KaBladePlayerProp;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
+import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -53,6 +54,7 @@ public class HonkaiThunderEdge extends SpecialAttackBase {
                 for (Entity e : list){
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
                         entityPlayer.onCriticalHit(e);
+
                         e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),(50f + extraDamage)*1.4f);
                         if (e instanceof EntityLivingBase)
                             itemStack.hitEntity((EntityLivingBase) e,entityPlayer);

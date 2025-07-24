@@ -23,6 +23,7 @@ public class EntityInit {
         registerEntity("wind_enchantment", EntityWindEnchantment.class,13700008,50);
         registerEntity("thunder_edge_attack", EntityThunderEdgeAttack.class,13700009,50);
         registerEntity("crimson_sakura",EntityCrimsonSakuraAttack.class,13700010,50);
+        registerEntity("tuna", EntityTuna.class,13700011,50);
 
 
 

@@ -12,6 +12,7 @@ import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
 import com.wjx.kablade.SlashBlade.blades.honkai.*;
+import com.wjx.kablade.SlashBlade.blades.honkaip2.OneSaltyTuna;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;
@@ -131,6 +132,8 @@ public class BladeLoader {
             loadBlade(new KeyOfCastigation());
 
             loadBlade(new FloridSakura());
+
+            loadBlade(new OneSaltyTuna());
 
 
 
