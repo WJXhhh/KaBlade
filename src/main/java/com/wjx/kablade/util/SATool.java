@@ -1,6 +1,7 @@
 package com.wjx.kablade.util;
 
 import mods.flammpfeil.slashblade.ItemSlashBlade;
+import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,7 +22,7 @@ public class SATool {
             double dx = vec3.x * 3.0D;
             double dy = (double)player.getEyeHeight() + vec3.y * 3.0D;
             double dz = vec3.z * 3.0D;
-            List<Entity> list = player.world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().grow(8.0D, 8.0D, 8.0D).offset(dx, dy, dz), input -> (input instanceof IMob) && input.isEntityAlive());
+            List<Entity> list = player.world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().grow(8.0D, 8.0D, 8.0D).offset(dx, dy, dz), EntitySelectorAttackable.getInstance());
             float distance = 30.0f;
             for (Entity curEntity : list) {
                 float curDist = curEntity.getDistance(player);

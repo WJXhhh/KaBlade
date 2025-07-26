@@ -38,8 +38,16 @@ public class RenderEntityTuna extends Render<EntityTuna> {
         GL11.glEnable(GL_BLEND);
         //GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         Minecraft mc = Minecraft.getMinecraft();
-        GlStateManager.translate(x,y+3,z);
-        GlStateManager.scale(9f,7f,9f);
+        if (entity.ticksExisted > 2){
+            GlStateManager.translate(x, y - 2d, z);
+        }
+        else {
+            // Use partialTicks to Render Falling
+            double fallProgress = entity.ticksExisted + partialTicks;
+            double offsetY = 3 - (fallProgress * 2d);
+            GlStateManager.translate(x, y + offsetY, z);
+        }
+        GlStateManager.scale(4.5f,3.5f,4.5f);
         mc.getTextureManager().bindTexture(new ResourceLocation("kablade","effects/tuna/tuna.png"));
 
         model.renderAll();

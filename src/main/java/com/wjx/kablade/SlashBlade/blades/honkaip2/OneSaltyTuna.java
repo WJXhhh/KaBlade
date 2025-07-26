@@ -53,6 +53,7 @@ public class OneSaltyTuna {
 
 
         customblade.getTagCompound().setFloat("baseAttackModifier",12.0F);
+        ItemSlashBlade.SpecialAttackType.set(tag,306);
         ItemSlashBlade.AttackAmplifier.set(tag,1.5f);
         customblade.addEnchantment(Enchantments.SMITE,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);

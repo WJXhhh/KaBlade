@@ -222,6 +222,7 @@ flammpfeil.slashblade.specialattack.wind_enchantment=风之结界
 flammpfeil.slashblade.specialattack.falling_petals=灼樱乱神
 flammpfeil.slashblade.specialattack.thunder_edge=雷刃
 flammpfeil.slashblade.specialattack.crimson_sakura=血色落樱
+flammpfeil.slashblade.specialattack.lethal_thrust=致命突刺
 
 
 slashblade.seffect.name.kablade.SETurbulence=§5乱流
@@ -265,4 +266,4 @@ config.kablade.csize=铬矿石生成最小尺寸
 config.kablade.asize=极光矿石生成最小尺寸
 config.kablade.mchance=钼矿石生成概率
 config.kablade.cchance=铬矿石生成概率
-config.kablade.achance=极光矿石生成概率flammpfeil.slashblade.specialattack.overslash=Over Slash
+config.kablade.achance=极光矿石生成概率flammpfeil.slashblade.specialattack.overslash=Over Slashflammpfeil.slashblade.specialattack.overslash=Over Slash
