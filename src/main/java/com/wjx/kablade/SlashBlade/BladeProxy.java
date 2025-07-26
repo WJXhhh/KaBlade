@@ -31,6 +31,7 @@ public class BladeProxy {
     public static ISpecialEffect PowerOfWind = SpecialEffects.register(new SEPowerOfWind());
     public static ISpecialEffect ThunderBlitz = SpecialEffects.register(new SEThunderBlitz());
     public static ISpecialEffect BurstDrive = SpecialEffects.register(new BurstDrive());
+    public static ISpecialEffect UndyingSaltiness = SpecialEffects.register(new SEUndyingSaltiness());
 
     //SPLight
     public static ISpecialEffect SPLighting = SpecialEffects.register(new SPLighting());

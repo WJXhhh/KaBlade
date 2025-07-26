@@ -50,6 +50,7 @@ item.wjx.blade.honkai.sakura_blossom.name=灵刀·樱吹雪
 item.wjx.blade.honkai.key_of_cas.name=天殛之钥
 item.wjx.blade.honkai.florid_sakura.name=妖刀·赤染樱
 item.wjx.blade.honkai.tuna.name=一条咸鱼
+item.wjx.blade.honkai.pledge_of_rain=雨后誓言
 
 
 item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
@@ -234,6 +235,7 @@ slashblade.seffect.name.kablade.glacial_bane=§b苦寒地狱
 slashblade.seffect.name.kablade.raging_izumo=§e出云
 slashblade.seffect.name.kablade.power_of_wind=§a风之力
 slashblade.seffect.name.kablade.thunder_blitz=§d万雷轰临
+slashblade.seffect.name.kablade.undying_saltiness=§2咸鱼精神
 
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞

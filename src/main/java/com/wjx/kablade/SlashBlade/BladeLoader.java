@@ -134,6 +134,7 @@ public class BladeLoader {
             loadBlade(new FloridSakura());
 
             loadBlade(new OneSaltyTuna());
+            loadBlade(new PledgeOfRain());
 
 
 

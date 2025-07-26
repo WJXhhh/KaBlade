@@ -1,4 +1,4 @@
-package com.wjx.kablade.SlashBlade.blades.honkai;
+package com.wjx.kablade.SlashBlade.blades.honkaip2;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
@@ -25,7 +25,7 @@ public class PledgeOfRain {
     String name = "wjx.blade.honkai.pledge_of_rain";
     String key = "wjx.blade.honkai.pledge_of_rain";
 
-    public ThirdSacredRelic(){
+    public PledgeOfRain(){
         MinecraftForge.EVENT_BUS.register(this);
     }
 
