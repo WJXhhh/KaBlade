@@ -73,9 +73,6 @@ public class SlashBladeRecipeModding extends ShapedOreRecipe {
             }
         }
 
-        //if (!world.isRemote)
-            //Main.ModHelper.sendMessageToAll("SecondResult:" + result);
-
 
         return result;
     }
