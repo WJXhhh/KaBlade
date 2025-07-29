@@ -159,23 +159,25 @@ public class WorldEvent {
         if (event.phase == TickEvent.Phase.START) {
             if (!event.world.isRemote) {
                 if (!MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.isEmpty()) {
-                    for (Iterator<MagChaosBladeEffectRenderer> it = MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.iterator(); it.hasNext(); ) {
+                    List<MagChaosBladeEffectRenderer> renderersCopy = new ArrayList<>(MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers);
+                    for (Iterator<MagChaosBladeEffectRenderer> it = renderersCopy.iterator(); it.hasNext(); ) {
                         MagChaosBladeEffectRenderer i = it.next();
                         if (i.exitTick > 0) {
                             i.exitTick -= 1;
                             PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
                         } else {
-                            it.remove();
+                            MagChaosBladeEffectRenderer.magChaosBladeEffectRenderers.remove(i);
                             PACKET_HANDLER.sendToAll(new MessageMagChaosBladeEffectUpdate());
                         }
                     }
                 }
                 if (!tickSchedule.isEmpty()) {
-                    for (Iterator<Vector2O<Runnable, Integer>> iterator = tickSchedule.iterator(); iterator.hasNext(); ) {
+                    Set<Vector2O<Runnable, Integer>> tickScheduleCopy = Sets.newHashSet(tickSchedule);
+                    for (Iterator<Vector2O<Runnable, Integer>> iterator = tickScheduleCopy.iterator(); iterator.hasNext(); ) {
                         Vector2O<Runnable, Integer> v = iterator.next();
                         if (v.value <= 0) {
                             v.key.run();
-                            iterator.remove();
+                            tickSchedule.remove(v);
                         } else {
                             v.value--;
                         }
@@ -485,6 +487,8 @@ public class WorldEvent {
                 for (Entity entity : list) {
                     if (entity instanceof EntityLivingBase) {
                         entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 4 + extraDamage);
+                        if (entity instanceof EntityLivingBase)
+                            player.getHeldItemMainhand().hitEntity((EntityLivingBase) entity, player);
                         RightEntityCount++;
                     }
                 }
@@ -627,7 +631,11 @@ public class WorldEvent {
                             List<Entity> entities = world.getEntitiesInAABBexcluding(player, bb, input -> input != player && input instanceof EntityLivingBase);
                             for (Entity e : entities) {
                                 e.attackEntityFrom(DamageSource.causeExplosionDamage(player), 8f + extraDamage);
+
                                 if (e instanceof EntityLivingBase) {
+                                    if(player.getHeldItemMainhand().getItem() instanceof ItemSlashBlade){
+                                        player.getHeldItemMainhand().hitEntity((EntityLivingBase) e,player);
+                                    }
                                     EntityLivingBase en = (EntityLivingBase) e;
                                     en.addPotionEffect(new PotionEffect(PotionInit.PARALY, 40, 2));
                                 }

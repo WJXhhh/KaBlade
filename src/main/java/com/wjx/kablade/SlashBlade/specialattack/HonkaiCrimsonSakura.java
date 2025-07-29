@@ -30,7 +30,7 @@ public class HonkaiCrimsonSakura extends SpecialAttackBase {
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
-            float extraDamage = (float) MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(itemStack.getTagCompound()),10f);
+            float extraDamage = (float) MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(itemStack.getTagCompound()),12f);
             EntityCrimsonSakuraAttack t = new EntityCrimsonSakuraAttack(world,entityPlayer);
             world.spawnEntity(t);
             double dist = 6;
