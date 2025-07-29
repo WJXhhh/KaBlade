@@ -57,6 +57,7 @@ public class OneSaltyTuna {
         ItemSlashBlade.AttackAmplifier.set(tag,1.5f);
         customblade.addEnchantment(Enchantments.SMITE,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
+        SpecialEffects.addEffect(customBlade,BladeProxy.UndyingSaltiness);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
         SlashBlade.registerCustomItemStack(this.name, customblade);

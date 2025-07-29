@@ -50,6 +50,7 @@ item.wjx.blade.honkai.sakura_blossom.name=Sakura Blossom
 item.wjx.blade.honkai.key_of_cas.name=Key Of Castigation
 item.wjx.blade.honkai.florid_sakura.name=Demonblade - Florid Sakura
 item.wjx.blade.honkai.tuna.name=One Salty Tuna
+item.wjx.blade.honkai.pledge_of_rain=Pledge Of Rain
 
 item.wjx.blade.honkai.dizui.name=§d§lSeven Thunders of Retribution: Rumble
 
@@ -220,6 +221,7 @@ slashblade.seffect.name.kablade.glacial_bane=§bGlacial Bane
 slashblade.seffect.name.kablade.raging_izumo=§eRaging Izumo
 slashblade.seffect.name.kablade.power_of_wind=§aPower of Wind
 slashblade.seffect.name.kablade.thunder_blitz=§dThunder Blitz
+slashblade.seffect.name.kablade.undying_saltiness=§2Undying Saltiness
 
 #AllWeaponSA
 flammpfeil.slashblade.specialattack.fuzhan=§cBlazing Inferno§4·Embrace Slash
