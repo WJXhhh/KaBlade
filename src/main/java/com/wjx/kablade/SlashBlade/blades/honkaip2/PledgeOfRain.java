@@ -12,6 +12,7 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,6 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import static com.wjx.kablade.Main.bladestr;
+
 
 public class PledgeOfRain {
     String name = "wjx.blade.honkai.pledge_of_rain";
@@ -64,7 +66,7 @@ public class PledgeOfRain {
                 'A',new ItemStack(Items.PAPER),
                 'B', prevblade,
                 'C', new ItemStack(Items.SHULKER_SHELL),
-                'D', new ItemStack(BLOCKS.LAPIS_LAZULI_BLOCK));
+                'D', new ItemStack(Blocks.LAPIS_BLOCK));
 
         SlashBlade.addRecipe("pledge_of_rain", recipe);
     }

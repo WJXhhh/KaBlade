@@ -55,7 +55,7 @@ public class ByoDen {
 
 
         customblade.getTagCompound().setFloat("baseAttackModifier",12.0F);
-        ItemSlashBlade.AttackAmplifier.set(tag,1.5f);
+        //ItemSlashBlade.AttackAmplifier.set(tag,-100f);
         customblade.addEnchantment(Enchantments.SMITE,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);

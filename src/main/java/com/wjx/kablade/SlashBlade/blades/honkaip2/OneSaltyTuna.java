@@ -1,12 +1,14 @@
 package com.wjx.kablade.SlashBlade.blades.honkaip2;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
+import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.recipe.SlashBladeRecipeModding;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
+import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -53,29 +55,29 @@ public class OneSaltyTuna {
 
 
         customblade.getTagCompound().setFloat("baseAttackModifier",12.0F);
-        ItemSlashBlade.SpecialAttackType.set(tag,306);
+        ItemSlashBlade.SpecialAttackType.set(tag,456);
         ItemSlashBlade.AttackAmplifier.set(tag,1.5f);
         customblade.addEnchantment(Enchantments.SMITE,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
-        SpecialEffects.addEffect(customBlade,BladeProxy.UndyingSaltiness);
+        SpecialEffects.addEffect(customblade, BladeProxy.UndyingSaltiness);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedHonkai.add(name);
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
-        /*ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.murayoto", 1);
+        ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.murayoto", 1);
         //ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.bamboo_iron", 1);
-        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"byotoden"),
+        IRecipe recipe = new SlashBladeRecipeModding(new ResourceLocation(bladestr,"tuna"),
                 blackblade, prevblade,
                 new Object[]{
-                        "  C",
-                        " B ",
-                        "A  ",
+                        "B C",
+                        " C ",
+                        "A B",
                         'A', prevblade,
-                        'B',new ItemStack(Items.REDSTONE),
-                        'C', new ItemStack(Item.getItemFromBlock(Blocks.IRON_BLOCK)),
+                        'B',new ItemStack(Items.COOKED_BEEF),
+                        'C', new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK)),
                 });
 
-        SlashBlade.addRecipe("byotoden", recipe);*/
+        SlashBlade.addRecipe("tuna", recipe);
     }
 }

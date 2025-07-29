@@ -147,6 +147,7 @@ public class SEOripursuit implements ISpecialEffect, IRemovable {
                         List<Entity> l = EntityUUIDManager.getEntitiesFromUUID(KaBladePlayerProp.getPropCompound(player).getString(KaBladePlayerProp.LOCKING_ENTITY_UUID), player.world);
                         if (l.contains(target)) {
                             //target.attackEntityFrom(DamageSource.causePlayerDamage(p),2f);
+                            float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(stack.getTagCompound()),3);
                             EntitySummonedSwordBase sword = new EntitySummonedSwordBase(target.world, player, 4);
                             sword.setColor(65535);
                             target.world.spawnEntity(sword);

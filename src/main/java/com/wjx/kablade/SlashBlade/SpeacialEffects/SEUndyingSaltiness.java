@@ -9,6 +9,7 @@ import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -56,8 +57,8 @@ public class SEUndyingSaltiness implements ISpecialEffect, IRemovable {
                 EntityPlayer player = (EntityPlayer) e;
                 ItemStack slash = e.getHeldItemMainhand();
                 if (SpecialEffects.isEffective(player,slash,this) == SpecialEffects.State.Effective){
-                    double healthRatio = (e.getHealth())/(.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue()); //calc health loss
-                    event.setAmonut((float)(event.getAmount() * (1 + (1-healthRatio) * 4)));
+                    double healthRatio = (e.getHealth())/(e.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue()); //calc health loss
+                    event.setAmount((float)(event.getAmount() * (1 + (1-healthRatio) * 4)));
                 }
             }
         }

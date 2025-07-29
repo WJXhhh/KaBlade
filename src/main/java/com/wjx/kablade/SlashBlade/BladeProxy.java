@@ -64,6 +64,7 @@ public class BladeProxy {
                 ItemSlashBlade.specialAttacks.put(453,new HonkaiFallingPetals());
                 ItemSlashBlade.specialAttacks.put(454,new HonkaiThunderEdge());
                 ItemSlashBlade.specialAttacks.put(455,new HonkaiCrimsonSakura());
+
             }
             else {
                 ItemSlashBlade.specialAttacks.put(301,new HonkaiWindEnchantment());
@@ -71,8 +72,9 @@ public class BladeProxy {
                 ItemSlashBlade.specialAttacks.put(303,new HonkaiFallingPetals());
                 ItemSlashBlade.specialAttacks.put(304,new HonkaiThunderEdge());
                 ItemSlashBlade.specialAttacks.put(305,new HonkaiCrimsonSakura());
-                ItemSlashBlade.specialAttacks.put(306,new HonkaiLethalThrust());
+
             }
+            ItemSlashBlade.specialAttacks.put(456,new HonkaiLethalThrust());
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());

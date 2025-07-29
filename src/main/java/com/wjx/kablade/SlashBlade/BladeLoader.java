@@ -13,6 +13,7 @@ import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
 import com.wjx.kablade.SlashBlade.blades.honkai.*;
 import com.wjx.kablade.SlashBlade.blades.honkaip2.OneSaltyTuna;
+import com.wjx.kablade.SlashBlade.blades.honkaip2.PledgeOfRain;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;
