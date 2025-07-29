@@ -34,32 +34,29 @@ public class SlashBladeRecipeModding extends ShapedOreRecipe {
 
         boolean result = super.matches(inv, world);
 
-        //if (!world.isRemote)
-        //Main.ModHelper.sendMessageToAll("FirstResult:" + result);
-
-        if(result && !requiredStateBlade.isEmpty()){
-            requiredStateBlade.setItemDamage(OreDictionary.WILDCARD_VALUE);
-            for(int idx = 0; idx < inv.getSizeInventory(); idx++){
+        if(result && !requiredStateBlade.isEmpty()){        //Check recipe legality
+            requiredStateBlade.setItemDamage(OreDictionary.WILDCARD_VALUE);     //Use wildcard value means that any damage blade can be used to craft
+            for(int idx = 0; idx < inv.getSizeInventory(); idx++){      //Scan CraftTable
                 ItemStack curIs = inv.getStackInSlot(idx);
                 if(!curIs.isEmpty()
                         && curIs.getItem() instanceof ItemSlashBlade
                         && curIs.hasTagCompound()){
 
 
-
+                    //Check SlashBlade requirement
                     Map<Enchantment,Integer> oldItemEnchants = EnchantmentHelper.getEnchantments(requiredStateBlade);
                     for(Map.Entry<Enchantment,Integer> enchant: oldItemEnchants.entrySet())
                     {
                         int level = EnchantmentHelper.getEnchantmentLevel(enchant.getKey(),curIs);
                         if(level < enchant.getValue()){
-                            return false;
+                            return false;               //cur Blade's echant must be enought to participate craft
                         }
                     }
 
                     NBTTagCompound reqTag = ItemSlashBlade.getItemTagCompound(requiredStateBlade);
                     NBTTagCompound srcTag = ItemSlashBlade.getItemTagCompound(curIs);
 
-                    if(!curIs.getTranslationKey().equals(requiredStateBlade.getTranslationKey()))
+                    if(!curIs.getTranslationKey().equals(requiredStateBlade.getTranslationKey())) //Check specific SlashBlade
                         return false;
 
                     if(0 < tagValueCompare(ItemSlashBlade.ProudSoul, reqTag, srcTag))
@@ -87,7 +84,7 @@ public class SlashBladeRecipeModding extends ShapedOreRecipe {
     public ItemStack getCraftingResult(InventoryCrafting var1) {
         ItemStack result = super.getCraftingResult(var1);
 
-        for(int idx = 0; idx < var1.getSizeInventory(); idx++){
+        for(int idx = 0; idx < var1.getSizeInventory(); idx++){  //Scan source Blade
             ItemStack curIs = var1.getStackInSlot(idx);
             if(!curIs.isEmpty()
                     && curIs.getItem() instanceof ItemSlashBlade
@@ -113,6 +110,7 @@ public class SlashBladeRecipeModding extends ShapedOreRecipe {
                 NBTTagCompound newTag;
                 newTag = ItemSlashBlade.getItemTagCompound(result);
 
+                //Extend Origin Data
                 ItemSlashBlade.KillCount.set(newTag, ItemSlashBlade.KillCount.get(oldTag));
                 ItemSlashBlade.ProudSoul.set(newTag, ItemSlashBlade.ProudSoul.get(oldTag));
                 ItemSlashBlade.RepairCount.set(newTag, ItemSlashBlade.RepairCount.get(oldTag));
@@ -139,7 +137,7 @@ public class SlashBladeRecipeModding extends ShapedOreRecipe {
                         int destLevel = newItemEnchants.containsKey(enchantIndex) ? newItemEnchants.get(enchantIndex) : 0;
                         int srcLevel = oldItemEnchants.get(enchantIndex);
 
-                        srcLevel = Math.max(srcLevel, destLevel);
+                        srcLevel = Math.max(srcLevel, destLevel); //Get highest level
 
 
                         boolean canApplyFlag = enchantment.canApply(result);
