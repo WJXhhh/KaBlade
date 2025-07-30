@@ -145,8 +145,8 @@ public class RenderThunderEdgeAttack extends Render<Entity> {
             Tessellator tess = Tessellator.getInstance();
             BufferBuilder buffer = tess.getBuffer();
 
-            GlStateManager.rotate(180f - mc.getRenderManager().playerViewY, 0, 1, 0);
-            GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
+            GlStateManager.rotate(180f - mc.getRenderManager().playerViewY+entity.rotationYaw, 0, 1, 0);
+            //GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
 
 
             buffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
@@ -174,8 +174,8 @@ public class RenderThunderEdgeAttack extends Render<Entity> {
             Tessellator tess = Tessellator.getInstance();
             BufferBuilder buffer = tess.getBuffer();
 
-            GlStateManager.rotate(180f - mc.getRenderManager().playerViewY, 0, 1, 0);
-            GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
+            GlStateManager.rotate(180f - mc.getRenderManager().playerViewY+entity.rotationYaw, 0, 1, 0);
+            //GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
 
 
             buffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
@@ -203,8 +203,8 @@ public class RenderThunderEdgeAttack extends Render<Entity> {
             Tessellator tess = Tessellator.getInstance();
             BufferBuilder buffer = tess.getBuffer();
 
-            GlStateManager.rotate(180f - mc.getRenderManager().playerViewY, 0, 1, 0);
-            GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
+            GlStateManager.rotate(180f - mc.getRenderManager().playerViewY+entity.rotationYaw, 0, 1, 0);
+            //GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
 
 
             buffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
@@ -232,8 +232,8 @@ public class RenderThunderEdgeAttack extends Render<Entity> {
             Tessellator tess = Tessellator.getInstance();
             BufferBuilder buffer = tess.getBuffer();
 
-            GlStateManager.rotate(180f - mc.getRenderManager().playerViewY, 0, 1, 0);
-            GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
+            GlStateManager.rotate(180f - mc.getRenderManager().playerViewY+entity.rotationYaw, 0, 1, 0);
+            //GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
 
 
             buffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
@@ -261,8 +261,8 @@ public class RenderThunderEdgeAttack extends Render<Entity> {
             Tessellator tess = Tessellator.getInstance();
             BufferBuilder buffer = tess.getBuffer();
 
-            GlStateManager.rotate(180f - mc.getRenderManager().playerViewY, 0, 1, 0);
-            GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
+            GlStateManager.rotate(180f - mc.getRenderManager().playerViewY+entity.rotationYaw, 0, 1, 0);
+            //GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
 
 
             buffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);

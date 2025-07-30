@@ -1,0 +1,12 @@
+# Blender 4.5.1 LTS MTL File: 'None'
+# www.blender.org
+
+newmtl Weapon_Katana_M27_176_5_Open
+Ns 1000.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.779412 0.936105 1.000000
+Ni 1.500000
+illum 3
+map_Kd D:/Program Files/OYOH/BH3/umbre/GameObject/Mei_Weapon_Skill_Umbrella_Flying/Weapon_Katana_M27_176_5_Open.png
+map_d D:/Program Files/OYOH/BH3/umbre/GameObject/Mei_Weapon_Skill_Umbrella_Flying/Weapon_Katana_M27_176_5_Open.png

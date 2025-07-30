@@ -32,5 +32,6 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityLightningSword.class, RenderPhantomSwordEx::new);
         RenderingRegistry.registerEntityRenderingHandler(ExSaEntityDrive.class,RenderDriveEx::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityTuna.class,RenderEntityTuna::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRainUmbrella.class,RenderEntityRainUmbrella::new);
     }
 }

@@ -2,6 +2,7 @@ package com.wjx.kablade.proxy;
 
 import com.wjx.kablade.Entity.Render.Layer.LayerFreeze;
 import com.wjx.kablade.SlashBlade.BladeProxy;
+import com.wjx.kablade.util.ParticleManager;
 import com.wjx.kablade.util.handlers.RenderHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -60,6 +61,6 @@ public class ClientProxy extends CommonProxy{
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-
+        ParticleManager.registerParticles();
     }
 }
