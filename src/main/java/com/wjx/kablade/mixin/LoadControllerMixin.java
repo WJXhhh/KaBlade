@@ -25,10 +25,10 @@ public class LoadControllerMixin {
 
             ModClassLoader KaBladeMixinModClassLoader1 = (ModClassLoader) eventData[0];
 
-            Mixins.addConfiguration("mixins.kablade.json");
+            Mixins.addConfiguration("mixins.kablade.json"); //Forge Mods' mixin must be injected in this phase
 
             if(Loader.isModLoaded("lastsmith")){
-                Mixins.addConfiguration("mixins.kablade_lastsmith.json");
+                Mixins.addConfiguration("mixins.kablade_lastsmith.json"); //Fit LastSmith's mixin
             }
 
             for (ModContainer container : this.loader.getActiveModList()) {
@@ -39,6 +39,9 @@ public class LoadControllerMixin {
             field.setAccessible(true);
             Object transformer = field.get(null);
             Field field1;
+            /*
+            * In different versions of Mixin,the invoke method is different
+            * */
             try{
                 field1 = transformer.getClass().getDeclaredField("processor");
                 field1.setAccessible(true);

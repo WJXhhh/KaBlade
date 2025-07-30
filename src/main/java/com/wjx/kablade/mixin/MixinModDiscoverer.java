@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Mixin(ModDiscoverer.class)
-public class MixinModDiscoverer {
+public class MixinModDiscoverer {       //Only used in some special environment where game may load this mod repeatedly
     @Inject(method = "identifyMods", at = @At(value = "RETURN"),locals = LocalCapture.CAPTURE_FAILSOFT, remap = false)
     private void injectBeforeReturn(CallbackInfoReturnable<List<ModContainer>> cir,List<ModContainer> modList) {
         String id = "kablade";
