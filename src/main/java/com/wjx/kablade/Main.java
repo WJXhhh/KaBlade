@@ -145,7 +145,7 @@ public class Main
     public void init(FMLInitializationEvent event)
     {
         proxy.init(event);
-        if (!Loader.isModLoaded("networkmod"))
+        if (!Loader.isModLoaded("networkmod")) //Check Netease
         {
             try{
 
@@ -182,6 +182,8 @@ public class Main
             e.printStackTrace();
         }}
         OreDicHandler.registerOreDic();
+
+        //Register Smelting
         GameRegistry.addSmelting(new ItemStack(BlockInit.CHROMIUM_ORE,1),new ItemStack(ItemInit.CHROMIUM_INGOT,1),0.7f);
         GameRegistry.addSmelting(new ItemStack(BlockInit.MOLYBDENITE,1),new ItemStack(ItemInit.MOLYBDENUM_INGOT,1),0.7f);
         GameRegistry.addSmelting(new ItemStack(ItemInit.CRUDE_CHROMOLY,1),new ItemStack(ItemInit.CHROMOLY_INGOT,1),0.6f);
