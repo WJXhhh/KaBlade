@@ -80,12 +80,12 @@ public class EntityRainUmbrella extends Entity implements IThrowableEntity {
         super.onEntityUpdate();
         if(ticksExisted>=0&&ticksExisted<=5){
             if(world.isRemote){
-                for(int i=0;i<500;i++){
+                for(int i=0;i<4;i++){
                     float speed = (float) rand.nextInt(1500) /7000;
                     float direction = (float) (rand.nextFloat()*2*Math.PI);
                     float x = (float) (Math.cos(direction)*speed);
                     float z = (float) (Math.sin(direction)*speed);
-                    ParticleManager.spawnCustomParticle(this.posX, this.posY+rand.nextFloat()+0.25, this.posZ, x, (rand.nextFloat()-0.5)/10, z);
+                    ParticleManager.spawnPetalParticle(this.posX, this.posY+rand.nextFloat()+0.25, this.posZ, x, (rand.nextFloat()-0.5)/10, z,1+rand.nextInt(3));
                 }
             }
         }
