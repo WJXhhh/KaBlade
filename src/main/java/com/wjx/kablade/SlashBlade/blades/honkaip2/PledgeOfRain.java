@@ -45,12 +45,13 @@ public class PledgeOfRain {
         ItemSlashBlade.TextureName.set(tag, "kablade/honkaip2/PledgeOfRain/tex");
         ItemSlashBlade.ModelName.set(tag, "kablade/honkaip2/PledgeOfRain/mdl");
 
-        ItemSlashBlade.SpecialAttackType.set(tag,7);
+        ItemSlashBlade.SpecialAttackType.set(tag,457);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
         customblade.getTagCompound().setFloat("baseAttackModifier",20.0F);
         ItemSlashBlade.AttackAmplifier.set(tag,2.1f);
         customblade.addEnchantment(Enchantments.KNOCKBACK,2);
         customblade.addEnchantment(Enchantments.SHARPNESS,3);
+        customblade.addEnchantment(Enchantments.SMITE,2);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);

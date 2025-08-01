@@ -30,8 +30,8 @@ public class RenderEntityTuna extends Render<EntityTuna> {
         this.shadowSize = 0.0f;
     }
 
-    WavefrontObject model = new WavefrontObject(new ResourceLocationRaw("kablade","effects/tuna/tuna.obj"));
-    WavefrontObject model2 = new WavefrontObject(new ResourceLocationRaw("kablade","effects/tuna/impact.obj"));
+    private static final WavefrontObject model = new WavefrontObject(new ResourceLocationRaw("kablade","effects/tuna/tuna.obj"));
+    private static final WavefrontObject model2 = new WavefrontObject(new ResourceLocationRaw("kablade","effects/tuna/impact.obj"));
 
     int finalT = 0;
 

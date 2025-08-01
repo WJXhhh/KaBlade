@@ -33,7 +33,7 @@ public class ParticlePetal extends Particle {
     private float rotationZ = 0;
 
 
-    private WavefrontObject model = new WavefrontObject(new ResourceLocationRaw("kablade:effects/rain/petal.obj"));
+    private static final WavefrontObject model = new WavefrontObject(new ResourceLocationRaw("kablade:effects/rain/petal.obj"));
 
     public ParticlePetal(World worldIn, double x, double y, double z, int type) {
         super(worldIn, x, y, z);

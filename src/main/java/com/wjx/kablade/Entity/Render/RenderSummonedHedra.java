@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;
 
 public class RenderSummonedHedra extends Render<Entity> {
-    private static WavefrontObject model = new WavefrontObject(new ResourceLocationRaw("kablade:effects/rain/hedra.obj"));
+    private static final WavefrontObject model = new WavefrontObject(new ResourceLocationRaw("kablade:effects/rain/hedra.obj"));
     public RenderSummonedHedra(RenderManager renderManager) {
         super(renderManager);
     }

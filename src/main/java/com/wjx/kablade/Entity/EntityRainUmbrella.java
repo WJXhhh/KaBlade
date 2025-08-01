@@ -103,7 +103,7 @@ public class EntityRainUmbrella extends Entity implements IThrowableEntity {
                     extradamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(blade.getTagCompound()), 1f);
                 }
                 for (int i = 0; i < 4; i++) {
-                    EntitySummonHedra hedra = new EntitySummonHedra(world, owner, 2F+extradamage, this.posX, this.posY+1f, this.posZ, 0, 360*rand.nextFloat());
+                    EntitySummonHedra hedra = new EntitySummonHedra(world, owner, (2F+extradamage)/3, this.posX, this.posY+1f, this.posZ, 0, 360*rand.nextFloat());
                     world.spawnEntity(hedra);
                 }
             }
