@@ -7,10 +7,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.io.File;
+
 @Mod.EventBusSubscriber(modid = Main.MODID)
 public class ModConfig {
 
-    private static Configuration config;
+    public static Configuration config;
+
+    public static File configFile;
 
     public static class GeneralConf {
         public static int MOLYBDENITE_SIZE;
@@ -27,6 +31,7 @@ public class ModConfig {
     public static void init(FMLPreInitializationEvent event) {
         // 创建并加载配置文件
         config = new Configuration(event.getSuggestedConfigurationFile());
+        configFile = event.getSuggestedConfigurationFile();
         if (!config.getConfigFile().exists()) {
             // 如果配置文件不存在，则创建默认配置文件
             syncConfig();

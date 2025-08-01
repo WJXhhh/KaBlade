@@ -42,8 +42,8 @@ public class PledgeOfRain {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
         Item_HonkaiNamed.CustomMaxDamage.set(tag, 820);
 
-        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/3rdSacredRelic/tex3rdSacredRelic");
-        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/3rdSacredRelic/mdl3rdSacredRelic");
+        ItemSlashBlade.TextureName.set(tag, "kablade/honkaip2/PledgeOfRain/tex");
+        ItemSlashBlade.ModelName.set(tag, "kablade/honkaip2/PledgeOfRain/mdl");
 
         ItemSlashBlade.SpecialAttackType.set(tag,7);
         ItemSlashBlade.setBaseAttackModifier(tag,2);

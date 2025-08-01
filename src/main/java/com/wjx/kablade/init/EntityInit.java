@@ -25,6 +25,7 @@ public class EntityInit {
         registerEntity("crimson_sakura",EntityCrimsonSakuraAttack.class,13700010,50);
         registerEntity("tuna", EntityTuna.class,13700011,50);
         registerEntity("rain_umbrella",EntityRainUmbrella.class,13700012,50);
+        registerEntity("summon_hedra",EntitySummonHedra.class,13700013,50);
 
 
 

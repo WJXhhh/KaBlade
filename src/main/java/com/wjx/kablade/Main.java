@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION,dependencies = "required-after:flammpfeil.slashblade")
+@Mod(modid = Main.MODID, name = Main.NAME, version = Main.VERSION,dependencies = "required-after:flammpfeil.slashblade",guiFactory = "com.wjx.kablade.gui.config.ConfigGuiFactory")
 public class Main
 {
     public static final String MODID = "kablade";

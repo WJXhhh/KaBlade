@@ -17,7 +17,7 @@ public class ParticleDust extends Particle {
         this.particleBlue = 1.0F;
 
         // 设置粒子大小和生命周期
-        this.particleScale = 0.3F;
+        this.particleScale = 1F;
         this.particleMaxAge = 60; // 3秒 (20 ticks/秒)
         this.canCollide = false;
 

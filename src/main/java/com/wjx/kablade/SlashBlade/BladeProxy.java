@@ -11,6 +11,7 @@ import com.wjx.kablade.SlashBlade.SpeacialEffects.Kirisaya.BurstDrive;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.SPLight.SPLighting;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.SlashBlade.specialattack.*;
+import com.wjx.kablade.SlashBlade.specialattack.p2.HonkaiYHSY;
 import com.wjx.kablade.config.ModConfig;
 import com.wjx.kablade.proxy.CommonProxy;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -75,6 +76,7 @@ public class BladeProxy {
 
             }
             ItemSlashBlade.specialAttacks.put(456,new HonkaiLethalThrust());
+            ItemSlashBlade.specialAttacks.put(457,new HonkaiYHSY());
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());
