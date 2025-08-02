@@ -104,7 +104,7 @@ public class EntityRainUmbrella extends Entity implements IThrowableEntity {
             if(!world.isRemote){
                 float extradamage = 0f;
                 if(blade!=null){
-                    extradamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(blade.getTagCompound()), 1f);
+                    extradamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(blade.getTagCompound()), 1.25f);
                 }
                 for (int i = 0; i < 4; i++) {
                     EntitySummonHedra hedra = new EntitySummonHedra(world, owner, (2F+extradamage)/3, this.posX, this.posY+1f, this.posZ, 0, 360*rand.nextFloat());
