@@ -15,6 +15,8 @@ public class KaBladeEntityProperties {
     public static final String FREEZE_DOMAIN_DAMAGE_BOOSTER = "FREEZE_DOMAIN_DAMAGE_BOOSTER".toLowerCase(Locale.ROOT);
     public static final String FALLING_PETALS = "FALLING_PETALS".toLowerCase(Locale.ROOT);
 
+    public static final String CONFINEMENT = "CONFINEMENT".toLowerCase(Locale.ROOT);
+
     public static final String KABLADE_UUID = "kablade_uuid";
 
     public static void initNBT(Entity e){
