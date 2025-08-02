@@ -103,7 +103,7 @@ public class RenderEntityRainUmbrella extends Render<EntityRainUmbrella> {
 
             GlStateManager.scale(5.0f, 5.0f, 5.0f);
             // 移动到实体位置
-            GlStateManager.translate((float)x, (float)y+0.1, (float)z);
+            GlStateManager.translate((float)x, (float)y, (float)z);
 
             // 禁用光照以获得发光效果
             GlStateManager.disableLighting();

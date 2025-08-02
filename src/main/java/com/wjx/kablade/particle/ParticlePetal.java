@@ -74,7 +74,7 @@ public class ParticlePetal extends Particle {
         this.rotationSpeedY = rand.nextFloat()*10f/2-5;
 
         // 设置粒子大小和生命周期
-        this.particleScale = 0.07F;
+        this.particleScale = 0.05F;
         smallspe = 0.001f+(rand.nextInt(10)/4000f);
         this.particleMaxAge = 80; // 3秒 (20 ticks/秒)
         this.canCollide = false;

@@ -25,6 +25,7 @@ public class ModConfig {
         public static int AURORA_CHANCE;
         public static boolean Enable_New_SA_Id;
         public static String[] TLS_forbidden;
+        public static boolean Ultra_Effect;
     }
 
 
@@ -83,6 +84,10 @@ public class ModConfig {
 
         GeneralConf.TLS_forbidden = config.getStringList("TLS_forbidden",category,new String[]{"kablade"},"To prevent TLS changing some SlashBlade id.");
 
+        GeneralConf.Ultra_Effect = config.getBoolean(
+                "Ultra_Effect", category, true,
+                "Enable Ultra Effect of Render(Some SA Render Effect,such as 'Love is War!'),If you feel the screen is too laggy when using these effects, you can turn off this option to sacrifice aesthetics for smoothness [Recommend:CPU-12400f/5600X,GPU-RTX 1660{MAYBE}]"
+        );
         if (config.hasChanged()) {
             config.save();
         }

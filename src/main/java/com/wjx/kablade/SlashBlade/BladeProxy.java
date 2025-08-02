@@ -11,6 +11,7 @@ import com.wjx.kablade.SlashBlade.SpeacialEffects.Kirisaya.BurstDrive;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.SPLight.SPLighting;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.SlashBlade.specialattack.*;
+import com.wjx.kablade.SlashBlade.specialattack.p2.HonkaiLethalThrust;
 import com.wjx.kablade.SlashBlade.specialattack.p2.HonkaiLoveIsWar;
 import com.wjx.kablade.config.ModConfig;
 import com.wjx.kablade.proxy.CommonProxy;

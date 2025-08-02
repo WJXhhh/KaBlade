@@ -1,6 +1,7 @@
 package com.wjx.kablade.Entity;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.util.GraphicQuality;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.ParticleManager;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
@@ -79,20 +80,23 @@ public class EntityRainUmbrella extends Entity implements IThrowableEntity {
     public void onEntityUpdate() {
         super.onEntityUpdate();
         if(ticksExisted>=0&&ticksExisted<=5){
+
             if(world.isRemote){
-                for(int i=0;i<5;i++){
+                int ia = GraphicQuality.sInt(3,10);
+                int ib = GraphicQuality.sInt(400,800);
+                for(int i=0;i<ia;i++){
                     float speed = (float) rand.nextInt(1500) /7000;
                     float direction = (float) (rand.nextFloat()*2*Math.PI);
                     float x = (float) (Math.cos(direction)*speed);
                     float z = (float) (Math.sin(direction)*speed);
-                    ParticleManager.spawnPetalParticle(this.posX, this.posY+0.8+((rand.nextFloat())/10), this.posZ, x, (rand.nextFloat()-0.5)/10, z,1+rand.nextInt(3));
+                    ParticleManager.spawnPetalParticle(this.posX, this.posY+1+((rand.nextFloat())/10), this.posZ, x, (rand.nextFloat()-0.5)/10, z,1+rand.nextInt(3));
                 }
-                for(int i=0;i<1000;i++){
+                for(int i=0;i<ib;i++){
                     float speed = (float) rand.nextInt(1500) /7000;
                     float direction = (float) (rand.nextFloat()*2*Math.PI);
                     float x = (float) (Math.cos(direction)*speed);
                     float z = (float) (Math.sin(direction)*speed);
-                    ParticleManager.spawnCustomParticle(this.posX, this.posY+0.8+((rand.nextFloat())/10), this.posZ, x, (rand.nextFloat()-0.5)/5, z);
+                    ParticleManager.spawnCustomParticle(this.posX, this.posY+1+((rand.nextFloat())/10), this.posZ, x, (rand.nextFloat()-0.5)/5, z);
                 }
             }
         }
@@ -110,19 +114,21 @@ public class EntityRainUmbrella extends Entity implements IThrowableEntity {
         }
         if (ticksExisted > 70&&ticksExisted < 75){
             if(world.isRemote){
-                for(int i=0;i<20;i++){
+                int ia = GraphicQuality.sInt(5,20);
+                int ib = GraphicQuality.sInt(300,600);
+                for(int i=0;i<ia;i++){
                     float speed = (float) rand.nextInt(1500) /7000;
                     float direction = (float) (rand.nextFloat()*2*Math.PI);
                     float x = (float) (Math.cos(direction)*speed);
                     float z = (float) (Math.sin(direction)*speed);
-                    ParticleManager.spawnPetalParticle(this.posX, this.posY+0.8+((rand.nextFloat())/10), this.posZ, x, (rand.nextFloat()-0.5)/10, z,1+rand.nextInt(3));
+                    ParticleManager.spawnPetalParticle(this.posX, this.posY+1+((rand.nextFloat())/10), this.posZ, x, (rand.nextFloat()-0.5)/10, z,1+rand.nextInt(3));
                 }
-                for(int i=0;i<500;i++){
+                for(int i=0;i<ib;i++){
                     float speed = (float) rand.nextInt(1500) /7000;
                     float direction = (float) (rand.nextFloat()*2*Math.PI);
                     float x = (float) (Math.cos(direction)*speed);
                     float z = (float) (Math.sin(direction)*speed);
-                    ParticleManager.spawnCustomParticle(this.posX, this.posY+0.8+((rand.nextFloat())/10), this.posZ, x, (rand.nextFloat()-0.5)/10, z);
+                    ParticleManager.spawnCustomParticle(this.posX, this.posY+1+((rand.nextFloat())/10), this.posZ, x, (rand.nextFloat()-0.5)/10, z);
                 }
             }
         }
