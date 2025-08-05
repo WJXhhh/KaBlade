@@ -5,6 +5,7 @@ import mods.flammpfeil.slashblade.client.model.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -40,7 +41,9 @@ public class RenderSummonedHedra extends Render<Entity> {
 
         GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE);//混合 使用源颜色的alpha值来作为因子;使用1.0作为因子;新颜色：RsSr+RdDr, GsSg+GdDg, BsSb+BdDb, AsSa+AdDa
 
-
+        float lastx = OpenGlHelper.lastBrightnessX;
+        float lasty = OpenGlHelper.lastBrightnessY;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
         GL11.glPushMatrix();
         GL11.glTranslatef((float)dX, (float)dY+0.1f, (float)dZ);
         GL11.glRotatef(this.lerpDegrees(entityPhantomSword.prevRotationYaw, entityPhantomSword.rotationYaw, f1), 0.0F, 1.0F, 0.0F);
@@ -55,6 +58,7 @@ public class RenderSummonedHedra extends Render<Entity> {
         GL11.glPopMatrix();
         GL11.glDisable(GL_BLEND);
         GL11.glEnable(GL_LIGHTING);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastx, lasty);
 
     }
 

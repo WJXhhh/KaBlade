@@ -23,7 +23,7 @@ public class ParticleSmallLigh extends Particle {
     private float rotationSpeedZ=1;
     private float smallspe = 0.01f;
 
-    private byte ptex = 1;
+
 
     // 花瓣飘落的物理参数
     private float rotationX = 0;
@@ -31,11 +31,11 @@ public class ParticleSmallLigh extends Particle {
     private float rotationZ = 0;
 
 
-    private static final WavefrontObject model = new WavefrontObject(new ResourceLocationRaw("kablade:effects/rain/petal.obj"));
+    private static final WavefrontObject model = new WavefrontObject(new ResourceLocationRaw("kablade:effects/confinement/lighting.obj"));
 
     public ParticleSmallLigh(World worldIn, double x, double y, double z, int type) {
         super(worldIn, x, y, z);
-        ptex = (byte)type;
+        //ptex = (byte)type;
 
         // 设置粒子的基本属性
         this.motionX = (Math.random() - 0.5D) * 0.1D;

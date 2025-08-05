@@ -52,6 +52,7 @@ item.wjx.blade.honkai.florid_sakura.name=Demonblade - Florid Sakura
 item.wjx.blade.honkai.tuna.name=One Salty Tuna
 item.wjx.blade.honkai.pledge_of_rain.name=Pledge Of Rain
 item.wjx.blade.honkai.vibro_cutter.name=Vibro Cutter
+item.wjx.blade.honkai.frozen_naraka.name=Frozen Naraka
 
 item.wjx.blade.honkai.dizui.name=§d§lSeven Thunders of Retribution: Rumble
 
@@ -213,6 +214,7 @@ flammpfeil.slashblade.specialattack.thunder_edge=Thunder Edge
 flammpfeil.slashblade.specialattack.crimson_sakura=Crimson Sakura
 flammpfeil.slashblade.specialattack.lethal_thrust=Lethal Thrust
 flammpfeil.slashblade.specialattack.love_is_war=Love is War!
+flammpfeil.slashblade.specialattack.induction_collapse=Induction Collapse
 
 slashblade.seffect.name.kablade.SETurbulence=§5Turbulence
 slashblade.seffect.name.kablade.divine_penalty=§eDivine_penalty

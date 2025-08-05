@@ -1,17 +1,21 @@
 package com.wjx.kablade.Entity;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.network.MessageSpawnLighParticleOn;
 import com.wjx.kablade.util.KaBladeEntityProperties;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.ParticleManager;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
@@ -84,28 +88,80 @@ public class EntityConfinementForceField extends Entity implements IThrowableEnt
     @Override
     public void onEntityUpdate() {
         super.onEntityUpdate();
-        if(this.ticksExisted > 60){
+        if(this.ticksExisted > 100){
             this.setDead();
         }
         if(!world.isRemote)
         {
-            List<Entity> list = world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D), EntitySelectorAttackable.getInstance());
+            List<Entity> list = world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().grow(6.0D, 2.0D, 6.0D), EntitySelectorAttackable.getInstance());
             for (Entity e : list) {
                 if (e instanceof EntityLivingBase) {
                     if (e != owner && owner instanceof EntityPlayer) {
-                        ((EntityLivingBase) e).attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner), 10.0F);
+                        ((EntityLivingBase) e).attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner), 4.0F);
                         if (blade != null && owner instanceof EntityPlayer) {
                             blade.hitEntity((EntityLivingBase) e, (EntityPlayer) owner);
                         }
-                    } else {
-                        ((EntityLivingBase) e).attackEntityFrom(DamageSource.causeMobDamage(owner), 10.0F);
+                        NBTTagCompound entityProperties = KaBladeEntityProperties.getPropCompound(e);
+                        entityProperties.setInteger(KaBladeEntityProperties.CONFINEMENT,2);
+                        ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,5,3));
+                        if(ticksExisted%2==0)
+                        {
+                            for (int i = 0; i < 1; i++) {
+                                float speed = (float) rand.nextInt(1500) / 7000;
+                                float direction = (float) (rand.nextFloat() * 2 * Math.PI);
+                                float x = (float) (Math.cos(direction) * speed);
+                                float z = (float) (Math.sin(direction) * speed);
+                                Main.PACKET_HANDLER.sendToAll(new MessageSpawnLighParticleOn(e.posX, e.posY + 1 + ((rand.nextFloat()) / 10), e.posZ, x, (rand.nextFloat() - 0.5) / 10, z));
+                            }
+                        }
+
+                    } else if(e!=owner){
+                        ((EntityLivingBase) e).attackEntityFrom(DamageSource.causeMobDamage(owner), 4.0F);
+                        NBTTagCompound entityProperties = KaBladeEntityProperties.getPropCompound(e);
+                        entityProperties.setInteger(KaBladeEntityProperties.CONFINEMENT,2);
+                        ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,5,3));
+                        if(ticksExisted%2==0)
+                        {
+                            for (int i = 0; i < 1; i++) {
+                                float speed = (float) rand.nextInt(1500) / 7000;
+                                float direction = (float) (rand.nextFloat() * 2 * Math.PI);
+                                float x = (float) (Math.cos(direction) * speed);
+                                float z = (float) (Math.sin(direction) * speed);
+                                Main.PACKET_HANDLER.sendToAll(new MessageSpawnLighParticleOn(e.posX, e.posY + 1 + ((rand.nextFloat()) / 10), e.posZ, x, (rand.nextFloat() - 0.5) / 10, z));
+                            }
+                        }
                     }
-                    NBTTagCompound entityProperties = KaBladeEntityProperties.getPropCompound(e);
-                    entityProperties.setInteger(KaBladeEntityProperties.CONFINEMENT,2);
+
 
                 }
             }
         }
+        /*if (world.isRemote) {
+            List<Entity> list = world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D), EntitySelectorAttackable.getInstance());
+            for (Entity e : list) {
+                if (e instanceof EntityLivingBase) {
+                    if (e != owner && owner instanceof EntityPlayer) {
+                        for(int i=0;i<1;i++){
+                            float speed = (float) rand.nextInt(1500) /7000;
+                            float direction = (float) (rand.nextFloat()*2*Math.PI);
+                            float x = (float) (Math.cos(direction)*speed);
+                            float z = (float) (Math.sin(direction)*speed);
+                            ParticleManager.spawnPetalParticle(this.posX, this.posY+1+((rand.nextFloat())/10), this.posZ, x, (rand.nextFloat()-0.5)/10, z,1+rand.nextInt(3));
+                        }
+                    } else if(e!=owner){
+                        for(int i=0;i<1;i++){
+                            float speed = (float) rand.nextInt(1500) /7000;
+                            float direction = (float) (rand.nextFloat()*2*Math.PI);
+                            float x = (float) (Math.cos(direction)*speed);
+                            float z = (float) (Math.sin(direction)*speed);
+                            ParticleManager.spawnPetalParticle(this.posX, this.posY+1+((rand.nextFloat())/10), this.posZ, x, (rand.nextFloat()-0.5)/10, z,1+rand.nextInt(3));
+                        }
+                    }
+
+
+                }
+            }
+        }*/
 
     }
 

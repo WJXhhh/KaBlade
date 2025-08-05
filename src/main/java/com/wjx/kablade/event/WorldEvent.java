@@ -4,6 +4,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.wjx.kablade.Entity.*;
+import com.wjx.kablade.Entity.Render.RenderConfinementForceField;
 import com.wjx.kablade.Entity.Render.RenderRaikiriBlade;
 import com.wjx.kablade.Entity.Render.RenderWindEnchantment;
 import com.wjx.kablade.Lib;
@@ -954,7 +955,26 @@ public class WorldEvent {
                         //RenderWindEnchantment
                         if (e1 instanceof EntityWindEnchantment){
                             RenderWindEnchantment renderer = new RenderWindEnchantment(null);
-                            renderer.doRender2((EntityWindEnchantment) e1, e1.posX - Minecraft.getMinecraft().player.posX, e1.posY - Minecraft.getMinecraft().player.posY + 0.5, e1.posZ - Minecraft.getMinecraft().player.posZ, 0, event.getPartialTicks());
+                            float f = (float)(e1.prevPosX + (e1.posX - e1.prevPosX) * event.getPartialTicks());
+                            float f1 = (float)(e1.prevPosY + (e1.posY - e1.prevPosY) * event.getPartialTicks());
+                            float f2 = (float)(e1.prevPosZ + (e1.posZ - e1.prevPosZ) * event.getPartialTicks());
+
+                            float f3 = ( float)(Minecraft.getMinecraft().player.prevPosX+(Minecraft.getMinecraft().player.posX-Minecraft.getMinecraft().player.prevPosX)*event.getPartialTicks());
+                            float f4 = ( float)(Minecraft.getMinecraft().player.prevPosY+(Minecraft.getMinecraft().player.posY-Minecraft.getMinecraft().player.prevPosY)*event.getPartialTicks());
+                            float f5 = ( float)(Minecraft.getMinecraft().player.prevPosZ+(Minecraft.getMinecraft().player.posZ-Minecraft.getMinecraft().player.prevPosZ)*event.getPartialTicks());
+                            renderer.doRender2((EntityWindEnchantment) e1, f - f3, f1 - f4, f2 - f5, 0, event.getPartialTicks());
+                        }
+
+                        if(e1 instanceof EntityConfinementForceField){
+                            RenderConfinementForceField renderer = new RenderConfinementForceField(null);
+                            float f = (float)(e1.prevPosX + (e1.posX - e1.prevPosX) * event.getPartialTicks());
+                            float f1 = (float)(e1.prevPosY + (e1.posY - e1.prevPosY) * event.getPartialTicks());
+                            float f2 = (float)(e1.prevPosZ + (e1.posZ - e1.prevPosZ) * event.getPartialTicks());
+
+                            float f3 = ( float)(Minecraft.getMinecraft().player.prevPosX+(Minecraft.getMinecraft().player.posX-Minecraft.getMinecraft().player.prevPosX)*event.getPartialTicks());
+                            float f4 = ( float)(Minecraft.getMinecraft().player.prevPosY+(Minecraft.getMinecraft().player.posY-Minecraft.getMinecraft().player.prevPosY)*event.getPartialTicks());
+                            float f5 = ( float)(Minecraft.getMinecraft().player.prevPosZ+(Minecraft.getMinecraft().player.posZ-Minecraft.getMinecraft().player.prevPosZ)*event.getPartialTicks());
+                            renderer.doRender2((EntityConfinementForceField) e1, f - f3, f1 - f4, f2 - f5, 0, event.getPartialTicks());
                         }
                     }
                 }

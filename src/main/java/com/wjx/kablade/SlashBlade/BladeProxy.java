@@ -11,6 +11,7 @@ import com.wjx.kablade.SlashBlade.SpeacialEffects.Kirisaya.BurstDrive;
 import com.wjx.kablade.SlashBlade.SpeacialEffects.SPLight.SPLighting;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.SlashBlade.specialattack.*;
+import com.wjx.kablade.SlashBlade.specialattack.p2.HonkaiInductionCollapse;
 import com.wjx.kablade.SlashBlade.specialattack.p2.HonkaiLethalThrust;
 import com.wjx.kablade.SlashBlade.specialattack.p2.HonkaiLoveIsWar;
 import com.wjx.kablade.config.ModConfig;
@@ -18,6 +19,7 @@ import com.wjx.kablade.proxy.CommonProxy;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialeffect.ISpecialEffect;
 import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
+import net.minecraft.item.Item;
 
 import static com.wjx.kablade.Main.EnableAllWeapon;
 import static mods.flammpfeil.slashblade.SlashBlade.InitEventBus;
@@ -78,6 +80,7 @@ public class BladeProxy {
             }
             ItemSlashBlade.specialAttacks.put(456,new HonkaiLethalThrust());
             ItemSlashBlade.specialAttacks.put(457,new HonkaiLoveIsWar());
+            ItemSlashBlade.specialAttacks.put(458,new HonkaiInductionCollapse());
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());

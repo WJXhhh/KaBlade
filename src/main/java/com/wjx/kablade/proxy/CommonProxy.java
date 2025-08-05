@@ -58,6 +58,7 @@ public class CommonProxy{
         PACKET_HANDLER.registerMessage(MessageHandlerDizuiKuo.class,MessageDizuiKuo.class,7,Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerMagChaosBladeEffectUpdate.class, MessageMagChaosBladeEffectUpdate.class,8,Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerSpawnColorfulSmoke.class, MessageSpawnColorfulSmoke.class,9,Side.CLIENT);
+        PACKET_HANDLER.registerMessage(MessageHandlerSpawnLighParticle.class, MessageSpawnLighParticleOn.class,10,Side.CLIENT);
         //PACKET_HANDLER.registerMessage(MessageHandlerSpawnRingParticle.class, MessageSpawnRingParticle.class, 10, Side.CLIENT);
         //PACKET_HANDLER.registerMessage(MessageHandlerSpawnColorableDust.class, MessageSpawnColorableDust.class, 11, Side.CLIENT);
     }

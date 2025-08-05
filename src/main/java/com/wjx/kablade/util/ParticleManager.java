@@ -2,6 +2,7 @@ package com.wjx.kablade.util;
 
 import com.wjx.kablade.particle.factory.ParticleDustFactory;
 import com.wjx.kablade.particle.factory.ParticlePetalFactory;
+import com.wjx.kablade.particle.factory.ParticleSmallLighFactory;
 import com.wjx.kablade.particle.manager.ParticleIDManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumParticleTypes;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ParticleManager {
     public static EnumParticleTypes DUST_PARTICLE;
     public static EnumParticleTypes PETAL_PARTICLE;
+    public static EnumParticleTypes SMALLLIGH_PARTICLE;
    // private static final int BASE_PARTICLE_ID = 1000;
     public static void registerParticles() {
         try {
@@ -49,7 +51,7 @@ public class ParticleManager {
                     EnumParticleTypes.class,
                     "PETAL_PARTICLE",
                     new Class[] { String.class, int.class, boolean.class, int.class },
-                    "cdust",
+                    "petal",
                     ParticleIDManager.getNextAvailableID(),
                     false,
                     1
@@ -63,6 +65,34 @@ public class ParticleManager {
                 );
 
                 System.out.println("自定义粒子注册成功！ID: " + PETAL_PARTICLE.getParticleID());
+            } else {
+                System.err.println("自定义粒子注册失败！EnumHelper 返回 null");
+            }
+
+        } catch (Exception e) {
+            System.err.println("粒子注册过程中发生错误: " + e.getMessage());
+            e.printStackTrace();
+        }
+        try {
+            // 使用 EnumHelper 添加新的粒子类型，避免ID冲突
+            SMALLLIGH_PARTICLE = EnumHelper.addEnum(
+                    EnumParticleTypes.class,
+                    "SMALLLIGH_PARTICLE",
+                    new Class[] { String.class, int.class, boolean.class, int.class },
+                    "sligh",
+                    ParticleIDManager.getNextAvailableID(),
+                    false,
+                    0
+            );
+
+            if (SMALLLIGH_PARTICLE != null) {
+                // 注册粒子工厂到效果渲染器
+                Minecraft.getMinecraft().effectRenderer.registerParticle(
+                        SMALLLIGH_PARTICLE.getParticleID(),
+                        new ParticleSmallLighFactory()
+                );
+
+                System.out.println("自定义粒子注册成功！ID: " + SMALLLIGH_PARTICLE.getParticleID());
             } else {
                 System.err.println("自定义粒子注册失败！EnumHelper 返回 null");
             }
@@ -93,6 +123,17 @@ public class ParticleManager {
                     PETAL_PARTICLE,
                     x, y, z,
                     motionX, motionY, motionZ, type
+            );
+        }
+    }
+
+    public static void spawnSmallLightParticle(double x, double y, double z,
+                                           double motionX, double motionY, double motionZ) {
+        if (SMALLLIGH_PARTICLE != null && Minecraft.getMinecraft().world != null) {
+            Minecraft.getMinecraft().world.spawnParticle(
+                    SMALLLIGH_PARTICLE,
+                    x, y, z,
+                    motionX, motionY, motionZ
             );
         }
     }

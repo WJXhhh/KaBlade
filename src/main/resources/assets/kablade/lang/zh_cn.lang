@@ -52,6 +52,7 @@ item.wjx.blade.honkai.florid_sakura.name=妖刀·赤染樱
 item.wjx.blade.honkai.tuna.name=一条咸鱼
 item.wjx.blade.honkai.pledge_of_rain.name=雨后誓言
 item.wjx.blade.honkai.vibro_cutter.name=高周波切割刀
+item.wjx.blade.honkai.frozen_naraka.name=御灵刀 寒狱冰天
 
 
 item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
@@ -226,6 +227,8 @@ flammpfeil.slashblade.specialattack.thunder_edge=雷刃
 flammpfeil.slashblade.specialattack.crimson_sakura=血色落樱
 flammpfeil.slashblade.specialattack.lethal_thrust=致命突刺
 flammpfeil.slashblade.specialattack.love_is_war=恋爱即战争！
+flammpfeil.slashblade.specialattack.induction_collapse=高频坍缩
+flammpfeil.slashblade.specialattack.overslash=拔刀术
 
 
 slashblade.seffect.name.kablade.SETurbulence=§5乱流
@@ -270,4 +273,4 @@ config.kablade.csize=铬矿石生成最小尺寸
 config.kablade.asize=极光矿石生成最小尺寸
 config.kablade.mchance=钼矿石生成概率
 config.kablade.cchance=铬矿石生成概率
-config.kablade.achance=极光矿石生成概率flammpfeil.slashblade.specialattack.overslash=Over Slashflammpfeil.slashblade.specialattack.overslash=Over Slash
+config.kablade.achance=极光矿石生成概率

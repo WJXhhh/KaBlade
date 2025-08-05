@@ -1,4 +1,4 @@
-package com.wjx.kablade.SlashBlade.blades.honkai;
+package com.wjx.kablade.SlashBlade.blades.honkaip2;
 
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
@@ -21,11 +21,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import static com.wjx.kablade.Main.bladestr;
 
-public class IceEpiphyllum {
-    String name = "wjx.blade.honkai.ice_epiphyllum";
-    String key = "wjx.blade.honkai.ice_epiphyllum";
+public class FrozenNaraka {
+    String name = "wjx.blade.honkai.frozen_naraka";
+    String key = "wjx.blade.honkai.frozen_naraka";
 
-    public IceEpiphyllum(){
+    public FrozenNaraka(){
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -38,17 +38,16 @@ public class IceEpiphyllum {
     @SubscribeEvent
     public void init(LoadEvent.InitEvent event) {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
-        Item_HonkaiNamed.CustomMaxDamage.set(tag, 1000);
+        Item_HonkaiNamed.CustomMaxDamage.set(tag, 1200);
 
-        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/IceEpiphyllum/texIceEpiphyllum");
-        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/IceEpiphyllum/mdlIceEpiphyllum");
-        customblade.getTagCompound().setFloat("baseAttackModifier",22.0F);
+        ItemSlashBlade.TextureName.set(tag, "kablade/honkaip2/FrozenNaraka/tex");
+        ItemSlashBlade.ModelName.set(tag, "kablade/honkaip2/FrozenNaraka/mdl");
+        customblade.getTagCompound().setFloat("baseAttackModifier",26.0F);
         ItemSlashBlade.AttackAmplifier.set(tag,2.5f);
         ItemSlashBlade.SpecialAttackType.set(tag,299);
-        ItemSlashBlade.SummonedSwordColor.set(tag,65535);
-        customblade.addEnchantment(Enchantments.POWER,3);
-        customblade.addEnchantment(Enchantments.SMITE,3);
-        customblade.addEnchantment(Enchantments.SHARPNESS,4);
+        customblade.addEnchantment(Enchantments.POWER,4);
+        customblade.addEnchantment(Enchantments.SMITE,4);
+        customblade.addEnchantment(Enchantments.SHARPNESS,5);
         Item_HonkaiNamed.IsDefaultBewitched.set(tag, true);
         ItemSlashBladeNamed.NamedBlades.add(this.name);
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
@@ -59,7 +58,7 @@ public class IceEpiphyllum {
         ItemStack blackblade = SlashBlade.findItemStack(bladestr, name, 1);
         ItemStack prevblade = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.xuanyuan_katana", 1);
         ItemStack prevblade2 = SlashBlade.findItemStack(bladestr, "wjx.blade.honkai.third_sacred", 1);
-        IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"ice_epiphyllum"),
+        IRecipe recipe = new SlashBladeTwoRecipeModding(new ResourceLocation(bladestr,"frozen_naraka"),
                 blackblade, prevblade,prevblade2,
                 "CCC",
                 "DBD",
@@ -68,6 +67,6 @@ public class IceEpiphyllum {
                 'B',prevblade2,
                 'C', new ItemStack(ItemInit.IRON_COIL),
                 'D',new ItemStack(Blocks.LAPIS_BLOCK));
-        SlashBlade.addRecipe("ice_epiphyllum", recipe);
+        SlashBlade.addRecipe("frozen_naraka", recipe);
     }
 }

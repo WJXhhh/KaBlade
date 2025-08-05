@@ -12,8 +12,10 @@ import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
 import com.wjx.kablade.SlashBlade.blades.honkai.*;
+import com.wjx.kablade.SlashBlade.blades.honkaip2.FrozenNaraka;
 import com.wjx.kablade.SlashBlade.blades.honkaip2.OneSaltyTuna;
 import com.wjx.kablade.SlashBlade.blades.honkaip2.PledgeOfRain;
+import com.wjx.kablade.SlashBlade.blades.honkaip2.VibroCutter;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;
@@ -136,6 +138,8 @@ public class BladeLoader {
 
             loadBlade(new OneSaltyTuna());
             loadBlade(new PledgeOfRain());
+            loadBlade(new VibroCutter());
+            loadBlade(new FrozenNaraka());
 
 
 
