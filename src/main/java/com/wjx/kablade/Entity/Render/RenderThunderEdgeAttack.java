@@ -41,7 +41,6 @@ public class RenderThunderEdgeAttack extends Render<Entity> {
      * @param i           顶点索引，用于确定当前处理的顶点位置
      * @param bufferBuilder 缓冲构建器对象，用于构建渲染数据（不可为空）
      * @param thickness   厚度系数，用于奇数索引顶点的缩放计算
-     * @return void
      */
     public void drawPoint(int i, BufferBuilder bufferBuilder, double thickness) {
 
