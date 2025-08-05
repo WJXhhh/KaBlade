@@ -14,6 +14,7 @@ import com.wjx.kablade.SlashBlade.specialattack.*;
 import com.wjx.kablade.SlashBlade.specialattack.p2.HonkaiInductionCollapse;
 import com.wjx.kablade.SlashBlade.specialattack.p2.HonkaiLethalThrust;
 import com.wjx.kablade.SlashBlade.specialattack.p2.HonkaiLoveIsWar;
+import com.wjx.kablade.SlashBlade.specialattack.p2.HonkaiUtpalaAura;
 import com.wjx.kablade.config.ModConfig;
 import com.wjx.kablade.proxy.CommonProxy;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -81,6 +82,7 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(456,new HonkaiLethalThrust());
             ItemSlashBlade.specialAttacks.put(457,new HonkaiLoveIsWar());
             ItemSlashBlade.specialAttacks.put(458,new HonkaiInductionCollapse());
+            ItemSlashBlade.specialAttacks.put(459,new HonkaiUtpalaAura());
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());

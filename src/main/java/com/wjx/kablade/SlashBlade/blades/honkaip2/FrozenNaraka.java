@@ -44,7 +44,7 @@ public class FrozenNaraka {
         ItemSlashBlade.ModelName.set(tag, "kablade/honkaip2/FrozenNaraka/mdl");
         customblade.getTagCompound().setFloat("baseAttackModifier",26.0F);
         ItemSlashBlade.AttackAmplifier.set(tag,2.5f);
-        ItemSlashBlade.SpecialAttackType.set(tag,299);
+        ItemSlashBlade.SpecialAttackType.set(tag,459);
         customblade.addEnchantment(Enchantments.POWER,4);
         customblade.addEnchantment(Enchantments.SMITE,4);
         customblade.addEnchantment(Enchantments.SHARPNESS,5);
