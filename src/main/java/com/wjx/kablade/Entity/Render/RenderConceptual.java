@@ -39,12 +39,14 @@ public class RenderConceptual extends Render<EntityConceptual> {
         float lasty = OpenGlHelper.lastBrightnessY;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-        GlStateManager.pushMatrix();
+
         float time = entity.ticksExisted + partialTicks;
         Tessellator  tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
+        Minecraft mc = Minecraft.getMinecraft();
         if(entity.ticksExisted<30){
-            Minecraft mc = Minecraft.getMinecraft();
+
+            GlStateManager.pushMatrix();
             mc.getTextureManager().bindTexture(new ResourceLocation("kablade:effects/cnzy/ef2.png"));
             GlStateManager.translate(x,y+0.5,z);
             GlStateManager.rotate(180f - mc.getRenderManager().playerViewY+entity.rotationYaw, 0, 1, 0);
@@ -58,9 +60,10 @@ public class RenderConceptual extends Render<EntityConceptual> {
             buffer.pos(0.5d, 0.75d, 0).tex(1, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
             buffer.pos(-0.5d, 0.75d, 0).tex(0, 0).normal(0.0f, 1.0f, 0.0f).endVertex();
             tessellator.draw();
+            GlStateManager.popMatrix();
         }
 
-        GlStateManager.popMatrix();
+
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastx, lasty);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GL11.glEnable(GL_LIGHTING);
