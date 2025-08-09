@@ -35,5 +35,6 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityRainUmbrella.class,RenderEntityRainUmbrella::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySummonHedra.class,RenderSummonedHedra::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityConfinementForceField.class,RenderConfinementForceField::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityConceptual.class,RenderConceptual::new);
     }
 }

@@ -48,6 +48,12 @@ public class MagicBlade extends ItemSlashBladeNamed {
         return true;
     }
 
+
+    @Override
+    public void setDamage(ItemStack stack, int damage) {
+        super.setDamage(stack, damage);
+    }
+
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World worldIn, List tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);

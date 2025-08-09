@@ -27,6 +27,7 @@ public class EntityInit {
         registerEntity("rain_umbrella",EntityRainUmbrella.class,13700012,50);
         registerEntity("summon_hedra",EntitySummonHedra.class,13700013,50);
         registerEntity("confinement",EntityConfinementForceField.class,13700014,50);
+        registerEntity("conceptual", EntityConceptual.class,13700015,50);
 
 
 
