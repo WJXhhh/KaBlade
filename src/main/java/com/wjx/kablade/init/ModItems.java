@@ -1,0 +1,53 @@
+package com.wjx.kablade.init;
+
+import com.google.common.collect.Maps;
+import com.wjx.kablade.Main;
+import com.wjx.kablade.api.CustomBladeModel;
+import com.wjx.kablade.object.item.ordinary.ItemBase;
+import com.wjx.kablade.object.item.KbladeBladeItem;
+import com.wjx.kablade.util.creative_tab.CreativeTabBuilder;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+
+import java.util.Map;
+import java.util.function.Supplier;
+
+public final class ModItems {
+
+    public static final Map<String,ItemBase> KABLADE_ITEMS = Maps.newHashMap();
+
+    public static final DeferredRegister<Item> ITEM_REGISTRY =
+            DeferredRegister.create(ForgeRegistries.ITEMS, Main.MODID);
+
+    public static final RegistryObject<Item> KABLADE_CORE = registerItemBase("kablade_core",Main.TAB_KABLADE);
+
+    @CustomBladeModel
+    public static final RegistryObject<Item> KABLADE_BLADE = registerItem("kablade_blade", () -> new KbladeBladeItem("kablade_blade").setCreativeTab(Main.TAB_KABLADE));
+
+    private ModItems() {
+
+    }
+
+    public static RegistryObject<Item> registerItemBase(String registryName, Item.Properties properties) {
+        return ITEM_REGISTRY.register(registryName, () -> new ItemBase(properties));
+    }
+
+    public static RegistryObject<Item> registerItemBase(String registryName) {
+        return ITEM_REGISTRY.register(registryName, () -> new ItemBase(new Item.Properties()));
+    }
+
+    public static RegistryObject<Item> registerItemBase(String registryName, CreativeTabBuilder builder, Item.Properties properties) {
+        return ITEM_REGISTRY.register(registryName, () -> new ItemBase(properties).setCreativeTab(builder));
+    }
+
+    public static RegistryObject<Item> registerItemBase(String registryName,CreativeTabBuilder builder) {
+        return ITEM_REGISTRY.register(registryName, () -> new ItemBase(new Item.Properties()).setCreativeTab(builder));
+    }
+
+    public static RegistryObject<Item> registerItem(String registryName, Supplier<Item> supplier) {
+        return ITEM_REGISTRY.register(registryName, supplier);
+    }
+}

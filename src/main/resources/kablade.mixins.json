@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "com.wjx.kablade.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "kablade.refmap.json",
+  "mixins": [
+    "ItemSlashBladeMixin"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
