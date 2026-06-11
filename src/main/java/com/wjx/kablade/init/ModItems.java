@@ -7,7 +7,6 @@ import com.wjx.kablade.object.item.ordinary.ItemBase;
 import com.wjx.kablade.object.item.KbladeBladeItem;
 import com.wjx.kablade.util.creative_tab.CreativeTabBuilder;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -31,7 +30,9 @@ public final class ModItems {
     public static final RegistryObject<Item> KABLADE_CORE = registerItemBase("kablade_core",Main.TAB_KABLADE);
 
     @CustomBladeModel
-    public static final RegistryObject<Item> KABLADE_BLADE = registerItem("kablade_blade", () -> new KbladeBladeItem("kablade_blade").setCreativeTab(Main.TAB_KABLADE));
+    public static final RegistryObject<Item> KABLADE_BLADE = registerItem(
+            "kablade_blade",
+            KbladeBladeItem::new);
 
     private ModItems() {
 

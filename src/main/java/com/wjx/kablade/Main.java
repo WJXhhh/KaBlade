@@ -2,6 +2,8 @@ package com.wjx.kablade;
 
 import com.mojang.logging.LogUtils;
 import com.wjx.kablade.init.ModItems;
+import com.wjx.kablade.init.ModSlashArts;
+import com.wjx.kablade.blade.KabladeBlades;
 import com.wjx.kablade.util.creative_tab.CreativeTabBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -64,11 +66,13 @@ public final class Main {
             modBus.addListener(this::clientSetup);
         }
 
+        TAB_KABLADE.addDisplayItems(KabladeBlades::fillCreativeTab);
         TAB_KABLADE.registerTab("tab_kablade", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_NOTED.registerTab("tab_kablade_noted", CREATIVE_TAB_REGISTRY);
 
         // --- Content registration ---
         ModItems.ITEM_REGISTRY.register(modBus);
+        ModSlashArts.REGISTRY.register(modBus);
         CREATIVE_TAB_REGISTRY.register(modBus);
 
         // --- Forge (gameplay) event bus ---
