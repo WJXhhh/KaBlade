@@ -14,9 +14,6 @@ import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class InitializeEvent {
-    private InitializeEvent() {
-    }
-
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
