@@ -47,7 +47,7 @@ public final class Main {
     //Creative tab
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TAB_REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Main.MODID);
 
-    public static final CreativeTabBuilder TAB_KABLADE = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID)).icon(() -> new ItemStack(ModItems.KABLADE_BLADE.get())));
+    public static final CreativeTabBuilder TAB_KABLADE = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID)).icon(() -> new ItemStack(ModItems.MAIN_MATER.get())));
 
     //Load
     public Main(FMLJavaModLoadingContext context) {

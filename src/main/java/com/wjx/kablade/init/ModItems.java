@@ -22,6 +22,8 @@ public final class ModItems {
     public static final DeferredRegister<Item> ITEM_REGISTRY =
             DeferredRegister.create(ForgeRegistries.ITEMS, Main.MODID);
 
+    public static final RegistryObject<Item> MAIN_MATER = registerItemBase("main_mater");
+
     public static final RegistryObject<Item> KABLADE_CORE = registerItemBase("kablade_core",Main.TAB_KABLADE);
 
     @CustomBladeModel
