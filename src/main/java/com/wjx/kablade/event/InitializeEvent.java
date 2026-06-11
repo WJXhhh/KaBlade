@@ -1,4 +1,4 @@
-package com.wjx.kablade.data;
+package com.wjx.kablade.event;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.blade.KabladeBlades;
@@ -13,9 +13,8 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class KabladeDataGen {
-
-    private KabladeDataGen() {
+public class InitializeEvent {
+    private InitializeEvent() {
     }
 
     @SubscribeEvent
