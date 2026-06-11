@@ -49,9 +49,14 @@ public final class Main {
 
     public static final CreativeTabBuilder TAB_KABLADE = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID)).icon(() -> new ItemStack(ModItems.MAIN_MATER.get())));
 
+    public static final CreativeTabBuilder TAB_KABLADE_NOTED = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".noted")).icon(() -> new ItemStack(ModItems.NOTED.get())));
+
     //Load
     public Main(FMLJavaModLoadingContext context) {
         final IEventBus modBus = context.getModEventBus();
+
+        //Re
+
 
         // --- Lifecycle setup ---
         modBus.addListener(this::commonSetup);
@@ -60,6 +65,7 @@ public final class Main {
         }
 
         TAB_KABLADE.registerTab("tab_kablade", CREATIVE_TAB_REGISTRY);
+        TAB_KABLADE_NOTED.registerTab("tab_kablade_noted", CREATIVE_TAB_REGISTRY);
 
         // --- Content registration ---
         ModItems.ITEM_REGISTRY.register(modBus);

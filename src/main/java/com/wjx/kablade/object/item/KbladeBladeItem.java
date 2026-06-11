@@ -20,8 +20,6 @@ import net.minecraft.world.item.Item;
 public class KbladeBladeItem extends ItemSlashBlade implements IHasCreativeTab {
 
     public KbladeBladeItem(String itemId) {
-        // Mirrors SlashBlade's base blade: ItemTierSlashBlade(uses=40, attackBonus=4.0F),
-        // attackDamage=4, attackSpeed=0.0F, plain Item.Properties (no stacksTo — durability makes it unstackable).
         super(new ItemTierSlashBlade(40, 4.0F), 4, 0.0F, new Properties());
     }
 
