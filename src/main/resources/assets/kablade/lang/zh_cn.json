@@ -1,11 +1,13 @@
 {
   "itemGroup.kablade": "斩无不断",
+  "itemGroup.kablade.noted": "Kablade 知名",
+
   "item.kablade.kablade_ingot": "Kablade 锭",
   "item.kablade.kablade_core": "Kablade 核心",
   "item.kablade.kablade_blade": "Kablade 刀",
-  "item.kablade.hangtu": "夯土",
   "item.kablade.main_mater": "Kablade",
   "item.kablade.rimmed_earth_stick": "夯土棍",
   "item.kablade.noted": "知名",
-  "itemGroup.kablade.noted": "Kablade 知名"
+
+  "item.kablade.wjx.ordinary.rimmed_earth": "§r无铭「夯土」"
 }

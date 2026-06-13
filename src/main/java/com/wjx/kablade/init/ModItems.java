@@ -31,7 +31,7 @@ public final class ModItems {
 
     @CustomBladeModel
     public static final RegistryObject<Item> KABLADE_BLADE = registerItem(
-            "kablade_blade",
+            "kablade_blade_named",
             KbladeBladeItem::new);
 
     private ModItems() {

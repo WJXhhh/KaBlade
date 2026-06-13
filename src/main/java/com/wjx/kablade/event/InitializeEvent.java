@@ -1,7 +1,7 @@
 package com.wjx.kablade.event;
 
 import com.wjx.kablade.Main;
-import com.wjx.kablade.blade.KabladeBlades;
+import com.wjx.kablade.blades.KabladeBlades;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;

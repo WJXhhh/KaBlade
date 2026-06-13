@@ -3,7 +3,7 @@ package com.wjx.kablade;
 import com.mojang.logging.LogUtils;
 import com.wjx.kablade.init.ModItems;
 import com.wjx.kablade.init.ModSlashArts;
-import com.wjx.kablade.blade.KabladeBlades;
+import com.wjx.kablade.blades.KabladeBlades;
 import com.wjx.kablade.util.creative_tab.CreativeTabBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;

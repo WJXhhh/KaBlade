@@ -1,11 +1,13 @@
 {
   "itemGroup.kablade": "Kablade",
+  "itemGroup.kablade.noted": "Kablade Noted",
+
   "item.kablade.kablade_ingot": "Kablade Ingot",
   "item.kablade.kablade_core": "Kablade Core",
   "item.kablade.kablade_blade": "Kablade Blade",
-  "item.kablade.hangtu": "Hangtu Blade",
   "item.kablade.main_mater": "Kablade",
   "item.kablade.rimmed_earth_stick": "Rimmed Earth Stick",
   "item.kablade.noted": "Noted",
-  "itemGroup.kablade.noted": "Kablade Noted"
+
+  "item.kablade.wjx.ordinary.rimmed_earth": "§rAnonymity -RimmedEarth-"
 }
