@@ -1,0 +1,26 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:wjx/ordinary/rocky_shanchang",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_blade_named",
+      "request": {
+        "name": "kablade:wjx/ordinary/rimmed_earth"
+      }
+    },
+    "B": {
+      "item": "minecraft:diorite"
+    }
+  },
+  "pattern": [
+    "  B",
+    " B ",
+    "A  "
+  ],
+  "result": {
+    "item": "kablade:kablade_blade_named"
+  },
+  "show_notification": true
+}

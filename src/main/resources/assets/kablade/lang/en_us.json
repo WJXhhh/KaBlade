@@ -10,5 +10,8 @@
   "item.kablade.rimmed_earth_stick": "Rimmed Earth Stick",
   "item.kablade.noted": "Noted",
 
-  "item.kablade.wjx.ordinary.rimmed_earth": "§rAnonymity -RimmedEarth-"
+  "item.kablade.wjx.ordinary.rimmed_earth": "§rAnonymity -RimmedEarth-",
+  "item.kablade.wjx.ordinary.rocky_anshan": "§rInscribed -Hearty-",
+  "item.kablade.wjx.ordinary.rocky_huagang": "§rInscribed -Jagged-",
+  "item.kablade.wjx.ordinary.rocky_shanchang": "§rInscribed -Chime-"
 }
