@@ -1,7 +1,7 @@
 package com.wjx.kablade.event;
 
 import com.wjx.kablade.Main;
-import com.wjx.kablade.blades.KabladeBlades;
+import com.wjx.kablade.blades.BladeLoader;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;
@@ -19,7 +19,7 @@ public class InitializeEvent {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         RegistrySetBuilder blades = new RegistrySetBuilder()
-                .add(SlashBladeDefinition.REGISTRY_KEY, KabladeBlades::bootstrap);
+                .add(SlashBladeDefinition.REGISTRY_KEY, BladeLoader::bootstrap);
 
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
                 generator.getPackOutput(), event.getLookupProvider(), blades, Set.of(Main.MODID)));

@@ -4,7 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.wjx.kablade.init.ModBlocks;
 import com.wjx.kablade.init.ModItems;
 import com.wjx.kablade.init.ModSlashArts;
-import com.wjx.kablade.blades.KabladeBlades;
+import com.wjx.kablade.blades.BladeLoader;
 import com.wjx.kablade.util.creative_tab.CreativeTabBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -67,7 +67,7 @@ public final class Main {
             modBus.addListener(this::clientSetup);
         }
 
-        TAB_KABLADE.addDisplayItems(KabladeBlades::fillCreativeTab);
+        TAB_KABLADE.addDisplayItems(BladeLoader::fillCreativeTab);
         // 方块物品（含 RIMMED_EARTH）已在 ModItems.registerBlockItem 里挂到 TAB_KABLADE，无需在此重复添加。
         TAB_KABLADE.registerTab("tab_kablade", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_NOTED.registerTab("tab_kablade_noted", CREATIVE_TAB_REGISTRY);

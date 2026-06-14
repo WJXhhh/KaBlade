@@ -79,6 +79,17 @@ public final class ModItems {
         return item;
     }
 
+
+    /**
+     * 为方块注册对应的 {@link BlockItem}（注册名沿用方块本身的注册名），把它收进
+     *
+     * <p>这里用 {@code () -> item.get()...} 的 Supplier 延迟取值：注册尚未完成时不能调用
+     */
+    public static RegistryObject<Item> registerBlockItem(RegistryObject<Block> block) {
+        return ITEM_REGISTRY.register(Objects.requireNonNull(block.getId()).getPath(),
+                () -> new BlockItem(block.get(), new Item.Properties()));
+    }
+
     //Block Item
     public static final RegistryObject<Item> RIMMED_EARTH = registerBlockItem(ModBlocks.RIMMED_EARTH, Main.TAB_KABLADE);
 }
