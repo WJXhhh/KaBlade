@@ -1,11 +1,13 @@
 package com.wjx.kablade;
 
 import com.mojang.logging.LogUtils;
+import com.wjx.kablade.config.KabladeConfig;
 import com.wjx.kablade.init.ModBlocks;
 import com.wjx.kablade.init.ModItems;
 import com.wjx.kablade.init.ModSlashArts;
 import com.wjx.kablade.blades.BladeLoader;
 import com.wjx.kablade.util.creative_tab.CreativeTabBuilder;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -71,6 +73,11 @@ public final class Main {
         // 方块物品（含 RIMMED_EARTH）已在 ModItems.registerBlockItem 里挂到 TAB_KABLADE，无需在此重复添加。
         TAB_KABLADE.registerTab("tab_kablade", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_NOTED.registerTab("tab_kablade_noted", CREATIVE_TAB_REGISTRY);
+
+        // --- Config ---
+        // COMMON 配置：全局攻击/耐久倍率，启动前在 config/kablade-common.toml 编辑。
+        // context 本身就是 ModLoadingContext 的子类，直接调实例方法 registerConfig，避免弃用的静态 get()。
+        context.registerConfig(ModConfig.Type.COMMON, KabladeConfig.SPEC);
 
         // --- Content registration ---
         ModItems.ITEM_REGISTRY.register(modBus);
