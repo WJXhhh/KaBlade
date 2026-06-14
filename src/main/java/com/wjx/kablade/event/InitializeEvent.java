@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.Set;
 
+//需手动运行gradlew runData
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class InitializeEvent {
     @SubscribeEvent
