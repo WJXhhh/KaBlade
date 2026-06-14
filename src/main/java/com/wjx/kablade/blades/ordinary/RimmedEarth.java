@@ -3,7 +3,6 @@ package com.wjx.kablade.blades.ordinary;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
-import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.registry.slashblade.PropertiesDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.RenderDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
@@ -26,7 +25,6 @@ public class RimmedEarth extends BladeDefineBase {
                 PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(2.0F)
                         .maxDamage(60)
-                        .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .build(),
                 List.of()
                 ));
