@@ -40,8 +40,7 @@ public final class KbladeClientEvents {
                 Item item = ro.get();
                 ModelResourceLocation loc = new ModelResourceLocation(
                         Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item)), "inventory");
-                BakedModel original = event.getModels().get(loc);
-                event.getModels().put(loc, new BladeModel(original, event.getModelBakery()));
+                event.getModels().compute(loc, (k, original) -> new BladeModel(original, event.getModelBakery()));
             } catch (IllegalAccessException ignored) {
             }
         }
