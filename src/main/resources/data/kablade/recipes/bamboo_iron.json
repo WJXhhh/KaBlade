@@ -1,17 +1,13 @@
 {
   "type": "slashblade:shaped_blade",
-  "blade": "kablade:rocky_anshan",
+  "blade": "kablade:bamboo_iron",
   "category": "equipment",
   "key": {
     "A": {
-      "type": "slashblade:blade",
-      "item": "kablade:kablade_blade_named",
-      "request": {
-        "name": "kablade:hangtu"
-      }
+      "item": "slashblade:slashblade_bamboo"
     },
     "B": {
-      "item": "minecraft:andesite"
+      "item": "minecraft:iron_ingot"
     }
   },
   "pattern": [

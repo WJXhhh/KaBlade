@@ -28,6 +28,9 @@ src/generated
 # Files from Forge MDK
 forge*changelog.txt
 
+# Local third-party mod jars dropped into ./libs for dev inspection (flatDir deobf deps)
+libs/*.jar
+
 # Project-specific
 CLAUDE.md
 gg.ps1

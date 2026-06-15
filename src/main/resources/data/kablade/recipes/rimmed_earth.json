@@ -1,22 +1,15 @@
 {
-  "type": "slashblade:shaped_blade",
-  "blade": "kablade:wjx/ordinary/rimmed_earth",
-  "category": "equipment",
-  "key": {
-    "B": {
-      "item": "kablade:rimmed_earth_stick"
-    },
-    "E": {
-      "item": "kablade:rimmed_earth"
-    }
-  },
-  "pattern": [
-    "  E",
-    " E ",
-    "B  "
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "kablade",
+  "ingredients": [
+    { "item": "minecraft:dirt" },
+    { "item": "minecraft:dirt" },
+    { "item": "minecraft:dirt" },
+    { "item": "minecraft:dirt" }
   ],
   "result": {
-    "item": "kablade:kablade_blade_named"
-  },
-  "show_notification": true
+    "item": "kablade:rimmed_earth",
+    "count": 1
+  }
 }

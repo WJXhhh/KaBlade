@@ -34,7 +34,7 @@ public final class ModItems {
 
     //Creative Tab Icon
     public static final RegistryObject<Item> MAIN_MATER = registerItemBase("main_mater");
-    public static final RegistryObject<Item> NOTED = registerItemBase("noted",Main.TAB_KABLADE_NOTED);
+    public static final RegistryObject<Item> NOTED = registerItemBase("noted");
 
     //ORDINARY
     public static final RegistryObject<Item> RIMMED_EARTH_STICK = registerItemBase("rimmed_earth_stick",Main.TAB_KABLADE);

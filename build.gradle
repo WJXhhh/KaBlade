@@ -164,10 +164,20 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
-    // flatDir {
-    //     dir 'libs'
-    // }
+    flatDir {
+        dir 'libs'
+    }
 
+    // CurseMaven — pulls SlashBlade 1.8.62 (and any other CurseForge-only mod jars) by project/file id.
+    // includeGroup keeps it from being consulted for non-curse dependencies.
+    maven {
+        name 'CurseMaven'
+        url 'https://cursemaven.com'
+        content { includeGroup 'curse.maven' }
+    }
+
+    // MMMaven — kept for reference; only carried SlashBlade up to 1.5.49 for MC 1.20.1, so we now
+    // pull SlashBlade from CurseMaven instead. Safe to remove if no MMMaven dependency remains.
     maven {
         name 'MMMaven'
         url 'https://raw.github.com/0999312/MMMaven/main/repository'
@@ -188,10 +198,10 @@ dependencies {
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    // SlashBlade Resharped (拔刀剑) as the parent mod, from MMMaven (declared in repositories below).
-    // MMMaven provides proper POM metadata so fg.deobf remaps cleanly. For MC 1.20.1 the latest is 1.5.49;
-    // 2.0.x versions are for MC 1.21.1 and must NOT be used here.
-    implementation fg.deobf("mods.flammpfeil.slashblade:SlashBlade_Resharped:${slash_blade_version}")
+    // SlashBlade Resharped (拔刀剑) ${slash_blade_version}, from CurseForge via CurseMaven — matched to the
+    // NegoreRouse repo's version. The curse.maven coordinate version is the CurseForge FILE id
+    // (slash_blade_curse_file), not the semantic version. MMMaven has no 1.20.1 build past 1.5.49.
+    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:${slash_blade_curse_file}")
 
     // Mixin annotation processor — generates the refmap so injections survive reobfuscation.
     // Forge already ships Mixin at runtime, so this is only needed at compile time.
@@ -206,6 +216,13 @@ dependencies {
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
     // The group id is ignored when searching -- in this case, it is "blank"
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
+
+    // NegoreRouse (prinegorerouse) — local production jar in ./libs, dropped in only to inspect
+    // it in-dev. fg.deobf remaps its SRG names → official so it links against this workspace;
+    // its mixins are remapped by the global mixin.env.remapRefMap=true set in the run config above.
+    // runtimeOnly (not implementation): we run it, we don't compile against it.
+    // Maps to ./libs/prinegorerouse-1.3.3-all.jar ; group id "blank" is ignored by flatDir.
+    runtimeOnly fg.deobf("blank:prinegorerouse:1.3.3-all")
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

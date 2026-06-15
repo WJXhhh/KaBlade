@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_rimmed_earth_stick": {
+    "has_iron_block": {
       "conditions": {
         "items": [
           {
             "items": [
-              "kablade:rimmed_earth_stick"
+              "minecraft:iron_block"
             ]
           }
         ]
@@ -15,20 +15,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "kablade:rimmed_earth"
+        "recipe": "kablade:rocky_ex"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_rimmed_earth_stick",
+      "has_iron_block",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "kablade:rimmed_earth"
+      "kablade:rocky_ex"
     ]
   },
   "sends_telemetry_event": false

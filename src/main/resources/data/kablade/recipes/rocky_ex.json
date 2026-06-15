@@ -1,0 +1,40 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:rocky_ex",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:iron_block"
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_blade_named",
+      "request": {
+        "name": "kablade:rocky_anshan"
+      }
+    },
+    "C": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_blade_named",
+      "request": {
+        "name": "kablade:rocky_huagang"
+      }
+    },
+    "D": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_blade_named",
+      "request": {
+        "name": "kablade:rocky_shanchang"
+      }
+    }
+  },
+  "pattern": [
+    "  C",
+    " B ",
+    "AD "
+  ],
+  "result": {
+    "item": "kablade:kablade_blade_named"
+  },
+  "show_notification": true
+}

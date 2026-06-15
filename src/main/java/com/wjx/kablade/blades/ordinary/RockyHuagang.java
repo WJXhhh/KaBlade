@@ -39,6 +39,6 @@ public class RockyHuagang extends BladeDefineBase {
 
     @Override
     public String getKey() {
-        return "wjx/ordinary/rocky_huagang";
+        return "rocky_huagang";
     }
 }

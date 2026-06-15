@@ -1,13 +1,13 @@
 {
   "type": "slashblade:shaped_blade",
-  "blade": "kablade:wjx/ordinary/rocky_huagang",
+  "blade": "kablade:rocky_huagang",
   "category": "equipment",
   "key": {
     "A": {
       "type": "slashblade:blade",
       "item": "kablade:kablade_blade_named",
       "request": {
-        "name": "kablade:wjx/ordinary/rimmed_earth"
+        "name": "kablade:hangtu"
       }
     },
     "B": {

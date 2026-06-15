@@ -10,8 +10,15 @@
   "item.kablade.rimmed_earth_stick": "夯土棍",
   "item.kablade.noted": "知名",
 
-  "item.kablade.wjx.ordinary.rimmed_earth": "§r无铭「夯土」",
-  "item.kablade.wjx.ordinary.rocky_anshan": "§r自铭「矍铄」",
-  "item.kablade.wjx.ordinary.rocky_huagang": "§r自铭「嶙峋」",
-  "item.kablade.wjx.ordinary.rocky_shanchang": "§r自铭「明磬」"
+  "item.kablade.hangtu": "§r无铭「夯土」",
+  "item.kablade.rocky_anshan": "§r自铭「矍铄」",
+  "item.kablade.rocky_huagang": "§r自铭「嶙峋」",
+  "item.kablade.rocky_shanchang": "§r自铭「明磬」",
+  "item.kablade.noted_vine": "铭刀「青藤」",
+  "item.kablade.bamboo_iron": "§r铁刃「竹光」",
+  "item.kablade.rocky_ex": "千岩之锋",
+
+  "slash_art.kablade.rock_strike": "岩石撼击",
+
+  "entity.kablade.rock_spike": "岩刺"
 }

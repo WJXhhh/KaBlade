@@ -3,6 +3,7 @@ package com.wjx.kablade;
 import com.mojang.logging.LogUtils;
 import com.wjx.kablade.config.KabladeConfig;
 import com.wjx.kablade.init.ModBlocks;
+import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.init.ModItems;
 import com.wjx.kablade.init.ModSlashArts;
 import com.wjx.kablade.blades.BladeLoader;
@@ -43,7 +44,7 @@ public final class Main {
     public static final String MOD_NAME = "Kablade";
 
     /** Mod version. */
-    public static final String VERSION = "2.0.0";
+    public static final String VERSION = "2.0.0-a";
 
     /** Shared logger. */
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -69,7 +70,7 @@ public final class Main {
             modBus.addListener(this::clientSetup);
         }
 
-        TAB_KABLADE.addDisplayItems(BladeLoader::fillCreativeTab);
+        TAB_KABLADE_NOTED.addDisplayItems(BladeLoader::fillCreativeTab);
         // 方块物品（含 RIMMED_EARTH）已在 ModItems.registerBlockItem 里挂到 TAB_KABLADE，无需在此重复添加。
         TAB_KABLADE.registerTab("tab_kablade", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_NOTED.registerTab("tab_kablade_noted", CREATIVE_TAB_REGISTRY);
@@ -83,6 +84,7 @@ public final class Main {
         ModItems.ITEM_REGISTRY.register(modBus);
         ModBlocks.BLOCK_REGISTRY.register(modBus);
         ModSlashArts.REGISTRY.register(modBus);
+        ModEntities.REGISTRY.register(modBus);
         CREATIVE_TAB_REGISTRY.register(modBus);
 
         // --- Forge (gameplay) event bus ---
@@ -100,6 +102,8 @@ public final class Main {
     /** Client-only setup (renderers, key mappings, …). */
     private void clientSetup(final FMLClientSetupEvent event) {
         LOGGER.debug("[{}] client setup", MODID);
+        // 后台拉取远端版本号，有更新时由 UpdateNotifier 在进入世界后提示玩家。
+        com.wjx.kablade.update.UpdateChecker.start(VERSION);
     }
 
     /** Builds a ResourceLocation under this mod's namespace (e.g. {@code id("my_blade")}). */

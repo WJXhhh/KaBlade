@@ -1,0 +1,22 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:hangtu",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "kablade:rimmed_earth_stick"
+    },
+    "E": {
+      "item": "kablade:rimmed_earth"
+    }
+  },
+  "pattern": [
+    "  E",
+    " E ",
+    "B  "
+  ],
+  "result": {
+    "item": "kablade:kablade_blade_named"
+  },
+  "show_notification": true
+}

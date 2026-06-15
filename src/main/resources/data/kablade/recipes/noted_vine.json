@@ -1,6 +1,6 @@
 {
   "type": "slashblade:shaped_blade",
-  "blade": "kablade:rocky_anshan",
+  "blade": "kablade:noted_vine",
   "category": "equipment",
   "key": {
     "A": {
@@ -11,13 +11,16 @@
       }
     },
     "B": {
-      "item": "minecraft:andesite"
+      "item": "minecraft:vine"
+    },
+    "C": {
+      "item": "minecraft:wheat_seeds"
     }
   },
   "pattern": [
-    "  B",
-    " B ",
-    "A  "
+    "BCB",
+    "CAC",
+    "BCB"
   ],
   "result": {
     "item": "kablade:kablade_blade_named"

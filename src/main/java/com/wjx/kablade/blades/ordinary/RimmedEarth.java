@@ -32,6 +32,6 @@ public class RimmedEarth extends BladeDefineBase {
 
     @Override
     public String getKey() {
-        return "wjx/ordinary/rimmed_earth";
+        return "hangtu";
     }
 }
