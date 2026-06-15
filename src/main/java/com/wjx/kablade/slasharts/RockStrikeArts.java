@@ -141,7 +141,7 @@ public final class RockStrikeArts extends SlashArts {
             };
 
             int delay = ring * RING_DELAY;
-            if (delay == 0 || server == null) {
+            if (delay == 0) {
                 wave.run();
             } else {
                 server.tell(new TickTask(server.getTickCount() + delay, wave));

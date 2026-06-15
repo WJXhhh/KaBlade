@@ -1,7 +1,7 @@
 package com.wjx.kablade.blades.ordinary;
 
 import com.wjx.kablade.blades.base.BladeDefineBase;
-import com.wjx.kablade.init.ModSlashArts;
+import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.item.SwordType;

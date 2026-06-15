@@ -1,4 +1,4 @@
-package com.wjx.kablade.init;
+package com.wjx.kablade.blades;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.slasharts.KabladeSlashArts;

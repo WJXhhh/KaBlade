@@ -5,7 +5,7 @@ import com.wjx.kablade.config.KabladeConfig;
 import com.wjx.kablade.init.ModBlocks;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.init.ModItems;
-import com.wjx.kablade.init.ModSlashArts;
+import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.BladeLoader;
 import com.wjx.kablade.util.creative_tab.CreativeTabBuilder;
 import net.minecraftforge.fml.config.ModConfig;
