@@ -2,6 +2,7 @@ package com.wjx.kablade.blades;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.slasharts.RockStrikeArts;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
