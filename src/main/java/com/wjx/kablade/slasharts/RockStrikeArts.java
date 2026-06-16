@@ -27,6 +27,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
+import mods.flammpfeil.slashblade.util.TargetSelector;
+
 /**
  * 岩石撼击 — 千岩之锋专属 SA。
  * <p>
@@ -177,14 +179,17 @@ public final class RockStrikeArts extends SlashArts {
                 1.4F, 0.55F + ring * 0.1F);
 
         // —— 伤害 + 击飞：扫描以 origin 为心、半径 (radius+HIT_BAND) 的圆盘 ——
+        // target 筛选走 SlashBlade 的 AttackablePredicate，与拔刀剑默认攻击行为一致
         double reach = radius + HIT_BAND;
         AABB box = new AABB(
                 origin.x - reach, origin.y - 1.0, origin.z - reach,
                 origin.x + reach, origin.y + 3.0, origin.z + reach);
         double reachSq = reach * reach;
+        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
 
         for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e.isAlive() && e != user && !damaged.contains(e))) {
+                e -> e.isAlive() && e != user && !damaged.contains(e)
+                        && !e.isAlliedTo(user) && attackable.test(e))) {
             double dx = target.getX() - origin.x;
             double dz = target.getZ() - origin.z;
             if (dx * dx + dz * dz > reachSq) {
