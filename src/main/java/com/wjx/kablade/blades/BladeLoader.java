@@ -1,6 +1,7 @@
 package com.wjx.kablade.blades;
 
 import com.wjx.kablade.blades.base.BladeDefineBase;
+import com.wjx.kablade.blades.ordinary.ArcLight;
 import com.wjx.kablade.blades.ordinary.BambooBattler;
 import com.wjx.kablade.blades.ordinary.BambooIron;
 import com.wjx.kablade.blades.ordinary.BambooLumi;
@@ -32,6 +33,7 @@ public final class BladeLoader {
     public static BladeDefineBase ROCKY_EX;
     public static BladeDefineBase BAMBOO_BATTLER;
     public static BladeDefineBase BAMBOO_LUMI;
+    public static BladeDefineBase ARC_LIGHT;
 
     /**
      * 创造模式物品栏的显示顺序（按合成链路排列）。
@@ -47,10 +49,11 @@ public final class BladeLoader {
             "rocky_ex",            // 岩石Lv2：千岩之锋
             // 自然线：夯土 → 青藤
             "noted_vine",          // 自然Lv1：铭刀「青藤」
-            // 竹线：铁刃「竹光」→ 战刃「竹光」→ 流萤「竹光」
+            // 竹线：铁刃「竹光」→ 战刃「竹光」→ 流萤「竹光」→ 弧光刃「流芒」
             "bamboo_iron",         // 竹Lv1：铁刃「竹光」
             "bamboo_battler",      // 竹Lv2：战刃「竹光」
-            "bamboo_lumi"          // 竹Lv2：流萤「竹光」
+            "bamboo_lumi",         // 竹Lv2：流萤「竹光」
+            "arc_light"            // 竹Lv3：弧光刃「流芒」
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
@@ -68,6 +71,8 @@ public final class BladeLoader {
         // 竹系列 Lv2：铁刃「竹光」+ 铁锭 / 萤石粉
         BAMBOO_BATTLER = new BambooBattler(context);
         BAMBOO_LUMI = new BambooLumi(context);
+        // 竹系列 Lv3：流萤「竹光」+ 萤石粉 + 铁块 → 弧光刃「流芒」
+        ARC_LIGHT = new ArcLight(context);
     }
 
     public static void fillCreativeTab(CreativeModeTab.ItemDisplayParameters parameters,

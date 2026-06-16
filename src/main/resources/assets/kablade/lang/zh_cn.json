@@ -18,7 +18,9 @@
   "item.kablade.bamboo_lumi": "§r流萤「竹光」",
   "item.kablade.rocky_ex": "千岩之锋",
 
-  "slash_art.kablade.rock_strike": "岩石撼击",
+  "item.kablade.arc_light": "§r弧光刃「流芒」",
 
+  "slash_art.kablade.rock_strike": "岩石撼击",
+  "slash_art.kablade.break_the_dawn": "弧光破晓",
   "entity.kablade.rock_spike": "岩刺"
 }

@@ -18,7 +18,9 @@
   "item.kablade.bamboo_lumi": "§rFirefly -BambooLight-",
   "item.kablade.rocky_ex": "Rocky Ex",
 
-  "slash_art.kablade.rock_strike": "Rock Strike",
+  "item.kablade.arc_light": "§rArcLight Blade[Light Flowing]",
 
+  "slash_art.kablade.rock_strike": "Rock Strike",
+  "slash_art.kablade.break_the_dawn": "Break the Dawn",
   "entity.kablade.rock_spike": "Rock Spike"
 }
