@@ -67,13 +67,13 @@ public final class ModItems {
 
     // 工具
     public static final RegistryObject<Item> AURORA_METAL_SWORD = registerItem("aurora_metal_sword",
-            () -> new SwordItem(AURORA_METAL_TIER, 3, -2.4f, new Item.Properties()));
+            () -> new SwordItem(AURORA_METAL_TIER, 3, -2.4f, new Item.Properties()), Main.TAB_KABLADE);
     public static final RegistryObject<Item> AURORA_METAL_PICKAXE = registerItem("aurora_metal_pickaxe",
-            () -> new PickaxeItem(AURORA_METAL_TIER, 1, -2.8f, new Item.Properties()));
+            () -> new PickaxeItem(AURORA_METAL_TIER, 1, -2.8f, new Item.Properties()), Main.TAB_KABLADE);
     public static final RegistryObject<Item> AURORA_METAL_AXE = registerItem("aurora_metal_axe",
-            () -> new AxeItem(AURORA_METAL_TIER, 5.5f, -3.1f, new Item.Properties()));
+            () -> new AxeItem(AURORA_METAL_TIER, 5.5f, -3.1f, new Item.Properties()), Main.TAB_KABLADE);
     public static final RegistryObject<Item> AURORA_METAL_HOE = registerItem("aurora_metal_hoe",
-            () -> new HoeItem(AURORA_METAL_TIER, -3, -1.0f, new Item.Properties()));
+            () -> new HoeItem(AURORA_METAL_TIER, -3, -1.0f, new Item.Properties()), Main.TAB_KABLADE);
 
     private ModItems() {
 
@@ -97,6 +97,12 @@ public final class ModItems {
 
     public static RegistryObject<Item> registerItem(String registryName, Supplier<Item> supplier) {
         return ITEM_REGISTRY.register(registryName, supplier);
+    }
+
+    public static RegistryObject<Item> registerItem(String registryName, Supplier<Item> supplier, CreativeTabBuilder tab) {
+        RegistryObject<Item> ro = ITEM_REGISTRY.register(registryName, supplier);
+        tab.addStack(() -> ro.get().getDefaultInstance());
+        return ro;
     }
 
     /**

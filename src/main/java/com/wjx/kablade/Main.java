@@ -72,11 +72,6 @@ public final class Main {
 
         TAB_KABLADE_NOTED.addDisplayItems(BladeLoader::fillCreativeTab);
         // 方块物品（含 RIMMED_EARTH）已在 ModItems.registerBlockItem 里挂到 TAB_KABLADE，无需在此重复添加。
-        // 极光金属工具
-        TAB_KABLADE.addStack(() -> new ItemStack(ModItems.AURORA_METAL_SWORD.get()));
-        TAB_KABLADE.addStack(() -> new ItemStack(ModItems.AURORA_METAL_PICKAXE.get()));
-        TAB_KABLADE.addStack(() -> new ItemStack(ModItems.AURORA_METAL_AXE.get()));
-        TAB_KABLADE.addStack(() -> new ItemStack(ModItems.AURORA_METAL_HOE.get()));
         TAB_KABLADE.registerTab("tab_kablade", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_NOTED.registerTab("tab_kablade_noted", CREATIVE_TAB_REGISTRY);
 
