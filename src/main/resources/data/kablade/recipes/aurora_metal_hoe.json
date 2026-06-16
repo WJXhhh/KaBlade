@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "kablade",
+  "pattern": ["BB", " A", " A"],
+  "key": {
+    "A": { "item": "kablade:sturdy_glass_stick" },
+    "B": { "item": "kablade:aurora_metal_ingot" }
+  },
+  "result": { "item": "kablade:aurora_metal_hoe" }
+}

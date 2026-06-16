@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "kablade",
+  "pattern": [" A ", "ABA", " A "],
+  "key": {
+    "A": { "item": "kablade:aurora_fragment" },
+    "B": { "item": "minecraft:gold_ingot" }
+  },
+  "result": { "item": "kablade:aurora_metal_ingot", "count": 2 }
+}

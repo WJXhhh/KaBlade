@@ -1,6 +1,7 @@
 package com.wjx.kablade.blades;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.slasharts.AuroraShiningArts;
 import com.wjx.kablade.slasharts.BreakTheDawnArts;
 import com.wjx.kablade.slasharts.RockStrikeArts;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
@@ -20,6 +21,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> BREAK_THE_DAWN = REGISTRY.register(
             "break_the_dawn",
             () -> new BreakTheDawnArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> AURORA_SHINING = REGISTRY.register(
+            "aurora_shining",
+            () -> new AuroraShiningArts(entity -> ComboStateRegistry.NONE.getId()));
 
     private ModSlashArts() {
     }

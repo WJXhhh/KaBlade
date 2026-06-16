@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -18,4 +19,12 @@ public final class ModBlocks {
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.DIRT)
                     .strength(0.5f)));
+
+    /** 极光矿石——生成在寒带群系 Y=40~80，需要铁镐以上开采。 */
+    public static final RegistryObject<Block> AURORA_ORE = BLOCK_REGISTRY.register(
+            "aurora_ore",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(3.0f, 3.0f)
+                    .requiresCorrectToolForDrops()));
 }

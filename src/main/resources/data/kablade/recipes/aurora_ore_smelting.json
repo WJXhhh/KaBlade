@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.7,
+  "ingredient": { "item": "kablade:aurora_ore" },
+  "result": "kablade:aurora_fragment"
+}

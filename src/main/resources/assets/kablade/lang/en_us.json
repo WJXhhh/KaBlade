@@ -22,5 +22,17 @@
 
   "slash_art.kablade.rock_strike": "Rock Strike",
   "slash_art.kablade.break_the_dawn": "Break the Dawn",
-  "entity.kablade.rock_spike": "Rock Spike"
+  "entity.kablade.rock_spike": "Rock Spike",
+
+  "block.kablade.aurora_ore": "Aurora Ore",
+  "item.kablade.aurora_fragment": "Aurora Fragment",
+  "item.kablade.aurora_metal_ingot": "Aurora Metal Ingot",
+  "item.kablade.sturdy_glass_stick": "Sturdy Glass Stick",
+  "item.kablade.aurora_metal_sword": "Aurora Metal Sword",
+  "item.kablade.aurora_metal_pickaxe": "Aurora Metal Pickaxe",
+  "item.kablade.aurora_metal_axe": "Aurora Metal Axe",
+  "item.kablade.aurora_metal_hoe": "Aurora Metal Hoe",
+
+  "item.kablade.aurora_blade": "§rAurora Blade[Sky Shining]",
+  "slash_art.kablade.aurora_shining": "Aurora Shining"
 }

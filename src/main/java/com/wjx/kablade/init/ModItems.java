@@ -7,9 +7,11 @@ import com.wjx.kablade.api.CustomBladeModel;
 import com.wjx.kablade.object.item.ordinary.ItemBase;
 import com.wjx.kablade.object.item.KbladeBladeItem;
 import com.wjx.kablade.util.creative_tab.CreativeTabBuilder;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -39,7 +41,39 @@ public final class ModItems {
     //ORDINARY
     public static final RegistryObject<Item> RIMMED_EARTH_STICK = registerItemBase("rimmed_earth_stick",Main.TAB_KABLADE);
 
+    // ─── Aurora Metal ──────────────────────────────────────────────
 
+    /** 极光金属 Tier：介于钻石与下界合金之间，附魔能力极高（25）。 */
+    public static final Tier AURORA_METAL_TIER = TierSortingRegistry.registerTier(
+            new Tier() {
+                @Override public int getUses()            { return 1000; }
+                @Override public float getSpeed()         { return 7.5f; }
+                @Override public float getAttackDamageBonus() { return 3.2f; }
+                @Override public int getLevel()            { return 4; }
+                @Override public int getEnchantmentValue() { return 25; }
+                @Override public Ingredient getRepairIngredient() {
+                    return Ingredient.of(AURORA_METAL_INGOT.get());
+                }
+            },
+            ResourceLocation.fromNamespaceAndPath(Main.MODID, "aurora_metal"),
+            List.of(Tiers.DIAMOND),
+            List.of(Tiers.NETHERITE)
+    );
+
+    // 材料
+    public static final RegistryObject<Item> AURORA_FRAGMENT = registerItemBase("aurora_fragment", Main.TAB_KABLADE);
+    public static final RegistryObject<Item> AURORA_METAL_INGOT = registerItemBase("aurora_metal_ingot", Main.TAB_KABLADE);
+    public static final RegistryObject<Item> STURDY_GLASS_STICK = registerItemBase("sturdy_glass_stick", Main.TAB_KABLADE);
+
+    // 工具
+    public static final RegistryObject<Item> AURORA_METAL_SWORD = registerItem("aurora_metal_sword",
+            () -> new SwordItem(AURORA_METAL_TIER, 3, -2.4f, new Item.Properties()));
+    public static final RegistryObject<Item> AURORA_METAL_PICKAXE = registerItem("aurora_metal_pickaxe",
+            () -> new PickaxeItem(AURORA_METAL_TIER, 1, -2.8f, new Item.Properties()));
+    public static final RegistryObject<Item> AURORA_METAL_AXE = registerItem("aurora_metal_axe",
+            () -> new AxeItem(AURORA_METAL_TIER, 5.5f, -3.1f, new Item.Properties()));
+    public static final RegistryObject<Item> AURORA_METAL_HOE = registerItem("aurora_metal_hoe",
+            () -> new HoeItem(AURORA_METAL_TIER, -3, -1.0f, new Item.Properties()));
 
     private ModItems() {
 

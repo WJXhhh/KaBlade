@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "kablade",
+  "pattern": ["ABA", "ABA", "ABA"],
+  "key": {
+    "A": { "item": "minecraft:glass_pane" },
+    "B": { "item": "minecraft:iron_ingot" }
+  },
+  "result": { "item": "kablade:sturdy_glass_stick", "count": 8 }
+}
