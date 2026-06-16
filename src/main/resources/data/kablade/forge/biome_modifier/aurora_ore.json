@@ -1,6 +1,6 @@
 {
   "type": "forge:add_features",
   "biomes": "#kablade:has_aurora_ore",
-  "feature": "kablade:aurora_ore",
+  "features": "kablade:aurora_ore",
   "step": "underground_ores"
 }
