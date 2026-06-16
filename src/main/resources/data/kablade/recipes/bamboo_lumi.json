@@ -1,0 +1,26 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:bamboo_lumi",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_blade_named",
+      "request": {
+        "name": "kablade:bamboo_iron"
+      }
+    },
+    "B": {
+      "item": "minecraft:glowstone_dust"
+    }
+  },
+  "pattern": [
+    "  B",
+    " B ",
+    "A  "
+  ],
+  "result": {
+    "item": "kablade:kablade_blade_named"
+  },
+  "show_notification": true
+}

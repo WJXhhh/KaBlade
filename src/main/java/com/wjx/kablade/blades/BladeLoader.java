@@ -1,7 +1,9 @@
 package com.wjx.kablade.blades;
 
 import com.wjx.kablade.blades.base.BladeDefineBase;
+import com.wjx.kablade.blades.ordinary.BambooBattler;
 import com.wjx.kablade.blades.ordinary.BambooIron;
+import com.wjx.kablade.blades.ordinary.BambooLumi;
 import com.wjx.kablade.blades.ordinary.NotedVine;
 import com.wjx.kablade.blades.ordinary.RimmedEarth;
 import com.wjx.kablade.blades.ordinary.RockyAnshan;
@@ -28,6 +30,8 @@ public final class BladeLoader {
     public static BladeDefineBase NOTED_VINE;
     public static BladeDefineBase BAMBOO_IRON;
     public static BladeDefineBase ROCKY_EX;
+    public static BladeDefineBase BAMBOO_BATTLER;
+    public static BladeDefineBase BAMBOO_LUMI;
 
     /**
      * 创造模式物品栏的显示顺序（按合成链路排列）。
@@ -40,7 +44,9 @@ public final class BladeLoader {
             "rocky_shanchang",     // 岩石Lv1：自铭「明磬」
             "noted_vine",          // 自然Lv1：铭刀「青藤」
             "bamboo_iron",         // 竹Lv1：铁刃「竹光」
-            "rocky_ex"             // 岩石Lv2：千岩之锋
+            "rocky_ex",             // 岩石Lv2：千岩之锋
+            "bamboo_battler",       // 竹Lv2：战刃「竹光」
+            "bamboo_lumi"           // 竹Lv2：流萤「竹光」
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
@@ -55,6 +61,9 @@ public final class BladeLoader {
         BAMBOO_IRON = new BambooIron(context);
         // 岩石线 Lv2：三把岩石 Lv1 刀 + 铁块融合
         ROCKY_EX = new RockyEX(context);
+        // 竹系列 Lv2：铁刃「竹光」+ 铁锭 / 萤石粉
+        BAMBOO_BATTLER = new BambooBattler(context);
+        BAMBOO_LUMI = new BambooLumi(context);
     }
 
     public static void fillCreativeTab(CreativeModeTab.ItemDisplayParameters parameters,
