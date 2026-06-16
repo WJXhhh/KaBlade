@@ -40,10 +40,10 @@ public final class AuroraShiningArts extends SlashArts {
     private static final int STORM_DRIVES = 16;
     private static final int RAIN_DRIVES = 12;
 
-    private static final float BASE_DRIVE_DAMAGE = 2.0F;
-    private static final float BASE_SWORD_DAMAGE = 3.0F;
+    private static final float BASE_DRIVE_DAMAGE = 1.0F;
+    private static final float BASE_SWORD_DAMAGE = 1.5F;
     private static final float ATTACK_RATIO = 0.5F;
-    private static final float BYPASS_BASE_DAMAGE = 4.0F;
+    private static final float BYPASS_BASE_DAMAGE = 2.0F;
     private static final float BYPASS_ATTACK_RATIO = 0.4F;
 
     /** 前方打击 / 结算射程（格）。 */

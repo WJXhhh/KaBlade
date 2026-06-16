@@ -39,10 +39,10 @@ public final class BreakTheDawnArts extends SlashArts {
     private static final int ARC_DRIVES = 9;
     private static final int LANCE_DRIVES = 8;
 
-    private static final float BASE_DRIVE_DAMAGE = 1.5F;
-    private static final float BASE_SWORD_DAMAGE = 2.5F;
+    private static final float BASE_DRIVE_DAMAGE = 0.75F;
+    private static final float BASE_SWORD_DAMAGE = 1.25F;
     private static final float ATTACK_RATIO = 0.5F;
-    private static final float FINALE_BASE_DAMAGE = 3.5F;
+    private static final float FINALE_BASE_DAMAGE = 1.75F;
     private static final float FINALE_ATTACK_RATIO = 0.4F;
 
     private static final double FORWARD_RANGE = 14.0;
