@@ -7,6 +7,7 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mods.flammpfeil.slashblade.compat.jei.JEICompat;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 让 JEI 按「刀名」区分本模组的命名刀。
@@ -27,7 +28,7 @@ import net.minecraft.resources.ResourceLocation;
 public class KbladeJeiPlugin implements IModPlugin {
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public @NotNull ResourceLocation getPluginUid() {
         return ResourceUtil.getLocation("jei");
     }
 
