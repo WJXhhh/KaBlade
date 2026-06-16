@@ -3,75 +3,73 @@ package com.wjx.kablade.slasharts;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityBlisteringSwords;
-import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.List;
 import java.util.function.Function;
 
 /**
- * 弧光破晓 —— 弧光刃「流芒」专属 SA。
+ * 弧光破晓 —— 弧光刃「流芒」专属 SA（在 1.12.2 {@code SaBreakTheDawn} 基础上重做为<b>向前突进式</b>大招）。
  * <p>
- * 从 1.12.2 的 {@code SaBreakTheDawn} 移植而来。
- * 爆开 5 道淡金色幻影刃 + 召唤 5 把环绕玩家的幻影剑自动索敌，
- * 同时给周围敌对生物施加发光效果，自身获得夜视。
- * <p>
- * 强度：
+ * 「以一刀划破黑夜，引来破晓」，全程朝玩家面向方向劈出：致盲正前方的敌人 → 横扫一道金色弧光 →
+ * 向前贯出一道晨曦光枪 → 最后一记裂空「破晓斩」劈穿前方、金光遍野。金色光辉（END_ROD 光束 + 琥珀金尘）。
  * <ul>
- *   <li>幻影刃 ×5：伤害 = 3 + 刀攻击力 × 0.5，向前飞出</li>
- *   <li>幻影剑 ×5：伤害 = 5 + 刀攻击力 × 0.5，环绕玩家自动索敌射击</li>
- *   <li>发光范围 10 格，持续 120s</li>
- *   <li>夜视持续 80s</li>
+ *   <li>t=0：自身夜视；前方敌人致盲 + 发光；脚下两道金环 + 指向前方的晨曦蓄力光束 + 6 把环身金刃</li>
+ *   <li>t=5：9 道金色飞斩横扫成一道前向弧光（±45°）</li>
+ *   <li>t=10：向前贯出晨曦光枪（END_ROD 光束 + 紧束金刃齐射）</li>
+ *   <li>t=15：向前裂空「破晓斩」+ 金色爆闪 + 前方扇区神圣伤害</li>
  * </ul>
  */
 public final class BreakTheDawnArts extends SlashArts {
 
-    /** 幻影刃/幻影剑数量（与 1.12.2 一致）。 */
-    private static final int COUNT = 5;
-    /** 幻影刃伤害基准值。 */
-    private static final float BASE_DRIVE_DAMAGE = 3.0F;
-    /** 幻影剑伤害基准值。 */
-    private static final float BASE_SWORD_DAMAGE = 5.0F;
-    /** 伤害：刀攻击力倍率。 */
+    private static final int GUARD_SWORDS = 6;
+    private static final int ARC_DRIVES = 9;
+    private static final int LANCE_DRIVES = 8;
+
+    private static final float BASE_DRIVE_DAMAGE = 1.5F;
+    private static final float BASE_SWORD_DAMAGE = 2.5F;
     private static final float ATTACK_RATIO = 0.5F;
-    /** 幻影刃速度。 */
-    private static final float DRIVE_SPEED = 1.5F;
-    /** 发光范围半径（格）。 */
-    private static final double GLOW_RADIUS = 10.0;
-    /** 发光时长（tick，120s）。 */
+    private static final float FINALE_BASE_DAMAGE = 3.5F;
+    private static final float FINALE_ATTACK_RATIO = 0.4F;
+
+    private static final double FORWARD_RANGE = 14.0;
     private static final int GLOW_DURATION = 2400;
-    /** 夜视时长（tick，80s）。 */
     private static final int NIGHT_VISION_DURATION = 1600;
-    /** 召唤剑颜色（淡金色）。 */
-    private static final int SWORD_COLOR = 0xfff8ca;
+    private static final int BLIND_DURATION = 60;
+
+    /** 金色调（弧光 / 晨曦）。偏暖的琥珀金，跟白色 END_ROD/FLASH 光束拉开对比，避免 climax 糊成一坨白。 */
+    private static final int GOLD = 0xFFC83C;
+    private static final int PALE_GOLD = 0xFFE07A;
 
     public BreakTheDawnArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);
     }
 
+    private static DustParticleOptions goldDust(float scale) {
+        return new DustParticleOptions(SaFx.rgb(GOLD), scale);
+    }
+
     @Override
     public ResourceLocation doArts(ArtsType type, LivingEntity user) {
-        if (user.level().isClientSide()) {
-            return super.doArts(type, user);
-        }
-
-        // 只有右键蓄力成功才触发，蓄力不足（Fail）不生效
-        if (type == ArtsType.Fail) {
+        if (user.level().isClientSide() || type == ArtsType.Fail) {
             return super.doArts(type, user);
         }
 
         final ServerLevel level = (ServerLevel) user.level();
+        final RandomSource rng = level.random;
         final ItemStack stack = user.getMainHandItem();
         final float bladeAttack = stack.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
@@ -79,67 +77,140 @@ public final class BreakTheDawnArts extends SlashArts {
 
         final float driveDamage = BASE_DRIVE_DAMAGE + bladeAttack * ATTACK_RATIO;
         final float swordDamage = BASE_SWORD_DAMAGE + bladeAttack * ATTACK_RATIO;
+        final float finaleDamage = FINALE_BASE_DAMAGE + bladeAttack * FINALE_ATTACK_RATIO;
 
-        // —— 1. 爆开 5 道幻影刃 ——
-        // 与 1.12.2 一致：全部朝视线方向飞出（无扇形偏移）
-        final Vec3 look = user.getLookAngle();
-
-        for (int i = 0; i < COUNT; i++) {
-            EntityDrive drive = new EntityDrive(SlashBlade.RegistryEvents.Drive, level);
-            drive.setPos(
-                    user.getX() + look.x * 0.5,
-                    user.getY() + user.getEyeHeight() * 0.6,
-                    user.getZ() + look.z * 0.5
-            );
-            drive.setShooter(user);
-            drive.setDamage(driveDamage);
-            drive.setColor(SWORD_COLOR);
-            drive.shoot(look.x, look.y + 0.05, look.z, DRIVE_SPEED, 0.5F);
-            level.addFreshEntity(drive);
+        // ── t=0：破晓（向前蓄势）──
+        if (user instanceof Player player) {
+            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, NIGHT_VISION_DURATION, 0, false, false));
         }
+        for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+            t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));
+            t.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLIND_DURATION, 0));  // 刺目晨光
+        }
+        dawnCharge(level, user);
+        level.playSound(null, user.getX(), user.getY(), user.getZ(),
+                SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.5F, 1.4F);
 
-        // —— 2. 召唤 5 把幻影剑，左右两侧各一组 ——
-        // 与 1.12.2 一致：分列玩家左右，全部朝向玩家面向方向
-        // faceEntityStandby 会根据 delay 值自动计算骑乘偏移量，
-        // 用不同 delay 让左右侧幻影剑分布在对应位置
-        for (int i = 0; i < COUNT; i++) {
-            // delay 控制 faceEntityStandby 中左右（奇偶）和远近（数值），
-            // 递增的 delay 让剑在玩家两侧依次排开，间距更大
-            int delay = i * 3;
-
+        // 环身金刃（自动索敌，朝前方目标补刀）
+        for (int i = 0; i < GUARD_SWORDS; i++) {
             EntityBlisteringSwords sword = new EntityBlisteringSwords(
                     SlashBlade.RegistryEvents.BlisteringSwords, level);
             sword.setPos(user.getX(), user.getY() + 1.2, user.getZ());
             sword.setShooter(user);
             sword.setDamage(swordDamage);
-            sword.setColor(SWORD_COLOR);
-            sword.setDelay(delay);
+            sword.setColor(PALE_GOLD);
+            sword.setDelay(i * 3);
             level.addFreshEntity(sword);
             sword.startRiding(user, true);
         }
 
-        // —— 3. 给周围敌对生物加发光 ——
-        AABB glowBox = user.getBoundingBox().inflate(GLOW_RADIUS);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, glowBox,
-                e -> e != user && e.isAlive() && !e.isAlliedTo(user));
-        for (LivingEntity target : targets) {
-            target.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 2));
-        }
+        // ── t=5：前向弧光横扫 ──
+        SaFx.schedule(level, 5, () -> {
+            if (!user.isAlive()) return;
+            arcSweep(level, user, driveDamage);
+            level.playSound(null, user.getX(), user.getY(), user.getZ(),
+                    SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.2F, 1.5F);
+        });
 
-        // —— 3. 自身夜视 ——
-        if (user instanceof Player player) {
-            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, NIGHT_VISION_DURATION, 2));
-        }
+        // ── t=10：向前贯出晨曦光枪 ──
+        SaFx.schedule(level, 10, () -> {
+            if (!user.isAlive()) return;
+            dawnLance(level, user, rng, driveDamage);
+            level.playSound(null, user.getX(), user.getY(), user.getZ(),
+                    SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 1.2F, 1.6F);
+        });
 
-        // —— 4. 烟花粒子特效 ——
-        for (int i = 0; i < 40; i++) {
-            double px = user.getX() + (level.random.nextDouble() - 0.5) * 3.0;
-            double py = user.getY() + level.random.nextDouble();
-            double pz = user.getZ() + (level.random.nextDouble() - 0.5) * 3.0;
-            level.sendParticles(ParticleTypes.FIREWORK, px, py, pz,
-                    1, 0.0, 0.0, 0.0, 0.0);
-        }
+        // ── t=15：向前裂空破晓斩 + 前方引爆 ──
+        SaFx.schedule(level, 15, () -> {
+            if (!user.isAlive()) return;
+            daybreakFinale(level, user, finaleDamage);
+        });
 
         return super.doArts(type, user);
+    }
+
+    /** 蓄力：脚下两道金环 + 指向前方的晨曦光束。 */
+    private static void dawnCharge(ServerLevel level, LivingEntity user) {
+        Vec3 center = user.position();
+        for (int i = 0; i < 48; i++) {
+            double a = Math.PI * 2 * i / 48.0;
+            for (double r = 2.0; r <= 3.6; r += 1.6) {
+                level.sendParticles(goldDust(1.3F),
+                        center.x + Math.cos(a) * r, center.y + 0.1, center.z + Math.sin(a) * r,
+                        1, 0.0, 0.02, 0.0, 0.0);
+            }
+        }
+        Vec3 eye = user.getEyePosition(1.0F);
+        Vec3 flat = SaFx.flatLook(user);
+        for (int s = 0; s < 16; s++) {
+            double d = s * 0.5;
+            level.sendParticles(ParticleTypes.END_ROD,
+                    eye.x + flat.x * d, eye.y + flat.y * d, eye.z + flat.z * d, 1, 0.03, 0.03, 0.03, 0.0);
+        }
+    }
+
+    /** 一道前向弧光：金色飞斩沿水平扇面 ±45° 依次射出。 */
+    private static void arcSweep(ServerLevel level, LivingEntity user, float damage) {
+        Vec3 eye = user.getEyePosition(1.0F);
+        Vec3 look = user.getLookAngle();
+        for (int i = 0; i < ARC_DRIVES; i++) {
+            float deg = -45.0F + 90.0F * i / (ARC_DRIVES - 1);
+            Vec3 dir = look.yRot((float) Math.toRadians(deg));
+            SaFx.drive(level, user, eye, new Vec3(dir.x, look.y + 0.02, dir.z),
+                    1.6F, damage, i % 2 == 0 ? GOLD : PALE_GOLD, 1.2F, 18.0F);
+        }
+    }
+
+    /** 向前贯出的晨曦光枪：一道前向 END_ROD 光束 + 紧束金刃齐射。 */
+    private static void dawnLance(ServerLevel level, LivingEntity user, RandomSource rng, float damage) {
+        Vec3 eye = user.getEyePosition(1.0F);
+        Vec3 look = user.getLookAngle();
+        // 前向光束
+        for (int s = 0; s < 32; s++) {
+            double d = s * 0.6;
+            double x = eye.x + look.x * d;
+            double y = eye.y + look.y * d;
+            double z = eye.z + look.z * d;
+            level.sendParticles(ParticleTypes.END_ROD, x, y, z, 1, 0.04, 0.04, 0.04, 0.0);
+            if (s % 2 == 0) {
+                level.sendParticles(goldDust(1.4F), x, y, z, 1, 0.12, 0.12, 0.12, 0.0);
+            }
+        }
+        // 紧束金刃齐射（小散布，扎成一束向前贯穿）
+        for (int i = 0; i < LANCE_DRIVES; i++) {
+            Vec3 dir = new Vec3(
+                    look.x + (rng.nextDouble() - 0.5) * 0.12,
+                    look.y + (rng.nextDouble() - 0.5) * 0.08,
+                    look.z + (rng.nextDouble() - 0.5) * 0.12).normalize();
+            SaFx.drive(level, user, eye, dir, 2.0F, damage, PALE_GOLD, 1.1F, 22.0F);
+        }
+    }
+
+    /** 向前裂空「破晓斩」+ 金色爆闪 + 前方扇区神圣伤害。 */
+    private static void daybreakFinale(ServerLevel level, LivingEntity user, float damage) {
+        Vec3 eye = user.getEyePosition(1.0F);
+        Vec3 look = user.getLookAngle();
+        // 一记巨大的金色裂空斩向前劈开天幕
+        SaFx.judgementCut(level, user, eye, look, GOLD, damage, 90.0F, 18, 1.2F);
+
+        // 前方爆发点（眼前约 2.5 格）
+        Vec3 burst = eye.add(look.scale(2.5));
+        level.sendParticles(ParticleTypes.FLASH, burst.x, burst.y, burst.z, 1, 0.0, 0.0, 0.0, 0.0);
+        level.sendParticles(goldDust(1.6F), burst.x, burst.y, burst.z, 90, 0.7, 0.7, 0.7, 0.3);
+        for (int i = 0; i < 24; i++) {
+            double a = Math.PI * 2 * i / 24.0;
+            level.sendParticles(ParticleTypes.END_ROD, burst.x, burst.y, burst.z,
+                    0, Math.cos(a) * 0.5, 0.1, Math.sin(a) * 0.5, 1.0);
+        }
+
+        for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+            t.hurt(level.damageSources().magic(), damage);
+            t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));
+        }
+
+        level.playSound(null, user.getX(), user.getY(), user.getZ(),
+                SoundEvents.TRIDENT_THUNDER, SoundSource.PLAYERS, 1.5F, 1.3F);
+        level.playSound(null, user.getX(), user.getY(), user.getZ(),
+                SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.4F, 0.9F);
     }
 }
