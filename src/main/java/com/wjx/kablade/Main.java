@@ -96,7 +96,7 @@ public final class Main {
 
     /** Runs after all mods are constructed — safe place to read other mods' metadata. */
     private void commonSetup(final FMLCommonSetupEvent event) {
-
+        com.wjx.kablade.event.AuroraColorCycling.init();
     }
 
     /** Client-only setup (renderers, key mappings, …). */

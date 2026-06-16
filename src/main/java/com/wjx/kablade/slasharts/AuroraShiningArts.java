@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.event.AuroraColorCycling;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityBlisteringSwords;
@@ -59,24 +60,6 @@ public final class AuroraShiningArts extends SlashArts {
     /** 着火时长（秒）。 */
     private static final int FIRE_SECONDS = 5;
 
-    /** 极光色谱（与 1.12.2 WorldEvent.auroraBladeColor 对应）。 */
-    private static final int[] AURORA_COLORS = {
-            0x00FF7F, 0x00FFFF, 0x7FFFD4, 0x00CED1,
-            0x48D1CC, 0x40E0D0, 0x20B2AA, 0x008B8B,
-            0x00FA9A, 0x3CB371, 0x2E8B57, 0x00FF00,
-            0x7CFC00, 0xADFF2F, 0x98FB98, 0x90EE90,
-            0x00FF7F, 0x32CD32, 0x228B22, 0x006400,
-            0x00FFAA, 0x55FFCC, 0x88FFDD, 0xAAFFEE,
-            0x00FF88, 0x33FF99, 0x66FFAA, 0x99FFBB,
-            0xCCFFDD, 0x00FFCC, 0x33FFDD, 0x66FFEE,
-            0x99FFFF, 0xCCFFFF, 0x00FF99, 0x33FFAA,
-            0x66FFBB, 0x99FFCC, 0xCCFFDD, 0xFFE4B5,
-            0xFFD700, 0xFFA500, 0xFF8C00, 0xFFFF00,
-            0xADFF2F, 0x7FFF00, 0x00FF7F, 0x00FA9A,
-            0x40E0D0, 0x48D1CC, 0x00CED1, 0x20B2AA,
-            0x5F9EA0, 0x00BFFF, 0x87CEEB, 0x87CEFA,
-            0x6495ED, 0x4169E1, 0x00BFFF, 0x00CED1
-    };
 
     public AuroraShiningArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);
@@ -112,7 +95,7 @@ public final class AuroraShiningArts extends SlashArts {
             );
             drive.setShooter(user);
             drive.setDamage(driveDamage);
-            drive.setColor(randomAuroraColor(level));
+            drive.setColor(AuroraColorCycling.getRandomColor(level.random));
             drive.shoot(user.getLookAngle().x, user.getLookAngle().y + 0.05,
                     user.getLookAngle().z, DRIVE_SPEED, 0.5F);
             level.addFreshEntity(drive);
@@ -126,7 +109,7 @@ public final class AuroraShiningArts extends SlashArts {
             sword.setPos(user.getX(), user.getY() + 1.2, user.getZ());
             sword.setShooter(user);
             sword.setDamage(swordDamage);
-            sword.setColor(randomAuroraColor(level));
+            sword.setColor(AuroraColorCycling.getRandomColor(level.random));
             sword.setDelay(delay);
             level.addFreshEntity(sword);
             sword.startRiding(user, true);
@@ -159,8 +142,4 @@ public final class AuroraShiningArts extends SlashArts {
         return super.doArts(type, user);
     }
 
-    /** 从极光色谱中随机取色。 */
-    private static int randomAuroraColor(ServerLevel level) {
-        return AURORA_COLORS[level.random.nextInt(AURORA_COLORS.length)];
-    }
 }
