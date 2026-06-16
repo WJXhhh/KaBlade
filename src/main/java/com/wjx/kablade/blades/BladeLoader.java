@@ -38,15 +38,19 @@ public final class BladeLoader {
      * 新刀加进来时在对应位置插入其 getKey() 返回值即可。
      */
     private static final List<String> BLADE_ORDER = List.of(
+            // 起点
             "hangtu",              // 基础：无铭「夯土」
+            // 岩石线：矍铄 → 嶙峋 → 明磬 → 千岩之锋
             "rocky_anshan",        // 岩石Lv1：自铭「矍铄」
             "rocky_huagang",       // 岩石Lv1：自铭「嶙峋」
             "rocky_shanchang",     // 岩石Lv1：自铭「明磬」
+            "rocky_ex",            // 岩石Lv2：千岩之锋
+            // 自然线：夯土 → 青藤
             "noted_vine",          // 自然Lv1：铭刀「青藤」
+            // 竹线：铁刃「竹光」→ 战刃「竹光」→ 流萤「竹光」
             "bamboo_iron",         // 竹Lv1：铁刃「竹光」
-            "rocky_ex",             // 岩石Lv2：千岩之锋
-            "bamboo_battler",       // 竹Lv2：战刃「竹光」
-            "bamboo_lumi"           // 竹Lv2：流萤「竹光」
+            "bamboo_battler",      // 竹Lv2：战刃「竹光」
+            "bamboo_lumi"          // 竹Lv2：流萤「竹光」
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
