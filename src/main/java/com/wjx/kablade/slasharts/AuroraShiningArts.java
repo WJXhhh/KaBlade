@@ -36,9 +36,9 @@ import java.util.function.Function;
  */
 public final class AuroraShiningArts extends SlashArts {
 
-    private static final int GUARD_SWORDS = 8;
-    private static final int STORM_DRIVES = 16;
-    private static final int RAIN_DRIVES = 12;
+    private static final int GUARD_SWORDS = 5;
+    private static final int STORM_DRIVES = 10;
+    private static final int RAIN_DRIVES = 8;
 
     private static final float BASE_DRIVE_DAMAGE = 1.0F;
     private static final float BASE_SWORD_DAMAGE = 1.5F;

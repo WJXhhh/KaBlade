@@ -35,9 +35,9 @@ import java.util.function.Function;
  */
 public final class BreakTheDawnArts extends SlashArts {
 
-    private static final int GUARD_SWORDS = 6;
-    private static final int ARC_DRIVES = 9;
-    private static final int LANCE_DRIVES = 8;
+    private static final int GUARD_SWORDS = 4;
+    private static final int ARC_DRIVES = 6;
+    private static final int LANCE_DRIVES = 5;
 
     private static final float BASE_DRIVE_DAMAGE = 0.75F;
     private static final float BASE_SWORD_DAMAGE = 1.25F;
