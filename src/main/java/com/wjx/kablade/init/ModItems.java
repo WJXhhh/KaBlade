@@ -39,7 +39,6 @@ public final class ModItems {
     //ORDINARY
     public static final RegistryObject<Item> RIMMED_EARTH_STICK = registerItemBase("rimmed_earth_stick",Main.TAB_KABLADE);
 
-    public static final RegistryObject<Item> KABLADE_CORE = registerItemBase("kablade_core",Main.TAB_KABLADE);
 
 
     private ModItems() {
