@@ -24,18 +24,18 @@ import net.minecraftforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 
 /**
- * Kablade — an addon (附属) for SlashBlade Resharped (拔刀剑).
+ * Kablade is an addon for SlashBlade Resharped.
  *
  * Entry point: wires up the lifecycle listeners and registries, and logs basic
  * mod / dependency information at startup. Register new content (items, enchantments,
- * capabilities, …) by adding the matching DeferredRegister to the mod event bus below.
+ * capabilities, etc) by adding the matching DeferredRegister to the mod event bus below.
  */
 @Mod(Main.MODID)
 public final class Main {
 
     // The three literals below are kept in sync with gradle.properties automatically by the
     // 'syncMainConstants' Gradle task (it rewrites them before each compile). Edit gradle.properties
-    // (mod_id / mod_name / mod_version) — the values here will follow on the next build.
+    // (mod_id / mod_name / mod_version) �� the values here will follow on the next build.
 
     /** This mod's id. Matches modId in mods.toml and the mixin package owner. */
     public static final String MODID = "kablade";
@@ -44,7 +44,7 @@ public final class Main {
     public static final String MOD_NAME = "Kablade";
 
     /** Mod version. */
-    public static final String VERSION = "2.0.1-a";
+    public static final String VERSION = "2.0.2-a";
 
     /** Shared logger. */
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -71,13 +71,13 @@ public final class Main {
         }
 
         TAB_KABLADE_NOTED.addDisplayItems(BladeLoader::fillCreativeTab);
-        // 方块物品（含 RIMMED_EARTH）已在 ModItems.registerBlockItem 里挂到 TAB_KABLADE，无需在此重复添加。
+        // ������Ʒ���� RIMMED_EARTH������ ModItems.registerBlockItem ��ҵ� TAB_KABLADE�������ڴ��ظ����ӡ�
         TAB_KABLADE.registerTab("tab_kablade", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_NOTED.registerTab("tab_kablade_noted", CREATIVE_TAB_REGISTRY);
 
         // --- Config ---
-        // COMMON 配置：全局攻击/耐久倍率，启动前在 config/kablade-common.toml 编辑。
-        // context 本身就是 ModLoadingContext 的子类，直接调实例方法 registerConfig，避免弃用的静态 get()。
+        // COMMON ���ã�ȫ�ֹ���/�;ñ��ʣ�����ǰ�� config/kablade-common.toml �༭��
+        // context �������� ModLoadingContext �����ֱ࣬�ӵ�ʵ������ registerConfig���������õľ�̬ get()��
         context.registerConfig(ModConfig.Type.COMMON, KabladeConfig.SPEC);
 
         // --- Content registration ---
@@ -94,15 +94,15 @@ public final class Main {
         LOGGER.info("[{}] constructed (dist={})", MODID, FMLEnvironment.dist);
     }
 
-    /** Runs after all mods are constructed — safe place to read other mods' metadata. */
+    /** Runs after all mods are constructed �� safe place to read other mods' metadata. */
     private void commonSetup(final FMLCommonSetupEvent event) {
         com.wjx.kablade.event.AuroraColorCycling.init();
     }
 
-    /** Client-only setup (renderers, key mappings, …). */
+    /** Client-only setup (renderers, key mappings, ��). */
     private void clientSetup(final FMLClientSetupEvent event) {
         LOGGER.debug("[{}] client setup", MODID);
-        // 后台拉取远端版本号，有更新时由 UpdateNotifier 在进入世界后提示玩家。
+        // ��̨��ȡԶ�˰汾�ţ��и���ʱ�� UpdateNotifier �ڽ����������ʾ��ҡ�
         com.wjx.kablade.update.UpdateChecker.start(VERSION);
     }
 
