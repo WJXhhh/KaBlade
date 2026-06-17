@@ -2,6 +2,8 @@ package com.wjx.kablade.client;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.model.RockSpikeModel;
+import com.wjx.kablade.client.renderer.AuroraVeilRenderer;
+import com.wjx.kablade.client.renderer.DawnCrescentRenderer;
 import com.wjx.kablade.client.renderer.RockSpikeRenderer;
 import com.wjx.kablade.init.ModEntities;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,6 +21,8 @@ public final class RockSpikeClientEvents {
     @SubscribeEvent
     public static void onRegisterRenderers(final EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.ROCK_SPIKE.get(), RockSpikeRenderer::new);
+        event.registerEntityRenderer(ModEntities.AURORA_VEIL.get(), AuroraVeilRenderer::new);
+        event.registerEntityRenderer(ModEntities.DAWN_CRESCENT.get(), DawnCrescentRenderer::new);
     }
 
     @SubscribeEvent

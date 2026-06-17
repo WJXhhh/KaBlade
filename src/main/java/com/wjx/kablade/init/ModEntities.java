@@ -1,6 +1,8 @@
 package com.wjx.kablade.init;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.entity.AuroraVeilEntity;
+import com.wjx.kablade.entity.DawnCrescentEntity;
 import com.wjx.kablade.entity.RockSpikeEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -25,6 +27,30 @@ public final class ModEntities {
                     .noSummon()
                     .noSave()
                     .build("rock_spike"));
+
+    /** 「极光映天」的极光帷幕表现实体。 */
+    public static final RegistryObject<EntityType<AuroraVeilEntity>> AURORA_VEIL = REGISTRY.register(
+            "aurora_veil",
+            () -> EntityType.Builder.<AuroraVeilEntity>of(AuroraVeilEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 1.0F)
+                    .clientTrackingRange(10)
+                    .updateInterval(20)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("aurora_veil"));
+
+    /** 「弧光破晓」的破晓弧月表现实体。 */
+    public static final RegistryObject<EntityType<DawnCrescentEntity>> DAWN_CRESCENT = REGISTRY.register(
+            "dawn_crescent",
+            () -> EntityType.Builder.<DawnCrescentEntity>of(DawnCrescentEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 1.0F)
+                    .clientTrackingRange(10)
+                    .updateInterval(20)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("dawn_crescent"));
 
     private ModEntities() {
     }

@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.entity.DawnCrescentEntity;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityBlisteringSwords;
@@ -16,7 +17,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Function;
@@ -39,11 +39,13 @@ public final class BreakTheDawnArts extends SlashArts {
     private static final int ARC_DRIVES = 6;
     private static final int LANCE_DRIVES = 5;
 
-    private static final float BASE_DRIVE_DAMAGE = 0.75F;
-    private static final float BASE_SWORD_DAMAGE = 1.25F;
-    private static final float ATTACK_RATIO = 0.5F;
-    private static final float FINALE_BASE_DAMAGE = 1.75F;
-    private static final float FINALE_ATTACK_RATIO = 0.4F;
+    // 伤害 = BASE + 刀当前攻击力 × 系数（刀攻击力已含 config 倍率）。极光映天为本招各项的 1.5 倍。
+    private static final float DRIVE_BASE = 0.56F;
+    private static final float SWORD_BASE = 0.94F;
+    private static final float HIT_RATIO = 0.112F;
+    /** 终结技前方扇区一击的主伤害。 */
+    private static final float AOE_BASE = 4.5F;
+    private static final float AOE_RATIO = 0.94F;
 
     private static final double FORWARD_RANGE = 14.0;
     private static final int GLOW_DURATION = 2400;
@@ -70,14 +72,13 @@ public final class BreakTheDawnArts extends SlashArts {
 
         final ServerLevel level = (ServerLevel) user.level();
         final RandomSource rng = level.random;
-        final ItemStack stack = user.getMainHandItem();
-        final float bladeAttack = stack.getCapability(ItemSlashBlade.BLADESTATE)
+        final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
 
-        final float driveDamage = BASE_DRIVE_DAMAGE + bladeAttack * ATTACK_RATIO;
-        final float swordDamage = BASE_SWORD_DAMAGE + bladeAttack * ATTACK_RATIO;
-        final float finaleDamage = FINALE_BASE_DAMAGE + bladeAttack * FINALE_ATTACK_RATIO;
+        final float driveDamage = DRIVE_BASE + bladeAttack * HIT_RATIO;
+        final float swordDamage = SWORD_BASE + bladeAttack * HIT_RATIO;
+        final float finaleDamage = AOE_BASE + bladeAttack * AOE_RATIO;
 
         // ── t=0：破晓（向前蓄势）──
         if (user instanceof Player player) {
@@ -135,7 +136,7 @@ public final class BreakTheDawnArts extends SlashArts {
         for (int i = 0; i < 48; i++) {
             double a = Math.PI * 2 * i / 48.0;
             for (double r = 2.0; r <= 3.6; r += 1.6) {
-                level.sendParticles(goldDust(1.3F),
+                level.sendParticles(goldDust(0.9F),
                         center.x + Math.cos(a) * r, center.y + 0.1, center.z + Math.sin(a) * r,
                         1, 0.0, 0.02, 0.0, 0.0);
             }
@@ -149,15 +150,22 @@ public final class BreakTheDawnArts extends SlashArts {
         }
     }
 
-    /** 一道前向弧光：金色飞斩沿水平扇面 ±45° 依次射出。 */
+    /** 一道前向弧光：三弯金色弧月（招牌）扇形飞出，辅以细金飞斩填充。 */
     private static void arcSweep(ServerLevel level, LivingEntity user, float damage) {
         Vec3 eye = user.getEyePosition(1.0F);
         Vec3 look = user.getLookAngle();
+        // 招牌：三弯弧月呈扇形向前飞掠（朝向各自的飞行方向，月面朝前）
+        float baseYaw = user.getYRot();
+        for (int k = -1; k <= 1; k++) {
+            float yaw = baseYaw + k * 20.0F;
+            DawnCrescentEntity.spawn(level, eye.x, eye.y, eye.z, yaw, SaFx.yawDir(yaw, 0.9), 1.0F, 16, GOLD);
+        }
+        // 细金飞斩填充扇面
         for (int i = 0; i < ARC_DRIVES; i++) {
             float deg = -45.0F + 90.0F * i / (ARC_DRIVES - 1);
             Vec3 dir = look.yRot((float) Math.toRadians(deg));
             SaFx.drive(level, user, eye, new Vec3(dir.x, look.y + 0.02, dir.z),
-                    1.6F, damage, i % 2 == 0 ? GOLD : PALE_GOLD, 1.2F, 18.0F);
+                    1.6F, damage, i % 2 == 0 ? GOLD : PALE_GOLD, 1.0F, 18.0F);
         }
     }
 
@@ -173,7 +181,7 @@ public final class BreakTheDawnArts extends SlashArts {
             double z = eye.z + look.z * d;
             level.sendParticles(ParticleTypes.END_ROD, x, y, z, 1, 0.04, 0.04, 0.04, 0.0);
             if (s % 2 == 0) {
-                level.sendParticles(goldDust(1.4F), x, y, z, 1, 0.12, 0.12, 0.12, 0.0);
+                level.sendParticles(goldDust(0.9F), x, y, z, 1, 0.12, 0.12, 0.12, 0.0);
             }
         }
         // 紧束金刃齐射（小散布，扎成一束向前贯穿）
@@ -190,15 +198,16 @@ public final class BreakTheDawnArts extends SlashArts {
     private static void daybreakFinale(ServerLevel level, LivingEntity user, float damage) {
         Vec3 eye = user.getEyePosition(1.0F);
         Vec3 look = user.getLookAngle();
-        // 一记巨大的金色裂空斩向前劈开天幕
-        SaFx.judgementCut(level, user, eye, look, GOLD, damage, 90.0F, 18, 1.2F);
+        // 招牌收尾：一弯巨大的金色弧月向前劈开天幕（连发两弯一大一小，月面朝前）
+        float yaw = user.getYRot();
+        DawnCrescentEntity.spawn(level, eye.x, eye.y, eye.z, yaw, SaFx.yawDir(yaw, 0.9), 2.2F, 22, GOLD);
+        DawnCrescentEntity.spawn(level, eye.x, eye.y, eye.z, yaw, SaFx.yawDir(yaw, 0.78), 1.7F, 20, PALE_GOLD);
 
-        // 前方爆发点（眼前约 2.5 格）
+        // 前方爆发点（眼前约 2.5 格）：克制的金尘 + 一圈 END_ROD 光针；不用 FLASH（大白球）
         Vec3 burst = eye.add(look.scale(2.5));
-        level.sendParticles(ParticleTypes.FLASH, burst.x, burst.y, burst.z, 1, 0.0, 0.0, 0.0, 0.0);
-        level.sendParticles(goldDust(1.6F), burst.x, burst.y, burst.z, 90, 0.7, 0.7, 0.7, 0.3);
-        for (int i = 0; i < 24; i++) {
-            double a = Math.PI * 2 * i / 24.0;
+        level.sendParticles(goldDust(1.0F), burst.x, burst.y, burst.z, 36, 0.5, 0.5, 0.5, 0.25);
+        for (int i = 0; i < 16; i++) {
+            double a = Math.PI * 2 * i / 16.0;
             level.sendParticles(ParticleTypes.END_ROD, burst.x, burst.y, burst.z,
                     0, Math.cos(a) * 0.5, 0.1, Math.sin(a) * 0.5, 1.0);
         }

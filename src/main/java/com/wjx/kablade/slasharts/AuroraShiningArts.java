@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.entity.AuroraVeilEntity;
 import com.wjx.kablade.event.AuroraColorCycling;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -17,13 +18,12 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Function;
 
 /**
- * 极光映天 —— 极光刃「映天」专属 SA（在 1.12.2 {@code SaAuroraShining} 基础上重做为<b>向前突进式</b>大招）。
+ * 极光耀天 —— 极光刃「映天」专属 SA（在 1.12.2 {@code SaAuroraShining} 基础上重做为<b>向前突进式</b>大招）。
  * <p>
  * 全程朝玩家面向方向倾泻：蓄力 → 极光刃洪流向前喷射 → 把极光从天召至<b>正前方</b>的打击区 →
  * 最后裂空三连「极光斩」向前撕开天幕、引爆前方一片。颜色取自极光色谱并平滑流转。
@@ -40,11 +40,14 @@ public final class AuroraShiningArts extends SlashArts {
     private static final int STORM_DRIVES = 10;
     private static final int RAIN_DRIVES = 8;
 
-    private static final float BASE_DRIVE_DAMAGE = 1.0F;
-    private static final float BASE_SWORD_DAMAGE = 1.5F;
-    private static final float ATTACK_RATIO = 0.5F;
-    private static final float BYPASS_BASE_DAMAGE = 2.0F;
-    private static final float BYPASS_ATTACK_RATIO = 0.4F;
+    // 伤害 = BASE + 刀当前攻击力 × 系数（刀攻击力已含 config 倍率）。
+    // 每项数值都是弧光破晓的 1.5 倍 → 极光耀天强 50%。
+    private static final float DRIVE_BASE = 0.84F;
+    private static final float SWORD_BASE = 1.41F;
+    private static final float HIT_RATIO = 0.169F;
+    /** 终结技无视护甲、前方扇区一击的主伤害。 */
+    private static final float AOE_BASE = 6.75F;
+    private static final float AOE_RATIO = 1.41F;
 
     /** 前方打击 / 结算射程（格）。 */
     private static final double FORWARD_RANGE = 18.0;
@@ -75,14 +78,13 @@ public final class AuroraShiningArts extends SlashArts {
 
         final ServerLevel level = (ServerLevel) user.level();
         final RandomSource rng = level.random;
-        final ItemStack stack = user.getMainHandItem();
-        final float bladeAttack = stack.getCapability(ItemSlashBlade.BLADESTATE)
+        final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
 
-        final float driveDamage = BASE_DRIVE_DAMAGE + bladeAttack * ATTACK_RATIO;
-        final float swordDamage = BASE_SWORD_DAMAGE + bladeAttack * ATTACK_RATIO;
-        final float bypassDamage = BYPASS_BASE_DAMAGE + bladeAttack * BYPASS_ATTACK_RATIO;
+        final float driveDamage = DRIVE_BASE + bladeAttack * HIT_RATIO;
+        final float swordDamage = SWORD_BASE + bladeAttack * HIT_RATIO;
+        final float bypassDamage = AOE_BASE + bladeAttack * AOE_RATIO;
 
         // ── t=0：蓄力（不放招，向前蓄势）──
         if (user instanceof Player player) {
@@ -168,6 +170,15 @@ public final class AuroraShiningArts extends SlashArts {
             float speed = 1.5F + rng.nextFloat() * 0.5F;
             SaFx.drive(level, user, eye, dir, speed, damage, auroraColor(rng), 1.1F, 20.0F);
         }
+        // 招牌：三道平行极光帷幕向前飘扫
+        Vec3 flat = SaFx.flatLook(user);
+        Vec3 perp = new Vec3(-flat.z, 0.0, flat.x);
+        Vec3 vel = flat.scale(0.55);
+        for (int k = -1; k <= 1; k++) {
+            Vec3 off = perp.scale(k * 2.0);
+            AuroraVeilEntity.spawn(level, user.getX() + off.x, user.getY() + 0.2, user.getZ() + off.z,
+                    user.getYRot(), vel, 1.0F, 26, rng.nextInt());
+        }
         for (int i = 0; i < 24; i++) {
             level.sendParticles(auroraDust(rng, 1.2F), eye.x, eye.y, eye.z, 0,
                     look.x * 0.4 + (rng.nextDouble() - 0.5) * 0.3, look.y * 0.4,
@@ -197,10 +208,9 @@ public final class AuroraShiningArts extends SlashArts {
     private static void auroraFinale(ServerLevel level, LivingEntity user, RandomSource rng, float bypassDamage) {
         Vec3 eye = user.getEyePosition(1.0F);
         Vec3 look = user.getLookAngle();
-        for (int k = -2; k <= 2; k++) {
-            Vec3 dir = look.yRot((float) Math.toRadians(k * 12.0));
-            SaFx.judgementCut(level, user, eye, dir, auroraColor(rng), bypassDamage, 80.0F, 16, 1.2F);
-        }
+        // 招牌收尾：一道巨幕极光向前横扫
+        AuroraVeilEntity.spawn(level, user.getX(), user.getY() + 0.2, user.getZ(),
+                user.getYRot(), SaFx.flatLook(user).scale(0.45), 2.2F, 34, rng.nextInt());
 
         // 前方爆发点（眼前约 2.5 格）
         Vec3 burst = eye.add(look.scale(2.5));

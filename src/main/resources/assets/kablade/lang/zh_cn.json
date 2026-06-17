@@ -23,6 +23,8 @@
   "slash_art.kablade.rock_strike": "岩石撼击",
   "slash_art.kablade.break_the_dawn": "弧光破晓",
   "entity.kablade.rock_spike": "岩刺",
+  "entity.kablade.aurora_veil": "极光帷幕",
+  "entity.kablade.dawn_crescent": "破晓弧月",
 
   "block.kablade.aurora_ore": "极光矿石",
   "item.kablade.aurora_fragment": "极光残片",
@@ -34,5 +36,5 @@
   "item.kablade.aurora_metal_hoe": "极光金属锄",
 
   "item.kablade.aurora_blade": "§r极光刃「映天」",
-  "slash_art.kablade.aurora_shining": "极光闪耀"
+  "slash_art.kablade.aurora_shining": "极光耀天"
 }
