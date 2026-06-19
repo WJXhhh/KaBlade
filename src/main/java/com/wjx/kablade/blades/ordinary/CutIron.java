@@ -1,5 +1,6 @@
 package com.wjx.kablade.blades.ordinary;
 
+import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
@@ -35,6 +36,7 @@ public class CutIron extends BladeDefineBase {
                 PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(8.0F)
                         .maxDamage(400)
+                        .slashArtsType(ModSlashArts.CUT_METAL.getId())
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .build(),
                 List.of(
