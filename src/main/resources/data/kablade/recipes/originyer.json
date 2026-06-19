@@ -1,0 +1,32 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:originyer",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_blade_named",
+      "request": {
+        "name": "kablade:cut_iron"
+      }
+    },
+    "B": {
+      "item": "kablade:gravity_nugget"
+    },
+    "C": {
+      "item": "minecraft:diamond"
+    },
+    "D": {
+      "item": "minecraft:redstone_block"
+    }
+  },
+  "pattern": [
+    "BDB",
+    "CAC",
+    "BCB"
+  ],
+  "result": {
+    "item": "kablade:kablade_blade_named"
+  },
+  "show_notification": true
+}

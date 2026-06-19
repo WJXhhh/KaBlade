@@ -27,6 +27,8 @@
   "entity.kablade.dawn_crescent": "Dawn Crescent",
 
   "block.kablade.chromium_ore": "Chromium Ore",
+  "item.kablade.gravity_nugget": "Gravity Nugget",
+  "item.kablade.gravity_crystal": "Gravity Crystal",
   "item.kablade.chromium_ingot": "Chromium Ingot",
   "item.kablade.chromium_sword": "Chromium Sword",
   "item.kablade.chromium_pickaxe": "Chromium Pickaxe",
@@ -44,6 +46,9 @@
 
   "item.kablade.aurora_blade": "§rAurora Blade[Sky Shining]",
   "item.kablade.cut_iron": "§rcomposite Blade[Iron Cutter]",
+  "item.kablade.originyer": "§rOriginyer",
   "slash_art.kablade.aurora_shining": "Aurora Shining",
-  "slash_art.kablade.cut_metal": "Cut Metal"
+  "slash_art.kablade.cut_metal": "Cut Metal",
+  "slash_art.kablade.domain_suppression": "Domain Suppression",
+  "special_effect.kablade.oripursuit": "Oripursuit"
 }

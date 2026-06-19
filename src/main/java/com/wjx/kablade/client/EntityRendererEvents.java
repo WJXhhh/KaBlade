@@ -3,6 +3,7 @@ package com.wjx.kablade.client;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.model.RockSpikeModel;
 import com.wjx.kablade.client.renderer.AuroraVeilRenderer;
+import com.wjx.kablade.client.renderer.CutMetalRingRenderer;
 import com.wjx.kablade.client.renderer.DawnCrescentRenderer;
 import com.wjx.kablade.client.renderer.RockSpikeRenderer;
 import com.wjx.kablade.init.ModEntities;
@@ -23,6 +24,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.ROCK_SPIKE.get(), RockSpikeRenderer::new);
         event.registerEntityRenderer(ModEntities.AURORA_VEIL.get(), AuroraVeilRenderer::new);
         event.registerEntityRenderer(ModEntities.DAWN_CRESCENT.get(), DawnCrescentRenderer::new);
+        event.registerEntityRenderer(ModEntities.CUT_METAL_RING.get(), CutMetalRingRenderer::new);
     }
 
     @SubscribeEvent

@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.entity.CutMetalRingEntity;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.function.Function;
@@ -40,6 +42,8 @@ public final class CutMetalArts extends SlashArts {
     /** AABB 扩展范围。 */
     private static final double RANGE_XZ = 8.0;
     private static final double RANGE_Y = 4.0;
+    private static final int RING_WHITE = 0xF7FBFF;
+    private static final int RING_BLUE_WHITE = 0xDDEEFF;
 
     public CutMetalArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);
@@ -59,6 +63,7 @@ public final class CutMetalArts extends SlashArts {
 
         // 力量 II 3 秒
         user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, STRENGTH_DURATION, 1, false, false));
+        spawnBladeLight(level, user);
 
         // 扫描周围敌人
         AABB bb = user.getBoundingBox().inflate(RANGE_XZ, RANGE_Y, RANGE_XZ)
@@ -97,6 +102,25 @@ public final class CutMetalArts extends SlashArts {
                 SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.0F, 0.8F);
 
         return super.doArts(type, user);
+    }
+
+    /** 白色环形刀光：主环 + 两道错峰余辉，贴近拔刀剑重锋的干净银白刀痕。 */
+    private static void spawnBladeLight(ServerLevel level, LivingEntity user) {
+        Vec3 center = user.position();
+        double y = user.getY() + user.getBbHeight() * 0.58;
+        float yaw = user.getYRot();
+
+        CutMetalRingEntity.spawn(level, center.x, y, center.z, yaw, 1.16F, 18, RING_WHITE);
+        CutMetalRingEntity.spawn(level, center.x, y + 0.10, center.z, yaw + 32.0F, 0.92F, 15, RING_BLUE_WHITE);
+        CutMetalRingEntity.spawn(level, center.x, y - 0.08, center.z, yaw - 26.0F, 0.74F, 13, RING_WHITE);
+
+        for (int i = 0; i < 36; i++) {
+            double a = Math.PI * 2.0 * i / 36.0;
+            double r = 2.45 + (i % 3) * 0.22;
+            level.sendParticles(ParticleTypes.END_ROD,
+                    center.x + Math.cos(a) * r, y, center.z + Math.sin(a) * r,
+                    1, 0.015, 0.015, 0.015, 0.0);
+        }
     }
 
     /**

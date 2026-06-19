@@ -27,6 +27,8 @@
   "entity.kablade.dawn_crescent": "破晓弧月",
 
   "block.kablade.chromium_ore": "铬矿石",
+  "item.kablade.gravity_nugget": "重力微粒",
+  "item.kablade.gravity_crystal": "重力结晶",
   "item.kablade.chromium_ingot": "铬锭",
   "item.kablade.chromium_sword": "铬剑",
   "item.kablade.chromium_pickaxe": "铬镐",
@@ -44,6 +46,9 @@
 
   "item.kablade.aurora_blade": "§r极光刃「映天」",
   "item.kablade.cut_iron": "§r复合刃「斩铁」",
+  "item.kablade.originyer": "§r源能刃「碎钢」",
   "slash_art.kablade.aurora_shining": "极光耀天",
-  "slash_art.kablade.cut_metal": "斩铁断金"
+  "slash_art.kablade.cut_metal": "斩铁断金",
+  "slash_art.kablade.domain_suppression": "领域压杀",
+  "special_effect.kablade.oripursuit": "源能裁决"
 }

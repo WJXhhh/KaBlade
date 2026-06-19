@@ -2,6 +2,7 @@ package com.wjx.kablade.init;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.entity.AuroraVeilEntity;
+import com.wjx.kablade.entity.CutMetalRingEntity;
 import com.wjx.kablade.entity.DawnCrescentEntity;
 import com.wjx.kablade.entity.RockSpikeEntity;
 import net.minecraft.world.entity.EntityType;
@@ -51,6 +52,18 @@ public final class ModEntities {
                     .noSummon()
                     .noSave()
                     .build("dawn_crescent"));
+
+    /** 「斩铁断金」的白色环形刀光表现实体。 */
+    public static final RegistryObject<EntityType<CutMetalRingEntity>> CUT_METAL_RING = REGISTRY.register(
+            "cut_metal_ring",
+            () -> EntityType.Builder.<CutMetalRingEntity>of(CutMetalRingEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 1.0F)
+                    .clientTrackingRange(12)
+                    .updateInterval(20)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("cut_metal_ring"));
 
     private ModEntities() {
     }

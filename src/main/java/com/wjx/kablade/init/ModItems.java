@@ -45,6 +45,10 @@ public final class ModItems {
     public static final RegistryObject<Item> CHROMIUM_ORE = registerBlockItem(ModBlocks.CHROMIUM_ORE, Main.TAB_KABLADE);
     public static final RegistryObject<Item> CHROMIUM_INGOT = registerItemBase("chromium_ingot", Main.TAB_KABLADE);
 
+    // ─── Gravity ───────────────────────────────────────────────────
+    public static final RegistryObject<Item> GRAVITY_NUGGET = registerItemBase("gravity_nugget", Main.TAB_KABLADE);
+    public static final RegistryObject<Item> GRAVITY_CRYSTAL = registerItemBase("gravity_crystal", Main.TAB_KABLADE);
+
     // ─── Aurora Metal ──────────────────────────────────────────────
 
     /** 铬 Tier：铁与钻石之间，附魔能力较高（17）。 */
