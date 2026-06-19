@@ -6,16 +6,25 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- * 破晓弧月 —— 「弧光破晓」专属表现实体。一弯实心炽亮的金色新月（弧光），向前飞掠并张大。
- * 纯表现（不碰撞/不重力/不存盘）；几何在 {@code DawnCrescentRenderer} 里用 {@code RenderType.lightning()}
- * 程序化绘制成一弯渐尖的月牙。伤害由 SA 的前方扫描负责。
+ * 破晓弧月 —— 「弧光破晓」专属实体。一弯实心炽亮的金色新月（弧光），向前飞掠并张大。
+ * 不碰撞/不重力/不存盘；几何在 {@code DawnCrescentRenderer} 里用 {@code RenderType.lightning()} 程序化绘制。
+ * <p>
+ * 飞掠途中「扫过即伤」：覆盖范围内每个敌人被同一弯弧月只结算一次无视护甲伤害（{@link #alreadyHit} 去重），
+ * 伤害值与归属者在 {@link #spawn} 时由 SA 传入。
  */
 public class DawnCrescentEntity extends Entity {
 
@@ -26,6 +35,11 @@ public class DawnCrescentEntity extends Entity {
     private static final EntityDataAccessor<Integer> DATA_COLOR =
             SynchedEntityData.defineId(DawnCrescentEntity.class, EntityDataSerializers.INT);
 
+    // 仅服务端：伤害值、归属者、已命中去重。
+    private float damage = 0.0F;
+    private LivingEntity owner = null;
+    private final Set<UUID> alreadyHit = new HashSet<>();
+
     public DawnCrescentEntity(EntityType<? extends DawnCrescentEntity> type, Level level) {
         super(type, level);
         this.noPhysics = true;
@@ -33,7 +47,8 @@ public class DawnCrescentEntity extends Entity {
     }
 
     public static DawnCrescentEntity spawn(Level level, double x, double y, double z,
-                                           float yaw, Vec3 velocity, float size, int lifetime, int color) {
+                                           float yaw, Vec3 velocity, float size, int lifetime, int color,
+                                           LivingEntity owner, float damage) {
         DawnCrescentEntity c = new DawnCrescentEntity(ModEntities.DAWN_CRESCENT.get(), level);
         c.setPos(x, y, z);
         c.setYRot(yaw);
@@ -41,6 +56,8 @@ public class DawnCrescentEntity extends Entity {
         c.setSize(size);
         c.setColor(color);
         c.setDeltaMovement(velocity);
+        c.owner = owner;
+        c.damage = damage;
         level.addFreshEntity(c);
         return c;
     }
@@ -79,13 +96,33 @@ public class DawnCrescentEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide() && this.tickCount >= this.getLifetime()) {
-            this.discard();
-            return;
+        if (!this.level().isClientSide()) {
+            if (this.tickCount >= this.getLifetime()) {
+                this.discard();
+                return;
+            }
+            sweepDamage();
         }
         Vec3 m = this.getDeltaMovement();
         if (m.lengthSqr() > 1.0e-9) {
             this.setPos(this.getX() + m.x, this.getY() + m.y, this.getZ() + m.z);
+        }
+    }
+
+    /** 弧月飞掠时，对其覆盖范围内、尚未被本弧月命中过的敌人各结算一次无视护甲伤害。 */
+    private void sweepDamage() {
+        if (this.damage <= 0.0F || this.owner == null) {
+            return;
+        }
+        double rad = 2.6 * this.getSize();   // 与渲染外半径同量级的水平覆盖
+        AABB box = new AABB(this.getX() - rad, this.getY() - 1.0, this.getZ() - rad,
+                this.getX() + rad, this.getY() + 2.0, this.getZ() + rad);
+        DamageSource src = this.level().damageSources().indirectMagic(this, this.owner);
+        for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box,
+                e -> e != this.owner && e.isAlive() && !e.isAlliedTo(this.owner))) {
+            if (this.alreadyHit.add(target.getUUID())) {
+                target.hurt(src, this.damage);
+            }
         }
     }
 

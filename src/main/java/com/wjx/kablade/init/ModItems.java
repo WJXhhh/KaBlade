@@ -41,7 +41,38 @@ public final class ModItems {
     //ORDINARY
     public static final RegistryObject<Item> RIMMED_EARTH_STICK = registerItemBase("rimmed_earth_stick",Main.TAB_KABLADE);
 
+    // ─── Chromium ──────────────────────────────────────────────────
+    public static final RegistryObject<Item> CHROMIUM_ORE = registerBlockItem(ModBlocks.CHROMIUM_ORE, Main.TAB_KABLADE);
+    public static final RegistryObject<Item> CHROMIUM_INGOT = registerItemBase("chromium_ingot", Main.TAB_KABLADE);
+
     // ─── Aurora Metal ──────────────────────────────────────────────
+
+    /** 铬 Tier：铁与钻石之间，附魔能力较高（17）。 */
+    public static final Tier CHROMIUM_TIER = TierSortingRegistry.registerTier(
+            new Tier() {
+                @Override public int getUses()            { return 800; }
+                @Override public float getSpeed()         { return 6.8f; }
+                @Override public float getAttackDamageBonus() { return 2.6f; }
+                @Override public int getLevel()            { return 2; }
+                @Override public int getEnchantmentValue() { return 17; }
+                @Override public Ingredient getRepairIngredient() {
+                    return Ingredient.of(CHROMIUM_INGOT.get());
+                }
+            },
+            ResourceLocation.fromNamespaceAndPath(Main.MODID, "chromium"),
+            List.of(Tiers.IRON),
+            List.of(Tiers.DIAMOND)
+    );
+
+    // 铬工具
+    public static final RegistryObject<Item> CHROMIUM_SWORD = registerItem("chromium_sword",
+            () -> new SwordItem(CHROMIUM_TIER, 3, -2.4f, new Item.Properties()), Main.TAB_KABLADE);
+    public static final RegistryObject<Item> CHROMIUM_PICKAXE = registerItem("chromium_pickaxe",
+            () -> new PickaxeItem(CHROMIUM_TIER, 1, -2.8f, new Item.Properties()), Main.TAB_KABLADE);
+    public static final RegistryObject<Item> CHROMIUM_AXE = registerItem("chromium_axe",
+            () -> new AxeItem(CHROMIUM_TIER, 5.5f, -3.1f, new Item.Properties()), Main.TAB_KABLADE);
+    public static final RegistryObject<Item> CHROMIUM_HOE = registerItem("chromium_hoe",
+            () -> new HoeItem(CHROMIUM_TIER, -3, -1.0f, new Item.Properties()), Main.TAB_KABLADE);
 
     /** 极光金属 Tier：介于钻石与下界合金之间，附魔能力极高（25）。 */
     public static final Tier AURORA_METAL_TIER = TierSortingRegistry.registerTier(

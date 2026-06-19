@@ -6,6 +6,7 @@ import com.wjx.kablade.blades.ordinary.AuroraBlade;
 import com.wjx.kablade.blades.ordinary.BambooBattler;
 import com.wjx.kablade.blades.ordinary.BambooIron;
 import com.wjx.kablade.blades.ordinary.BambooLumi;
+import com.wjx.kablade.blades.ordinary.CutIron;
 import com.wjx.kablade.blades.ordinary.NotedVine;
 import com.wjx.kablade.blades.ordinary.RimmedEarth;
 import com.wjx.kablade.blades.ordinary.RockyAnshan;
@@ -36,6 +37,7 @@ public final class BladeLoader {
     public static BladeDefineBase BAMBOO_LUMI;
     public static BladeDefineBase ARC_LIGHT;
     public static BladeDefineBase AURORA_BLADE;
+    public static BladeDefineBase CUT_IRON;
 
     /**
      * 创造模式物品栏的显示顺序（按合成链路排列）。
@@ -57,7 +59,9 @@ public final class BladeLoader {
             "bamboo_lumi",         // 竹Lv2：流萤「竹光」
             "arc_light",           // 竹Lv3：弧光刃「流芒」
             // 极光线：映天
-            "aurora_blade"         // 极光Lv1：极光刃「映天」
+            "aurora_blade",        // 极光Lv1：极光刃「映天」
+            // 断铁线：竹光战刃 → 断铁
+            "cut_iron"             // 断铁：由战刃「竹光」+ 铬锭 + 钻石锻合
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
@@ -79,6 +83,8 @@ public final class BladeLoader {
         ARC_LIGHT = new ArcLight(context);
         // 极光线终极：弧光刃「流芒」+ 钻石 + 极光金属剑 → 极光刃「映天」
         AURORA_BLADE = new AuroraBlade(context);
+        // 断铁：战刃「竹光」+ 铬锭 + 钻石
+        CUT_IRON = new CutIron(context);
     }
 
     public static void fillCreativeTab(CreativeModeTab.ItemDisplayParameters parameters,

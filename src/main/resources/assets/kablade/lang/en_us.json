@@ -26,6 +26,13 @@
   "entity.kablade.aurora_veil": "Aurora Veil",
   "entity.kablade.dawn_crescent": "Dawn Crescent",
 
+  "block.kablade.chromium_ore": "Chromium Ore",
+  "item.kablade.chromium_ingot": "Chromium Ingot",
+  "item.kablade.chromium_sword": "Chromium Sword",
+  "item.kablade.chromium_pickaxe": "Chromium Pickaxe",
+  "item.kablade.chromium_axe": "Chromium Axe",
+  "item.kablade.chromium_hoe": "Chromium Hoe",
+
   "block.kablade.aurora_ore": "Aurora Ore",
   "item.kablade.aurora_fragment": "Aurora Fragment",
   "item.kablade.aurora_metal_ingot": "Aurora Metal Ingot",
@@ -36,5 +43,6 @@
   "item.kablade.aurora_metal_hoe": "Aurora Metal Hoe",
 
   "item.kablade.aurora_blade": "§rAurora Blade[Sky Shining]",
+  "item.kablade.cut_iron": "§rcomposite Blade[Iron Cutter]",
   "slash_art.kablade.aurora_shining": "Aurora Shining"
 }

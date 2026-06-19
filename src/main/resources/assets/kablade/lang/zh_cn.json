@@ -26,6 +26,13 @@
   "entity.kablade.aurora_veil": "极光帷幕",
   "entity.kablade.dawn_crescent": "破晓弧月",
 
+  "block.kablade.chromium_ore": "铬矿石",
+  "item.kablade.chromium_ingot": "铬锭",
+  "item.kablade.chromium_sword": "铬剑",
+  "item.kablade.chromium_pickaxe": "铬镐",
+  "item.kablade.chromium_axe": "铬斧",
+  "item.kablade.chromium_hoe": "铬锄",
+
   "block.kablade.aurora_ore": "极光矿石",
   "item.kablade.aurora_fragment": "极光残片",
   "item.kablade.aurora_metal_ingot": "极光金属锭",
@@ -36,5 +43,6 @@
   "item.kablade.aurora_metal_hoe": "极光金属锄",
 
   "item.kablade.aurora_blade": "§r极光刃「映天」",
+  "item.kablade.cut_iron": "§r复合刃「斩铁」",
   "slash_art.kablade.aurora_shining": "极光耀天"
 }

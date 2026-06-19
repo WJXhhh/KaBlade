@@ -129,7 +129,7 @@ public final class AuroraShiningArts extends SlashArts {
         // ── t=18：向前裂空极光斩 + 前方引爆 ──
         SaFx.schedule(level, 18, () -> {
             if (!user.isAlive()) return;
-            auroraFinale(level, user, rng, bypassDamage);
+            auroraFinale(level, user, rng, bypassDamage, driveDamage);
         });
 
         return super.doArts(type, user);
@@ -177,7 +177,7 @@ public final class AuroraShiningArts extends SlashArts {
         for (int k = -1; k <= 1; k++) {
             Vec3 off = perp.scale(k * 2.0);
             AuroraVeilEntity.spawn(level, user.getX() + off.x, user.getY() + 0.2, user.getZ() + off.z,
-                    user.getYRot(), vel, 1.0F, 26, rng.nextInt());
+                    user.getYRot(), vel, 1.0F, 26, rng.nextInt(), user, damage);
         }
         for (int i = 0; i < 24; i++) {
             level.sendParticles(auroraDust(rng, 1.2F), eye.x, eye.y, eye.z, 0,
@@ -205,12 +205,13 @@ public final class AuroraShiningArts extends SlashArts {
     }
 
     /** 向前裂空极光斩五连 + 前方极光爆发 + 前方扇区引爆。 */
-    private static void auroraFinale(ServerLevel level, LivingEntity user, RandomSource rng, float bypassDamage) {
+    private static void auroraFinale(ServerLevel level, LivingEntity user, RandomSource rng,
+                                     float bypassDamage, float veilDamage) {
         Vec3 eye = user.getEyePosition(1.0F);
         Vec3 look = user.getLookAngle();
-        // 招牌收尾：一道巨幕极光向前横扫
+        // 招牌收尾：一道巨幕极光向前横扫（自带扫过即伤）
         AuroraVeilEntity.spawn(level, user.getX(), user.getY() + 0.2, user.getZ(),
-                user.getYRot(), SaFx.flatLook(user).scale(0.45), 2.2F, 34, rng.nextInt());
+                user.getYRot(), SaFx.flatLook(user).scale(0.45), 2.2F, 34, rng.nextInt(), user, veilDamage);
 
         // 前方爆发点（眼前约 2.5 格）
         Vec3 burst = eye.add(look.scale(2.5));

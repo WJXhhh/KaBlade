@@ -20,6 +20,14 @@ public final class ModBlocks {
                     .mapColor(MapColor.DIRT)
                     .strength(0.5f)));
 
+    /** 铬矿石——需要铁镐以上开采。 */
+    public static final RegistryObject<Block> CHROMIUM_ORE = BLOCK_REGISTRY.register(
+            "chromium_ore",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(2.5f, 3.0f)
+                    .requiresCorrectToolForDrops()));
+
     /** 极光矿石——生成在寒带群系 Y=40~80，需要铁镐以上开采。 */
     public static final RegistryObject<Block> AURORA_ORE = BLOCK_REGISTRY.register(
             "aurora_ore",

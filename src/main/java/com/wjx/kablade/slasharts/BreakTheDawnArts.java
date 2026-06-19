@@ -124,7 +124,7 @@ public final class BreakTheDawnArts extends SlashArts {
         // ── t=15：向前裂空破晓斩 + 前方引爆 ──
         SaFx.schedule(level, 15, () -> {
             if (!user.isAlive()) return;
-            daybreakFinale(level, user, finaleDamage);
+            daybreakFinale(level, user, finaleDamage, driveDamage);
         });
 
         return super.doArts(type, user);
@@ -158,7 +158,8 @@ public final class BreakTheDawnArts extends SlashArts {
         float baseYaw = user.getYRot();
         for (int k = -1; k <= 1; k++) {
             float yaw = baseYaw + k * 20.0F;
-            DawnCrescentEntity.spawn(level, eye.x, eye.y, eye.z, yaw, SaFx.yawDir(yaw, 0.9), 1.0F, 16, GOLD);
+            DawnCrescentEntity.spawn(level, eye.x, eye.y, eye.z, yaw, SaFx.yawDir(yaw, 0.9),
+                    1.0F, 16, GOLD, user, damage);
         }
         // 细金飞斩填充扇面
         for (int i = 0; i < ARC_DRIVES; i++) {
@@ -195,13 +196,15 @@ public final class BreakTheDawnArts extends SlashArts {
     }
 
     /** 向前裂空「破晓斩」+ 金色爆闪 + 前方扇区神圣伤害。 */
-    private static void daybreakFinale(ServerLevel level, LivingEntity user, float damage) {
+    private static void daybreakFinale(ServerLevel level, LivingEntity user, float damage, float crescentDamage) {
         Vec3 eye = user.getEyePosition(1.0F);
         Vec3 look = user.getLookAngle();
-        // 招牌收尾：一弯巨大的金色弧月向前劈开天幕（连发两弯一大一小，月面朝前）
+        // 招牌收尾：一弯巨大的金色弧月向前劈开天幕（连发两弯一大一小，月面朝前，自带扫过即伤）
         float yaw = user.getYRot();
-        DawnCrescentEntity.spawn(level, eye.x, eye.y, eye.z, yaw, SaFx.yawDir(yaw, 0.9), 2.2F, 22, GOLD);
-        DawnCrescentEntity.spawn(level, eye.x, eye.y, eye.z, yaw, SaFx.yawDir(yaw, 0.78), 1.7F, 20, PALE_GOLD);
+        DawnCrescentEntity.spawn(level, eye.x, eye.y, eye.z, yaw, SaFx.yawDir(yaw, 0.9), 2.2F, 22, GOLD,
+                user, crescentDamage);
+        DawnCrescentEntity.spawn(level, eye.x, eye.y, eye.z, yaw, SaFx.yawDir(yaw, 0.78), 1.7F, 20, PALE_GOLD,
+                user, crescentDamage);
 
         // 前方爆发点（眼前约 2.5 格）：克制的金尘 + 一圈 END_ROD 光针；不用 FLASH（大白球）
         Vec3 burst = eye.add(look.scale(2.5));

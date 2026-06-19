@@ -1,6 +1,5 @@
 package com.wjx.kablade.blades.ordinary;
 
-import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
@@ -15,42 +14,40 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 /**
- * 极光刃「映天」—— 极光线终极刀。
- * 由弧光刃「流芒」+ 钻石 + 极光金属剑在工作台中合成。
- * 从 1.12.2 移植而来，专属 SA「极光闪耀」。
+ * 复合刃「斩铁」——由战刃「竹光」+ 铬锭 + 钻石在工作台中合成。
+ * 从 1.12.2 移植而来，SA 类型 290。
  * <p>
- * 属性：攻击 9.0、耐久 500、默认妖化。
- * 自带亡灵杀手 IV、力量 II（保留 1.12.2 原版配置）。
+ * 属性：攻击 8.0、耐久 400、默认妖化。
+ * 自带锋利 IV、力量 I（保留 1.12.2 原版配置）。
  */
-public class AuroraBlade extends BladeDefineBase {
-    public AuroraBlade(BootstapContext<SlashBladeDefinition> context) {
+public class CutIron extends BladeDefineBase {
+    public CutIron(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.ORDINARY),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/aurora_blade/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/aurora_blade/tex.png"))
-                        .effectColor(0x00FF7F)
+                        .modelName(ResourceUtil.getLocation("model/named/cut_iron/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/named/cut_iron/tex.png"))
+                        .effectColor(0xAAAAAA)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(9.0F)
-                        .maxDamage(500)
-                        .slashArtsType(ModSlashArts.AURORA_SHINING.getId())
+                        .baseAttackModifier(8.0F)
+                        .maxDamage(400)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .build(),
                 List.of(
                         new EnchantmentDefinition(
-                                ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 4),
+                                ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 4),
                         new EnchantmentDefinition(
-                                ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 2)
+                                ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 1)
                 )
         ));
     }
 
     @Override
     public String getKey() {
-        return "aurora_blade";
+        return "cut_iron";
     }
 }

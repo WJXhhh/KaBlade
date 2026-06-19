@@ -11,11 +11,11 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-/** Client mod-bus subscriber: registers the rock-spike renderer and its hand-built model layer. */
+/** Client mod-bus subscriber: registers custom entity renderers and model layers. */
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public final class RockSpikeClientEvents {
+public final class EntityRendererEvents {
 
-    private RockSpikeClientEvents() {
+    private EntityRendererEvents() {
     }
 
     @SubscribeEvent
