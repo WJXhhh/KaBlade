@@ -5,6 +5,7 @@ import com.wjx.kablade.client.model.RockSpikeModel;
 import com.wjx.kablade.client.renderer.AuroraVeilRenderer;
 import com.wjx.kablade.client.renderer.CutMetalRingRenderer;
 import com.wjx.kablade.client.renderer.DawnCrescentRenderer;
+import com.wjx.kablade.client.renderer.OriginFreeSwordRenderer;
 import com.wjx.kablade.client.renderer.RockSpikeRenderer;
 import com.wjx.kablade.init.ModEntities;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,6 +26,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.AURORA_VEIL.get(), AuroraVeilRenderer::new);
         event.registerEntityRenderer(ModEntities.DAWN_CRESCENT.get(), DawnCrescentRenderer::new);
         event.registerEntityRenderer(ModEntities.CUT_METAL_RING.get(), CutMetalRingRenderer::new);
+        event.registerEntityRenderer(ModEntities.ORIGIN_FREE_SWORD.get(), OriginFreeSwordRenderer::new);
     }
 
     @SubscribeEvent

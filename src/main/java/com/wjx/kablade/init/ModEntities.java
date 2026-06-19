@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.entity.AuroraVeilEntity;
 import com.wjx.kablade.entity.CutMetalRingEntity;
 import com.wjx.kablade.entity.DawnCrescentEntity;
+import com.wjx.kablade.entity.OriginFreeSwordEntity;
 import com.wjx.kablade.entity.RockSpikeEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -64,6 +65,18 @@ public final class ModEntities {
                     .noSummon()
                     .noSave()
                     .build("cut_metal_ring"));
+
+    /** 「领域压杀」的源能自由剑。 */
+    public static final RegistryObject<EntityType<OriginFreeSwordEntity>> ORIGIN_FREE_SWORD = REGISTRY.register(
+            "origin_free_sword",
+            () -> EntityType.Builder.<OriginFreeSwordEntity>of(OriginFreeSwordEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("origin_free_sword"));
 
     private ModEntities() {
     }

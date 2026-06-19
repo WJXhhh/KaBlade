@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.entity.OriginFreeSwordEntity;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
@@ -41,6 +42,8 @@ public final class DomainSuppressionArts extends SlashArts {
     private static final float INNER_DAMAGE_BASE = 10.0F;
     private static final float OUTER_DAMAGE_BASE = 4.0F;
     private static final float GROUND_DAMAGE_BASE = 3.0F;
+    private static final int FREE_SWORD_DELAY = 7;
+    private static final int FREE_SWORD_LIFETIME = 24;
 
     public DomainSuppressionArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);
@@ -82,9 +85,9 @@ public final class DomainSuppressionArts extends SlashArts {
         spawnSwordCircle(level, user, tx, ty, tz, 6.0, 6,
                 OUTER_DAMAGE_BASE + Math.min(bladeAttack, 2.0F), 30);
 
-        // 地面圈：10 把自由落体召唤剑（r=6）
+        // 源能自由剑：10 把自由剑从外圈压入中心
         double groundY = target.getY() + target.getEyeHeight();
-        spawnSwordCircle(level, user, tx, groundY, tz, 6.0, 10,
+        spawnFreeSwordCircle(level, user, tx, groundY, tz, 6.0, 10,
                 GROUND_DAMAGE_BASE + Math.min(bladeAttack, 2.0F), 0);
 
         // 地面云粒子
@@ -154,6 +157,22 @@ public final class DomainSuppressionArts extends SlashArts {
             double dz = cz - pz;
             sword.shoot(dx, dy, dz, 0.8F, 0);
             level.addFreshEntity(sword);
+        }
+    }
+
+    /**
+     * 复刻 1.12.2 的 EntitySummonSwordFree：从外圈延迟启动，向领域中心压入并在结束时爆裂。
+     */
+    private void spawnFreeSwordCircle(ServerLevel level, LivingEntity user,
+                                      double cx, double cy, double cz,
+                                      double radius, int count, float damage, float angleOffset) {
+        for (int i = 0; i < count; i++) {
+            double angle = Math.toRadians(angleOffset + (360.0 / count) * i);
+            double px = cx + Math.cos(angle) * radius;
+            double pz = cz + Math.sin(angle) * radius;
+            Vec3 dir = new Vec3(cx - px, -0.35, cz - pz);
+            OriginFreeSwordEntity.spawn(level, user, px, cy, pz, dir, damage, SWORD_COLOR,
+                    FREE_SWORD_DELAY, FREE_SWORD_LIFETIME, (float) (i * 36.0));
         }
     }
 
