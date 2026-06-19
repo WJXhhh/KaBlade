@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.7,
+  "ingredient": { "item": "kablade:chromium_ore" },
+  "result": "kablade:chromium_ingot"
+}
