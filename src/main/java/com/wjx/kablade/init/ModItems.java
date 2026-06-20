@@ -34,6 +34,12 @@ public final class ModItems {
             "kablade_blade_named",
             KbladeBladeItem::new);
 
+    //Honkai Blade Item（崩坏线拔刀剑的统一载体物品）
+    @CustomBladeModel
+    public static final RegistryObject<Item> KABLADE_HONKAI_BLADE = registerItem(
+            "kablade_honkai_named",
+            KbladeBladeItem::new);
+
     //Creative Tab Icon
     public static final RegistryObject<Item> MAIN_MATER = registerItemBase("main_mater");
     public static final RegistryObject<Item> NOTED = registerItemBase("noted");

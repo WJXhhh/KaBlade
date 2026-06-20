@@ -1,0 +1,26 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:thermal_cutter",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:fuhezhuque"
+      }
+    },
+    "B": {
+      "item": "minecraft:blaze_rod"
+    }
+  },
+  "pattern": [
+    "  B",
+    " B ",
+    "A  "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

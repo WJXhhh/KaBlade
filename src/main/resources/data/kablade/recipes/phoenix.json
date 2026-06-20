@@ -1,0 +1,29 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:phoenix",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:thermal_cutter"
+      }
+    },
+    "B": {
+      "item": "minecraft:lava_bucket"
+    },
+    "C": {
+      "item": "minecraft:feather"
+    }
+  },
+  "pattern": [
+    " BC",
+    " A ",
+    "CB "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

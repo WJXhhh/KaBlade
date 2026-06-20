@@ -1,8 +1,10 @@
 {
   "itemGroup.kablade": "斩无不断",
   "itemGroup.kablade.noted": "斩无不断 铭刀",
+  "itemGroup.kablade.honkai": "斩无不断 崩坏",
 
   "item.kablade.kablade_blade": "Kablade 刀",
+  "item.kablade.kablade_honkai_named": "Kablade 崩坏刀",
   "item.kablade.main_mater": "Kablade",
   "block.kablade.rimmed_earth": "夯土",
   "item.kablade.rimmed_earth_stick": "夯土棍",
@@ -49,8 +51,29 @@
   "item.kablade.aurora_blade": "§r极光刃「映天」",
   "item.kablade.cut_iron": "§r复合刃「斩铁」",
   "item.kablade.originyer": "§r源能刃「碎钢」",
+
+  "item.kablade.muraseshu": "§r势州村正",
+  "item.kablade.murahori": "§r堀川国广",
+  "item.kablade.murauson": "§r妖刀雨村",
+  "item.kablade.murayoto": "§r妖刀村正",
+  "item.kablade.byorai": "§r苗刀·雷妖",
+  "item.kablade.byoden": "§r苗刀·电魂",
+  "item.kablade.fuheliuye": "§r复合刀·柳叶",
+  "item.kablade.fuhezhuque": "§r复合刀·朱雀",
+  "item.kablade.crystal_cutter": "§r结晶逆刃刀",
+  "item.kablade.thermal_cutter": "§r热能切割刃",
+  "item.kablade.plasma_kagehide": "§r等离子影秀",
+  "item.kablade.phoenix": "§r凰剑",
   "slash_art.kablade.aurora_shining": "极光耀天",
   "slash_art.kablade.cut_metal": "斩铁断金",
   "slash_art.kablade.domain_suppression": "领域压杀",
-  "special_effect.kablade.oripursuit": "源能裁决"
+  "slash_art.kablade.lacerate_blade": "撕裂灵刃",
+  "slash_art.kablade.chop_willow": "锋刀抚柳",
+  "slash_art.kablade.fire_of_sin": "罪业之火",
+  "slash_art.kablade.frost_comet": "霜冻彗星",
+  "slash_art.kablade.molten_blade": "熔铁之刃",
+  "slash_art.kablade.absolute_zero": "绝对零度",
+  "se.kablade.oripursuit": "§b源能裁决",
+  "special_effect.kablade.oripursuit": "源能裁决",
+  "special_effect.kablade.phoenix": "凰"
 }

@@ -1,6 +1,8 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.OriginFreeSwordEntity;
+import com.wjx.kablade.specialeffect.Oripursuit;
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
@@ -66,8 +68,13 @@ public final class DomainSuppressionArts extends SlashArts {
         if (target == null) {
             return super.doArts(type, user);
         }
+        if (user instanceof Player player) {
+            Oripursuit.lockTarget(player, target);
+        } else {
+            blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> state.setTargetEntityId(target));
+        }
 
-        float extraDamage = Math.min(bladeAttack, 3.0F);
+        float extraDamage = MathFunc.amplifierCalc(bladeAttack, 3.0F);
 
         // 目标上浮
         target.setDeltaMovement(target.getDeltaMovement().add(0, 0.5, 0));
@@ -83,12 +90,12 @@ public final class DomainSuppressionArts extends SlashArts {
 
         // 外圈：6 把中伤害召唤剑（r=6）
         spawnSwordCircle(level, user, tx, ty, tz, 6.0, 6,
-                OUTER_DAMAGE_BASE + Math.min(bladeAttack, 2.0F), 30);
+                OUTER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F), 30);
 
-        // 源能自由剑：10 把自由剑从外圈压入中心
+        // 源能自由剑：10 把自由剑在目标周围成环，延迟后垂直上射。
         double groundY = target.getY() + target.getEyeHeight();
         spawnFreeSwordCircle(level, user, tx, groundY, tz, 6.0, 10,
-                GROUND_DAMAGE_BASE + Math.min(bladeAttack, 2.0F), 0);
+                GROUND_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F), 0);
 
         // 地面云粒子
         for (int ring = 0; ring < 4; ring++) {
@@ -161,7 +168,7 @@ public final class DomainSuppressionArts extends SlashArts {
     }
 
     /**
-     * 复刻 1.12.2 的 EntitySummonSwordFree：从外圈延迟启动，向领域中心压入并在结束时爆裂。
+     * 复刻 1.12.2 的 EntitySummonSwordFree：从外圈延迟启动，垂直向上射出并在结束时爆裂。
      */
     private void spawnFreeSwordCircle(ServerLevel level, LivingEntity user,
                                       double cx, double cy, double cz,
@@ -170,7 +177,7 @@ public final class DomainSuppressionArts extends SlashArts {
             double angle = Math.toRadians(angleOffset + (360.0 / count) * i);
             double px = cx + Math.cos(angle) * radius;
             double pz = cz + Math.sin(angle) * radius;
-            Vec3 dir = new Vec3(cx - px, -0.35, cz - pz);
+            Vec3 dir = new Vec3(0.0, 1.0, 0.0);
             OriginFreeSwordEntity.spawn(level, user, px, cy, pz, dir, damage, SWORD_COLOR,
                     FREE_SWORD_DELAY, FREE_SWORD_LIFETIME, (float) (i * 36.0));
         }

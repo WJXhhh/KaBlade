@@ -1,0 +1,29 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:fuhezhuque",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:muraseshu"
+      }
+    },
+    "B": {
+      "item": "minecraft:gold_block"
+    },
+    "C": {
+      "item": "minecraft:blaze_rod"
+    }
+  },
+  "pattern": [
+    "  C",
+    " B ",
+    "A  "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

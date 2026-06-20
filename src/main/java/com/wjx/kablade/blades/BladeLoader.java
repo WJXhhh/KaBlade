@@ -1,6 +1,18 @@
 package com.wjx.kablade.blades;
 
 import com.wjx.kablade.blades.base.BladeDefineBase;
+import com.wjx.kablade.blades.honkai.ByoDen;
+import com.wjx.kablade.blades.honkai.ByoRai;
+import com.wjx.kablade.blades.honkai.CrystalCutter;
+import com.wjx.kablade.blades.honkai.FuheLiuye;
+import com.wjx.kablade.blades.honkai.FuheZhuque;
+import com.wjx.kablade.blades.honkai.MuraHori;
+import com.wjx.kablade.blades.honkai.MuraSeshu;
+import com.wjx.kablade.blades.honkai.MuraUson;
+import com.wjx.kablade.blades.honkai.MuraYoto;
+import com.wjx.kablade.blades.honkai.Phoenix;
+import com.wjx.kablade.blades.honkai.PlasmaKagehide;
+import com.wjx.kablade.blades.honkai.ThermalCutter;
 import com.wjx.kablade.blades.ordinary.ArcLight;
 import com.wjx.kablade.blades.ordinary.AuroraBlade;
 import com.wjx.kablade.blades.ordinary.BambooBattler;
@@ -40,6 +52,22 @@ public final class BladeLoader {
     public static BladeDefineBase AURORA_BLADE;
     public static BladeDefineBase CUT_IRON;
     public static BladeDefineBase ORIGINYER;
+    // 崩坏线·村正系列
+    public static BladeDefineBase MURA_SESHU;
+    public static BladeDefineBase MURA_HORI;
+    public static BladeDefineBase MURA_USON;
+    public static BladeDefineBase MURA_YOTO;
+    // 崩坏线·苗刀系列（雷妖/电魂，由村正 Lv3 升级而来）
+    public static BladeDefineBase BYO_RAI;
+    public static BladeDefineBase BYO_DEN;
+    // 崩坏线·复合系列（柳叶/朱雀，由势州村正分出）
+    public static BladeDefineBase FUHE_LIUYE;
+    public static BladeDefineBase FUHE_ZHUQUE;
+    // 崩坏线·复合系列 Lv2/Lv3（柳叶→结晶逆刃刀，朱雀→热能切割刃→凰剑，结晶逆刃刀→等离子影秀）
+    public static BladeDefineBase CRYSTAL_CUTTER;
+    public static BladeDefineBase THERMAL_CUTTER;
+    public static BladeDefineBase PLASMA_KAGEHIDE;
+    public static BladeDefineBase PHOENIX;
 
     /**
      * 创造模式物品栏的显示顺序（按合成链路排列）。
@@ -64,7 +92,23 @@ public final class BladeLoader {
             "aurora_blade",        // 极光Lv1：极光刃「映天」
             // 断铁线：竹光战刃 → 断铁
             "cut_iron",            // 复合刃「斩铁」：由战刃「竹光」+ 铬锭 + 钻石合成
-            "originyer"            // 源能刃「碎钢」：由斩铁 + 重力微粒 + 钻石 + 红石块合成
+            "originyer",            // 源能刃「碎钢」：由斩铁 + 重力微粒 + 钻石 + 红石块合成
+            // 崩坏线·村正系列：势州村正 → 堀川国广 → 妖刀雨村 / 妖刀村正
+            "muraseshu",            // 村正Lv1：势州村正（钻石剑+铁块）
+            "murahori",             // 村正Lv2：堀川国广（势州村正+红石块）
+            "murauson",             // 村正Lv3：妖刀雨村（堀川国广+铁刃竹光+铁块）
+            "murayoto",              // 村正Lv3：妖刀村正（势州村正+自铭嶙峋+钻石块）
+            // 崩坏线·苗刀系列：雷妖/电魂（由村正 Lv3 双分支升级）
+            "byorai",                // 苗刀Lv4：雷妖（妖刀雨村+红石+铁块，SA=樱花）
+            "byoden",                // 苗刀Lv4：电魂（妖刀村正+红石+铁块，亡灵杀手II）
+            // 崩坏线·复合系列：柳叶/朱雀（由势州村正分出）
+            "fuheliuye",             // 复合Lv1：柳叶（势州村正+钻石块+树叶，SA=锋刀抚柳）
+            "fuhezhuque",             // 复合Lv1：朱雀（势州村正+金块+烈焰棒，SA=罪业之火）
+            // 崩坏线·复合系列 Lv2/Lv3
+            "crystal_cutter",         // 复合Lv2：结晶逆刃刀（柳叶+钻石块，SA=霜冻彗星）
+            "thermal_cutter",         // 复合Lv2：热能切割刃（朱雀+烈焰棒，SA=熔铁之刃）
+            "plasma_kagehide",        // 复合Lv3：等离子影秀（结晶逆刃刀+脉冲T17+钼剑，SA=绝对零度）
+            "phoenix"                 // 复合Lv3：凰剑（热能切割刃+熔岩桶+羽毛，SA=熔铁之刃，SE=凰）
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
@@ -90,10 +134,40 @@ public final class BladeLoader {
         CUT_IRON = new CutIron(context);
         // 源能刃「碎钢」：斩铁 + 重力微粒 + 钻石 + 红石块
         ORIGINYER = new Originyer(context);
+        // 崩坏线·村正系列
+        MURA_SESHU = new MuraSeshu(context);
+        MURA_HORI = new MuraHori(context);
+        MURA_USON = new MuraUson(context);
+        MURA_YOTO = new MuraYoto(context);
+        // 崩坏线·苗刀系列
+        BYO_RAI = new ByoRai(context);
+        BYO_DEN = new ByoDen(context);
+        // 崩坏线·复合系列
+        FUHE_LIUYE = new FuheLiuye(context);
+        FUHE_ZHUQUE = new FuheZhuque(context);
+        CRYSTAL_CUTTER = new CrystalCutter(context);
+        THERMAL_CUTTER = new ThermalCutter(context);
+        PLASMA_KAGEHIDE = new PlasmaKagehide(context);
+        PHOENIX = new Phoenix(context);
     }
 
     public static void fillCreativeTab(CreativeModeTab.ItemDisplayParameters parameters,
                                        CreativeModeTab.Output output) {
+        fillBladeTab(parameters, output, ModItems.KABLADE_BLADE.getId());
+    }
+
+    /** 崩坏线拔刀剑专用创造分页：只列出载体为 kablade_honkai_named 的刀。 */
+    public static void fillCreativeTabHonkai(CreativeModeTab.ItemDisplayParameters parameters,
+                                             CreativeModeTab.Output output) {
+        fillBladeTab(parameters, output, ModItems.KABLADE_HONKAI_BLADE.getId());
+    }
+
+    private static void fillBladeTab(CreativeModeTab.ItemDisplayParameters parameters,
+                                     CreativeModeTab.Output output,
+                                     net.minecraft.resources.ResourceLocation carrierItemId) {
+        if (carrierItemId == null) {
+            return;
+        }
         HolderLookup.RegistryLookup<SlashBladeDefinition> definitions =
                 SlashBlade.getSlashBladeDefinitionRegistry(parameters.holders());
         definitions.listElements()
@@ -103,8 +177,7 @@ public final class BladeLoader {
                     return idx >= 0 ? idx : Integer.MAX_VALUE;
                 }))
                 .map(Holder.Reference::value)
-                .filter(definition -> ModItems.KABLADE_BLADE.getId() != null
-                        && ModItems.KABLADE_BLADE.getId().equals(definition.getItemName()))
+                .filter(definition -> carrierItemId.equals(definition.getItemName()))
                 .map(SlashBladeDefinition::getBlade)
                 .filter(stack -> !stack.isEmpty())
                 .forEach(output::accept);

@@ -2,6 +2,7 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.AuroraVeilEntity;
 import com.wjx.kablade.event.AuroraColorCycling;
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityBlisteringSwords;
@@ -40,7 +41,7 @@ public final class AuroraShiningArts extends SlashArts {
     private static final int STORM_DRIVES = 10;
     private static final int RAIN_DRIVES = 8;
 
-    // 伤害 = BASE + 刀当前攻击力 × 系数（刀攻击力已含 config 倍率）。
+    // 伤害 = BASE + amplifierCalc(刀当前攻击力, 系数)（对数补正，刀攻击力已含 config 倍率）。
     // 每项数值都是弧光破晓的 1.5 倍 → 极光耀天强 50%。
     private static final float DRIVE_BASE = 0.84F;
     private static final float SWORD_BASE = 1.41F;
@@ -82,9 +83,9 @@ public final class AuroraShiningArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
 
-        final float driveDamage = DRIVE_BASE + bladeAttack * HIT_RATIO;
-        final float swordDamage = SWORD_BASE + bladeAttack * HIT_RATIO;
-        final float bypassDamage = AOE_BASE + bladeAttack * AOE_RATIO;
+        final float driveDamage = DRIVE_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
+        final float swordDamage = SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
+        final float bypassDamage = AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO);
 
         // ── t=0：蓄力（不放招，向前蓄势）──
         if (user instanceof Player player) {

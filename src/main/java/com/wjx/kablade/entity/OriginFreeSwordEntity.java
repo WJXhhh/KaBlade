@@ -26,7 +26,7 @@ import java.util.UUID;
 
 /**
  * 源能自由剑：1.12.2 {@code EntitySummonSwordFree} 的轻量复刻。
- * 延迟后高速压入目标区域，命中时造成魔法伤害，结束时爆成一圈小范围源能冲击。
+ * 延迟后高速上射，命中时造成魔法伤害，结束时爆成一圈小范围源能冲击。
  */
 public class OriginFreeSwordEntity extends Entity {
 
@@ -65,7 +65,9 @@ public class OriginFreeSwordEntity extends Entity {
         sword.setDelay(delay);
         sword.setLifetime(lifetime);
         sword.setRoll(roll);
-        sword.alreadyHit.add(owner.getUUID());
+        if (owner != null) {
+            sword.alreadyHit.add(owner.getUUID());
+        }
         level.addFreshEntity(sword);
         return sword;
     }

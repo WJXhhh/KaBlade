@@ -1,6 +1,10 @@
 package com.wjx.kablade.specialeffect;
 
+import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModSpecialEffects;
+import com.wjx.kablade.network.KabladeNetwork;
+import com.wjx.kablade.network.OripursuitLockPacket;
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
@@ -11,13 +15,19 @@ import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +43,7 @@ import java.util.UUID;
  *   <li>每次砍中锁定目标时，追加一把召唤剑造成额外伤害</li>
  * </ul>
  */
+@Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class Oripursuit extends SpecialEffect {
 
     private static final String LOCKED_UUID_KEY = "kablade.oripursuit.locked_uuid";
@@ -60,7 +71,7 @@ public class Oripursuit extends SpecialEffect {
 
         LivingEntity target = raycastTarget((ServerLevel) user.level(), player);
         if (target != null) {
-            setLockedTarget(player, target);
+            lockTarget(player, target);
         }
     }
 
@@ -73,27 +84,45 @@ public class Oripursuit extends SpecialEffect {
         if (!(user instanceof Player player)) return;
         if (user.level().isClientSide()) return;
 
-        ItemStack blade = player.getMainHandItem();
+        ItemStack blade = event.getBlade();
         if (!isOripursuitBlade(blade)) return;
 
         UUID lockedUuid = getLockedUUID(player);
         if (lockedUuid == null) return;
         if (!target.getUUID().equals(lockedUuid)) return;
 
-        // 追加召唤剑
+        // 旧版会从玩家周身飞出一把召唤剑；不要直接附着到目标，否则没有可见的飞行过程。
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float extraDamage = Math.min(bladeAttack, 3.0F);
+        float extraDamage = MathFunc.amplifierCalc(bladeAttack, 3.0F);
 
         EntityAbstractSummonedSword sword = new EntityAbstractSummonedSword(
                 SlashBlade.RegistryEvents.SummonedSword, user.level());
         sword.setShooter(player);
         sword.setDamage(4.0F + extraDamage);
-        sword.setPos(target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ());
         sword.setColor(SWORD_COLOR);
-        sword.setHitEntity(target);
+        sword.setNoClip(true);
+
+        double lateral = (player.getRandom().nextDouble() - 0.5D) * 2.0D;
+        double sideAngle = Math.toRadians(-player.getYRot() + 90.0D);
+        Vec3 spawnPos = player.position().add(
+                Math.sin(sideAngle) * lateral * 2.0D,
+                (1.0D - Math.abs(lateral)) * 2.0D + 0.35D,
+                Math.cos(sideAngle) * lateral * 2.0D);
+        Vec3 targetCenter = target.position().add(0.0D, target.getBbHeight() * 0.5D, 0.0D);
+        Vec3 flight = targetCenter.subtract(spawnPos).normalize();
+
+        sword.setPos(spawnPos.x, spawnPos.y, spawnPos.z);
+        sword.shoot(flight.x, flight.y, flight.z, 1.75F, 0.0F);
         user.level().addFreshEntity(sword);
+
+        if (user.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.END_ROD, spawnPos.x, spawnPos.y, spawnPos.z,
+                    8, 0.18D, 0.18D, 0.18D, 0.025D);
+            serverLevel.playSound(null, spawnPos.x, spawnPos.y, spawnPos.z,
+                    SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.8F, 1.65F);
+        }
     }
 
     // ── Tick 倒计时 ────────────────────────────────────────────────
@@ -121,6 +150,11 @@ public class Oripursuit extends SpecialEffect {
             if (timer <= 0 || !playerData.contains(LOCKED_UUID_KEY)) {
                 playerData.remove(LOCKED_UUID_KEY);
                 playerData.putInt(LOCKED_TIMER_KEY, 0);
+                blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> state.setTargetEntityId(0));
+                if (player instanceof ServerPlayer serverPlayer) {
+                    KabladeNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer),
+                            new OripursuitLockPacket(-1));
+                }
             }
             persist.put(Player.PERSISTED_NBT_TAG, playerData);
         }
@@ -134,13 +168,20 @@ public class Oripursuit extends SpecialEffect {
                 .orElse(false);
     }
 
-    private static void setLockedTarget(Player player, LivingEntity target) {
+    public static void lockTarget(Player player, LivingEntity target) {
         CompoundTag persist = player.getPersistentData();
         CompoundTag playerData = persist.contains(Player.PERSISTED_NBT_TAG)
                 ? persist.getCompound(Player.PERSISTED_NBT_TAG) : new CompoundTag();
         playerData.putString(LOCKED_UUID_KEY, target.getUUID().toString());
         playerData.putInt(LOCKED_TIMER_KEY, LOCK_DURATION);
         persist.put(Player.PERSISTED_NBT_TAG, playerData);
+
+        player.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
+                .ifPresent(state -> state.setTargetEntityId(target));
+        if (player instanceof ServerPlayer serverPlayer) {
+            KabladeNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer),
+                    new OripursuitLockPacket(target.getId()));
+        }
     }
 
     private static UUID getLockedUUID(Player player) {

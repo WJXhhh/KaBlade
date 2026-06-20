@@ -1,0 +1,33 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:murauson",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:murahori"
+      }
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_blade_named",
+      "request": {
+        "name": "kablade:bamboo_iron"
+      }
+    },
+    "C": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "pattern": [
+    "  C",
+    " B ",
+    "A  "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

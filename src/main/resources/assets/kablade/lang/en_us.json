@@ -1,8 +1,10 @@
 {
   "itemGroup.kablade": "Kablade",
   "itemGroup.kablade.noted": "Kablade Noted",
+  "itemGroup.kablade.honkai": "Kablade Honkai",
 
   "item.kablade.kablade_blade": "Kablade Blade",
+  "item.kablade.kablade_honkai_named": "Kablade Honkai Blade",
   "item.kablade.main_mater": "Kablade",
   "block.kablade.rimmed_earth": "Rimmed Earth",
   "item.kablade.rimmed_earth_stick": "Rimmed Earth Stick",
@@ -49,8 +51,29 @@
   "item.kablade.aurora_blade": "§rAurora Blade[Sky Shining]",
   "item.kablade.cut_iron": "§rcomposite Blade[Iron Cutter]",
   "item.kablade.originyer": "§rOriginyer",
+
+  "item.kablade.muraseshu": "§rSeshu Muramasa",
+  "item.kablade.murahori": "§rHorikawa Kunihiro",
+  "item.kablade.murauson": "§rYoto Uson",
+  "item.kablade.murayoto": "§rYoto Muramasa",
+  "item.kablade.byorai": "§rByoRai",
+  "item.kablade.byoden": "§rByoDen",
+  "item.kablade.fuheliuye": "§rComposite Blade[Willow]",
+  "item.kablade.fuhezhuque": "§rComposite Blade[Vermilion]",
+  "item.kablade.crystal_cutter": "§rCrystal Cutter",
+  "item.kablade.thermal_cutter": "§rThermal Cutter",
+  "item.kablade.plasma_kagehide": "§rPlasma Kagehide",
+  "item.kablade.phoenix": "§rPhoenix",
   "slash_art.kablade.aurora_shining": "Aurora Shining",
   "slash_art.kablade.cut_metal": "Cut Metal",
   "slash_art.kablade.domain_suppression": "Domain Suppression",
-  "special_effect.kablade.oripursuit": "Oripursuit"
+  "slash_art.kablade.lacerate_blade": "Lacerate Blade",
+  "slash_art.kablade.chop_willow": "Chop Willow",
+  "slash_art.kablade.fire_of_sin": "Fire of Sin",
+  "slash_art.kablade.frost_comet": "Frost Comet",
+  "slash_art.kablade.molten_blade": "Molten Blade",
+  "slash_art.kablade.absolute_zero": "Absolute Zero",
+  "se.kablade.oripursuit": "§bOripursuit",
+  "special_effect.kablade.oripursuit": "Oripursuit",
+  "special_effect.kablade.phoenix": "Phoenix"
 }

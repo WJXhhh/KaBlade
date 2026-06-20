@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.DawnCrescentEntity;
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityBlisteringSwords;
@@ -39,7 +40,7 @@ public final class BreakTheDawnArts extends SlashArts {
     private static final int ARC_DRIVES = 6;
     private static final int LANCE_DRIVES = 5;
 
-    // 伤害 = BASE + 刀当前攻击力 × 系数（刀攻击力已含 config 倍率）。极光映天为本招各项的 1.5 倍。
+    // 伤害 = BASE + amplifierCalc(刀当前攻击力, 系数)（对数补正，刀攻击力已含 config 倍率）。极光映天为本招各项的 1.5 倍。
     private static final float DRIVE_BASE = 0.56F;
     private static final float SWORD_BASE = 0.94F;
     private static final float HIT_RATIO = 0.112F;
@@ -76,9 +77,9 @@ public final class BreakTheDawnArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
 
-        final float driveDamage = DRIVE_BASE + bladeAttack * HIT_RATIO;
-        final float swordDamage = SWORD_BASE + bladeAttack * HIT_RATIO;
-        final float finaleDamage = AOE_BASE + bladeAttack * AOE_RATIO;
+        final float driveDamage = DRIVE_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
+        final float swordDamage = SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
+        final float finaleDamage = AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO);
 
         // ── t=0：破晓（向前蓄势）──
         if (user instanceof Player player) {

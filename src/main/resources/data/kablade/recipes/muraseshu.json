@@ -1,0 +1,22 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:muraseshu",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:diamond_sword"
+    },
+    "B": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "pattern": [
+    "  B",
+    " B ",
+    "A  "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

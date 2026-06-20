@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.CutMetalRingEntity;
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -72,7 +73,7 @@ public final class CutMetalArts extends SlashArts {
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, bb,
                 e -> e != user && e.isAlive());
 
-        float extraDamage = amplifierCalc(bladeAttack, ATTACK_FACTOR);
+        float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
 
         for (LivingEntity target : targets) {
             // 暴击特效
@@ -121,13 +122,5 @@ public final class CutMetalArts extends SlashArts {
                     center.x + Math.cos(a) * r, y, center.z + Math.sin(a) * r,
                     1, 0.015, 0.015, 0.015, 0.0);
         }
-    }
-
-    /**
-     * 攻击力补正计算（复刻 1.12.2 的 MathFunc.amplifierCalc）。
-     * baseAttack 越高，extra 越大，但受 factor 封顶。
-     */
-    private static float amplifierCalc(float baseAttack, float factor) {
-        return Math.min(baseAttack, factor);
     }
 }
