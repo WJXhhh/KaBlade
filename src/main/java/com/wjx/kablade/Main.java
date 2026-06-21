@@ -62,6 +62,8 @@ public final class Main {
 
     public static final CreativeTabBuilder TAB_KABLADE_HONKAI = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".honkai")).icon(() -> new ItemStack(ModItems.KABLADE_HONKAI_BLADE.get())));
 
+    public static final CreativeTabBuilder TAB_KABLADE_SP_LIGHT = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".sp_light")).icon(() -> new ItemStack(ModItems.KABLADE_SL_BLADE.get())));
+
     //Load
     public Main(FMLJavaModLoadingContext context) {
         final IEventBus modBus = context.getModEventBus();
@@ -77,10 +79,12 @@ public final class Main {
 
         TAB_KABLADE_NOTED.addDisplayItems(BladeLoader::fillCreativeTab);
         TAB_KABLADE_HONKAI.addDisplayItems(BladeLoader::fillCreativeTabHonkai);
+        TAB_KABLADE_SP_LIGHT.addDisplayItems(BladeLoader::fillCreativeTabSPLight);
         // 普通物品（如 RIMMED_EARTH）走 ModItems.registerBlockItem 找到 TAB_KABLADE，避免在此重复添加。
         TAB_KABLADE.registerTab("tab_kablade", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_NOTED.registerTab("tab_kablade_noted", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_HONKAI.registerTab("tab_kablade_honkai", CREATIVE_TAB_REGISTRY);
+        TAB_KABLADE_SP_LIGHT.registerTab("tab_kablade_sp_light", CREATIVE_TAB_REGISTRY);
 
         // --- Config ---
         // COMMON 配置：全服共享/默认比率，可在运行前于 config/kablade-common.toml 编辑。

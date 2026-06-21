@@ -218,6 +218,12 @@ public final class BladeLoader {
         fillBladeTab(parameters, output, ModItems.KABLADE_HONKAI_BLADE.getId());
     }
 
+    /** 龙一文字线拔刀剑专用创造分页：只列出载体为 kablade_sl_named 的刀。 */
+    public static void fillCreativeTabSPLight(CreativeModeTab.ItemDisplayParameters parameters,
+                                              CreativeModeTab.Output output) {
+        fillBladeTab(parameters, output, ModItems.KABLADE_SL_BLADE.getId());
+    }
+
     private static void fillBladeTab(CreativeModeTab.ItemDisplayParameters parameters,
                                      CreativeModeTab.Output output,
                                      net.minecraft.resources.ResourceLocation carrierItemId) {

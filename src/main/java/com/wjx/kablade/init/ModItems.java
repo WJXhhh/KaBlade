@@ -40,6 +40,12 @@ public final class ModItems {
             "kablade_honkai_named",
             KbladeBladeItem::new);
 
+    //SP Light Blade Item（龙一文字线拔刀剑的统一载体物品）
+    @CustomBladeModel
+    public static final RegistryObject<Item> KABLADE_SL_BLADE = registerItem(
+            "kablade_sl_named",
+            KbladeBladeItem::new);
+
     //Creative Tab Icon
     public static final RegistryObject<Item> MAIN_MATER = registerItemBase("main_mater");
     public static final RegistryObject<Item> NOTED = registerItemBase("noted");

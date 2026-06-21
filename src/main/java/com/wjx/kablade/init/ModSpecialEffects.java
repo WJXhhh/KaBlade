@@ -1,9 +1,11 @@
 package com.wjx.kablade.init;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.specialeffect.BurstDrive;
 import com.wjx.kablade.specialeffect.DivinePenalty;
 import com.wjx.kablade.specialeffect.Oripursuit;
 import com.wjx.kablade.specialeffect.Phoenix;
+import com.wjx.kablade.specialeffect.SPLighting;
 import com.wjx.kablade.specialeffect.Turbulence;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraftforge.registries.DeferredRegister;
@@ -28,6 +30,12 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> DIVINE_PENALTY = REGISTRY.register(
             "divine_penalty", DivinePenalty::new);
+
+    public static final RegistryObject<SpecialEffect> SP_LIGHTING = REGISTRY.register(
+            "sp_lighting", SPLighting::new);
+
+    public static final RegistryObject<SpecialEffect> BURST_DRIVE = REGISTRY.register(
+            "burst_drive", BurstDrive::new);
 
     private ModSpecialEffects() {
     }
