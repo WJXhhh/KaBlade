@@ -38,6 +38,13 @@ import com.wjx.kablade.blades.ordinary.RockyAnshan;
 import com.wjx.kablade.blades.ordinary.RockyEX;
 import com.wjx.kablade.blades.ordinary.RockyHuagang;
 import com.wjx.kablade.blades.ordinary.RockyShanchang;
+import com.wjx.kablade.blades.splight.SL_Blackwatch;
+import com.wjx.kablade.blades.splight.SL_Initial;
+import com.wjx.kablade.blades.splight.SL_Normal;
+import com.wjx.kablade.blades.splight.SL_Origin;
+import com.wjx.kablade.blades.splight.SL_Senta;
+import com.wjx.kablade.blades.splight.SL_Young1;
+import com.wjx.kablade.blades.splight.SL_Young2;
 import com.wjx.kablade.init.ModItems;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
@@ -96,6 +103,14 @@ public final class BladeLoader {
     public static BladeDefineBase OSAHOKO;
     public static BladeDefineBase SKY_BREAKER;
     public static BladeDefineBase VIBRO_CUTTER;
+    // 龙一文字线
+    public static BladeDefineBase SPLIGHT_INITIAL;
+    public static BladeDefineBase SPLIGHT_NORMAL;
+    public static BladeDefineBase SPLIGHT_YOUNG1;
+    public static BladeDefineBase SPLIGHT_YOUNG2;
+    public static BladeDefineBase SPLIGHT_ORIGIN;
+    public static BladeDefineBase SPLIGHT_BLACKWATCH;
+    public static BladeDefineBase SPLIGHT_SENTA;
 
     /**
      * 创造模式物品栏的显示顺序（按合成链路排列）。
@@ -150,7 +165,15 @@ public final class BladeLoader {
             "crystal_cutter",         // 复合Lv2：结晶逆刃刀（柳叶+钻石块，SA=霜冻彗星）
             "thermal_cutter",         // 复合Lv2：热能切割刃（朱雀+烈焰棒，SA=熔铁之刃）
             "plasma_kagehide",        // 复合Lv3：等离子影秀（结晶逆刃刀+脉冲T17+钼剑，SA=绝对零度）
-            "phoenix"                 // 复合Lv3：凰剑（热能切割刃+熔岩桶+羽毛，SA=熔铁之刃，SE=凰）
+            "phoenix",                // 复合Lv3：凰剑（热能切割刃+熔岩桶+羽毛，SA=熔铁之刃，SE=凰）
+            // 龙一文字线
+            "splight_initial",        // 龙一「空」
+            "splight_normal",         // 龙一「无」
+            "splight_young1",         // 龙一「幼」（金）
+            "splight_young2",         // 龙一「稚」（绿）
+            "splight_origin",         // 龙一「源」
+            "splight_blackwatch",     // 龙一「黯」
+            "splight_senta"           // 龙一「塔」
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
@@ -205,6 +228,14 @@ public final class BladeLoader {
         THERMAL_CUTTER = new ThermalCutter(context);
         PLASMA_KAGEHIDE = new PlasmaKagehide(context);
         PHOENIX = new Phoenix(context);
+        // 龙一文字线
+        SPLIGHT_INITIAL = new SL_Initial(context);
+        SPLIGHT_NORMAL = new SL_Normal(context);
+        SPLIGHT_YOUNG1 = new SL_Young1(context);
+        SPLIGHT_YOUNG2 = new SL_Young2(context);
+        SPLIGHT_ORIGIN = new SL_Origin(context);
+        SPLIGHT_BLACKWATCH = new SL_Blackwatch(context);
+        SPLIGHT_SENTA = new SL_Senta(context);
     }
 
     public static void fillCreativeTab(CreativeModeTab.ItemDisplayParameters parameters,

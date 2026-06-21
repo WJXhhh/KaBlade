@@ -63,6 +63,7 @@ public final class LightningSwordsArts extends SlashArts {
         livingTarget.hasImpulse = true;
 
         double radius = 2.5;
+        Vec3 targetCenter = target.position().add(0.0, target.getBbHeight() * 0.5, 0.0);
         for (int i = 0; i < SWORD_COUNT; i++) {
             double angle = i * (2.0 * Math.PI) / SWORD_COUNT;
             double sx = target.getX() + Math.sin(angle) * radius;
@@ -75,9 +76,10 @@ public final class LightningSwordsArts extends SlashArts {
             sword.setShooter(user);
             sword.setDamage(damage);
             sword.setColor(COLOR);
-            sword.setTargetEntityId(target.getId());
-            sword.setMaxHitCount(1);
-            sword.setLifeTime(LIFE_TIME);
+            sword.setHitEntity(livingTarget);
+
+            Vec3 dir = targetCenter.subtract(sx, sy, sz).normalize();
+            sword.shoot(dir.x, dir.y, dir.z, 1.25F, 0.0F);
             level.addFreshEntity(sword);
 
             level.sendParticles(ParticleTypes.WITCH, sx, sy, sz, 2, 0.0, 0.0, 0.0, 0.02);

@@ -1,0 +1,44 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:splight_normal",
+  "category": "equipment",
+  "key": {
+    "K": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_sl_named",
+      "request": {
+        "name": "kablade:splight_initial",
+        "kill": 200,
+        "proud_soul": 2000,
+        "enchantments": [
+          {
+            "id": "minecraft:sharpness",
+            "lvl": 3
+          },
+          {
+            "id": "minecraft:power",
+            "lvl": 3
+          }
+        ]
+      }
+    },
+    "S": {
+      "item": "slashblade:proudsoul_sphere"
+    },
+    "Q": {
+      "item": "minecraft:diamond_block"
+    },
+    "I": {
+      "item": "minecraft:blaze_rod"
+    }
+  },
+  "pattern": [
+    "QSQ",
+    "SKS",
+    "ISI"
+  ],
+  "result": {
+    "item": "kablade:kablade_sl_named"
+  },
+  "show_notification": true
+}

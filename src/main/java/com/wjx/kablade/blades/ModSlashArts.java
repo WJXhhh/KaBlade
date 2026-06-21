@@ -11,9 +11,13 @@ import com.wjx.kablade.slasharts.DomainSuppressionArts;
 import com.wjx.kablade.slasharts.FireOfSinArts;
 import com.wjx.kablade.slasharts.FrostBladeArts;
 import com.wjx.kablade.slasharts.FrostCometArts;
+import com.wjx.kablade.slasharts.AquaEdgeArts;
 import com.wjx.kablade.slasharts.InductionCollapseArts;
 import com.wjx.kablade.slasharts.LacerateBladeArts;
+import com.wjx.kablade.slasharts.LaveDriveArts;
+import com.wjx.kablade.slasharts.LightningSwordsArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
+import com.wjx.kablade.slasharts.OverSlashArts;
 import com.wjx.kablade.slasharts.RockStrikeArts;
 import com.wjx.kablade.slasharts.ShockImpactArts;
 import com.wjx.kablade.slasharts.VorpalHoleArts;
@@ -95,6 +99,22 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> INDUCTION_COLLAPSE = REGISTRY.register(
             "induction_collapse",
             () -> new InductionCollapseArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> OVER_SLASH = REGISTRY.register(
+            "over_slash",
+            () -> new OverSlashArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> LIGHTNING_SWORDS = REGISTRY.register(
+            "lightning_swords",
+            () -> new LightningSwordsArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> LAVE_DRIVE = REGISTRY.register(
+            "lave_drive",
+            () -> new LaveDriveArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> AQUA_EDGE = REGISTRY.register(
+            "aqua_edge",
+            () -> new AquaEdgeArts(entity -> ComboStateRegistry.NONE.getId()));
 
     private ModSlashArts() {
     }

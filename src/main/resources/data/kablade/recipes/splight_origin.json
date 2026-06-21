@@ -1,0 +1,56 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:splight_origin",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_sl_named",
+      "request": {
+        "name": "kablade:splight_normal",
+        "kill": 1000,
+        "proud_soul": 10000,
+        "enchantments": [
+          {
+            "id": "minecraft:power",
+            "lvl": 5
+          },
+          {
+            "id": "minecraft:sharpness",
+            "lvl": 5
+          }
+        ]
+      }
+    },
+    "D": {
+      "item": "minecraft:nether_star"
+    },
+    "W": {
+      "item": "slashblade:proudsoul_sphere",
+      "request": {
+        "special_attack_type": "slashblade:void_slash"
+      }
+    },
+    "Z": {
+      "item": "minecraft:music_disc_ward"
+    },
+    "G": {
+      "item": "slashblade:slashblade"
+    },
+    "X": {
+      "item": "slashblade:proudsoul_sphere",
+      "request": {
+        "special_attack_type": "slashblade:piercing"
+      }
+    }
+  },
+  "pattern": [
+    "DWD",
+    "ZBZ",
+    "GXG"
+  ],
+  "result": {
+    "item": "kablade:kablade_sl_named"
+  },
+  "show_notification": true
+}

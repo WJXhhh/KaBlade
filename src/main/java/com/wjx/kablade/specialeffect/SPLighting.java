@@ -91,9 +91,11 @@ public class SPLighting extends SpecialEffect {
             sword.setShooter(player);
             sword.setDamage(DAMAGE);
             sword.setColor(COLOR);
-            sword.setTargetEntityId(target.getId());
-            sword.setMaxHitCount(1);
-            sword.setLifeTime(40);
+            sword.setHitEntity(target);
+
+            Vec3 targetCenter = target.position().add(0.0, target.getBbHeight() * 0.5, 0.0);
+            Vec3 dir = targetCenter.subtract(pos).normalize();
+            sword.shoot(dir.x, dir.y, dir.z, 1.5F, 0.0F);
             level.addFreshEntity(sword);
         });
     }

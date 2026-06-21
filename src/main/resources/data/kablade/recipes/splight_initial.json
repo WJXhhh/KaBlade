@@ -1,0 +1,39 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:splight_initial",
+  "category": "equipment",
+  "key": {
+    "K": {
+      "type": "slashblade:blade",
+      "item": "slashblade:slashblade",
+      "request": {
+        "kill": 100,
+        "proud_soul": 1000,
+        "enchantments": [
+          {
+            "id": "minecraft:looting",
+            "lvl": 1
+          }
+        ]
+      }
+    },
+    "S": {
+      "item": "slashblade:proudsoul"
+    },
+    "Q": {
+      "item": "minecraft:gold_nugget"
+    },
+    "I": {
+      "item": "minecraft:cactus"
+    }
+  },
+  "pattern": [
+    "QSQ",
+    "SKS",
+    "ISI"
+  ],
+  "result": {
+    "item": "kablade:kablade_sl_named"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,57 @@
+package com.wjx.kablade.blades.splight;
+
+import com.wjx.kablade.blades.ModSlashArts;
+import com.wjx.kablade.blades.base.BladeDefineBase;
+import com.wjx.kablade.init.ModSpecialEffects;
+import com.wjx.kablade.util.ResourceUtil;
+import mods.flammpfeil.slashblade.client.renderer.CarryType;
+import mods.flammpfeil.slashblade.item.SwordType;
+import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
+import mods.flammpfeil.slashblade.registry.slashblade.PropertiesDefinition;
+import mods.flammpfeil.slashblade.registry.slashblade.RenderDefinition;
+import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
+import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.List;
+
+/**
+ * 龙一文字线圣塔刀：龙一「塔」。
+ * <p>
+ * 从 1.12.2 {@code SL_Senta} 移植而来，SA「苍流刃」，自带特殊效果「圣光」「爆裂驱动」。
+ * 属性：攻击 20.0、耐久 191、默认妖化。
+ */
+public class SL_Senta extends BladeDefineBase {
+    public SL_Senta(BootstapContext<SlashBladeDefinition> context) {
+        String key = getKey();
+        context.register(createBladeKey(key), new SlashBladeDefinition(
+                getBaseBladeId(BaseBladeType.SP_LIGHT),
+                ResourceUtil.getLocation(key),
+                RenderDefinition.Builder.newInstance()
+                        .modelName(ResourceUtil.getLocation("model/named/splight/splight/senta/model.obj"))
+                        .textureName(ResourceUtil.getLocation("model/named/splight/splight/senta/texture.png"))
+                        .standbyRenderType(CarryType.KATANA)
+                        .build(),
+                PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(20.0F)
+                        .maxDamage(191)
+                        .defaultSwordType(List.of(SwordType.BEWITCHED))
+                        .slashArtsType(ModSlashArts.AQUA_EDGE.getId())
+                        .addSpecialEffect(ModSpecialEffects.SP_LIGHTING.getId())
+                        .addSpecialEffect(ModSpecialEffects.BURST_DRIVE.getId())
+                        .build(),
+                List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "looting"), 2),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 5),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 4),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "bane_of_arthropods"), 2)
+                )
+        ));
+    }
+
+    @Override
+    public String getKey() {
+        return "splight_senta";
+    }
+}
