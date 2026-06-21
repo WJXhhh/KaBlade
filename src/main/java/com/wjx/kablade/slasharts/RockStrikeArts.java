@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.RockSpikeEntity;
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -49,8 +50,8 @@ import mods.flammpfeil.slashblade.util.TargetSelector;
  *   <li>{@code Jackpot}/{@code Super}（Just 时机）— 3 圈，伤害 ×1.3、掀飞更高</li>
  *   <li>精炼度每 10 级 +1 圈（上限 +2），精炼 20+ 追加爆炸轰鸣</li>
  * </ul>
- * 伤害 = 刀当前攻击力 × 环系数 × 时机倍率；config 的 attack_multiplier 已烤入刀 NBT，
- * 经 {@link ISlashBladeState#getBaseAttackModifier()} 读取后自动生效。
+ * 伤害 = amplifierCalc(刀当前攻击力, 系数) × 环系数 × 时机倍率（对数补正，与其余 SA 统一）；
+ * config 的 attack_multiplier 已烤入刀 NBT，经 {@link ISlashBladeState#getBaseAttackModifier()} 读取后自动生效。
  */
 public final class RockStrikeArts extends SlashArts {
 
@@ -62,6 +63,9 @@ public final class RockStrikeArts extends SlashArts {
     private static final double HIT_BAND = 1.6;
     /** 相邻两圈触发的间隔（tick），制造向外扩散的涟漪。 */
     private static final int RING_DELAY = 2;
+
+    /** 攻击力补正系数：单圈基础伤害 = amplifierCalc(bladeAttack, ATTACK_FACTOR)，对数补正。 */
+    private static final float ATTACK_FACTOR = 4.0F;
 
     /** 各圈伤害系数（越外圈余波越弱）。数组覆盖最大圈数（2 基础 + 2 精炼 + 1 余量）。 */
     private static final float[] RING_DAMAGE_FACTOR = {1.1F, 0.95F, 0.8F, 0.65F, 0.5F};
@@ -133,7 +137,7 @@ public final class RockStrikeArts extends SlashArts {
             final int r = ring;
             final double radius = INNER_RADIUS + ring * RING_STEP;
             final float factor = RING_DAMAGE_FACTOR[Math.min(ring, RING_DAMAGE_FACTOR.length - 1)];
-            final double damage = bladeAttack * factor * tierMultiplier;
+            final double damage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR) * factor * tierMultiplier;
 
             final Runnable wave = () -> {
                 if (!user.isAlive()) {

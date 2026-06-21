@@ -4,15 +4,27 @@ import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.blades.honkai.ByoDen;
 import com.wjx.kablade.blades.honkai.ByoRai;
 import com.wjx.kablade.blades.honkai.CrystalCutter;
+import com.wjx.kablade.blades.honkai.DawnBreaker;
 import com.wjx.kablade.blades.honkai.FuheLiuye;
 import com.wjx.kablade.blades.honkai.FuheZhuque;
+import com.wjx.kablade.blades.honkai.GalacticNova;
 import com.wjx.kablade.blades.honkai.MuraHori;
 import com.wjx.kablade.blades.honkai.MuraSeshu;
 import com.wjx.kablade.blades.honkai.MuraUson;
 import com.wjx.kablade.blades.honkai.MuraYoto;
+import com.wjx.kablade.blades.honkai.Nue;
+import com.wjx.kablade.blades.honkai.Osahoko;
 import com.wjx.kablade.blades.honkai.Phoenix;
 import com.wjx.kablade.blades.honkai.PlasmaKagehide;
+import com.wjx.kablade.blades.honkai.PulseKatanaType17;
+import com.wjx.kablade.blades.honkai.PulseKatanaType19;
+import com.wjx.kablade.blades.honkai.Raikiri;
+import com.wjx.kablade.blades.honkai.SkyBreaker;
 import com.wjx.kablade.blades.honkai.ThermalCutter;
+import com.wjx.kablade.blades.honkai.ThirdSacredRelic;
+import com.wjx.kablade.blades.honkai.VibroCutter;
+import com.wjx.kablade.blades.honkai.VorpalSword;
+import com.wjx.kablade.blades.honkai.XuanYuanKatana;
 import com.wjx.kablade.blades.ordinary.ArcLight;
 import com.wjx.kablade.blades.ordinary.AuroraBlade;
 import com.wjx.kablade.blades.ordinary.BambooBattler;
@@ -68,6 +80,22 @@ public final class BladeLoader {
     public static BladeDefineBase THERMAL_CUTTER;
     public static BladeDefineBase PLASMA_KAGEHIDE;
     public static BladeDefineBase PHOENIX;
+    // 崩坏线·脉冲太刀系列（村正分支，T17/T19，T17 是等离子影秀的合成前置之一）
+    public static BladeDefineBase PULSE_KATANA_T17;
+    public static BladeDefineBase PULSE_KATANA_T19;
+    // 崩坏线·银河新星线（T17 + T19 + 铬钼钢剑 → 银河追光 → 反力场打刀11式）
+    public static BladeDefineBase GALACTIC_NOVA;
+    public static BladeDefineBase VORPAL_SWORD;
+    public static BladeDefineBase DAWN_BREAKER;
+    public static BladeDefineBase THIRD_SACRED;
+    public static BladeDefineBase NUE;
+    // 崩坏线·脉冲太刀分支
+    public static BladeDefineBase XUANYUAN_KATANA;
+    // 崩坏线·苗刀系列 Lv5/分支
+    public static BladeDefineBase RAIKIRI;
+    public static BladeDefineBase OSAHOKO;
+    public static BladeDefineBase SKY_BREAKER;
+    public static BladeDefineBase VIBRO_CUTTER;
 
     /**
      * 创造模式物品栏的显示顺序（按合成链路排列）。
@@ -98,9 +126,23 @@ public final class BladeLoader {
             "murahori",             // 村正Lv2：堀川国广（势州村正+红石块）
             "murauson",             // 村正Lv3：妖刀雨村（堀川国广+铁刃竹光+铁块）
             "murayoto",              // 村正Lv3：妖刀村正（势州村正+自铭嶙峋+钻石块）
+            // 崩坏线·脉冲太刀系列：T17/T19（由村正 Lv3 双分支升级，T17 是等离子影秀前置）
+            "pulse_katana_t17",      // 脉冲太刀17式（妖刀雨村+红石块+活塞，SA=寒霜灵刃）
+            "pulse_katana_t19",      // 脉冲太刀19式（妖刀村正+红石块+活塞，无SA）
+            "xuanyuan_katana",       // 轩辕·脉冲太刀（脉冲T17+铬锭+雪，SA=寒霜灵刃）
+            // 崩坏线·银河新星线
+            "galactic",              // 银河追光（脉冲T17+脉冲T19+铬钼钢剑，SA=樱花终结）
+            "vorpal_sword",          // 反力场打刀11式（银河追光+钻石+重力结晶，SA=时空黑洞）
+            "dawn_breaker",          // 破晓者：塔尔瓦（银河追光+钻石+极光金属锭，SA=震击）
+            "third_sacred",          // 3rd圣遗物（银河追光+铬斧+下界之星，SA=樱花终结）
+            "nue",                   // 影鵺（破晓者+羽毛+钼剑，SA=罪斩）
             // 崩坏线·苗刀系列：雷妖/电魂（由村正 Lv3 双分支升级）
             "byorai",                // 苗刀Lv4：雷妖（妖刀雨村+红石+铁块，SA=樱花）
             "byoden",                // 苗刀Lv4：电魂（妖刀村正+红石+铁块，亡灵杀手II）
+            "raikiri",               // 雷切（雷妖+电魂+钼剑，SA=刃盾）
+            "osahoko",               // 藏锋（雷妖+萤石+雷电结晶，SE=乱流）
+            "sky_breaker",           // 开天剑（电魂+红石+铬钼钢锭+萤石粉，SE=天罚）
+            "vibro_cutter",          // 高周波切割刀（雷妖+海晶碎片+青金石块，SA=高频坍缩）
             // 崩坏线·复合系列：柳叶/朱雀（由势州村正分出）
             "fuheliuye",             // 复合Lv1：柳叶（势州村正+钻石块+树叶，SA=锋刀抚柳）
             "fuhezhuque",             // 复合Lv1：朱雀（势州村正+金块+烈焰棒，SA=罪业之火）
@@ -139,9 +181,23 @@ public final class BladeLoader {
         MURA_HORI = new MuraHori(context);
         MURA_USON = new MuraUson(context);
         MURA_YOTO = new MuraYoto(context);
+        // 崩坏线·脉冲太刀系列
+        PULSE_KATANA_T17 = new PulseKatanaType17(context);
+        PULSE_KATANA_T19 = new PulseKatanaType19(context);
+        XUANYUAN_KATANA = new XuanYuanKatana(context);
+        // 崩坏线·银河新星线
+        GALACTIC_NOVA = new GalacticNova(context);
+        VORPAL_SWORD = new VorpalSword(context);
+        DAWN_BREAKER = new DawnBreaker(context);
+        THIRD_SACRED = new ThirdSacredRelic(context);
+        NUE = new Nue(context);
         // 崩坏线·苗刀系列
         BYO_RAI = new ByoRai(context);
         BYO_DEN = new ByoDen(context);
+        RAIKIRI = new Raikiri(context);
+        OSAHOKO = new Osahoko(context);
+        SKY_BREAKER = new SkyBreaker(context);
+        VIBRO_CUTTER = new VibroCutter(context);
         // 崩坏线·复合系列
         FUHE_LIUYE = new FuheLiuye(context);
         FUHE_ZHUQUE = new FuheZhuque(context);

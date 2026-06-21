@@ -58,6 +58,9 @@ public final class ModItems {
     public static final RegistryObject<Item> GRAVITY_NUGGET = registerItemBase("gravity_nugget", Main.TAB_KABLADE);
     public static final RegistryObject<Item> GRAVITY_CRYSTAL = registerItemBase("gravity_crystal", Main.TAB_KABLADE);
 
+    // ─── Thunder ────────────────────────────────────────────────────
+    public static final RegistryObject<Item> THUNDER_CRYSTAL = registerItemBase("thunder_crystal", Main.TAB_KABLADE);
+
     // ─── Aurora Metal ──────────────────────────────────────────────
 
     /** 铬 Tier：铁与钻石之间，附魔能力较高（17）。 */
@@ -118,6 +121,66 @@ public final class ModItems {
             () -> new AxeItem(AURORA_METAL_TIER, 5.5f, -3.1f, new Item.Properties()), Main.TAB_KABLADE);
     public static final RegistryObject<Item> AURORA_METAL_HOE = registerItem("aurora_metal_hoe",
             () -> new HoeItem(AURORA_METAL_TIER, -3, -1.0f, new Item.Properties()), Main.TAB_KABLADE);
+
+    // ─── Molybdenum / Chromoly ─────────────────────────────────────
+    public static final RegistryObject<Item> MOLYBDENITE = registerBlockItem(ModBlocks.MOLYBDENITE, Main.TAB_KABLADE);
+    public static final RegistryObject<Item> MOLYBDENUM_INGOT = registerItemBase("molybdenum_ingot", Main.TAB_KABLADE);
+    public static final RegistryObject<Item> CRUDE_CHROMOLY = registerItemBase("crude_chromoly", Main.TAB_KABLADE);
+    public static final RegistryObject<Item> CHROMOLY_INGOT = registerItemBase("chromoly_ingot", Main.TAB_KABLADE);
+
+    /** 钼 Tier：铁与钻石之间，附魔能力高（20）。 */
+    public static final Tier MOLYBDENUM_TIER = TierSortingRegistry.registerTier(
+            new Tier() {
+                @Override public int getUses()            { return 700; }
+                @Override public float getSpeed()         { return 7.0f; }
+                @Override public float getAttackDamageBonus() { return 2.4f; }
+                @Override public int getLevel()            { return 2; }
+                @Override public int getEnchantmentValue() { return 20; }
+                @Override public Ingredient getRepairIngredient() {
+                    return Ingredient.of(MOLYBDENUM_INGOT.get());
+                }
+            },
+            ResourceLocation.fromNamespaceAndPath(Main.MODID, "molybdenum"),
+            List.of(Tiers.IRON),
+            List.of(Tiers.DIAMOND)
+    );
+
+    /** 铬钼钢 Tier：铁与钻石之间，略强于钼，附魔能力 22。 */
+    public static final Tier CHROMOLY_TIER = TierSortingRegistry.registerTier(
+            new Tier() {
+                @Override public int getUses()            { return 820; }
+                @Override public float getSpeed()         { return 7.2f; }
+                @Override public float getAttackDamageBonus() { return 2.8f; }
+                @Override public int getLevel()            { return 2; }
+                @Override public int getEnchantmentValue() { return 22; }
+                @Override public Ingredient getRepairIngredient() {
+                    return Ingredient.of(CHROMOLY_INGOT.get());
+                }
+            },
+            ResourceLocation.fromNamespaceAndPath(Main.MODID, "chromoly"),
+            List.of(Tiers.IRON),
+            List.of(Tiers.DIAMOND)
+    );
+
+    // 钼工具
+    public static final RegistryObject<Item> MOLYBDENUM_SWORD = registerItem("molybdenum_sword",
+            () -> new SwordItem(MOLYBDENUM_TIER, 3, -2.4f, new Item.Properties()), Main.TAB_KABLADE);
+    public static final RegistryObject<Item> MOLYBDENUM_PICKAXE = registerItem("molybdenum_pickaxe",
+            () -> new PickaxeItem(MOLYBDENUM_TIER, 1, -2.8f, new Item.Properties()), Main.TAB_KABLADE);
+    public static final RegistryObject<Item> MOLYBDENUM_AXE = registerItem("molybdenum_axe",
+            () -> new AxeItem(MOLYBDENUM_TIER, 5.5f, -3.1f, new Item.Properties()), Main.TAB_KABLADE);
+    public static final RegistryObject<Item> MOLYBDENUM_HOE = registerItem("molybdenum_hoe",
+            () -> new HoeItem(MOLYBDENUM_TIER, -3, -1.0f, new Item.Properties()), Main.TAB_KABLADE);
+
+    // 铬钼钢工具
+    public static final RegistryObject<Item> CHROMOLY_SWORD = registerItem("chromoly_sword",
+            () -> new SwordItem(CHROMOLY_TIER, 3, -2.4f, new Item.Properties()), Main.TAB_KABLADE);
+    public static final RegistryObject<Item> CHROMOLY_PICKAXE = registerItem("chromoly_pickaxe",
+            () -> new PickaxeItem(CHROMOLY_TIER, 1, -2.8f, new Item.Properties()), Main.TAB_KABLADE);
+    public static final RegistryObject<Item> CHROMOLY_AXE = registerItem("chromoly_axe",
+            () -> new AxeItem(CHROMOLY_TIER, 5.5f, -3.1f, new Item.Properties()), Main.TAB_KABLADE);
+    public static final RegistryObject<Item> CHROMOLY_HOE = registerItem("chromoly_hoe",
+            () -> new HoeItem(CHROMOLY_TIER, -3, -1.0f, new Item.Properties()), Main.TAB_KABLADE);
 
     private ModItems() {
 

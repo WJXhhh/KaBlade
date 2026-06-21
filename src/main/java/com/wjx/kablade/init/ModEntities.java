@@ -2,10 +2,13 @@ package com.wjx.kablade.init;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.entity.AuroraVeilEntity;
+import com.wjx.kablade.entity.ConfinementForceFieldEntity;
 import com.wjx.kablade.entity.CutMetalRingEntity;
 import com.wjx.kablade.entity.DawnCrescentEntity;
 import com.wjx.kablade.entity.OriginFreeSwordEntity;
+import com.wjx.kablade.entity.RaikiriShieldEntity;
 import com.wjx.kablade.entity.RockSpikeEntity;
+import com.wjx.kablade.entity.VorpalBlackHoleEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.registries.DeferredRegister;
@@ -77,6 +80,42 @@ public final class ModEntities {
                     .noSummon()
                     .noSave()
                     .build("origin_free_sword"));
+
+    /** 「时空黑洞」的反力场黑洞实体。 */
+    public static final RegistryObject<EntityType<VorpalBlackHoleEntity>> VORPAL_BLACK_HOLE = REGISTRY.register(
+            "vorpal_black_hole",
+            () -> EntityType.Builder.<VorpalBlackHoleEntity>of(VorpalBlackHoleEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("vorpal_black_hole"));
+
+    /** 「雷切」SA 召唤的护盾实体。 */
+    public static final RegistryObject<EntityType<RaikiriShieldEntity>> RAIKIRI_SHIELD = REGISTRY.register(
+            "raikiri_shield",
+            () -> EntityType.Builder.<RaikiriShieldEntity>of(RaikiriShieldEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("raikiri_shield"));
+
+    /** 「高频坍缩」SA 召唤的禁锢力场实体。 */
+    public static final RegistryObject<EntityType<ConfinementForceFieldEntity>> CONFINEMENT_FORCE_FIELD = REGISTRY.register(
+            "confinement_force_field",
+            () -> EntityType.Builder.<ConfinementForceFieldEntity>of(ConfinementForceFieldEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("confinement_force_field"));
 
     private ModEntities() {
     }

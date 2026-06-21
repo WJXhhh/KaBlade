@@ -1,6 +1,6 @@
 # Blender 4.5.0
 # www.blender.org
-mtllib mdlRaikiri_Plas.mtl
+mtllib mdl.mtl
 o blade
 v -66.573463 7.332965 -7.606071
 v -67.244728 7.834886 -7.606071

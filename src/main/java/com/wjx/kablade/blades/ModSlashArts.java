@@ -3,15 +3,21 @@ package com.wjx.kablade.blades;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.slasharts.AbsoluteZeroArts;
 import com.wjx.kablade.slasharts.AuroraShiningArts;
+import com.wjx.kablade.slasharts.BladeWardArts;
 import com.wjx.kablade.slasharts.BreakTheDawnArts;
 import com.wjx.kablade.slasharts.ChopWillowArts;
 import com.wjx.kablade.slasharts.CutMetalArts;
 import com.wjx.kablade.slasharts.DomainSuppressionArts;
 import com.wjx.kablade.slasharts.FireOfSinArts;
+import com.wjx.kablade.slasharts.FrostBladeArts;
 import com.wjx.kablade.slasharts.FrostCometArts;
+import com.wjx.kablade.slasharts.InductionCollapseArts;
 import com.wjx.kablade.slasharts.LacerateBladeArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
 import com.wjx.kablade.slasharts.RockStrikeArts;
+import com.wjx.kablade.slasharts.ShockImpactArts;
+import com.wjx.kablade.slasharts.VorpalHoleArts;
+import com.wjx.kablade.slasharts.ZaizanArts;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraftforge.registries.DeferredRegister;
@@ -65,6 +71,30 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> ABSOLUTE_ZERO = REGISTRY.register(
             "absolute_zero",
             () -> new AbsoluteZeroArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> FROST_BLADE = REGISTRY.register(
+            "frost_blade",
+            () -> new FrostBladeArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> BLADE_WARD = REGISTRY.register(
+            "blade_ward",
+            () -> new BladeWardArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> SHOCK_IMPACT = REGISTRY.register(
+            "shock_impact",
+            () -> new ShockImpactArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> VORPAL_HOLE = REGISTRY.register(
+            "vorpal_hole",
+            () -> new VorpalHoleArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> ZAIZAN = REGISTRY.register(
+            "zaizan",
+            () -> new ZaizanArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> INDUCTION_COLLAPSE = REGISTRY.register(
+            "induction_collapse",
+            () -> new InductionCollapseArts(entity -> ComboStateRegistry.NONE.getId()));
 
     private ModSlashArts() {
     }

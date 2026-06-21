@@ -1,0 +1,29 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:nue",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:dawn_breaker"
+      }
+    },
+    "B": {
+      "item": "minecraft:feather"
+    },
+    "C": {
+      "item": "kablade:molybdenum_sword"
+    }
+  },
+  "pattern": [
+    " CC",
+    " BC",
+    "A  "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

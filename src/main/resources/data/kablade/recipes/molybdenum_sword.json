@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "combat",
+  "group": "kablade",
+  "pattern": [" 1 ", " 1 ", " 2 "],
+  "key": {
+    "1": { "item": "kablade:molybdenum_ingot" },
+    "2": { "item": "minecraft:stick" }
+  },
+  "result": { "item": "kablade:molybdenum_sword" }
+}

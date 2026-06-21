@@ -1,0 +1,32 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:sky_breaker",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:redstone"
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:byoden"
+      }
+    },
+    "C": {
+      "item": "kablade:chromoly_ingot"
+    },
+    "D": {
+      "item": "minecraft:glowstone_dust"
+    }
+  },
+  "pattern": [
+    "ADA",
+    " B ",
+    "ACA"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

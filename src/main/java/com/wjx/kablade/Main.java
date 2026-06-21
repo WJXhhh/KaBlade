@@ -5,6 +5,7 @@ import com.wjx.kablade.config.KabladeConfig;
 import com.wjx.kablade.init.ModBlocks;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.init.ModItems;
+import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.BladeLoader;
@@ -92,6 +93,7 @@ public final class Main {
         ModSlashArts.REGISTRY.register(modBus);
         ModEntities.REGISTRY.register(modBus);
         ModSpecialEffects.REGISTRY.register(modBus);
+        ModMobEffects.REGISTRY.register(modBus);
         CREATIVE_TAB_REGISTRY.register(modBus);
 
         // --- Forge (gameplay) event bus ---

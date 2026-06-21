@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "kablade",
+  "pattern": ["11 ", "12 ", " 2 "],
+  "key": {
+    "1": { "item": "kablade:chromoly_ingot" },
+    "2": { "item": "minecraft:stick" }
+  },
+  "result": { "item": "kablade:chromoly_axe" }
+}
