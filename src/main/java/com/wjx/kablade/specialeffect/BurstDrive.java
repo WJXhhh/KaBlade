@@ -58,7 +58,7 @@ public class BurstDrive extends SpecialEffect {
             LAST_SWING.put(player, currentSwing);
         }
 
-        spawnParticles(player);
+        spawnParticles((ServerLevel) player.level(), player);
     }
 
     private static void trigger(ServerLevel level, Player player) {
@@ -86,14 +86,14 @@ public class BurstDrive extends SpecialEffect {
         });
     }
 
-    private static void spawnParticles(Player player) {
-        if (player.level().isClientSide() && player.level().random.nextInt(4) == 0) {
-            double ox = (player.level().random.nextDouble() - 0.5) * player.getBbWidth();
-            double oy = player.level().random.nextDouble() * player.getBbHeight();
-            double oz = (player.level().random.nextDouble() - 0.5) * player.getBbWidth();
-            player.level().addParticle(ParticleTypes.WITCH,
+    private static void spawnParticles(ServerLevel level, Player player) {
+        if (level.random.nextInt(4) == 0) {
+            double ox = (level.random.nextDouble() - 0.5) * player.getBbWidth();
+            double oy = level.random.nextDouble() * player.getBbHeight();
+            double oz = (level.random.nextDouble() - 0.5) * player.getBbWidth();
+            level.sendParticles(ParticleTypes.WITCH,
                     player.getX() + ox, player.getY() + oy, player.getZ() + oz,
-                    0.0, 0.02, 0.0);
+                    1, 0.0, 0.02, 0.0, 0.0);
         }
     }
 
