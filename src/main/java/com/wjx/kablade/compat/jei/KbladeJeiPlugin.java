@@ -36,5 +36,7 @@ public class KbladeJeiPlugin implements IModPlugin {
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         // registerItemSubtypes 在注册表冻结后由 JEI 调用，此处 .get() 安全。
         registration.registerSubtypeInterpreter(ModItems.KABLADE_BLADE.get(), JEICompat::syncSlashBlade);
+        registration.registerSubtypeInterpreter(ModItems.KABLADE_HONKAI_BLADE.get(), JEICompat::syncSlashBlade);
+        registration.registerSubtypeInterpreter(ModItems.KABLADE_SL_BLADE.get(), JEICompat::syncSlashBlade);
     }
 }

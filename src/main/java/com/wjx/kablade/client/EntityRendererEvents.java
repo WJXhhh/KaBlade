@@ -3,14 +3,7 @@ package com.wjx.kablade.client;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.model.RockSpikeModel;
 import com.wjx.kablade.client.model.VorpalBlackHoleModel;
-import com.wjx.kablade.client.renderer.AuroraVeilRenderer;
-import com.wjx.kablade.client.renderer.ConfinementForceFieldRenderer;
-import com.wjx.kablade.client.renderer.CutMetalRingRenderer;
-import com.wjx.kablade.client.renderer.DawnCrescentRenderer;
-import com.wjx.kablade.client.renderer.OriginFreeSwordRenderer;
-import com.wjx.kablade.client.renderer.RaikiriShieldRenderer;
-import com.wjx.kablade.client.renderer.RockSpikeRenderer;
-import com.wjx.kablade.client.renderer.VorpalBlackHoleRenderer;
+import com.wjx.kablade.client.renderer.*;
 import com.wjx.kablade.init.ModEntities;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -34,6 +27,13 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.VORPAL_BLACK_HOLE.get(), VorpalBlackHoleRenderer::new);
         event.registerEntityRenderer(ModEntities.RAIKIRI_SHIELD.get(), RaikiriShieldRenderer::new);
         event.registerEntityRenderer(ModEntities.CONFINEMENT_FORCE_FIELD.get(), ConfinementForceFieldRenderer::new);
+
+        // SP Light SA entities
+        event.registerEntityRenderer(ModEntities.EX_SLASH_DRIVE.get(), ExDriveRenderer::new);
+        event.registerEntityRenderer(ModEntities.FLARE_EDGE.get(), ExDriveRenderer::new);
+        event.registerEntityRenderer(ModEntities.AQUA_EDGE.get(), ExDriveRenderer::new);
+        event.registerEntityRenderer(ModEntities.PHANTOM_SWORD_EX.get(), PhantomSwordExRenderer::new);
+        event.registerEntityRenderer(ModEntities.LIGHTNING_SWORD.get(), PhantomSwordExRenderer::new);
     }
 
     @SubscribeEvent

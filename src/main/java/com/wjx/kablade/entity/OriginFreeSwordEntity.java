@@ -125,6 +125,13 @@ public class OriginFreeSwordEntity extends Entity {
         }
 
         if (this.tickCount <= this.getDelay()) {
+            if (this.level() instanceof ServerLevel serverLevel) {
+                float charge = this.tickCount / (float) Math.max(1, this.getDelay());
+                serverLevel.sendParticles(ParticleTypes.END_ROD, this.getX(), this.getY() + 0.08, this.getZ(),
+                        1, 0.04, 0.02, 0.04, 0.0);
+                serverLevel.sendParticles(ParticleTypes.ENCHANTED_HIT, this.getX(), this.getY() + 0.15, this.getZ(),
+                        1, 0.08 * charge, 0.03, 0.08 * charge, 0.0);
+            }
             return;
         }
 
@@ -141,6 +148,12 @@ public class OriginFreeSwordEntity extends Entity {
         }
         this.setPos(to.x, to.y, to.z);
         this.setDeltaMovement(motion.scale(1.055));
+        if (this.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.END_ROD, this.getX(), this.getY(), this.getZ(),
+                    2, 0.05, 0.05, 0.05, 0.0);
+            serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY(), this.getZ(),
+                    1, -motion.x * 0.08, -motion.y * 0.08, -motion.z * 0.08, 0.0);
+        }
     }
 
     private Optional<LivingEntity> findHit(Vec3 from, Vec3 to) {
@@ -180,9 +193,11 @@ public class OriginFreeSwordEntity extends Entity {
     private void burst() {
         if (this.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(ParticleTypes.END_ROD, this.getX(), this.getY(), this.getZ(),
-                    18, 0.35, 0.35, 0.35, 0.04);
+                    24, 0.45, 0.45, 0.45, 0.05);
             serverLevel.sendParticles(ParticleTypes.ENCHANTED_HIT, this.getX(), this.getY(), this.getZ(),
-                    12, 0.45, 0.45, 0.45, 0.08);
+                    18, 0.55, 0.55, 0.55, 0.1);
+            serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY(), this.getZ(),
+                    10, 0.4, 0.4, 0.4, 0.02);
         }
         this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
                 SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 0.35F, 1.55F);

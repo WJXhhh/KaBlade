@@ -49,6 +49,8 @@ public final class ModItems {
     //Creative Tab Icon
     public static final RegistryObject<Item> MAIN_MATER = registerItemBase("main_mater");
     public static final RegistryObject<Item> NOTED = registerItemBase("noted");
+    public static final RegistryObject<Item> HONKAI_ICON = registerItemBase("honkai_icon");
+    public static final RegistryObject<Item> SP_LIGHT_ICON = registerItemBase("sp_light_icon");
 
     //ORDINARY
     public static final RegistryObject<Item> RIMMED_EARTH_STICK = registerItemBase("rimmed_earth_stick",Main.TAB_KABLADE);

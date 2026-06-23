@@ -54,11 +54,10 @@ public class BurstDrive extends SpecialEffect {
         if (currentSwing == 0 && lastSwing > 0) {
             LAST_SWING.put(player, currentSwing);
             trigger((ServerLevel) player.level(), player);
+            spawnParticles((ServerLevel) player.level(), player);
         } else if (currentSwing > 0) {
             LAST_SWING.put(player, currentSwing);
         }
-
-        spawnParticles((ServerLevel) player.level(), player);
     }
 
     private static void trigger(ServerLevel level, Player player) {

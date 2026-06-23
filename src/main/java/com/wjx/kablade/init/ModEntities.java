@@ -1,14 +1,7 @@
 package com.wjx.kablade.init;
 
 import com.wjx.kablade.Main;
-import com.wjx.kablade.entity.AuroraVeilEntity;
-import com.wjx.kablade.entity.ConfinementForceFieldEntity;
-import com.wjx.kablade.entity.CutMetalRingEntity;
-import com.wjx.kablade.entity.DawnCrescentEntity;
-import com.wjx.kablade.entity.OriginFreeSwordEntity;
-import com.wjx.kablade.entity.RaikiriShieldEntity;
-import com.wjx.kablade.entity.RockSpikeEntity;
-import com.wjx.kablade.entity.VorpalBlackHoleEntity;
+import com.wjx.kablade.entity.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.registries.DeferredRegister;
@@ -116,6 +109,68 @@ public final class ModEntities {
                     .noSummon()
                     .noSave()
                     .build("confinement_force_field"));
+
+    // ── SP Light 线 SA 实体 ──────────────────────────────────
+
+    /** 通用可变速驱动实体（ExSaEntityDrive 基类）。 */
+    public static final RegistryObject<EntityType<ExSlashDriveEntity>> EX_SLASH_DRIVE = REGISTRY.register(
+            "ex_slash_drive",
+            () -> EntityType.Builder.<ExSlashDriveEntity>of(ExSlashDriveEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("ex_slash_drive"));
+
+    /** 熔岩驱动（FlareEdge）。 */
+    public static final RegistryObject<EntityType<FlareEdgeEntity>> FLARE_EDGE = REGISTRY.register(
+            "flare_edge",
+            () -> EntityType.Builder.<FlareEdgeEntity>of(FlareEdgeEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("flare_edge"));
+
+    /** 苍流刃（AquaEdge）。 */
+    public static final RegistryObject<EntityType<AquaEdgeEntity>> AQUA_EDGE = REGISTRY.register(
+            "aqua_edge",
+            () -> EntityType.Builder.<AquaEdgeEntity>of(AquaEdgeEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("aqua_edge"));
+
+    /** 幻影剑Ex。 */
+    public static final RegistryObject<EntityType<PhantomSwordExEntity>> PHANTOM_SWORD_EX = REGISTRY.register(
+            "phantom_sword_ex",
+            () -> EntityType.Builder.<PhantomSwordExEntity>of(PhantomSwordExEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("phantom_sword_ex"));
+
+    /** 闪电剑。 */
+    public static final RegistryObject<EntityType<LightningSwordEntity>> LIGHTNING_SWORD = REGISTRY.register(
+            "lightning_sword",
+            () -> EntityType.Builder.<LightningSwordEntity>of(LightningSwordEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("lightning_sword"));
 
     private ModEntities() {
     }

@@ -37,8 +37,10 @@ public class ConfinementForceFieldEntity extends Entity {
 
     public static final EntityDataAccessor<Integer> OWNER_ID =
             SynchedEntityData.defineId(ConfinementForceFieldEntity.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> DATA_LIFETIME =
+            SynchedEntityData.defineId(ConfinementForceFieldEntity.class, EntityDataSerializers.INT);
 
-    private static final int LIFETIME = 100;
+    private static final int DEFAULT_LIFETIME = 100;
     private static final float FIELD_DAMAGE = 4.0F;
     private static final double FIELD_RADIUS = 6.0;
     private static final float DAMAGE_BOOST = 3.2F;
@@ -66,9 +68,22 @@ public class ConfinementForceFieldEntity extends Entity {
         return field;
     }
 
+    public int getLifetimeTicks() {
+        return this.entityData.get(DATA_LIFETIME);
+    }
+
+    public void setLifetimeTicks(int lifetime) {
+        this.entityData.set(DATA_LIFETIME, Math.max(1, lifetime));
+    }
+
+    public double getFieldRadius() {
+        return FIELD_RADIUS;
+    }
+
     @Override
     protected void defineSynchedData() {
         this.entityData.define(OWNER_ID, -1);
+        this.entityData.define(DATA_LIFETIME, DEFAULT_LIFETIME);
     }
 
     @Override
@@ -79,7 +94,7 @@ public class ConfinementForceFieldEntity extends Entity {
             return;
         }
 
-        if (this.tickCount > LIFETIME) {
+        if (this.tickCount > this.getLifetimeTicks()) {
             this.discard();
             return;
         }
@@ -136,6 +151,9 @@ public class ConfinementForceFieldEntity extends Entity {
         if (tag.hasUUID("OwnerUUID")) {
             this.ownerUUID = tag.getUUID("OwnerUUID");
         }
+        if (tag.contains("Lifetime")) {
+            this.setLifetimeTicks(tag.getInt("Lifetime"));
+        }
     }
 
     @Override
@@ -143,6 +161,7 @@ public class ConfinementForceFieldEntity extends Entity {
         if (this.ownerUUID != null) {
             tag.putUUID("OwnerUUID", this.ownerUUID);
         }
+        tag.putInt("Lifetime", this.getLifetimeTicks());
     }
 
     @Override
