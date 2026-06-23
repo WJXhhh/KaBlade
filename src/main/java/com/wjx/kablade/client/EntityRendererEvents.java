@@ -27,9 +27,11 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.VORPAL_BLACK_HOLE.get(), VorpalBlackHoleRenderer::new);
         event.registerEntityRenderer(ModEntities.RAIKIRI_SHIELD.get(), RaikiriShieldRenderer::new);
         event.registerEntityRenderer(ModEntities.CONFINEMENT_FORCE_FIELD.get(), ConfinementForceFieldRenderer::new);
+        event.registerEntityRenderer(ModEntities.FROST_BLADE_EDGE.get(), FrostBladeRenderer::new);
 
         // SP Light SA entities
         event.registerEntityRenderer(ModEntities.EX_SLASH_DRIVE.get(), ExDriveRenderer::new);
+        event.registerEntityRenderer(ModEntities.LACERATE_DRIVE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.FLARE_EDGE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.AQUA_EDGE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.PHANTOM_SWORD_EX.get(), PhantomSwordExRenderer::new);

@@ -26,10 +26,7 @@
       "item": "minecraft:nether_star"
     },
     "W": {
-      "item": "slashblade:proudsoul_sphere",
-      "request": {
-        "special_attack_type": "slashblade:void_slash"
-      }
+      "item": "slashblade:proudsoul_sphere"
     },
     "Z": {
       "item": "minecraft:music_disc_13"
@@ -38,10 +35,7 @@
       "item": "slashblade:slashblade"
     },
     "X": {
-      "item": "slashblade:proudsoul_sphere",
-      "request": {
-        "special_attack_type": "slashblade:piercing"
-      }
+      "item": "slashblade:proudsoul_sphere"
     }
   },
   "pattern": [

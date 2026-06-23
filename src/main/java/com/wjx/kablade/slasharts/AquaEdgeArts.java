@@ -109,7 +109,7 @@ public final class AquaEdgeArts extends SlashArts {
                         magicDamage,
                         DRIVE_COLOR,
                         30 + 5 * j + i,  // lifetime
-                        90.0F,            // roll
+                        (j - 1) * 3.0F,   // roll：每列差 3°，平躺基础上略有区别
                         true              // multiHit
                 );
                 aqua.setInitialSpeed(0.1F);

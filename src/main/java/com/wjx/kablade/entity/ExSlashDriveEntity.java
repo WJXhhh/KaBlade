@@ -5,6 +5,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -14,10 +15,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import mods.flammpfeil.slashblade.entity.IShootable;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Fireball;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -26,6 +31,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import net.minecraft.util.Mth;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +74,8 @@ public class ExSlashDriveEntity extends Entity {
             SynchedEntityData.defineId(ExSlashDriveEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> DATA_SOUND_PLAYED =
             SynchedEntityData.defineId(ExSlashDriveEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_DESTROY_DESTRUCTIBLE =
+            SynchedEntityData.defineId(ExSlashDriveEntity.class, EntityDataSerializers.BOOLEAN);
 
     // ── 实例字段 ──────────────────────────────────────────────
     protected LivingEntity thrower;
@@ -89,6 +97,7 @@ public class ExSlashDriveEntity extends Entity {
         ExSlashDriveEntity e = new ExSlashDriveEntity(ModEntities.EX_SLASH_DRIVE.get(), level);
         e.setPos(pos.x, pos.y, pos.z);
         e.setDeltaMovement(direction);
+        e.applyHeading(direction); // 出生即定向，使出生包携带正确 yRot/xRot
         e.thrower = thrower;
         e.attackDamage = damage;
         e.setColor(color);
@@ -101,6 +110,30 @@ public class ExSlashDriveEntity extends Entity {
         }
         level.addFreshEntity(e);
         return e;
+    }
+
+    /**
+     * 按 Resharped {@code EntityAbstractSummonedSword.shoot} 的约定从方向向量设朝向角，
+     * 并令 old==current 以消除出生首帧的朝向插值。配合 {@code ExDriveRenderer} 的旋转序列，
+     * 使刃朝向飞行方向。
+     */
+    public void applyHeading(Vec3 direction) {
+        if (direction.lengthSqr() <= 1.0E-8) {
+            return;
+        }
+        float horiz = Mth.sqrt((float) direction.horizontalDistanceSqr());
+        setYRot((float) (Mth.atan2(direction.x, direction.z) * Mth.RAD_TO_DEG));
+        setXRot((float) (Mth.atan2(direction.y, horiz) * Mth.RAD_TO_DEG));
+        this.yRotO = getYRot();
+        this.xRotO = getXRot();
+    }
+
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
+        // 出生包已带正确 yRot/xRot；令 old==current，避免客户端首帧朝向从 0 插值过去
+        this.yRotO = getYRot();
+        this.xRotO = getXRot();
     }
 
     // ── Getters/setters ──────────────────────────────────────
@@ -131,6 +164,8 @@ public class ExSlashDriveEntity extends Entity {
     public void setParticleStyle(String v) { entityData.set(DATA_PARTICLE_STYLE, v); }
     public String getSoundName()           { return entityData.get(DATA_SOUND_NAME); }
     public void setSoundName(String v)     { entityData.set(DATA_SOUND_NAME, v); }
+    public boolean isDestroyDestructible() { return entityData.get(DATA_DESTROY_DESTRUCTIBLE); }
+    public void setDestroyDestructible(boolean v) { entityData.set(DATA_DESTROY_DESTRUCTIBLE, v); }
 
     @Override
     protected void defineSynchedData() {
@@ -148,11 +183,17 @@ public class ExSlashDriveEntity extends Entity {
         entityData.define(DATA_PARTICLE_STYLE, "");
         entityData.define(DATA_SOUND_NAME, "");
         entityData.define(DATA_SOUND_PLAYED, false);
+        entityData.define(DATA_DESTROY_DESTRUCTIBLE, false);
     }
 
     @Override
     public void tick() {
         super.tick();
+
+        // 兜底：若朝向仍未初始化（理论上出生时已设好），从 deltaMovement 反推。
+        if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
+            applyHeading(getDeltaMovement());
+        }
 
         if (tickCount >= getLifetime()) {
             discard();
@@ -164,26 +205,46 @@ public class ExSlashDriveEntity extends Entity {
             playSoundEffect();
         }
 
-        // 速度控制
+        // 速度控制（匹配 1.12.2 ExSaEntityDrive 行为）
+        //   每 tick 先执行 BASE：
+        //     motion *= 1.05（始终复合加速）
+        //     pos += motion（始终推进）
+        //   然后执行 ADDITIONAL：
+        //     - changeTime 前且 initSpd < 1.05 → pos += motion * 0.1（额外慢移，速度不变）
+        //     - changeTime 前且 initSpd >= 1.05 → motion *= initSpd, pos += motion
+        //     - 到达 changeTime               → motion *= nextSpd, pos += motion + 音效
         Vec3 motion = getDeltaMovement();
+
+        // ── BASE ──────────────────────────────────────────────────
+        motion = motion.scale(1.05F);
+        setDeltaMovement(motion);
+        Vec3 pos = position().add(motion);
+
+        // ── ADDITIONAL ────────────────────────────────────────────
         if (getChangeTime() > 0 && tickCount >= getChangeTime()) {
             float nextSpd = getNextSpeed();
             if (nextSpd > 0.01F) {
                 motion = motion.scale(nextSpd);
+                setDeltaMovement(motion);
             }
+            pos = pos.add(motion);
         } else {
             float initSpd = getInitialSpeed();
             if (initSpd >= 1.05F) {
                 motion = motion.scale(initSpd);
+                setDeltaMovement(motion);
+                pos = pos.add(motion);
             } else {
-                motion = motion.scale(0.1F);
+                // 1.12.2 硬编码 0.1：额外缓慢推进，不改变速度
+                pos = pos.add(motion.scale(0.1));
             }
         }
-        setDeltaMovement(motion);
-
-        // 移动
-        Vec3 pos = position().add(motion);
         setPos(pos.x, pos.y, pos.z);
+
+        // 可破坏物销毁（1.12.2 EntityDriveAdd 行为）
+        if (isDestroyDestructible() && !level().isClientSide()) {
+            destroyDestructibles();
+        }
 
         // 碰撞方块检测
         Iterable<VoxelShape> collisions = level().getBlockCollisions(this, getBoundingBox());
@@ -203,11 +264,72 @@ public class ExSlashDriveEntity extends Entity {
         }
     }
 
+    // ── 可破坏物销毁 ──────────────────────────────────────────
+    private void destroyDestructibles() {
+        if (thrower == null) return;
+        LivingEntity living = (LivingEntity) thrower;
+
+        double ambit = 1.5;
+        AABB bb = getBoundingBox().inflate(ambit);
+        java.util.List<Entity> list = level().getEntitiesOfClass(
+                Entity.class, bb,
+                cur -> cur != thrower && isDestructible(cur, living));
+        java.util.List<UUID> hitUuids = new java.util.ArrayList<>();
+        for (Entity e : list) {
+            hitUuids.add(e.getUUID());
+        }
+        alreadyHit.addAll(hitUuids);
+
+        for (Entity cur : list) {
+            if (blade.isEmpty()) break;
+
+            cur.discard();
+
+            // 爆炸粒子
+            for (int i = 0; i < 10; i++) {
+                double gx = random.nextGaussian() * 0.02;
+                double gy = random.nextGaussian() * 0.02;
+                double gz = random.nextGaussian() * 0.02;
+                double spread = 10.0;
+                level().addParticle(net.minecraft.core.particles.ParticleTypes.EXPLOSION,
+                        cur.getX() + (random.nextFloat() * cur.getBbWidth() * 2.0F) - cur.getBbWidth() - gx * spread,
+                        cur.getY() + (random.nextFloat() * cur.getBbHeight()) - gy * spread,
+                        cur.getZ() + (random.nextFloat() * cur.getBbWidth() * 2.0F) - cur.getBbWidth() - gz * spread,
+                        gx, gy, gz);
+            }
+        }
+    }
+
+    /**
+     * 判断实体是否属于可被「撕裂灵刃」销毁的类型（1.12.2 EntityDriveAdd 同款过滤规则）。
+     */
+    private static boolean isDestructible(Entity cur, LivingEntity living) {
+        // 火球（1.20.1: Fireball extends AbstractHurtingProjectile）
+        if (cur instanceof Fireball fb) {
+            Entity owner = fb.getOwner();
+            if (owner != null && owner.getId() == living.getId()) return false;
+        }
+        // 箭矢（1.20.1: AbstractArrow）
+        if (cur instanceof AbstractArrow arrow) {
+            Entity owner = arrow.getOwner();
+            if (owner != null && owner.getId() == living.getId()) return false;
+        }
+        // 投掷物（1.20.1: Projectile）
+        if (cur instanceof Projectile p) {
+            Entity owner = p.getOwner();
+            if (owner != null && owner.getId() == living.getId()) return false;
+        }
+        // 判定为可破坏：投射物类型 或 SlashBlade 召唤物（IShootable）
+        return cur instanceof Fireball || cur instanceof AbstractArrow
+                || cur instanceof Projectile || cur instanceof IShootable;
+    }
+
     // ── 命中检测 ──────────────────────────────────────────────
     protected void doHitDetection() {
         double ambit = 1.5;
         AABB bb = getBoundingBox().inflate(ambit);
-        List<LivingEntity> targets = level().getEntitiesOfClass(LivingEntity.class, bb,
+        java.util.List<LivingEntity> targets = level().getEntitiesOfClass(
+                LivingEntity.class, bb,
                 e -> e.isAlive() && e != thrower && !alreadyHit.contains(e.getUUID()));
 
         for (LivingEntity target : targets) {

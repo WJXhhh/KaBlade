@@ -25,6 +25,7 @@ public class FlareEdgeEntity extends ExSlashDriveEntity {
         FlareEdgeEntity e = new FlareEdgeEntity(ModEntities.FLARE_EDGE.get(), level);
         e.setPos(pos.x, pos.y, pos.z);
         e.setDeltaMovement(direction);
+        e.applyHeading(direction); // 出生即定向，使出生包携带正确 yRot/xRot
         e.thrower = thrower;
         e.attackDamage = damage;
         e.setColor(color);

@@ -110,6 +110,18 @@ public final class ModEntities {
                     .noSave()
                     .build("confinement_force_field"));
 
+    /** 「寒霜灵刃」的追踪冰晶飞剑与命中晶簇。 */
+    public static final RegistryObject<EntityType<FrostBladeEntity>> FROST_BLADE_EDGE = REGISTRY.register(
+            "frost_blade_edge",
+            () -> EntityType.Builder.<FrostBladeEntity>of(FrostBladeEntity::new, MobCategory.MISC)
+                    .sized(0.35F, 0.35F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("frost_blade_edge"));
+
     // ── SP Light 线 SA 实体 ──────────────────────────────────
 
     /** 通用可变速驱动实体（ExSaEntityDrive 基类）。 */
@@ -123,6 +135,18 @@ public final class ModEntities {
                     .noSummon()
                     .noSave()
                     .build("ex_slash_drive"));
+
+    /** 「撕裂灵刃」暗红驱动实体。 */
+    public static final RegistryObject<EntityType<LacerateDriveEntity>> LACERATE_DRIVE = REGISTRY.register(
+            "lacerate_drive",
+            () -> EntityType.Builder.<LacerateDriveEntity>of(LacerateDriveEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("lacerate_drive"));
 
     /** 熔岩驱动（FlareEdge）。 */
     public static final RegistryObject<EntityType<FlareEdgeEntity>> FLARE_EDGE = REGISTRY.register(
