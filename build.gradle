@@ -145,13 +145,13 @@ def syncMainConstants = tasks.register('syncMainConstants') {
     inputs.property 'modName', mod_name
     inputs.property 'modVersion', mod_version
     doLast {
-        def original = mainJava.text
+        def original = mainJava.getText('UTF-8')
         def updated = original
                 .replaceAll(/(public static final String MODID\s*=\s*)"[^"]*"/,    "\$1\"${mod_id}\"")
                 .replaceAll(/(public static final String MOD_NAME\s*=\s*)"[^"]*"/, "\$1\"${mod_name}\"")
                 .replaceAll(/(public static final String VERSION\s*=\s*)"[^"]*"/,  "\$1\"${mod_version}\"")
         if (updated != original) {
-            mainJava.text = updated
+            mainJava.write(updated, 'UTF-8')
             logger.lifecycle("syncMainConstants: MODID=${mod_id}, MOD_NAME=${mod_name}, VERSION=${mod_version}")
         }
     }

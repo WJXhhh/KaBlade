@@ -19,6 +19,13 @@ import java.util.List;
  */
 final class SaFx {
 
+    /**
+     * 竖直刃面的滚转角基线。重锋 EntityDrive 默认滚转角(0) 渲染成<b>水平</b>刃面，
+     * 而 1.12.2（Battou.swingDirection=0）是<b>竖直</b>刃面——两者基线差 90°。
+     * 需要竖斩的飞刃用此值作 roll。
+     */
+    static final float VERTICAL_ROLL = 90.0F;
+
     private SaFx() {
     }
 
@@ -76,9 +83,19 @@ final class SaFx {
         });
     }
 
-    /** 射出一道飞斩（EntityDrive）。 */
+    /** 射出一道飞斩（EntityDrive），滚转角默认 0（对应 1.12.2 Battou.swingDirection=0）。 */
     static EntityDrive drive(ServerLevel level, LivingEntity user, Vec3 pos, Vec3 dir,
                              float speed, double damage, int color, float size, float lifetime) {
+        return drive(level, user, pos, dir, speed, damage, color, size, lifetime, 0.0F);
+    }
+
+    /**
+     * 射出一道飞斩（EntityDrive），并指定滚转角 {@code roll}（绕前进轴旋转刀刃平面，
+     * 对应 1.12.2 EntityDriveAdd 的 ROLL）。在 {@code addFreshEntity} 前设好，随出生包同步，
+     * 避免首帧滚转角错误。
+     */
+    static EntityDrive drive(ServerLevel level, LivingEntity user, Vec3 pos, Vec3 dir,
+                             float speed, double damage, int color, float size, float lifetime, float roll) {
         EntityDrive d = new EntityDrive(SlashBlade.RegistryEvents.Drive, level);
         d.setPos(pos.x, pos.y, pos.z);
         d.setShooter(user);
@@ -86,6 +103,7 @@ final class SaFx {
         d.setColor(color);
         d.setBaseSize(size);
         d.setLifetime(lifetime);
+        d.setRotationRoll(roll);
         d.shoot(dir.x, dir.y, dir.z, speed, 0.6F);
         level.addFreshEntity(d);
         return d;

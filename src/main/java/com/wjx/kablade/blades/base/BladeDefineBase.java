@@ -26,6 +26,9 @@ public abstract class BladeDefineBase {
             case SP_LIGHT -> {
                 return ResourceLocation.fromNamespaceAndPath(Main.MODID, "kablade_sl_named");
             }
+            case ALL_WEAPON -> {
+                return ResourceLocation.fromNamespaceAndPath(Main.MODID, "kablade_aw_named");
+            }
         }
         throw new IllegalStateException("Unknown blade type " + type);
     }
@@ -35,7 +38,7 @@ public abstract class BladeDefineBase {
     }
 
     public enum BaseBladeType{
-        ORDINARY,HONKAI,SP_LIGHT
+        ORDINARY,HONKAI,SP_LIGHT,ALL_WEAPON
     }
 
     public abstract String getKey();

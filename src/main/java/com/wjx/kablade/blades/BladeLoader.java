@@ -5,6 +5,7 @@ import com.wjx.kablade.blades.honkai.ByoDen;
 import com.wjx.kablade.blades.honkai.ByoRai;
 import com.wjx.kablade.blades.honkai.CrystalCutter;
 import com.wjx.kablade.blades.honkai.DawnBreaker;
+import com.wjx.kablade.blades.honkai.FairySword;
 import com.wjx.kablade.blades.honkai.FuheLiuye;
 import com.wjx.kablade.blades.honkai.FuheZhuque;
 import com.wjx.kablade.blades.honkai.GalacticNova;
@@ -25,6 +26,11 @@ import com.wjx.kablade.blades.honkai.ThirdSacredRelic;
 import com.wjx.kablade.blades.honkai.VibroCutter;
 import com.wjx.kablade.blades.honkai.VorpalSword;
 import com.wjx.kablade.blades.honkai.XuanYuanKatana;
+import com.wjx.kablade.blades.allweapon.AwChanShiZhe;
+import com.wjx.kablade.blades.allweapon.AwFengShen;
+import com.wjx.kablade.blades.allweapon.AwGuangJian;
+import com.wjx.kablade.blades.allweapon.AwLiuRRHuo;
+import com.wjx.kablade.blades.allweapon.AwZhanYue;
 import com.wjx.kablade.blades.ordinary.ArcLight;
 import com.wjx.kablade.blades.ordinary.AuroraBlade;
 import com.wjx.kablade.blades.ordinary.BambooBattler;
@@ -103,6 +109,14 @@ public final class BladeLoader {
     public static BladeDefineBase OSAHOKO;
     public static BladeDefineBase SKY_BREAKER;
     public static BladeDefineBase VIBRO_CUTTER;
+    // 崩坏线·妖精剑
+    public static BladeDefineBase FAIRY_SWORD;
+    // 万物皆刃线（首批 5 把招牌刀，世界合成获取）
+    public static BladeDefineBase AW_LIURRH;
+    public static BladeDefineBase AW_CHANSHIZHE;
+    public static BladeDefineBase AW_GUANGJIAN;
+    public static BladeDefineBase AW_FENGSHEN;
+    public static BladeDefineBase AW_ZHANYUE;
     // 龙一文字线
     public static BladeDefineBase SPLIGHT_INITIAL;
     public static BladeDefineBase SPLIGHT_NORMAL;
@@ -146,9 +160,10 @@ public final class BladeLoader {
             "pulse_katana_t19",      // 脉冲太刀19式（妖刀村正+红石块+活塞，无SA）
             "xuanyuan_katana",       // 轩辕·脉冲太刀（脉冲T17+铬锭+雪，SA=寒霜灵刃）
             // 崩坏线·银河新星线
-            "galactic",              // 银河追光（脉冲T17+脉冲T19+铬钼钢剑，SA=樱花终结）
+            "galactic",              // 银河追光（脉冲T17+脉冲T19+铬钼钢剑，SA=聚光舞台）
             "vorpal_sword",          // 反力场打刀11式（银河追光+钻石+重力结晶，SA=时空黑洞）
             "dawn_breaker",          // 破晓者：塔尔瓦（银河追光+钻石+极光金属锭，SA=震击）
+            "fairy_sword",           // 妖精剑·希尔文（反力场打刀11式+破晓者+钻石+荧石粉）
             "third_sacred",          // 3rd圣遗物（银河追光+铬斧+下界之星，SA=樱花终结）
             "nue",                   // 影鵺（破晓者+羽毛+钼剑，SA=罪斩）
             // 崩坏线·苗刀系列：雷妖/电魂（由村正 Lv3 双分支升级）
@@ -173,7 +188,13 @@ public final class BladeLoader {
             "splight_young2",         // 龙一「稚」（绿）
             "splight_origin",         // 龙一「源」
             "splight_blackwatch",     // 龙一「黯」
-            "splight_senta"           // 龙一「塔」
+            "splight_senta",          // 龙一「塔」
+            // 万物皆刃线
+            "liurrh",                 // 炎王「流刃若火」
+            "chanshizhe",             // 夜空之剑「阐释者」
+            "guangjian",              // 光剑「监视者」
+            "fengshen",               // 奉神刀「鹿」
+            "zhanyue"                 // 白「天锁斩月」
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
@@ -221,6 +242,8 @@ public final class BladeLoader {
         OSAHOKO = new Osahoko(context);
         SKY_BREAKER = new SkyBreaker(context);
         VIBRO_CUTTER = new VibroCutter(context);
+        // 崩坏线·妖精剑
+        FAIRY_SWORD = new FairySword(context);
         // 崩坏线·复合系列
         FUHE_LIUYE = new FuheLiuye(context);
         FUHE_ZHUQUE = new FuheZhuque(context);
@@ -228,6 +251,12 @@ public final class BladeLoader {
         THERMAL_CUTTER = new ThermalCutter(context);
         PLASMA_KAGEHIDE = new PlasmaKagehide(context);
         PHOENIX = new Phoenix(context);
+        // 万物皆刃线（首批 5 把招牌刀）
+        AW_LIURRH = new AwLiuRRHuo(context);
+        AW_CHANSHIZHE = new AwChanShiZhe(context);
+        AW_GUANGJIAN = new AwGuangJian(context);
+        AW_FENGSHEN = new AwFengShen(context);
+        AW_ZHANYUE = new AwZhanYue(context);
         // 龙一文字线
         SPLIGHT_INITIAL = new SL_Initial(context);
         SPLIGHT_NORMAL = new SL_Normal(context);
@@ -253,6 +282,12 @@ public final class BladeLoader {
     public static void fillCreativeTabSPLight(CreativeModeTab.ItemDisplayParameters parameters,
                                               CreativeModeTab.Output output) {
         fillBladeTab(parameters, output, ModItems.KABLADE_SL_BLADE.getId());
+    }
+
+    /** 万物皆刃线拔刀剑专用创造分页：只列出载体为 kablade_aw_named 的刀。 */
+    public static void fillCreativeTabAllWeapon(CreativeModeTab.ItemDisplayParameters parameters,
+                                                CreativeModeTab.Output output) {
+        fillBladeTab(parameters, output, ModItems.KABLADE_AW_BLADE.getId());
     }
 
     private static void fillBladeTab(CreativeModeTab.ItemDisplayParameters parameters,

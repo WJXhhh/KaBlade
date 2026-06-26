@@ -16,11 +16,18 @@ import com.wjx.kablade.slasharts.InductionCollapseArts;
 import com.wjx.kablade.slasharts.LacerateBladeArts;
 import com.wjx.kablade.slasharts.LaveDriveArts;
 import com.wjx.kablade.slasharts.LightningSwordsArts;
+import com.wjx.kablade.slasharts.LightsOnStageArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
+import com.wjx.kablade.slasharts.MoonFangArts;
 import com.wjx.kablade.slasharts.OverSlashArts;
+import com.wjx.kablade.slasharts.RagingFireArts;
+import com.wjx.kablade.slasharts.RainbowSlashArts;
 import com.wjx.kablade.slasharts.RockStrikeArts;
+import com.wjx.kablade.slasharts.StarBurstArts;
+import com.wjx.kablade.slasharts.StarChaseArts;
 import com.wjx.kablade.slasharts.ShockImpactArts;
 import com.wjx.kablade.slasharts.VorpalHoleArts;
+import com.wjx.kablade.slasharts.WindEnchantmentArts;
 import com.wjx.kablade.slasharts.ZaizanArts;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -115,6 +122,35 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> AQUA_EDGE = REGISTRY.register(
             "aqua_edge",
             () -> new AquaEdgeArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> LIGHTS_ON_STAGE = REGISTRY.register(
+            "lights_on_stage",
+            () -> new LightsOnStageArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> WIND_ENCHANTMENT = REGISTRY.register(
+            "wind_enchantment",
+            () -> new WindEnchantmentArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    // ── 万物皆刃线 ──
+    public static final RegistryObject<SlashArts> RAGING_FIRE = REGISTRY.register(
+            "raging_fire",
+            () -> new RagingFireArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> STAR_BURST = REGISTRY.register(
+            "star_burst",
+            () -> new StarBurstArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> RAINBOW_SLASH = REGISTRY.register(
+            "rainbow_slash",
+            () -> new RainbowSlashArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> STAR_CHASE = REGISTRY.register(
+            "star_chase",
+            () -> new StarChaseArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> MOON_FANG = REGISTRY.register(
+            "moon_fang",
+            () -> new MoonFangArts(entity -> ComboStateRegistry.NONE.getId()));
 
     private ModSlashArts() {
     }

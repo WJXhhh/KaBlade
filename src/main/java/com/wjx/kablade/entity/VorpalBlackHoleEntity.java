@@ -2,8 +2,17 @@ package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
 import mods.flammpfeil.slashblade.entity.IShootable;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -14,24 +23,39 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- * 反力场黑洞 —— 「反力场打刀11式」SA 召唤的牵引黑洞。
+ * Red-black singularity for Vorpal Hole.
  * <p>
- * 从 1.12.2 {@code EntityVorpalBlackHole} 移植而来：
- * 在玩家位置生成，存在约 1 秒，持续将周围生物拉向中心，
- * 贴近中心的实体受到伤害并被定身。
+ * It is both the gameplay anchor and the client render anchor: server ticks pull
+ * enemies, apply the 80% opening cut, then fire six 20% attack energy pulses.
  */
 public class VorpalBlackHoleEntity extends Entity {
 
-    private static final int LIFETIME = 20;
-    private static final double PULL_RADIUS_H = 10.0;
-    private static final double PULL_RADIUS_V = 5.0;
-    private static final double CATCH_SPEED = 2.2;
-    private static final double PULL_MIN_DISTANCE = 0.75;
-    private static final double DAMAGE_RADIUS = 0.5;
-    private static final float DAMAGE = 3.0F;
+    private static final EntityDataAccessor<Integer> DATA_LIFETIME =
+            SynchedEntityData.defineId(VorpalBlackHoleEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> DATA_OPENING_DAMAGE =
+            SynchedEntityData.defineId(VorpalBlackHoleEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_PULSE_DAMAGE =
+            SynchedEntityData.defineId(VorpalBlackHoleEntity.class, EntityDataSerializers.FLOAT);
 
-    private LivingEntity thrower;
+    private static final int OPENING_TICK = 16;
+    private static final int FIRST_PULSE_TICK = 24;
+    private static final int PULSE_INTERVAL = 4;
+    private static final int PULSE_COUNT = 6;
+    private static final int VISUAL_AFTER_TICKS = 26;
+
+    private static final double PULL_RADIUS = 7.25;
+    private static final double PULL_VERTICAL_RADIUS = 4.0;
+    private static final double DAMAGE_RADIUS = 6.25;
+    private static final double DAMAGE_VERTICAL_RADIUS = 3.4;
+
+    private LivingEntity owner;
+    private UUID ownerUUID;
+    private final Set<UUID> openingHit = new HashSet<>();
 
     public VorpalBlackHoleEntity(EntityType<? extends VorpalBlackHoleEntity> type, Level level) {
         super(type, level);
@@ -39,20 +63,59 @@ public class VorpalBlackHoleEntity extends Entity {
         this.setNoGravity(true);
     }
 
-    public VorpalBlackHoleEntity(Level level, LivingEntity thrower, double x, double y, double z) {
+    public VorpalBlackHoleEntity(Level level, LivingEntity owner, Vec3 pos,
+                                 int lifetime, float openingDamage, float pulseDamage) {
         this(ModEntities.VORPAL_BLACK_HOLE.get(), level);
-        this.thrower = thrower;
-        this.setPos(x, y, z);
+        this.owner = owner;
+        this.ownerUUID = owner.getUUID();
+        this.setPos(pos.x, pos.y, pos.z);
+        this.setYRot(owner.getYRot());
+        this.setLifetime(lifetime);
+        this.setOpeningDamage(openingDamage);
+        this.setPulseDamage(pulseDamage);
     }
 
-    public static VorpalBlackHoleEntity spawn(Level level, LivingEntity thrower, double x, double y, double z) {
-        VorpalBlackHoleEntity hole = new VorpalBlackHoleEntity(level, thrower, x, y, z);
+    public static VorpalBlackHoleEntity spawn(Level level, LivingEntity owner, Vec3 pos,
+                                              int lifetime, float openingDamage, float pulseDamage) {
+        VorpalBlackHoleEntity hole = new VorpalBlackHoleEntity(level, owner, pos,
+                lifetime, openingDamage, pulseDamage);
         level.addFreshEntity(hole);
         return hole;
     }
 
     @Override
     protected void defineSynchedData() {
+        this.entityData.define(DATA_LIFETIME, 56);
+        this.entityData.define(DATA_OPENING_DAMAGE, 0.0F);
+        this.entityData.define(DATA_PULSE_DAMAGE, 0.0F);
+    }
+
+    public int getLifetime() {
+        return this.entityData.get(DATA_LIFETIME);
+    }
+
+    public int getVisualLifetime() {
+        return this.getLifetime() + VISUAL_AFTER_TICKS;
+    }
+
+    public void setLifetime(int lifetime) {
+        this.entityData.set(DATA_LIFETIME, Math.max(1, lifetime));
+    }
+
+    public float getOpeningDamage() {
+        return this.entityData.get(DATA_OPENING_DAMAGE);
+    }
+
+    public void setOpeningDamage(float damage) {
+        this.entityData.set(DATA_OPENING_DAMAGE, Math.max(0.0F, damage));
+    }
+
+    public float getPulseDamage() {
+        return this.entityData.get(DATA_PULSE_DAMAGE);
+    }
+
+    public void setPulseDamage(float damage) {
+        this.entityData.set(DATA_PULSE_DAMAGE, Math.max(0.0F, damage));
     }
 
     @Override
@@ -63,70 +126,200 @@ public class VorpalBlackHoleEntity extends Entity {
             return;
         }
 
-        Level level = this.level();
-
-        // 牵引：范围内的生物/投射物被拉向中心（向量算法照搬 1.12.2：按最大轴分量归一化 × catchSpeed / 距离）。
-        AABB pullBox = this.getBoundingBox()
-                .inflate(PULL_RADIUS_H, PULL_RADIUS_V, PULL_RADIUS_H)
-                .move(this.getDeltaMovement());
-        for (Entity e : level.getEntities(this, pullBox, this::canAffect)) {
-            double dist = this.distanceTo(e);
-            if (dist >= PULL_MIN_DISTANCE) {
-                double dx = this.getX() - e.getX();
-                double dy = this.getY() - e.getY();
-                double dz = this.getZ() - e.getZ();
-                double per1 = Math.max(Math.abs(dx), Math.max(Math.abs(dy), Math.abs(dz)));
-                double disCount = 1.0 / dist;
-                e.setDeltaMovement(dx / per1 * CATCH_SPEED * disCount,
-                        dy / per1 * CATCH_SPEED * disCount,
-                        dz / per1 * CATCH_SPEED * disCount);
-                e.hurtMarked = true;
-            }
+        ServerLevel level = (ServerLevel) this.level();
+        resolveOwner(level);
+        if (this.tickCount < this.getLifetime()) {
+            pullNearbyEntities(level);
         }
 
-        // 切割：贴近中心（0.5 格内）的目标被定身并受伤。
-        AABB damageBox = this.getBoundingBox()
-                .inflate(DAMAGE_RADIUS)
-                .move(this.getDeltaMovement());
-        DamageSource src = this.thrower != null
-                ? level.damageSources().mobAttack(this.thrower)
-                : level.damageSources().generic();
-        for (Entity e : level.getEntities(this, damageBox, this::canAffect)) {
-            e.setDeltaMovement(Vec3.ZERO);
-            e.hurtMarked = true;
-            e.hurt(src, DAMAGE);
+        if (this.tickCount == OPENING_TICK) {
+            openingCut(level);
         }
 
-        // 寿命 20 tick（与 1.12.2 一致：结算完本 tick 效果后再判定消失）。
-        if (this.tickCount > LIFETIME) {
+        int pulseIndex = (this.tickCount - FIRST_PULSE_TICK) / PULSE_INTERVAL;
+        if (pulseIndex >= 0
+                && pulseIndex < PULSE_COUNT
+                && (this.tickCount - FIRST_PULSE_TICK) % PULSE_INTERVAL == 0) {
+            energyPulse(level, pulseIndex);
+        }
+
+        if (this.tickCount == this.getLifetime()) {
+            collapseFx(level);
+        }
+
+        if (this.tickCount >= this.getVisualLifetime()) {
             this.discard();
         }
     }
 
-    /**
-     * 影响判定，一比一复刻 1.12.2 的谓词 {@code p2}：
-     * 排除自身、施法者、以及施法者自己发出的投射物（召唤剑等）；创造/旁观玩家不受影响；
-     * 只作用于生物或可发射投射物，掉落物/经验球等不受牵引。
-     */
-    private boolean canAffect(Entity e) {
-        if (e == this || e == this.thrower) {
+    private void resolveOwner(ServerLevel level) {
+        if (this.owner == null && this.ownerUUID != null) {
+            Entity entity = level.getEntity(this.ownerUUID);
+            if (entity instanceof LivingEntity living) {
+                this.owner = living;
+            }
+        }
+    }
+
+    private void pullNearbyEntities(ServerLevel level) {
+        AABB bounds = AABB.ofSize(this.position(),
+                PULL_RADIUS * 2.0, PULL_VERTICAL_RADIUS * 2.0, PULL_RADIUS * 2.0);
+        for (Entity target : level.getEntities(this, bounds, this::canPull)) {
+            Vec3 targetCenter = target instanceof LivingEntity living
+                    ? target.position().add(0.0, living.getBbHeight() * 0.52, 0.0)
+                    : target.position();
+            Vec3 toCenter = this.position().subtract(targetCenter);
+            double distance = Math.max(0.35, toCenter.length());
+            if (distance > PULL_RADIUS) {
+                continue;
+            }
+
+            double ease = 1.0 - Mth.clamp(distance / PULL_RADIUS, 0.0, 1.0);
+            double strength = 0.16 + ease * 0.46;
+            Vec3 pull = toCenter.normalize().scale(strength);
+            if (target instanceof LivingEntity) {
+                pull = pull.add(0.0, 0.025 + ease * 0.035, 0.0);
+            }
+            target.setDeltaMovement(target.getDeltaMovement().scale(0.28).add(pull));
+            target.hurtMarked = true;
+        }
+    }
+
+    private void openingCut(ServerLevel level) {
+        DamageSource source = damageSource(level);
+        for (LivingEntity target : targets(level, DAMAGE_RADIUS)) {
+            if (!this.openingHit.add(target.getUUID())) {
+                continue;
+            }
+            target.invulnerableTime = 0;
+            if (target.hurt(source, this.getOpeningDamage())) {
+                Vec3 pull = this.position().subtract(target.position())
+                        .multiply(0.08, 0.0, 0.08);
+                target.setDeltaMovement(pull.x, 0.28, pull.z);
+                target.hurtMarked = true;
+            }
+        }
+        pulseFx(level, 0, 1.0F);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.35F, 0.58F);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 0.52F, 0.82F);
+    }
+
+    private void energyPulse(ServerLevel level, int pulseIndex) {
+        DamageSource source = damageSource(level);
+        for (LivingEntity target : targets(level, DAMAGE_RADIUS * (0.88 + pulseIndex * 0.025))) {
+            target.invulnerableTime = 0;
+            target.hurt(source, this.getPulseDamage());
+            Vec3 toCenter = this.position().subtract(target.position());
+            if (toCenter.lengthSqr() > 1.0E-5) {
+                Vec3 pull = toCenter.normalize().scale(0.16 + pulseIndex * 0.018);
+                target.setDeltaMovement(target.getDeltaMovement().scale(0.18).add(pull));
+                target.hurtMarked = true;
+            }
+        }
+        pulseFx(level, pulseIndex, 0.72F);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.PLAYERS,
+                0.85F, 0.72F + pulseIndex * 0.08F);
+    }
+
+    private Iterable<LivingEntity> targets(ServerLevel level, double radius) {
+        AABB bounds = AABB.ofSize(this.position(),
+                radius * 2.0, DAMAGE_VERTICAL_RADIUS * 2.0, radius * 2.0);
+        double radiusSq = radius * radius;
+        return level.getEntitiesOfClass(LivingEntity.class, bounds, target -> {
+            if (!canDamage(target)) {
+                return false;
+            }
+            double dx = target.getX() - this.getX();
+            double dz = target.getZ() - this.getZ();
+            return dx * dx + dz * dz <= radiusSq;
+        });
+    }
+
+    private boolean canPull(Entity entity) {
+        if (entity == this || entity == this.owner) {
             return false;
         }
-        if (e instanceof IShootable shootable && shootable.getShooter() == this.thrower) {
+        if (entity instanceof IShootable shootable && shootable.getShooter() == this.owner) {
             return false;
         }
-        if (e instanceof Player player) {
+        if (entity instanceof Player player) {
             return !player.isCreative() && !player.isSpectator();
         }
-        return e instanceof LivingEntity || e instanceof IShootable;
+        if (entity instanceof LivingEntity living) {
+            return living.isAlive() && (this.owner == null || !living.isAlliedTo(this.owner));
+        }
+        return entity instanceof IShootable;
+    }
+
+    private boolean canDamage(LivingEntity target) {
+        if (!target.isAlive() || target == this.owner) {
+            return false;
+        }
+        if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
+            return false;
+        }
+        return this.owner == null || !target.isAlliedTo(this.owner);
+    }
+
+    private DamageSource damageSource(ServerLevel level) {
+        if (this.owner instanceof Player player) {
+            return level.damageSources().playerAttack(player);
+        }
+        if (this.owner != null) {
+            return level.damageSources().mobAttack(this.owner);
+        }
+        return level.damageSources().magic();
+    }
+
+    private void pulseFx(ServerLevel level, int pulseIndex, float intensity) {
+        level.sendParticles(ParticleTypes.REVERSE_PORTAL, this.getX(), this.getY(), this.getZ(),
+                (int) (4 * intensity), 0.18, 0.18, 0.18, 0.03);
+    }
+
+    private void collapseFx(ServerLevel level) {
+        level.sendParticles(ParticleTypes.FLASH, this.getX(), this.getY(), this.getZ(),
+                1, 0.0, 0.0, 0.0, 0.0);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(),
+                SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.PLAYERS, 0.85F, 1.38F);
     }
 
     @Override
-    protected void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+    public AABB getBoundingBoxForCulling() {
+        return super.getBoundingBoxForCulling().inflate(8.0, 5.0, 8.0);
     }
 
     @Override
-    protected void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        if (tag.hasUUID("OwnerUUID")) {
+            this.ownerUUID = tag.getUUID("OwnerUUID");
+        }
+        if (tag.contains("Lifetime")) {
+            this.setLifetime(tag.getInt("Lifetime"));
+        }
+        if (tag.contains("OpeningDamage")) {
+            this.setOpeningDamage(tag.getFloat("OpeningDamage"));
+        }
+        if (tag.contains("PulseDamage")) {
+            this.setPulseDamage(tag.getFloat("PulseDamage"));
+        }
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        if (this.ownerUUID != null) {
+            tag.putUUID("OwnerUUID", this.ownerUUID);
+        }
+        tag.putInt("Lifetime", this.getLifetime());
+        tag.putFloat("OpeningDamage", this.getOpeningDamage());
+        tag.putFloat("PulseDamage", this.getPulseDamage());
+    }
+
+    @Override
+    public boolean isPickable() {
+        return false;
     }
 
     @Override

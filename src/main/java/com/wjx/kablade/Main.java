@@ -9,6 +9,7 @@ import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.BladeLoader;
+import com.wjx.kablade.property.KabladeBladeProperties;
 import com.wjx.kablade.network.KabladeNetwork;
 import com.wjx.kablade.util.creative_tab.CreativeTabBuilder;
 import net.minecraftforge.fml.config.ModConfig;
@@ -38,7 +39,7 @@ public final class Main {
 
     // The three literals below are kept in sync with gradle.properties automatically by the
     // 'syncMainConstants' Gradle task (it rewrites them before each compile). Edit gradle.properties
-    // (mod_id / mod_name / mod_version) — 这里的值会在下次构建时自动同步。
+    // (mod_id / mod_name / mod_version) are auto-synced from gradle.properties at each build.
 
     /** This mod's id. Matches modId in mods.toml and the mixin package owner. */
     public static final String MODID = "kablade";
@@ -47,7 +48,7 @@ public final class Main {
     public static final String MOD_NAME = "Kablade";
 
     /** Mod version. */
-    public static final String VERSION = "2.0.2-a";
+    public static final String VERSION = "2.0.4-a";
 
     /** Shared logger. */
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -63,6 +64,8 @@ public final class Main {
     public static final CreativeTabBuilder TAB_KABLADE_HONKAI = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".honkai")).icon(() -> new ItemStack(ModItems.HONKAI_ICON.get())));
 
     public static final CreativeTabBuilder TAB_KABLADE_SP_LIGHT = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".sp_light")).icon(() -> new ItemStack(ModItems.SP_LIGHT_ICON.get())));
+
+    public static final CreativeTabBuilder TAB_KABLADE_ALLWEAPON = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".allweapon")).icon(() -> new ItemStack(ModItems.ALLWEAPON_ICON.get())));
 
     //Load
     public Main(FMLJavaModLoadingContext context) {
@@ -80,15 +83,17 @@ public final class Main {
         TAB_KABLADE_NOTED.addDisplayItems(BladeLoader::fillCreativeTab);
         TAB_KABLADE_HONKAI.addDisplayItems(BladeLoader::fillCreativeTabHonkai);
         TAB_KABLADE_SP_LIGHT.addDisplayItems(BladeLoader::fillCreativeTabSPLight);
-        // 普通物品（如 RIMMED_EARTH）走 ModItems.registerBlockItem 找到 TAB_KABLADE，避免在此重复添加。
+        TAB_KABLADE_ALLWEAPON.addDisplayItems(BladeLoader::fillCreativeTabAllWeapon);
+        // Normal items (including RIMMED_EARTH) register into TAB_KABLADE via ModItems -- not duplicated.
         TAB_KABLADE.registerTab("tab_1_kablade", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_NOTED.registerTab("tab_2_noted", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_HONKAI.registerTab("tab_3_honkai", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_SP_LIGHT.registerTab("tab_4_sp_light", CREATIVE_TAB_REGISTRY);
+        TAB_KABLADE_ALLWEAPON.registerTab("tab_5_allweapon", CREATIVE_TAB_REGISTRY);
 
         // --- Config ---
-        // COMMON 配置：全服共享/默认比率，可在运行前于 config/kablade-common.toml 编辑。
-        // context 参数是 ForgeLoadingContext 的子类，直接调实例方法 registerConfig，无需再走静态 get()。
+        // --- Config --- COMMON config for global defaults; players can edit config/kablade-common.toml
+        // context is an FMLJavaModLoadingContext; call registerConfig directly, no static get().
         context.registerConfig(ModConfig.Type.COMMON, KabladeConfig.SPEC);
 
         // --- Content registration ---
@@ -107,16 +112,19 @@ public final class Main {
         LOGGER.info("[{}] constructed (dist={})", MODID, FMLEnvironment.dist);
     }
 
-    /** Runs after all mods are constructed — safe place to read other mods' metadata. */
+    /** Runs after all mods are constructed -- safe place to read other mods metadata. */
     private void commonSetup(final FMLCommonSetupEvent event) {
         com.wjx.kablade.event.AuroraColorCycling.init();
-        event.enqueueWork(KabladeNetwork::register);
+        event.enqueueWork(() -> {
+            KabladeNetwork.register();
+            KabladeBladeProperties.register();
+        });
     }
 
     /** Client-only setup (renderers, key mappings, etc.). */
     private void clientSetup(final FMLClientSetupEvent event) {
         LOGGER.debug("[{}] client setup", MODID);
-        // 后台获取远程版本号，有更新时由 UpdateNotifier 在进入主界面后提示玩家。
+        // Fetches remote version; UpdateNotifier shows on login screen if newer version exists.
         com.wjx.kablade.update.UpdateChecker.start(VERSION);
     }
 

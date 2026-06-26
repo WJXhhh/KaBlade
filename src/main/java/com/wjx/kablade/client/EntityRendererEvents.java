@@ -2,7 +2,6 @@ package com.wjx.kablade.client;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.model.RockSpikeModel;
-import com.wjx.kablade.client.model.VorpalBlackHoleModel;
 import com.wjx.kablade.client.renderer.*;
 import com.wjx.kablade.init.ModEntities;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,6 +27,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.RAIKIRI_SHIELD.get(), RaikiriShieldRenderer::new);
         event.registerEntityRenderer(ModEntities.CONFINEMENT_FORCE_FIELD.get(), ConfinementForceFieldRenderer::new);
         event.registerEntityRenderer(ModEntities.FROST_BLADE_EDGE.get(), FrostBladeRenderer::new);
+        event.registerEntityRenderer(ModEntities.SHOCK_IMPACT.get(), ShockImpactRenderer::new);
 
         // SP Light SA entities
         event.registerEntityRenderer(ModEntities.EX_SLASH_DRIVE.get(), ExDriveRenderer::new);
@@ -36,11 +36,13 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.AQUA_EDGE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.PHANTOM_SWORD_EX.get(), PhantomSwordExRenderer::new);
         event.registerEntityRenderer(ModEntities.LIGHTNING_SWORD.get(), PhantomSwordExRenderer::new);
+        event.registerEntityRenderer(ModEntities.STAR_SWORD.get(), PhantomSwordExRenderer::new);
+        event.registerEntityRenderer(ModEntities.STAGE_LIGHT.get(), StageLightRenderer::new);
+        event.registerEntityRenderer(ModEntities.WIND_ENCHANTMENT.get(), WindEnchantmentRenderer::new);
     }
 
     @SubscribeEvent
     public static void onRegisterLayers(final EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RockSpikeModel.LAYER, RockSpikeModel::createBodyLayer);
-        event.registerLayerDefinition(VorpalBlackHoleModel.LAYER, VorpalBlackHoleModel::createBodyLayer);
     }
 }

@@ -24,5 +24,11 @@ public final class KabladeNetwork {
                 .decoder(OripursuitLockPacket::decode)
                 .consumerMainThread((packet, context) -> OripursuitLockPacket.handle(packet, context.get()))
                 .add();
+
+        CHANNEL.messageBuilder(PropertyDataSyncPacket.class, 1)
+                .encoder(PropertyDataSyncPacket::encode)
+                .decoder(PropertyDataSyncPacket::decode)
+                .consumerMainThread((packet, context) -> PropertyDataSyncPacket.handle(packet, context.get()))
+                .add();
     }
 }

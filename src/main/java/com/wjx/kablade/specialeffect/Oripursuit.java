@@ -12,7 +12,6 @@ import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,10 +24,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,6 +52,10 @@ public class Oripursuit extends SpecialEffect {
     private static final int LOCK_DURATION = 600;
     private static final double RAY_DISTANCE = 10.0;
     private static final int SWORD_COLOR = 0x00FFFF;
+    private static final String CHARGE_ACTION_EVENT =
+            "mods.flammpfeil.slashblade.event.SlashBladeEvent$ChargeActionEvent";
+    private static final String PERFORM_SLASH_ART_EVENT =
+            "mods.flammpfeil.slashblade.event.SlashBladeEvent$PerformSlashArtEvent";
 
     public Oripursuit() {
         super(-1, true, true);
@@ -59,10 +64,13 @@ public class Oripursuit extends SpecialEffect {
     // ── SA 时锁定敌人 ──────────────────────────────────────────────
 
     @SubscribeEvent
-    public static void onChargeAction(SlashBladeEvent.ChargeActionEvent event) {
-        if (event.getType() == SlashArts.ArtsType.Fail) return;
+    public static void onSlashArtAction(Event event) {
+        SlashArtActivation activation = readSlashArtActivation(event);
+        if (activation == null) return;
+        if (activation.type() == SlashArts.ArtsType.Fail) return;
+        if (activation.elapsed() < activation.state().getFullChargeTicks(activation.user())) return;
 
-        LivingEntity user = event.getEntityLiving();
+        LivingEntity user = activation.user();
         if (!(user instanceof Player player)) return;
         if (user.level().isClientSide()) return;
 
@@ -73,6 +81,54 @@ public class Oripursuit extends SpecialEffect {
         if (target != null) {
             lockTarget(player, target);
         }
+    }
+
+    // ── SlashBlade 1.8.x / 1.9.x SA event compatibility ─────────────
+
+    private static SlashArtActivation readSlashArtActivation(Event event) {
+        String eventClass = event.getClass().getName();
+        if (!CHARGE_ACTION_EVENT.equals(eventClass) && !PERFORM_SLASH_ART_EVENT.equals(eventClass)) {
+            return null;
+        }
+
+        SlashArts.ArtsType type = invokeNoArg(event, "getType", SlashArts.ArtsType.class);
+        if (type == null) {
+            return null;
+        }
+
+        LivingEntity user = invokeNoArg(event, "getEntityLiving", LivingEntity.class);
+        ISlashBladeState state = invokeNoArg(event, "getSlashBladeState", ISlashBladeState.class);
+        Integer elapsed = invokeIntNoArg(event, "getElapsed");
+        if (user == null || state == null || elapsed == null) {
+            return null;
+        }
+
+        return new SlashArtActivation(user, state, elapsed, type);
+    }
+
+    private static <T> T invokeNoArg(Object target, String methodName, Class<T> type) {
+        try {
+            Object value = target.getClass().getMethod(methodName).invoke(target);
+            return type.isInstance(value) ? type.cast(value) : null;
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
+            return null;
+        }
+    }
+
+    private static Integer invokeIntNoArg(Object target, String methodName) {
+        try {
+            Object value = target.getClass().getMethod(methodName).invoke(target);
+            return value instanceof Integer i ? i : null;
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | SecurityException e) {
+            return null;
+        }
+    }
+
+    private record SlashArtActivation(
+            LivingEntity user,
+            ISlashBladeState state,
+            int elapsed,
+            SlashArts.ArtsType type) {
     }
 
     // ── 命中锁定目标时追加飞剑 ─────────────────────────────────────

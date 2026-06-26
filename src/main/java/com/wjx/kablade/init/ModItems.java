@@ -46,11 +46,18 @@ public final class ModItems {
             "kablade_sl_named",
             KbladeBladeItem::new);
 
+    //All Weapon Blade Item（万物皆刃线拔刀剑的统一载体物品）
+    @CustomBladeModel
+    public static final RegistryObject<Item> KABLADE_AW_BLADE = registerItem(
+            "kablade_aw_named",
+            KbladeBladeItem::new);
+
     //Creative Tab Icon
     public static final RegistryObject<Item> MAIN_MATER = registerItemBase("main_mater");
     public static final RegistryObject<Item> NOTED = registerItemBase("noted");
     public static final RegistryObject<Item> HONKAI_ICON = registerItemBase("honkai_icon");
     public static final RegistryObject<Item> SP_LIGHT_ICON = registerItemBase("sp_light_icon");
+    public static final RegistryObject<Item> ALLWEAPON_ICON = registerItemBase("allweapon_icon");
 
     //ORDINARY
     public static final RegistryObject<Item> RIMMED_EARTH_STICK = registerItemBase("rimmed_earth_stick",Main.TAB_KABLADE);

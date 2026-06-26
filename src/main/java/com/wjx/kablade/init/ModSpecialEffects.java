@@ -5,6 +5,7 @@ import com.wjx.kablade.specialeffect.BurstDrive;
 import com.wjx.kablade.specialeffect.DivinePenalty;
 import com.wjx.kablade.specialeffect.Oripursuit;
 import com.wjx.kablade.specialeffect.Phoenix;
+import com.wjx.kablade.specialeffect.PowerOfWind;
 import com.wjx.kablade.specialeffect.SPLighting;
 import com.wjx.kablade.specialeffect.Turbulence;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -36,6 +37,9 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> BURST_DRIVE = REGISTRY.register(
             "burst_drive", BurstDrive::new);
+
+    public static final RegistryObject<SpecialEffect> POWER_OF_WIND = REGISTRY.register(
+            "power_of_wind", PowerOfWind::new);
 
     private ModSpecialEffects() {
     }

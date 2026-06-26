@@ -2,6 +2,7 @@ package com.wjx.kablade.init;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.entity.*;
+import com.wjx.kablade.entity.WindEnchantmentEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.registries.DeferredRegister;
@@ -122,6 +123,30 @@ public final class ModEntities {
                     .noSave()
                     .build("frost_blade_edge"));
 
+    /** Visual anchor for the Shock Impact SA. */
+    public static final RegistryObject<EntityType<ShockImpactEntity>> SHOCK_IMPACT = REGISTRY.register(
+            "shock_impact",
+            () -> EntityType.Builder.<ShockImpactEntity>of(ShockImpactEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("shock_impact"));
+
+    /** 「风之结界」光环实体。 */
+    public static final RegistryObject<EntityType<WindEnchantmentEntity>> WIND_ENCHANTMENT = REGISTRY.register(
+            "wind_enchantment",
+            () -> EntityType.Builder.<WindEnchantmentEntity>of(WindEnchantmentEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("wind_enchantment"));
+
     // ── SP Light 线 SA 实体 ──────────────────────────────────
 
     /** 通用可变速驱动实体（ExSaEntityDrive 基类）。 */
@@ -184,6 +209,18 @@ public final class ModEntities {
                     .noSave()
                     .build("phantom_sword_ex"));
 
+    /** 「追星剑」金色归航幻影剑（奉神刀·鹿）。 */
+    public static final RegistryObject<EntityType<StarSwordEntity>> STAR_SWORD = REGISTRY.register(
+            "star_sword",
+            () -> EntityType.Builder.<StarSwordEntity>of(StarSwordEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("star_sword"));
+
     /** 闪电剑。 */
     public static final RegistryObject<EntityType<LightningSwordEntity>> LIGHTNING_SWORD = REGISTRY.register(
             "lightning_sword",
@@ -195,6 +232,18 @@ public final class ModEntities {
                     .noSummon()
                     .noSave()
                     .build("lightning_sword"));
+
+    /** 「聚光舞台」的金白色舞台光环表现实体。 */
+    public static final RegistryObject<EntityType<StageLightEntity>> STAGE_LIGHT = REGISTRY.register(
+            "stage_light",
+            () -> EntityType.Builder.<StageLightEntity>of(StageLightEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 0.25F)
+                    .clientTrackingRange(12)
+                    .updateInterval(20)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("stage_light"));
 
     private ModEntities() {
     }

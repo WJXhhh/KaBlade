@@ -1,27 +1,29 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.entity.ShockImpactEntity;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.function.Function;
 
 /**
- * 震击 —— 「破晓者：塔尔瓦」专属 SA。
+ * Shock Impact - the Dawn Breaker Slash Art.
  * <p>
- * 从 1.12.2 {@code HonkaiShockImpact} 移植而来：
- * 先释放 SlashBlade 内置的「突刺（Spear）」效果，再对周围 3×1×3 范围内的非玩家敌人造成
- * {@code 22 + amplifierCalc(attack, 10)} 伤害，并给持有者附加力量 VI（amplifier 5，与 1.12.2 一致）。
+ * Keeps the 1.12.2 damage shape, but presents the release as a Honkai-style
+ * cyan blade trail pulled out by the sword edge.
  */
 public final class ShockImpactArts extends SlashArts {
 
@@ -29,6 +31,9 @@ public final class ShockImpactArts extends SlashArts {
     private static final double AOE_RADIUS = 3.0;
     private static final int STRENGTH_DURATION = 100;
     private static final int STRENGTH_AMPLIFIER = 5;
+    private static final int VISUAL_LIFETIME = 34;
+    private static final float VISUAL_SCALE = 1.08F;
+    private static final double LUNGE_SPEED = 1.15;
 
     public ShockImpactArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);
@@ -41,22 +46,15 @@ public final class ShockImpactArts extends SlashArts {
         }
 
         ServerLevel level = (ServerLevel) user.level();
+        Vec3 look = SaFx.flatLook(user);
+        lungeForward(user, look);
+        spawnImpactVisual(level, user, look);
 
-        // 先调用 SlashBlade 内置 Spear
-        Registry<SlashArts> registry = user.level().registryAccess()
-                .registryOrThrow(SlashArts.REGISTRY_KEY);
-        SlashArts spear = registry.get(ResourceLocation.fromNamespaceAndPath("slashblade", "spear"));
-        if (spear != null) {
-            spear.doArts(type, user);
-        }
-
-        // 计算额外伤害
         float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float extraDamage = (float) MathFunc.amplifierCalc(bladeAttack, 10.0F);
 
-        // AOE 伤害
         AABB box = user.getBoundingBox()
                 .inflate(AOE_RADIUS, 1.0, AOE_RADIUS)
                 .move(user.getDeltaMovement());
@@ -69,10 +67,28 @@ public final class ShockImpactArts extends SlashArts {
             target.hurt(level.damageSources().mobAttack(user), BASE_DAMAGE + extraDamage);
         }
 
-        // 给持有者力量 buff
         user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,
                 STRENGTH_DURATION, STRENGTH_AMPLIFIER, false, true));
 
         return super.doArts(type, user);
+    }
+
+    private static void lungeForward(LivingEntity user, Vec3 look) {
+        Vec3 motion = user.getDeltaMovement();
+        user.setDeltaMovement(look.x * LUNGE_SPEED, motion.y, look.z * LUNGE_SPEED);
+        user.hurtMarked = true;
+        user.hasImpulse = true;
+    }
+
+    private static void spawnImpactVisual(ServerLevel level, LivingEntity user, Vec3 look) {
+        Vec3 origin = user.position().add(look.scale(0.95)).add(0.0, 1.08, 0.0);
+        ShockImpactEntity.spawn(level, user, origin, VISUAL_LIFETIME, VISUAL_SCALE);
+
+        level.playSound(null, origin.x, origin.y, origin.z,
+                SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 1.1F, 1.72F);
+        level.playSound(null, origin.x, origin.y, origin.z,
+                SoundEvents.TRIDENT_RIPTIDE_3, SoundSource.PLAYERS, 0.78F, 1.52F);
+        level.playSound(null, origin.x, origin.y, origin.z,
+                SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.PLAYERS, 0.86F, 1.26F);
     }
 }
