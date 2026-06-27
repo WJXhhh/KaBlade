@@ -10,12 +10,19 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 /**
  * Honkai-style blade trail for Shock Impact.
+ * <p>
+ * The crescent centreline is an arc swept through a <em>tilted</em> plane (so it
+ * is seen at a 3/4 angle, not face-on), and the ribbon cross-section frame is
+ * twisted about the path along the sweep (a helicoid) so the band visibly turns
+ * over in space. The U/V the shader ({@code shock_impact.fsh}) needs are kept:
+ * {@code U = channelBase + sweepProgress}, {@code V} runs across the ribbon.
  */
 public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity> {
 
@@ -26,6 +33,51 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
     private static final int SPEED_LINE_COUNT = 14;
     private static final int FRAGMENT_COUNT = 26;
     private static final float MAIN_THICKNESS = 0.62F;
+
+    // --- Swing geometry -----------------------------------------------------
+    // The crescent is an arc on a sphere around the caster; EU/EV define its cutting
+    // plane (see LATERAL_TILT_DEGREES below). The plane contains the forward axis so
+    // the arc sweeps front -> over the head -> behind; the ribbon also twists
+    // (TWIST_AMP) so its surface turns over for volume.
+    private static final float ARC_RADIUS = 3.85F;
+    private static final Vector3f PIVOT = new Vector3f(0.0F, -0.25F, 0.0F);
+    // Overhead diagonal slash in a near-sagittal plane: tail starts low-left IN
+    // FRONT, the body sweeps up and over the head, and the leading edge finishes
+    // BEHIND the caster on the right. Because the plane contains the forward axis
+    // (see EU), low theta = front and theta past PI/2 = behind, so the arc genuinely
+    // travels front -> over -> behind instead of staying on one side.
+    private static final float SWING_START = -0.40F; // rad, tail (front-low-left)
+    private static final float SWING_END = 2.85F;    // rad, leading edge (behind-up-right)
+    private static final float RIBBON_HALFWIDTH = 0.95F;
+    // Helicoid twist: the cross-section frame rotates about the path by +/- this
+    // many radians across the sweep, so the ribbon turns over and shows both faces.
+    private static final float TWIST_AMP = 0.70F;
+    // The slash plane is the caster's SAGITTAL plane (it contains FORWARD and UP), so
+    // the arc can travel from in front, over the head, to behind. LATERAL_TILT then
+    // rotates that plane about the vertical axis so it isn't seen edge-on from behind
+    // the player: 0 = pure front-to-back (deepest, but thin from a tail camera), 90 =
+    // a flat frontal rainbow. ~45 balances real depth against on-screen visibility.
+    private static final float LATERAL_TILT_DEGREES = 45.0F;
+    // The endpoints are pinned. To recline the arc forward without moving the start/
+    // end, the whole arc is rigidly rotated about its chord (the start->end line):
+    // points on that axis (i.e. both endpoints) stay put and only the belly tips over.
+    // Negative = lie forward (belly toward the ground in front); positive = tip back.
+    private static final float BULGE_TILT_DEGREES = -45.0F;
+
+    private static final Vector3f EU;
+    private static final Vector3f EV;
+    private static final Vector3f EN;
+    private static final Vector3f CHORD_PIVOT;
+    private static final Vector3f CHORD_AXIS;
+
+    static {
+        float tilt = LATERAL_TILT_DEGREES * Mth.DEG_TO_RAD;
+        EU = new Vector3f(Mth.sin(tilt), 0.0F, Mth.cos(tilt)).normalize(); // sweep axis: forward, rotated toward left
+        EV = new Vector3f(0.0F, 1.0F, 0.0F);                              // up
+        EN = new Vector3f(EU).cross(EV).normalize();
+        CHORD_PIVOT = center(SWING_START);                                // start point (lies on the rotation axis)
+        CHORD_AXIS = new Vector3f(center(SWING_END)).sub(center(SWING_START)).normalize();
+    }
 
     public ShockImpactRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -48,49 +100,119 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
         float sweep = smootherStep(Mth.clamp((age - 1.0F) / 12.0F, 0.0F, 1.0F));
         float spark = Mth.sin(Mth.clamp((age - 3.0F) / 16.0F, 0.0F, 1.0F) * Mth.PI);
         float scale = entity.getScale() * (0.88F + sweep * 0.16F);
-        VertexConsumer vc = buffer.getBuffer(KabladeRenderTypes.shockImpact());
 
         poseStack.pushPose();
+        // The dispatcher enters with the pose at the entity's own interpolated
+        // position, which only updates once per tick and lags the smoothly
+        // interpolated player -> jitter. Cancel it out and re-anchor onto the
+        // owner's partialTick position so the trail tracks the player per frame.
+        Entity owner = entity.getOwner();
+        if (owner != null) {
+            double entX = Mth.lerp(partialTick, entity.xOld, entity.getX());
+            double entY = Mth.lerp(partialTick, entity.yOld, entity.getY());
+            double entZ = Mth.lerp(partialTick, entity.zOld, entity.getZ());
+            double ownX = Mth.lerp(partialTick, owner.xOld, owner.getX());
+            double ownY = Mth.lerp(partialTick, owner.yOld, owner.getY());
+            double ownZ = Mth.lerp(partialTick, owner.zOld, owner.getZ());
+            float yawRad = entity.getYRot() * Mth.DEG_TO_RAD;
+            double forward = entity.getForwardOffset();
+            double fx = -Mth.sin(yawRad);
+            double fz = Mth.cos(yawRad);
+            poseStack.translate(
+                    ownX + fx * forward - entX,
+                    ownY + entity.getUpOffset() - entY,
+                    ownZ + fz * forward - entZ);
+        }
         poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
         poseStack.translate(0.0F, -0.18F + spark * 0.08F, 0.18F);
         poseStack.scale(scale, scale, scale);
+        // Recline the arc forward about its chord, keeping the start/end pinned.
+        poseStack.translate(CHORD_PIVOT.x, CHORD_PIVOT.y, CHORD_PIVOT.z);
+        poseStack.mulPose(new Quaternionf().rotationAxis(
+                BULGE_TILT_DEGREES * Mth.DEG_TO_RAD, CHORD_AXIS.x, CHORD_AXIS.y, CHORD_AXIS.z));
+        poseStack.translate(-CHORD_PIVOT.x, -CHORD_PIVOT.y, -CHORD_PIVOT.z);
         Matrix4f mat = poseStack.last().pose();
 
         for (int i = AFTERIMAGE_COUNT - 1; i >= 0; i--) {
-            float offset = 0.16F + i * 0.18F;
             float imageAlpha = alpha * (0.16F + i * 0.055F) * (1.0F - progress * 0.34F);
-            bladeTrail(vc, mat, sweep, 1.15F + i * 0.18F,
-                    imageAlpha, 1.0F, -0.05F - i * 0.012F,
-                    -offset, -offset * 0.30F, MAIN_THICKNESS * 0.70F,
-                    0.38F + i * 0.26F);
+            bladeTrail(vc(buffer), mat, sweep, 1.15F + i * 0.18F, imageAlpha, 1.0F,
+                    MAIN_THICKNESS * 0.70F, -0.20F - i * 0.16F, -0.16F - i * 0.10F);
         }
 
-        bladeTrail(vc, mat, sweep, 1.0F, alpha * 0.70F, 1.0F, 0.000F, 0.0F, 0.0F,
-                MAIN_THICKNESS, 0.0F);
-        bladeTrail(vc, mat, sweep, 0.48F, alpha * 0.92F, 2.2F, 0.018F, 0.0F, 0.0F,
-                MAIN_THICKNESS * 0.62F, -0.18F);
-        bladeTrail(vc, mat, sweep, 0.30F, alpha * 0.45F, 2.2F, 0.012F, 0.0F, 0.0F,
-                MAIN_THICKNESS * 0.48F, 0.42F);
-        bladeTrail(vc, mat, sweep, 0.115F, alpha, 3.4F, 0.040F, 0.0F, 0.0F,
-                MAIN_THICKNESS * 0.28F, -0.32F);
-        bladeTrail(vc, mat, sweep, 0.080F, alpha * 0.55F, 3.4F, 0.030F, 0.0F, 0.0F,
-                MAIN_THICKNESS * 0.22F, 0.54F);
+        VertexConsumer vc = vc(buffer);
+        bladeTrail(vc, mat, sweep, 1.0F, alpha * 0.70F, 1.0F, MAIN_THICKNESS, 0.0F, 0.0F);
+        bladeTrail(vc, mat, sweep, 0.48F, alpha * 0.92F, 2.2F, MAIN_THICKNESS * 0.62F, -0.18F, 0.0F);
+        bladeTrail(vc, mat, sweep, 0.30F, alpha * 0.45F, 2.2F, MAIN_THICKNESS * 0.48F, 0.42F, 0.0F);
+        bladeTrail(vc, mat, sweep, 0.115F, alpha, 3.4F, MAIN_THICKNESS * 0.28F, -0.32F, 0.0F);
+        bladeTrail(vc, mat, sweep, 0.080F, alpha * 0.55F, 3.4F, MAIN_THICKNESS * 0.22F, 0.54F, 0.0F);
 
         edgeFlare(vc, mat, sweep, alpha * (0.72F + spark * 0.35F));
-        speedLines(vc, mat, age, alpha, spark);
-        fragments(vc, mat, age, alpha, spark);
+        speedLines(vc, mat, age, sweep, alpha, spark);
+        fragments(vc, mat, age, sweep, alpha, spark);
 
         poseStack.popPose();
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
     }
 
+    private static VertexConsumer vc(MultiBufferSource buffer) {
+        return buffer.getBuffer(KabladeRenderTypes.shockImpact());
+    }
+
+    private static float visibleEnd(float sweep) {
+        return Mth.clamp(0.18F + sweep * 0.88F, 0.0F, 1.0F);
+    }
+
+    /** Unit direction of the blade radius at sweep time t, in the tilted plane. */
+    private static Vector3f dir(float t) {
+        float theta = SWING_START + (SWING_END - SWING_START) * t;
+        float c = Mth.cos(theta);
+        float s = Mth.sin(theta);
+        return new Vector3f(
+                c * EU.x + s * EV.x,
+                c * EU.y + s * EV.y,
+                c * EU.z + s * EV.z);
+    }
+
+    /** Centreline point (the bright line of the crescent) at sweep time t. */
+    private static Vector3f center(float t) {
+        Vector3f d = dir(t);
+        return new Vector3f(
+                PIVOT.x + d.x * ARC_RADIUS,
+                PIVOT.y + d.y * ARC_RADIUS,
+                PIVOT.z + d.z * ARC_RADIUS);
+    }
+
+    /** Twisted cross-section frame at t: outW = across-the-ribbon (width), outB = thickness. */
+    private static void frame(float t, Vector3f outW, Vector3f outB) {
+        Vector3f w = dir(t); // base width axis = radial (perpendicular to the path within the plane)
+        float phi = TWIST_AMP * Mth.sin((t - 0.5F) * Mth.PI);
+        float cp = Mth.cos(phi);
+        float sp = Mth.sin(phi);
+        outW.set(w.x * cp - EN.x * sp, w.y * cp - EN.y * sp, w.z * cp - EN.z * sp);
+        outB.set(w.x * sp + EN.x * cp, w.y * sp + EN.y * cp, w.z * sp + EN.z * cp);
+    }
+
+    private static Vector3f sweepTangent(float t) {
+        Vector3f a = center(Mth.clamp(t - 0.012F, 0.0F, 1.0F));
+        Vector3f b = center(Mth.clamp(t + 0.012F, 0.0F, 1.0F));
+        return b.sub(a).normalize();
+    }
+
+    /**
+     * One layer of the crescent. {@code uBase} selects the shader channel
+     * (1.0 soft body / 2.2 core / 3.4 razor); the band is twisted in 3D.
+     * {@code enLayer} nudges the layer along the plane normal to avoid z-fighting;
+     * {@code echoBack}/{@code echoDrop} offset after-images backward/downward.
+     */
     private static void bladeTrail(VertexConsumer vc, Matrix4f mat, float sweep, float widthScale,
-                                   float alpha, float uBase, float z, float xOffset, float yOffset,
-                                   float thickness, float depthOffset) {
-        float visibleEnd = Mth.clamp(0.18F + sweep * 0.88F, 0.0F, 1.0F);
+                                   float alpha, float uBase, float thickness, float enLayer, float echoDrop) {
+        float visibleEnd = visibleEnd(sweep);
         int visibleSegments = Math.max(2, Mth.ceil(TRAIL_SEGMENTS * visibleEnd));
-        float zFront = z + thickness * 0.5F;
-        float zBack = z - thickness * 0.5F;
+        float half = thickness * 0.5F;
+        Vector3f w0 = new Vector3f();
+        Vector3f b0 = new Vector3f();
+        Vector3f w1 = new Vector3f();
+        Vector3f b1 = new Vector3f();
         for (int i = 0; i < visibleSegments; i++) {
             float t0 = i / (float) TRAIL_SEGMENTS;
             float t1 = (i + 1) / (float) TRAIL_SEGMENTS;
@@ -99,69 +221,60 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
             }
             t1 = Math.min(t1, visibleEnd);
 
-            Vector3f p0 = curve(t0, xOffset, yOffset, depthOffset);
-            Vector3f p1 = curve(t1, xOffset, yOffset, depthOffset);
-            Vector2f n0 = normal(t0);
-            Vector2f n1 = normal(t1);
-            float w0 = trailWidth(t0) * widthScale;
-            float w1 = trailWidth(t1) * widthScale;
-            float localAlpha0 = alpha * trailAlpha(t0, visibleEnd);
-            float localAlpha1 = alpha * trailAlpha(t1, visibleEnd);
+            Vector3f c0 = center(t0);
+            Vector3f c1 = center(t1);
+            frame(t0, w0, b0);
+            frame(t1, w1, b1);
+            float hw0 = RIBBON_HALFWIDTH * widthScale * trailWidth(t0);
+            float hw1 = RIBBON_HALFWIDTH * widthScale * trailWidth(t1);
+            float a0 = alpha * trailAlpha(t0, visibleEnd);
+            float a1 = alpha * trailAlpha(t1, visibleEnd);
+            float u0 = uBase + t0;
+            float u1 = uBase + t1;
 
-            float tx0 = p0.x + n0.x * w0;
-            float ty0 = p0.y + n0.y * w0;
-            float tx1 = p1.x + n1.x * w1;
-            float ty1 = p1.y + n1.y * w1;
-            float bx0 = p0.x - n0.x * w0;
-            float by0 = p0.y - n0.y * w0;
-            float bx1 = p1.x - n1.x * w1;
-            float by1 = p1.y - n1.y * w1;
-            float front0 = p0.z + zFront;
-            float front1 = p1.z + zFront;
-            float back0 = p0.z + zBack;
-            float back1 = p1.z + zBack;
+            // Layer/echo displacement of the whole slice (along plane normal + down).
+            float lx0 = c0.x + EN.x * enLayer;
+            float ly0 = c0.y + EN.y * enLayer + echoDrop;
+            float lz0 = c0.z + EN.z * enLayer;
+            float lx1 = c1.x + EN.x * enLayer;
+            float ly1 = c1.y + EN.y * enLayer + echoDrop;
+            float lz1 = c1.z + EN.z * enLayer;
 
+            // top = +width edge (v=0), bot = -width edge (v=1); front/back along thickness.
+            float topFx0 = lx0 + w0.x * hw0 + b0.x * half, topFy0 = ly0 + w0.y * hw0 + b0.y * half, topFz0 = lz0 + w0.z * hw0 + b0.z * half;
+            float topBx0 = lx0 + w0.x * hw0 - b0.x * half, topBy0 = ly0 + w0.y * hw0 - b0.y * half, topBz0 = lz0 + w0.z * hw0 - b0.z * half;
+            float botFx0 = lx0 - w0.x * hw0 + b0.x * half, botFy0 = ly0 - w0.y * hw0 + b0.y * half, botFz0 = lz0 - w0.z * hw0 + b0.z * half;
+            float botBx0 = lx0 - w0.x * hw0 - b0.x * half, botBy0 = ly0 - w0.y * hw0 - b0.y * half, botBz0 = lz0 - w0.z * hw0 - b0.z * half;
+            float topFx1 = lx1 + w1.x * hw1 + b1.x * half, topFy1 = ly1 + w1.y * hw1 + b1.y * half, topFz1 = lz1 + w1.z * hw1 + b1.z * half;
+            float topBx1 = lx1 + w1.x * hw1 - b1.x * half, topBy1 = ly1 + w1.y * hw1 - b1.y * half, topBz1 = lz1 + w1.z * hw1 - b1.z * half;
+            float botFx1 = lx1 - w1.x * hw1 + b1.x * half, botFy1 = ly1 - w1.y * hw1 + b1.y * half, botFz1 = lz1 - w1.z * hw1 + b1.z * half;
+            float botBx1 = lx1 - w1.x * hw1 - b1.x * half, botBy1 = ly1 - w1.y * hw1 - b1.y * half, botBz1 = lz1 - w1.z * hw1 - b1.z * half;
+
+            // front
             quad(vc, mat,
-                    tx0, ty0, front0, uBase + t0, 0.0F, localAlpha0,
-                    tx1, ty1, front1, uBase + t1, 0.0F, localAlpha1,
-                    bx1, by1, front1, uBase + t1, 1.0F, localAlpha1,
-                    bx0, by0, front0, uBase + t0, 1.0F, localAlpha0);
+                    topFx0, topFy0, topFz0, u0, 0.0F, a0,
+                    topFx1, topFy1, topFz1, u1, 0.0F, a1,
+                    botFx1, botFy1, botFz1, u1, 1.0F, a1,
+                    botFx0, botFy0, botFz0, u0, 1.0F, a0);
+            // back
             quad(vc, mat,
-                    tx0, ty0, back0, uBase + t0, 0.0F, localAlpha0 * 0.82F,
-                    bx0, by0, back0, uBase + t0, 1.0F, localAlpha0 * 0.82F,
-                    bx1, by1, back1, uBase + t1, 1.0F, localAlpha1 * 0.82F,
-                    tx1, ty1, back1, uBase + t1, 0.0F, localAlpha1 * 0.82F);
+                    topBx0, topBy0, topBz0, u0, 0.0F, a0 * 0.82F,
+                    botBx0, botBy0, botBz0, u0, 1.0F, a0 * 0.82F,
+                    botBx1, botBy1, botBz1, u1, 1.0F, a1 * 0.82F,
+                    topBx1, topBy1, topBz1, u1, 0.0F, a1 * 0.82F);
+            // top rim
             quad(vc, mat,
-                    tx0, ty0, front0, uBase + t0, 0.0F, localAlpha0 * 0.38F,
-                    tx1, ty1, front1, uBase + t1, 0.0F, localAlpha1 * 0.38F,
-                    tx1, ty1, back1, uBase + t1, 0.55F, localAlpha1 * 0.30F,
-                    tx0, ty0, back0, uBase + t0, 0.55F, localAlpha0 * 0.30F);
+                    topFx0, topFy0, topFz0, u0, 0.0F, a0 * 0.38F,
+                    topFx1, topFy1, topFz1, u1, 0.0F, a1 * 0.38F,
+                    topBx1, topBy1, topBz1, u1, 0.55F, a1 * 0.30F,
+                    topBx0, topBy0, topBz0, u0, 0.55F, a0 * 0.30F);
+            // bottom rim
             quad(vc, mat,
-                    bx0, by0, front0, uBase + t0, 1.0F, localAlpha0 * 0.34F,
-                    bx0, by0, back0, uBase + t0, 0.45F, localAlpha0 * 0.28F,
-                    bx1, by1, back1, uBase + t1, 0.45F, localAlpha1 * 0.28F,
-                    bx1, by1, front1, uBase + t1, 1.0F, localAlpha1 * 0.34F);
+                    botFx0, botFy0, botFz0, u0, 1.0F, a0 * 0.34F,
+                    botBx0, botBy0, botBz0, u0, 0.45F, a0 * 0.28F,
+                    botBx1, botBy1, botBz1, u1, 0.45F, a1 * 0.28F,
+                    botFx1, botFy1, botFz1, u1, 1.0F, a1 * 0.34F);
         }
-    }
-
-    private static Vector3f curve(float t, float xOffset, float yOffset, float zOffset) {
-        float inv = 1.0F - t;
-        float x = -(inv * inv * -2.45F + 2.0F * inv * t * 0.40F + t * t * 5.25F);
-        float y = inv * inv * -1.08F + 2.0F * inv * t * 2.02F + t * t * 2.62F;
-        float sag = Mth.sin(t * Mth.PI) * 0.34F;
-        float depth = (1.0F - t) * 3.35F - t * 1.35F;
-        return new Vector3f(x + xOffset, y + sag + yOffset, depth + zOffset);
-    }
-
-    private static Vector2f tangent(float t) {
-        Vector3f a = curve(Mth.clamp(t - 0.012F, 0.0F, 1.0F), 0.0F, 0.0F, 0.0F);
-        Vector3f b = curve(Mth.clamp(t + 0.012F, 0.0F, 1.0F), 0.0F, 0.0F, 0.0F);
-        return new Vector2f(b.x - a.x, b.y - a.y).normalize();
-    }
-
-    private static Vector2f normal(float t) {
-        Vector2f tan = tangent(t);
-        return new Vector2f(-tan.y, tan.x);
     }
 
     private static float trailWidth(float t) {
@@ -178,60 +291,76 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
     }
 
     private static void edgeFlare(VertexConsumer vc, Matrix4f mat, float sweep, float alpha) {
-        Vector3f tip = curve(Mth.clamp(0.76F + sweep * 0.23F, 0.0F, 1.0F), 0.0F, 0.0F, 0.0F);
-        Vector2f tan = tangent(0.94F);
-        Vector2f n = normal(0.94F);
-        float length = 1.55F + sweep * 0.75F;
-        float width = 0.11F + sweep * 0.08F;
+        float t = Mth.clamp(visibleEnd(sweep) - 0.02F, 0.0F, 1.0F);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
+        frame(t, w, b);
+        Vector3f c = center(t);
+        float hw = RIBBON_HALFWIDTH * trailWidth(t);
+        // tip = the outer (+width) edge of the leading slice; flare along the sweep.
+        float tipx = c.x + w.x * hw, tipy = c.y + w.y * hw, tipz = c.z + w.z * hw;
+        Vector3f tan = sweepTangent(t);
+        float length = 0.70F + sweep * 0.40F;
+        float width = 0.16F;
+        float wx = b.x * width, wy = b.y * width, wz = b.z * width;
+        float bx = tipx - tan.x * length * 0.34F, by = tipy - tan.y * length * 0.34F, bz = tipz - tan.z * length * 0.34F;
+        float hx = tipx + tan.x * length, hy = tipy + tan.y * length, hz = tipz + tan.z * length;
+        // Channel 2 (razor): U 3.4 -> 4.4 so shader u runs 0..1 along the flare.
         quad(vc, mat,
-                tip.x - tan.x * length * 0.34F + n.x * width, tip.y - tan.y * length * 0.34F + n.y * width,
-                tip.z + 0.065F, 4.6F, 0.0F, alpha * 0.62F,
-                tip.x + tan.x * length + n.x * width * 0.25F, tip.y + tan.y * length + n.y * width * 0.25F,
-                tip.z + 0.065F, 5.6F, 0.0F, alpha,
-                tip.x + tan.x * length - n.x * width * 0.25F, tip.y + tan.y * length - n.y * width * 0.25F,
-                tip.z + 0.065F, 5.6F, 1.0F, alpha,
-                tip.x - tan.x * length * 0.34F - n.x * width, tip.y - tan.y * length * 0.34F - n.y * width,
-                tip.z + 0.065F, 4.6F, 1.0F, alpha * 0.62F);
+                bx + wx, by + wy, bz + wz, 3.4F, 0.0F, alpha * 0.62F,
+                hx + wx * 0.25F, hy + wy * 0.25F, hz + wz * 0.25F, 4.4F, 0.0F, alpha,
+                hx - wx * 0.25F, hy - wy * 0.25F, hz - wz * 0.25F, 4.4F, 1.0F, alpha,
+                bx - wx, by - wy, bz - wz, 3.4F, 1.0F, alpha * 0.62F);
     }
 
-    private static void speedLines(VertexConsumer vc, Matrix4f mat, float age, float alpha, float spark) {
+    private static void speedLines(VertexConsumer vc, Matrix4f mat, float age, float sweep,
+                                   float alpha, float spark) {
+        float visibleEnd = visibleEnd(sweep);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
         for (int i = 0; i < SPEED_LINE_COUNT; i++) {
-            float t = 0.40F + deterministic(i, 2.4F) * 0.52F;
-            Vector3f p = curve(t, -0.18F - deterministic(i, 3.8F) * 0.28F,
-                    -0.10F + (deterministic(i, 5.2F) - 0.5F) * 0.30F,
-                    (deterministic(i, 5.9F) - 0.5F) * 0.34F);
-            Vector2f tan = tangent(t);
-            Vector2f n = normal(t);
+            float t = Mth.clamp(0.30F + deterministic(i, 2.4F) * 0.62F, 0.0F, visibleEnd);
+            frame(t, w, b);
+            Vector3f c = center(t);
+            float side = (deterministic(i, 3.8F) - 0.2F) * RIBBON_HALFWIDTH * 1.3F;
+            float px = c.x + w.x * side, py = c.y + w.y * side, pz = c.z + w.z * side;
+            Vector3f tan = sweepTangent(t);
             float drift = Mth.frac(age * 0.045F + deterministic(i, 7.1F));
             float length = 0.44F + deterministic(i, 8.9F) * 0.72F + spark * 0.34F;
             float width = 0.014F + deterministic(i, 10.6F) * 0.024F;
-            p.add(tan.x * drift * 0.22F, tan.y * drift * 0.22F, -drift * 0.10F);
+            px += tan.x * drift * 0.22F;
+            py += tan.y * drift * 0.22F;
+            pz += tan.z * drift * 0.22F;
+            float wx = b.x * width, wy = b.y * width, wz = b.z * width;
+            float a = alpha * (0.18F + spark * 0.16F);
+            // Channel 3 (speed lines): U 6.0 -> 7.0.
             quad(vc, mat,
-                    p.x - tan.x * length + n.x * width, p.y - tan.y * length + n.y * width,
-                    p.z + 0.030F, 6.0F, 0.0F, alpha * 0.14F,
-                    p.x + tan.x * length * 0.24F + n.x * width, p.y + tan.y * length * 0.24F + n.y * width,
-                    p.z + 0.030F, 7.0F, 0.0F, alpha * (0.18F + spark * 0.16F),
-                    p.x + tan.x * length * 0.24F - n.x * width, p.y + tan.y * length * 0.24F - n.y * width,
-                    p.z + 0.030F, 7.0F, 1.0F, alpha * (0.18F + spark * 0.16F),
-                    p.x - tan.x * length - n.x * width, p.y - tan.y * length - n.y * width,
-                    p.z + 0.030F, 6.0F, 1.0F, alpha * 0.14F);
+                    px - tan.x * length + wx, py - tan.y * length + wy, pz - tan.z * length + wz, 6.0F, 0.0F, alpha * 0.14F,
+                    px + tan.x * length * 0.24F + wx, py + tan.y * length * 0.24F + wy, pz + tan.z * length * 0.24F + wz, 7.0F, 0.0F, a,
+                    px + tan.x * length * 0.24F - wx, py + tan.y * length * 0.24F - wy, pz + tan.z * length * 0.24F - wz, 7.0F, 1.0F, a,
+                    px - tan.x * length - wx, py - tan.y * length - wy, pz - tan.z * length - wz, 6.0F, 1.0F, alpha * 0.14F);
         }
     }
 
-    private static void fragments(VertexConsumer vc, Matrix4f mat, float age, float alpha, float spark) {
+    private static void fragments(VertexConsumer vc, Matrix4f mat, float age, float sweep,
+                                  float alpha, float spark) {
+        float visibleEnd = visibleEnd(sweep);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
         for (int i = 0; i < FRAGMENT_COUNT; i++) {
-            float t = 0.58F + deterministic(i, 12.3F) * 0.36F;
+            float t = Mth.clamp(0.50F + deterministic(i, 12.3F) * 0.44F, 0.0F, visibleEnd);
             float life = Mth.frac(age * 0.030F + deterministic(i, 14.7F));
-            Vector3f p = curve(t, 0.0F, 0.0F, 0.0F);
-            Vector2f n = normal(t);
-            Vector2f tan = tangent(t);
-            float side = 0.28F + deterministic(i, 16.2F) * 0.58F + life * (0.16F + spark * 0.22F);
-            p.add(n.x * side + tan.x * life * 0.26F,
-                    n.y * side + tan.y * life * 0.26F,
-                    (deterministic(i, 17.4F) - 0.5F) * 0.42F - life * 0.10F);
+            frame(t, w, b);
+            Vector3f c = center(t);
+            float side = RIBBON_HALFWIDTH * (0.6F + deterministic(i, 16.2F) * 0.6F)
+                    + life * (0.16F + spark * 0.22F);
+            float depth = (deterministic(i, 17.4F) - 0.5F) * 0.42F - life * 0.10F;
+            float px = c.x + w.x * side + b.x * depth;
+            float py = c.y + w.y * side + b.y * depth;
+            float pz = c.z + w.z * side + b.z * depth;
             float size = 0.038F + deterministic(i, 18.5F) * 0.066F;
             float a = alpha * (1.0F - smootherStep(life)) * (0.22F + deterministic(i, 19.7F) * 0.34F);
-            square(vc, mat, p.x, p.y, p.z + 0.075F, size, age * 0.08F + i * 0.77F, a);
+            square(vc, mat, px, py, pz, size, age * 0.08F + i * 0.77F, a);
         }
     }
 
@@ -243,6 +372,7 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
         float hy = s * size;
         float px = -s * size;
         float py = c * size;
+        // Channel 4 (fragments): U 8.0 -> 9.0.
         quad(vc, mat,
                 x - hx - px, y - hy - py, z, 8.0F, 0.0F, alpha,
                 x + hx - px, y + hy - py, z, 9.0F, 0.0F, alpha,

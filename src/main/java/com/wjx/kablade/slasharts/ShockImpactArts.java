@@ -34,6 +34,10 @@ public final class ShockImpactArts extends SlashArts {
     private static final int VISUAL_LIFETIME = 34;
     private static final float VISUAL_SCALE = 1.08F;
     private static final double LUNGE_SPEED = 1.15;
+    // 刀光始终跟随玩家：在剑尖前方一点处生成，整段生命周期里贴着玩家移动，
+    // 渲染器用 partialTick 取玩家插值位置摆放，避免一颤一颤。
+    private static final double VISUAL_FORWARD = 1.1;
+    private static final double VISUAL_UP = 1.08;
 
     public ShockImpactArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);
@@ -81,8 +85,8 @@ public final class ShockImpactArts extends SlashArts {
     }
 
     private static void spawnImpactVisual(ServerLevel level, LivingEntity user, Vec3 look) {
-        Vec3 origin = user.position().add(look.scale(0.95)).add(0.0, 1.08, 0.0);
-        ShockImpactEntity.spawn(level, user, origin, VISUAL_LIFETIME, VISUAL_SCALE);
+        Vec3 origin = user.position().add(look.scale(VISUAL_FORWARD)).add(0.0, VISUAL_UP, 0.0);
+        ShockImpactEntity.spawn(level, user, VISUAL_FORWARD, VISUAL_UP, VISUAL_LIFETIME, VISUAL_SCALE);
 
         level.playSound(null, origin.x, origin.y, origin.z,
                 SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 1.1F, 1.72F);
