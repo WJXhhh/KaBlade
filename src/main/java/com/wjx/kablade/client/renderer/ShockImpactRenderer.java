@@ -12,72 +12,41 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 /**
  * Honkai-style blade trail for Shock Impact.
  * <p>
- * The crescent centreline is an arc swept through a <em>tilted</em> plane (so it
- * is seen at a 3/4 angle, not face-on), and the ribbon cross-section frame is
- * twisted about the path along the sweep (a helicoid) so the band visibly turns
- * over in space. The U/V the shader ({@code shock_impact.fsh}) needs are kept:
- * {@code U = channelBase + sweepProgress}, {@code V} runs across the ribbon.
+ * The blade light is authored as a 3D Bezier stroke instead of a rotated dome:
+ * low-left-front start, lifted front body, right-back shoulder-height finish.
+ * The ribbon cross-section twists along the sweep so the band keeps real depth.
  */
 public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity> {
 
     private static final ResourceLocation EMPTY_TEXTURE =
             ResourceLocation.fromNamespaceAndPath("kablade", "textures/entity/empty.png");
-    private static final int TRAIL_SEGMENTS = 44;
-    private static final int AFTERIMAGE_COUNT = 3;
-    private static final int SPEED_LINE_COUNT = 14;
-    private static final int FRAGMENT_COUNT = 26;
-    private static final float MAIN_THICKNESS = 0.62F;
+    private static final int TRAIL_SEGMENTS = 56;
+    private static final int AFTERIMAGE_COUNT = 4;
+    private static final int SPEED_LINE_COUNT = 26;
+    private static final int FRAGMENT_COUNT = 22;
+    private static final int SHARD_COUNT = 22;
+    private static final float MAIN_THICKNESS = 0.46F;
 
     // --- Swing geometry -----------------------------------------------------
-    // The crescent is an arc on a sphere around the caster; EU/EV define its cutting
-    // plane (see LATERAL_TILT_DEGREES below). The plane contains the forward axis so
-    // the arc sweeps front -> over the head -> behind; the ribbon also twists
-    // (TWIST_AMP) so its surface turns over for volume.
-    private static final float ARC_RADIUS = 3.85F;
-    private static final Vector3f PIVOT = new Vector3f(0.0F, -0.25F, 0.0F);
-    // Overhead diagonal slash in a near-sagittal plane: tail starts low-left IN
-    // FRONT, the body sweeps up and over the head, and the leading edge finishes
-    // BEHIND the caster on the right. Because the plane contains the forward axis
-    // (see EU), low theta = front and theta past PI/2 = behind, so the arc genuinely
-    // travels front -> over -> behind instead of staying on one side.
-    private static final float SWING_START = -0.40F; // rad, tail (front-low-left)
-    private static final float SWING_END = 2.85F;    // rad, leading edge (behind-up-right)
-    private static final float RIBBON_HALFWIDTH = 0.95F;
+    // Local axes after yaw rotation: +Z is forward, +Y is up, and -X is the
+    // player's right side. The centreline uses an explicit horizontal arc so
+    // the sweep keeps a visible centre angle instead of flattening into a beam.
+    private static final float ARC_RADIUS = 3.05F;
+    private static final float ARC_CENTER_Z = -0.05F;
+    private static final float ARC_START = 54.0F * Mth.DEG_TO_RAD;
+    private static final float ARC_END = -140.0F * Mth.DEG_TO_RAD;
+    private static final float ARC_START_Y = -0.95F;
+    private static final float ARC_END_Y = 1.24F;
+    private static final float ARC_LIFT = 0.48F;
+    private static final float RIBBON_HALFWIDTH = 0.66F;
     // Helicoid twist: the cross-section frame rotates about the path by +/- this
     // many radians across the sweep, so the ribbon turns over and shows both faces.
     private static final float TWIST_AMP = 0.70F;
-    // The slash plane is the caster's SAGITTAL plane (it contains FORWARD and UP), so
-    // the arc can travel from in front, over the head, to behind. LATERAL_TILT then
-    // rotates that plane about the vertical axis so it isn't seen edge-on from behind
-    // the player: 0 = pure front-to-back (deepest, but thin from a tail camera), 90 =
-    // a flat frontal rainbow. ~45 balances real depth against on-screen visibility.
-    private static final float LATERAL_TILT_DEGREES = 45.0F;
-    // The endpoints are pinned. To recline the arc forward without moving the start/
-    // end, the whole arc is rigidly rotated about its chord (the start->end line):
-    // points on that axis (i.e. both endpoints) stay put and only the belly tips over.
-    // Negative = lie forward (belly toward the ground in front); positive = tip back.
-    private static final float BULGE_TILT_DEGREES = -45.0F;
-
-    private static final Vector3f EU;
-    private static final Vector3f EV;
-    private static final Vector3f EN;
-    private static final Vector3f CHORD_PIVOT;
-    private static final Vector3f CHORD_AXIS;
-
-    static {
-        float tilt = LATERAL_TILT_DEGREES * Mth.DEG_TO_RAD;
-        EU = new Vector3f(Mth.sin(tilt), 0.0F, Mth.cos(tilt)).normalize(); // sweep axis: forward, rotated toward left
-        EV = new Vector3f(0.0F, 1.0F, 0.0F);                              // up
-        EN = new Vector3f(EU).cross(EV).normalize();
-        CHORD_PIVOT = center(SWING_START);                                // start point (lies on the rotation axis)
-        CHORD_AXIS = new Vector3f(center(SWING_END)).sub(center(SWING_START)).normalize();
-    }
 
     public ShockImpactRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -90,16 +59,16 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
         float age = entity.tickCount + partialTick;
         float life = Math.max(1.0F, entity.getLifetime());
         float progress = Mth.clamp(age / life, 0.0F, 1.0F);
-        float open = smootherStep(Mth.clamp(age / 5.0F, 0.0F, 1.0F));
-        float fade = 1.0F - smootherStep(Mth.clamp((progress - 0.58F) / 0.42F, 0.0F, 1.0F));
+        float open = smootherStep(Mth.clamp(age / 2.6F, 0.0F, 1.0F));
+        float fade = 1.0F - smootherStep(Mth.clamp((progress - 0.50F) / 0.50F, 0.0F, 1.0F));
         float alpha = open * fade;
         if (alpha <= 0.004F) {
             return;
         }
 
-        float sweep = smootherStep(Mth.clamp((age - 1.0F) / 12.0F, 0.0F, 1.0F));
-        float spark = Mth.sin(Mth.clamp((age - 3.0F) / 16.0F, 0.0F, 1.0F) * Mth.PI);
-        float scale = entity.getScale() * (0.88F + sweep * 0.16F);
+        float sweep = smootherStep(Mth.clamp((age - 0.35F) / 6.4F, 0.0F, 1.0F));
+        float spark = Mth.sin(Mth.clamp((age - 1.0F) / 9.0F, 0.0F, 1.0F) * Mth.PI);
+        float scale = entity.getScale() * (0.94F + sweep * 0.14F);
 
         poseStack.pushPose();
         // The dispatcher enters with the pose at the entity's own interpolated
@@ -126,29 +95,26 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
         poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
         poseStack.translate(0.0F, -0.18F + spark * 0.08F, 0.18F);
         poseStack.scale(scale, scale, scale);
-        // Recline the arc forward about its chord, keeping the start/end pinned.
-        poseStack.translate(CHORD_PIVOT.x, CHORD_PIVOT.y, CHORD_PIVOT.z);
-        poseStack.mulPose(new Quaternionf().rotationAxis(
-                BULGE_TILT_DEGREES * Mth.DEG_TO_RAD, CHORD_AXIS.x, CHORD_AXIS.y, CHORD_AXIS.z));
-        poseStack.translate(-CHORD_PIVOT.x, -CHORD_PIVOT.y, -CHORD_PIVOT.z);
         Matrix4f mat = poseStack.last().pose();
 
         for (int i = AFTERIMAGE_COUNT - 1; i >= 0; i--) {
-            float imageAlpha = alpha * (0.16F + i * 0.055F) * (1.0F - progress * 0.34F);
-            bladeTrail(vc(buffer), mat, sweep, 1.15F + i * 0.18F, imageAlpha, 1.0F,
-                    MAIN_THICKNESS * 0.70F, -0.20F - i * 0.16F, -0.16F - i * 0.10F);
+            float imageAlpha = alpha * (0.075F + i * 0.026F) * (1.0F - progress * 0.50F);
+            bladeTrail(vc(buffer), mat, sweep, 0.88F + i * 0.08F, imageAlpha, 1.0F,
+                    MAIN_THICKNESS * 0.50F, -0.06F - i * 0.045F, -0.035F - i * 0.024F);
         }
 
         VertexConsumer vc = vc(buffer);
-        bladeTrail(vc, mat, sweep, 1.0F, alpha * 0.70F, 1.0F, MAIN_THICKNESS, 0.0F, 0.0F);
-        bladeTrail(vc, mat, sweep, 0.48F, alpha * 0.92F, 2.2F, MAIN_THICKNESS * 0.62F, -0.18F, 0.0F);
-        bladeTrail(vc, mat, sweep, 0.30F, alpha * 0.45F, 2.2F, MAIN_THICKNESS * 0.48F, 0.42F, 0.0F);
-        bladeTrail(vc, mat, sweep, 0.115F, alpha, 3.4F, MAIN_THICKNESS * 0.28F, -0.32F, 0.0F);
-        bladeTrail(vc, mat, sweep, 0.080F, alpha * 0.55F, 3.4F, MAIN_THICKNESS * 0.22F, 0.54F, 0.0F);
+        bladeTrail(vc, mat, sweep, 0.98F, alpha * 0.18F, 1.0F, MAIN_THICKNESS * 0.58F, -0.12F, -0.035F);
+        bladeTrail(vc, mat, sweep, 0.74F, alpha * 0.72F, 1.0F, MAIN_THICKNESS, 0.0F, 0.0F);
+        bladeTrail(vc, mat, sweep, 0.30F, alpha, 2.2F, MAIN_THICKNESS * 0.54F, -0.045F, 0.0F);
+        bladeTrail(vc, mat, sweep, 0.17F, alpha * 0.60F, 2.2F, MAIN_THICKNESS * 0.32F, 0.075F, 0.0F);
+        bladeTrail(vc, mat, sweep, 0.076F, alpha, 3.4F, MAIN_THICKNESS * 0.18F, -0.085F, 0.0F);
+        bladeTrail(vc, mat, sweep, 0.042F, alpha * 0.78F, 3.4F, MAIN_THICKNESS * 0.14F, 0.105F, 0.0F);
 
         edgeFlare(vc, mat, sweep, alpha * (0.72F + spark * 0.35F));
         speedLines(vc, mat, age, sweep, alpha, spark);
         fragments(vc, mat, age, sweep, alpha, spark);
+        energyShards(vc, mat, age, sweep, alpha, spark);
 
         poseStack.popPose();
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
@@ -159,37 +125,34 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
     }
 
     private static float visibleEnd(float sweep) {
-        return Mth.clamp(0.18F + sweep * 0.88F, 0.0F, 1.0F);
-    }
-
-    /** Unit direction of the blade radius at sweep time t, in the tilted plane. */
-    private static Vector3f dir(float t) {
-        float theta = SWING_START + (SWING_END - SWING_START) * t;
-        float c = Mth.cos(theta);
-        float s = Mth.sin(theta);
-        return new Vector3f(
-                c * EU.x + s * EV.x,
-                c * EU.y + s * EV.y,
-                c * EU.z + s * EV.z);
+        return Mth.clamp(0.10F + sweep * 0.98F, 0.0F, 1.0F);
     }
 
     /** Centreline point (the bright line of the crescent) at sweep time t. */
     private static Vector3f center(float t) {
-        Vector3f d = dir(t);
+        float angle = ARC_START + (ARC_END - ARC_START) * t;
+        float y = Mth.lerp(t, ARC_START_Y, ARC_END_Y) + Mth.sin(t * Mth.PI) * ARC_LIFT;
         return new Vector3f(
-                PIVOT.x + d.x * ARC_RADIUS,
-                PIVOT.y + d.y * ARC_RADIUS,
-                PIVOT.z + d.z * ARC_RADIUS);
+                Mth.sin(angle) * ARC_RADIUS,
+                y,
+                Mth.cos(angle) * ARC_RADIUS + ARC_CENTER_Z);
     }
 
     /** Twisted cross-section frame at t: outW = across-the-ribbon (width), outB = thickness. */
     private static void frame(float t, Vector3f outW, Vector3f outB) {
-        Vector3f w = dir(t); // base width axis = radial (perpendicular to the path within the plane)
+        Vector3f tan = sweepTangent(t);
+        float angle = ARC_START + (ARC_END - ARC_START) * t;
+        Vector3f w = new Vector3f(Mth.sin(angle), 0.0F, Mth.cos(angle)).normalize();
+        Vector3f b = new Vector3f(tan).cross(w).normalize();
         float phi = TWIST_AMP * Mth.sin((t - 0.5F) * Mth.PI);
         float cp = Mth.cos(phi);
         float sp = Mth.sin(phi);
-        outW.set(w.x * cp - EN.x * sp, w.y * cp - EN.y * sp, w.z * cp - EN.z * sp);
-        outB.set(w.x * sp + EN.x * cp, w.y * sp + EN.y * cp, w.z * sp + EN.z * cp);
+        outW.set(w.x * cp - b.x * sp,
+                w.y * cp - b.y * sp,
+                w.z * cp - b.z * sp);
+        outB.set(w.x * sp + b.x * cp,
+                w.y * sp + b.y * cp,
+                w.z * sp + b.z * cp);
     }
 
     private static Vector3f sweepTangent(float t) {
@@ -232,13 +195,13 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
             float u0 = uBase + t0;
             float u1 = uBase + t1;
 
-            // Layer/echo displacement of the whole slice (along plane normal + down).
-            float lx0 = c0.x + EN.x * enLayer;
-            float ly0 = c0.y + EN.y * enLayer + echoDrop;
-            float lz0 = c0.z + EN.z * enLayer;
-            float lx1 = c1.x + EN.x * enLayer;
-            float ly1 = c1.y + EN.y * enLayer + echoDrop;
-            float lz1 = c1.z + EN.z * enLayer;
+            // Layer/echo displacement of the whole slice (along thickness + down).
+            float lx0 = c0.x + b0.x * enLayer;
+            float ly0 = c0.y + b0.y * enLayer + echoDrop;
+            float lz0 = c0.z + b0.z * enLayer;
+            float lx1 = c1.x + b1.x * enLayer;
+            float ly1 = c1.y + b1.y * enLayer + echoDrop;
+            float lz1 = c1.z + b1.z * enLayer;
 
             // top = +width edge (v=0), bot = -width edge (v=1); front/back along thickness.
             float topFx0 = lx0 + w0.x * hw0 + b0.x * half, topFy0 = ly0 + w0.y * hw0 + b0.y * half, topFz0 = lz0 + w0.z * hw0 + b0.z * half;
@@ -300,7 +263,7 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
         // tip = the outer (+width) edge of the leading slice; flare along the sweep.
         float tipx = c.x + w.x * hw, tipy = c.y + w.y * hw, tipz = c.z + w.z * hw;
         Vector3f tan = sweepTangent(t);
-        float length = 0.70F + sweep * 0.40F;
+        float length = 0.64F + sweep * 0.46F;
         float width = 0.16F;
         float wx = b.x * width, wy = b.y * width, wz = b.z * width;
         float bx = tipx - tan.x * length * 0.34F, by = tipy - tan.y * length * 0.34F, bz = tipz - tan.z * length * 0.34F;
@@ -319,26 +282,26 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
         Vector3f w = new Vector3f();
         Vector3f b = new Vector3f();
         for (int i = 0; i < SPEED_LINE_COUNT; i++) {
-            float t = Mth.clamp(0.30F + deterministic(i, 2.4F) * 0.62F, 0.0F, visibleEnd);
+            float t = Mth.clamp(0.18F + deterministic(i, 2.4F) * 0.78F, 0.0F, visibleEnd);
             frame(t, w, b);
             Vector3f c = center(t);
-            float side = (deterministic(i, 3.8F) - 0.2F) * RIBBON_HALFWIDTH * 1.3F;
+            float side = (deterministic(i, 3.8F) - 0.34F) * RIBBON_HALFWIDTH * 0.72F;
             float px = c.x + w.x * side, py = c.y + w.y * side, pz = c.z + w.z * side;
             Vector3f tan = sweepTangent(t);
-            float drift = Mth.frac(age * 0.045F + deterministic(i, 7.1F));
-            float length = 0.44F + deterministic(i, 8.9F) * 0.72F + spark * 0.34F;
-            float width = 0.014F + deterministic(i, 10.6F) * 0.024F;
-            px += tan.x * drift * 0.22F;
-            py += tan.y * drift * 0.22F;
-            pz += tan.z * drift * 0.22F;
+            float drift = Mth.frac(age * 0.095F + deterministic(i, 7.1F));
+            float length = 0.72F + deterministic(i, 8.9F) * 1.10F + spark * 0.58F;
+            float width = 0.010F + deterministic(i, 10.6F) * 0.018F;
+            px += tan.x * drift * 0.46F;
+            py += tan.y * drift * 0.46F;
+            pz += tan.z * drift * 0.46F;
             float wx = b.x * width, wy = b.y * width, wz = b.z * width;
-            float a = alpha * (0.18F + spark * 0.16F);
+            float a = alpha * (0.26F + spark * 0.22F);
             // Channel 3 (speed lines): U 6.0 -> 7.0.
             quad(vc, mat,
-                    px - tan.x * length + wx, py - tan.y * length + wy, pz - tan.z * length + wz, 6.0F, 0.0F, alpha * 0.14F,
+                    px - tan.x * length + wx, py - tan.y * length + wy, pz - tan.z * length + wz, 6.0F, 0.0F, alpha * 0.20F,
                     px + tan.x * length * 0.24F + wx, py + tan.y * length * 0.24F + wy, pz + tan.z * length * 0.24F + wz, 7.0F, 0.0F, a,
                     px + tan.x * length * 0.24F - wx, py + tan.y * length * 0.24F - wy, pz + tan.z * length * 0.24F - wz, 7.0F, 1.0F, a,
-                    px - tan.x * length - wx, py - tan.y * length - wy, pz - tan.z * length - wz, 6.0F, 1.0F, alpha * 0.14F);
+                    px - tan.x * length - wx, py - tan.y * length - wy, pz - tan.z * length - wz, 6.0F, 1.0F, alpha * 0.20F);
         }
     }
 
@@ -348,19 +311,44 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
         Vector3f w = new Vector3f();
         Vector3f b = new Vector3f();
         for (int i = 0; i < FRAGMENT_COUNT; i++) {
-            float t = Mth.clamp(0.50F + deterministic(i, 12.3F) * 0.44F, 0.0F, visibleEnd);
-            float life = Mth.frac(age * 0.030F + deterministic(i, 14.7F));
+            float t = Mth.clamp(0.36F + deterministic(i, 12.3F) * 0.58F, 0.0F, visibleEnd);
+            float life = Mth.frac(age * 0.055F + deterministic(i, 14.7F));
             frame(t, w, b);
             Vector3f c = center(t);
-            float side = RIBBON_HALFWIDTH * (0.6F + deterministic(i, 16.2F) * 0.6F)
-                    + life * (0.16F + spark * 0.22F);
-            float depth = (deterministic(i, 17.4F) - 0.5F) * 0.42F - life * 0.10F;
+            float side = RIBBON_HALFWIDTH * (0.36F + deterministic(i, 16.2F) * 0.38F)
+                    + life * (0.12F + spark * 0.16F);
+            float depth = (deterministic(i, 17.4F) - 0.5F) * 0.30F - life * 0.08F;
             float px = c.x + w.x * side + b.x * depth;
             float py = c.y + w.y * side + b.y * depth;
             float pz = c.z + w.z * side + b.z * depth;
-            float size = 0.038F + deterministic(i, 18.5F) * 0.066F;
-            float a = alpha * (1.0F - smootherStep(life)) * (0.22F + deterministic(i, 19.7F) * 0.34F);
+            float size = 0.034F + deterministic(i, 18.5F) * 0.088F;
+            float a = alpha * (1.0F - smootherStep(life)) * (0.30F + deterministic(i, 19.7F) * 0.42F);
             square(vc, mat, px, py, pz, size, age * 0.08F + i * 0.77F, a);
+        }
+    }
+
+    private static void energyShards(VertexConsumer vc, Matrix4f mat, float age, float sweep,
+                                     float alpha, float spark) {
+        float visibleEnd = visibleEnd(sweep);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
+        for (int i = 0; i < SHARD_COUNT; i++) {
+            float t = Mth.clamp(0.48F + deterministic(i, 21.4F) * 0.48F, 0.0F, visibleEnd);
+            float life = Mth.frac(age * 0.082F + deterministic(i, 22.8F));
+            frame(t, w, b);
+            Vector3f c = center(t);
+            Vector3f tan = sweepTangent(t);
+            float side = RIBBON_HALFWIDTH * (0.72F + deterministic(i, 24.1F) * 0.42F)
+                    + life * (0.12F + spark * 0.14F);
+            float depth = (deterministic(i, 25.7F) - 0.5F) * 0.34F;
+            float lead = life * (0.84F + deterministic(i, 26.9F) * 0.86F);
+            float px = c.x + w.x * side + b.x * depth + tan.x * lead;
+            float py = c.y + w.y * side + b.y * depth + tan.y * lead
+                    + 0.06F + deterministic(i, 27.5F) * 0.18F;
+            float pz = c.z + w.z * side + b.z * depth + tan.z * lead;
+            float size = 0.044F + deterministic(i, 28.6F) * 0.078F;
+            float a = alpha * (1.0F - smootherStep(life)) * (0.30F + deterministic(i, 29.8F) * 0.42F);
+            diamond(vc, mat, px, py, pz, size, age * 0.18F + i * 0.91F, a);
         }
     }
 
@@ -378,6 +366,22 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
                 x + hx - px, y + hy - py, z, 9.0F, 0.0F, alpha,
                 x + hx + px, y + hy + py, z, 9.0F, 1.0F, alpha,
                 x - hx + px, y - hy + py, z, 8.0F, 1.0F, alpha);
+    }
+
+    private static void diamond(VertexConsumer vc, Matrix4f mat, float x, float y, float z, float size, float rotation,
+                                float alpha) {
+        float c = Mth.cos(rotation);
+        float s = Mth.sin(rotation);
+        float hx = c * size;
+        float hy = s * size;
+        float px = -s * size;
+        float py = c * size;
+        // Channel 5 (Honkai-like diamond shards): U 10.0 -> 11.0.
+        quad(vc, mat,
+                x - hx - px, y - hy - py, z, 10.0F, 0.0F, alpha,
+                x + hx - px, y + hy - py, z, 11.0F, 0.0F, alpha,
+                x + hx + px, y + hy + py, z, 11.0F, 1.0F, alpha,
+                x - hx + px, y - hy + py, z, 10.0F, 1.0F, alpha);
     }
 
     private static float smootherStep(float t) {

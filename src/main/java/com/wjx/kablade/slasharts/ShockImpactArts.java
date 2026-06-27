@@ -28,16 +28,15 @@ import java.util.function.Function;
 public final class ShockImpactArts extends SlashArts {
 
     private static final float BASE_DAMAGE = 22.0F;
-    private static final double AOE_RADIUS = 3.0;
+    private static final double AOE_RADIUS = 6.0;
+    private static final double AOE_VERTICAL = 3.2;
     private static final int STRENGTH_DURATION = 100;
     private static final int STRENGTH_AMPLIFIER = 5;
-    private static final int VISUAL_LIFETIME = 34;
-    private static final float VISUAL_SCALE = 1.08F;
-    private static final double LUNGE_SPEED = 1.15;
-    // 刀光始终跟随玩家：在剑尖前方一点处生成，整段生命周期里贴着玩家移动，
-    // 渲染器用 partialTick 取玩家插值位置摆放，避免一颤一颤。
-    private static final double VISUAL_FORWARD = 1.1;
-    private static final double VISUAL_UP = 1.08;
+    private static final int VISUAL_LIFETIME = 26;
+    private static final float VISUAL_SCALE = 1.12F;
+    private static final double LUNGE_SPEED = 1.38;
+    private static final double VISUAL_FORWARD = 0.62;
+    private static final double VISUAL_UP = 1.05;
 
     public ShockImpactArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);
@@ -60,8 +59,8 @@ public final class ShockImpactArts extends SlashArts {
         float extraDamage = (float) MathFunc.amplifierCalc(bladeAttack, 10.0F);
 
         AABB box = user.getBoundingBox()
-                .inflate(AOE_RADIUS, 1.0, AOE_RADIUS)
-                .move(user.getDeltaMovement());
+                .inflate(AOE_RADIUS, AOE_VERTICAL, AOE_RADIUS)
+                .move(user.getDeltaMovement().scale(0.5));
         List<LivingEntity> enemies = level.getEntitiesOfClass(LivingEntity.class, box,
                 e -> e != user && e.isAlive());
         for (LivingEntity target : enemies) {
@@ -89,10 +88,10 @@ public final class ShockImpactArts extends SlashArts {
         ShockImpactEntity.spawn(level, user, VISUAL_FORWARD, VISUAL_UP, VISUAL_LIFETIME, VISUAL_SCALE);
 
         level.playSound(null, origin.x, origin.y, origin.z,
-                SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 1.1F, 1.72F);
+                SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 1.16F, 1.88F);
         level.playSound(null, origin.x, origin.y, origin.z,
-                SoundEvents.TRIDENT_RIPTIDE_3, SoundSource.PLAYERS, 0.78F, 1.52F);
+                SoundEvents.TRIDENT_RIPTIDE_3, SoundSource.PLAYERS, 0.94F, 1.66F);
         level.playSound(null, origin.x, origin.y, origin.z,
-                SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.PLAYERS, 0.86F, 1.26F);
+                SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.PLAYERS, 0.96F, 1.42F);
     }
 }
