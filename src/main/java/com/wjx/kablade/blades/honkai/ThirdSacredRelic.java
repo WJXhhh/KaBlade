@@ -1,6 +1,7 @@
 package com.wjx.kablade.blades.honkai;
 
 import com.wjx.kablade.blades.base.BladeDefineBase;
+import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.item.SwordType;
@@ -35,6 +36,7 @@ public class ThirdSacredRelic extends BladeDefineBase {
                         .maxDamage(800)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ResourceLocation.fromNamespaceAndPath("slashblade", "sakura_end"))
+                        .addSpecialEffect(ModSpecialEffects.HOLY_ENERGY_IMPACT.getId())
                         .build(),
                 List.of(
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),

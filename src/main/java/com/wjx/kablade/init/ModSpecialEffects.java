@@ -3,6 +3,7 @@ package com.wjx.kablade.init;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.specialeffect.BurstDrive;
 import com.wjx.kablade.specialeffect.DivinePenalty;
+import com.wjx.kablade.specialeffect.HolyEnergyImpact;
 import com.wjx.kablade.specialeffect.Oripursuit;
 import com.wjx.kablade.specialeffect.Phoenix;
 import com.wjx.kablade.specialeffect.PowerOfWind;
@@ -40,6 +41,9 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> POWER_OF_WIND = REGISTRY.register(
             "power_of_wind", PowerOfWind::new);
+
+    public static final RegistryObject<SpecialEffect> HOLY_ENERGY_IMPACT = REGISTRY.register(
+            "holy_energy_impact", HolyEnergyImpact::new);
 
     private ModSpecialEffects() {
     }

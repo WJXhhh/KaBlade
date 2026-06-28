@@ -37,5 +37,12 @@ public final class KabladeBladeProperties {
                 .capabilityKey("stage_light")
                 .maxValue(10)
                 .build());
+
+        // 圣能冲击（HolyEnergyImpact SE）：评级越高伤害越高，值 = 当前评级等级 (1-7)
+        PlayerPropertyRegistry.register(PlayerProperty.builder("holy_energy_impact")
+                .displayName(Component.translatable("prop.kablade.holy_energy_impact"))
+                .capabilityKey("holy_energy_impact")
+                .maxValue(7)
+                .build());
     }
 }
