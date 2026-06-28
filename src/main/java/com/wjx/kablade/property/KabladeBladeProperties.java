@@ -38,11 +38,11 @@ public final class KabladeBladeProperties {
                 .maxValue(10)
                 .build());
 
-        // 圣能冲击（HolyEnergyImpact SE）：评级越高伤害越高，值 = 当前评级等级 (1-7)
+        // 圣能冲击（HolyEnergyImpact SE）：评级越高伤害越高，HUD 始终全黄显示
         PlayerPropertyRegistry.register(PlayerProperty.builder("holy_energy_impact")
-                .displayName(Component.translatable("prop.kablade.holy_energy_impact"))
+                .displayName(Component.translatable("prop.kablade.holy_energy_impact").withStyle(ChatFormatting.YELLOW))
                 .capabilityKey("holy_energy_impact")
-                .maxValue(7)
+                .maxValue(1)
                 .build());
     }
 }

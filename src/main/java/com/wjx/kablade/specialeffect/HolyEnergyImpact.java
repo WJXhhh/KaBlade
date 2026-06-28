@@ -98,8 +98,8 @@ public class HolyEnergyImpact extends SpecialEffect {
                 int rank = player.getCapability(CapabilityConcentrationRank.RANK_POINT)
                         .map(cap -> cap.getRank(player.level().getGameTime()).level)
                         .orElse(0);
-                // 设为至少 1 确保 HUD 显示；值 = 评级等级
-                data.set(PROP_KEY, Math.max(1, rank));
+                // 统一设为 1，HUD 始终全满黄色显示"圣能冲击"
+                data.set(PROP_KEY, 1);
             } else {
                 data.remove(PROP_KEY);
             }
