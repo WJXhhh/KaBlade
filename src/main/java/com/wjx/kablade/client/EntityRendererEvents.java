@@ -1,6 +1,7 @@
 package com.wjx.kablade.client;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.client.model.RaikiriShieldModel;
 import com.wjx.kablade.client.model.RockSpikeModel;
 import com.wjx.kablade.client.renderer.*;
 import com.wjx.kablade.init.ModEntities;
@@ -45,5 +46,6 @@ public final class EntityRendererEvents {
     @SubscribeEvent
     public static void onRegisterLayers(final EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RockSpikeModel.LAYER, RockSpikeModel::createBodyLayer);
+        event.registerLayerDefinition(RaikiriShieldModel.LAYER, RaikiriShieldModel::createBodyLayer);
     }
 }
