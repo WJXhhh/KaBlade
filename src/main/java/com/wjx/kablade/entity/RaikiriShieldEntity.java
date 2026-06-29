@@ -75,6 +75,14 @@ public class RaikiriShieldEntity extends Entity {
         super.tick();
 
         if (this.level().isClientSide()) {
+            // 客户端直接跟随 thrower 位置，消除网络同步延迟
+            int tid = this.entityData.get(THROWER_ID);
+            if (tid != -1) {
+                Entity follow = this.level().getEntity(tid);
+                if (follow != null) {
+                    this.setPos(follow.getX(), follow.getY(), follow.getZ());
+                }
+            }
             return;
         }
 

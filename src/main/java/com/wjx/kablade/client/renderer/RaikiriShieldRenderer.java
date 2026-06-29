@@ -46,19 +46,19 @@ public class RaikiriShieldRenderer extends EntityRenderer<RaikiriShieldEntity> {
         float g = 1.0F;
         float b = 1.0F;
 
-        // 抬高到胸部高度（解决第一人称剔除问题）
-        float yOff = 0.9F;
+        // 抬高到腰部稍上（复刻 1.12.2 原版在玩家身体周围的位置）
+        float yOff = 0.35F;
 
         poseStack.pushPose();
         poseStack.translate(0.0, yOff, 0.0);
 
         // 复刻 1.12.2 prepareScale: scale(-1, -1, 1) then translate(0, -1.501, 0)
-        // 注意：scale(-1, -1, 1) 翻转 X 和 Y，后续 translate 在翻转后的坐标系中
+        // scale(-1, -1, 1) 翻转 X 和 Y，后续 translate 在翻转后的坐标系中
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         poseStack.translate(0.0F, -1.501F, 0.0F);
 
-        // 绕 Y 轴自转，复刻 angleManager.getAngle()
-        float angle = (entity.tickCount + partialTick) * 0.08F;
+        // 绕 Y 轴缓慢自转，partialTick 插值确保帧间平滑
+        float angle = (entity.tickCount + partialTick) * 0.012F;
         poseStack.mulPose(com.mojang.math.Axis.YN.rotationDegrees(angle * 360.0F));
 
         // 使用 fullbright additive 渲染（复刻 disableLighting + setLightmapTextureCoords(240,240)）
