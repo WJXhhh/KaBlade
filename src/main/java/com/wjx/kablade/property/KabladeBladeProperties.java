@@ -47,7 +47,7 @@ public final class KabladeBladeProperties {
 
         // 雷切护盾（Raikiri Blade Shield）：护盾剩余耐久
         PlayerPropertyRegistry.register(PlayerProperty.builder("raikiri_shield_blood")
-                .displayName(Component.translatable("prop.kablade.raikiri_shield_blood"))
+                .displayName(Component.translatable("prop.kablade.raikiri_shield_blood").withStyle(ChatFormatting.AQUA))
                 .capabilityKey("raikiri_shield_blood")
                 .maxValue(10)
                 .build());

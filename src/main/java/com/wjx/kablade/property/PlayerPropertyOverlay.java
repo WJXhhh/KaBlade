@@ -81,7 +81,7 @@ public final class PlayerPropertyOverlay {
             if (val > 0 && prop.id().equals("raikiri_shield_blood")) {
                 String suffix = ": " + val;
                 int sx = font.width(cdText);
-                gui.drawString(font, Component.literal(suffix).withStyle(ChatFormatting.WHITE),
+                gui.drawString(font, Component.literal(suffix).withStyle(ChatFormatting.AQUA),
                         x + sx, y, COLOR_ENTRY);
             }
             y += LINE_HEIGHT;
