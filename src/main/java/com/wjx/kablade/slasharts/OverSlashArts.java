@@ -5,6 +5,7 @@ import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -83,13 +84,14 @@ public final class OverSlashArts extends SlashArts {
                 .orElse(4.0F);
         float magicDamage = baseAttack / 2.0F;
 
+        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         AABB box = user.getBoundingBox().inflate(AOE_RADIUS, 0.25, AOE_RADIUS);
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e != user && e.isAlive() && !e.isAlliedTo(user));
+                e -> e != user && e.isAlive() && !e.isAlliedTo(user) && attackable.test(e));
         for (LivingEntity target : targets) {
             target.hurt(level.damageSources().mobAttack(user), magicDamage);
-            // 暴击效果（粒子由客户端处理）
         }
+        // 暴击效果（粒子由客户端处理）
 
         // 雷声
         level.playSound(null, user.getX(), user.getY(), user.getZ(),

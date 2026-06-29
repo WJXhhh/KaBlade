@@ -1,6 +1,7 @@
 package com.wjx.kablade.blades;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.init.ModComboStates;
 import com.wjx.kablade.slasharts.AbsoluteZeroArts;
 import com.wjx.kablade.slasharts.AuroraShiningArts;
 import com.wjx.kablade.slasharts.BladeWardArts;
@@ -125,7 +126,7 @@ public final class ModSlashArts {
 
     public static final RegistryObject<SlashArts> LIGHTS_ON_STAGE = REGISTRY.register(
             "lights_on_stage",
-            () -> new LightsOnStageArts(entity -> ComboStateRegistry.NONE.getId()));
+            () -> new LightsOnStageArts(entity -> ModComboStates.LIGHTS_ON_STAGE_CHADI.getId()));
 
     public static final RegistryObject<SlashArts> WIND_ENCHANTMENT = REGISTRY.register(
             "wind_enchantment",

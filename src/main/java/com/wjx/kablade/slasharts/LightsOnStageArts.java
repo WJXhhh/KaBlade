@@ -5,6 +5,7 @@ import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -80,18 +81,17 @@ public final class LightsOnStageArts extends SlashArts {
             return dx * dx + dz * dz <= RANGE * RANGE;
         });
 
-        DamageSource source = user instanceof Player player
-                ? level.damageSources().playerAttack(player)
-                : level.damageSources().mobAttack(user);
+        DamageSource source = level.damageSources().mobAttack(user);
+        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         for (LivingEntity target : targets) {
-            if (target.hurt(source, damage)) {
-                target.knockback(0.55,
-                        origin.x - target.getX(), origin.z - target.getZ());
-                level.sendParticles(ParticleTypes.END_ROD,
-                        target.getX(), target.getY() + target.getBbHeight() * 0.55, target.getZ(),
-                        12, target.getBbWidth() * 0.45, target.getBbHeight() * 0.35,
-                        target.getBbWidth() * 0.45, 0.08);
-            }
+            if (!attackable.test(target)) continue;
+            target.hurt(source, damage);
+            target.knockback(0.55,
+                    origin.x - target.getX(), origin.z - target.getZ());
+            level.sendParticles(ParticleTypes.END_ROD,
+                    target.getX(), target.getY() + target.getBbHeight() * 0.55, target.getZ(),
+                    12, target.getBbWidth() * 0.45, target.getBbHeight() * 0.35,
+                    target.getBbWidth() * 0.45, 0.08);
         }
 
         for (int i = 0; i < 42; i++) {

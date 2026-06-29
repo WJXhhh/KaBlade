@@ -7,6 +7,7 @@ import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityBlisteringSwords;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -216,7 +217,9 @@ public final class BreakTheDawnArts extends SlashArts {
                     0, Math.cos(a) * 0.5, 0.1, Math.sin(a) * 0.5, 1.0);
         }
 
+        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+            if (!attackable.test(t)) continue;
             t.hurt(level.damageSources().magic(), damage);
             t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));
         }

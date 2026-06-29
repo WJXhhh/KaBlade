@@ -4,6 +4,7 @@ import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -106,8 +107,9 @@ public final class ChopWillowArts extends SlashArts {
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
 
+        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e != user && e.isAlive() && !e.isAlliedTo(user));
+                e -> e != user && e.isAlive() && !e.isAlliedTo(user) && attackable.test(e));
 
         if (targets.isEmpty() && retry < MAX_RETRY) {
             // 未命中，下一 tick 重试

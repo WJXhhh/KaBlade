@@ -18,6 +18,7 @@ public final class KabladeShaders {
     private static ShaderInstance stageLight;
     private static ShaderInstance vorpalBlackHole;
     private static ShaderInstance shockImpact;
+    private static ShaderInstance zaizan;
 
     private KabladeShaders() {
     }
@@ -39,6 +40,11 @@ public final class KabladeShaders {
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "shock_impact"),
                         DefaultVertexFormat.POSITION_COLOR_TEX),
                 shader -> shockImpact = shader);
+        event.registerShader(new ShaderInstance(
+                        event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "zaizan"),
+                        DefaultVertexFormat.POSITION_COLOR_TEX),
+                shader -> zaizan = shader);
     }
 
     public static ShaderInstance stageLight() {
@@ -51,5 +57,9 @@ public final class KabladeShaders {
 
     public static ShaderInstance shockImpact() {
         return shockImpact;
+    }
+
+    public static ShaderInstance zaizan() {
+        return zaizan;
     }
 }

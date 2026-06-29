@@ -15,6 +15,8 @@ public final class KabladeRenderTypes extends RenderType {
             new RenderStateShard.ShaderStateShard(KabladeShaders::vorpalBlackHole);
     private static final RenderStateShard.ShaderStateShard SHOCK_IMPACT_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::shockImpact);
+    private static final RenderStateShard.ShaderStateShard ZAIZAN_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::zaizan);
 
     private static final RenderType STAGE_LIGHT = create(
             "kablade_stage_light",
@@ -61,6 +63,21 @@ public final class KabladeRenderTypes extends RenderType {
                     .setWriteMaskState(COLOR_WRITE)
                     .createCompositeState(false));
 
+    private static final RenderType ZAIZAN = create(
+            "kablade_zaizan",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            65536,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(ZAIZAN_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
     private KabladeRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
                                boolean affectsCrumbling, boolean sortOnUpload,
                                Runnable setupState, Runnable clearState) {
@@ -92,6 +109,10 @@ public final class KabladeRenderTypes extends RenderType {
 
     public static RenderType shockImpact() {
         return SHOCK_IMPACT;
+    }
+
+    public static RenderType zaizan() {
+        return ZAIZAN;
     }
 
     /**

@@ -3,6 +3,7 @@ package com.wjx.kablade;
 import com.mojang.logging.LogUtils;
 import com.wjx.kablade.config.KabladeConfig;
 import com.wjx.kablade.init.ModBlocks;
+import com.wjx.kablade.init.ModComboStates;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.init.ModItems;
 import com.wjx.kablade.init.ModMobEffects;
@@ -99,6 +100,7 @@ public final class Main {
         // --- Content registration ---
         ModItems.ITEM_REGISTRY.register(modBus);
         ModBlocks.BLOCK_REGISTRY.register(modBus);
+        ModComboStates.REGISTRY.register(modBus);
         ModSlashArts.REGISTRY.register(modBus);
         ModEntities.REGISTRY.register(modBus);
         ModSpecialEffects.REGISTRY.register(modBus);

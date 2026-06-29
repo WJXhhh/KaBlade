@@ -6,6 +6,7 @@ import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcent
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -88,9 +89,10 @@ public final class LaveDriveArts extends SlashArts {
         int powerLevel = Math.max(1, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, blade));
 
         // AOE 斩击
+        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         AABB box = user.getBoundingBox().inflate(5.0, 0.25, 5.0);
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e.isAlive() && e != user && !e.isAlliedTo(user) && !e.hasEffect(MobEffects.INVISIBILITY));
+                e -> e != user && e.isAlive() && !e.isAlliedTo(user) && !e.hasEffect(MobEffects.INVISIBILITY) && attackable.test(e));
         for (LivingEntity target : targets) {
             target.hurt(level.damageSources().mobAttack(user), baseAttack);
             target.invulnerableTime = 0;

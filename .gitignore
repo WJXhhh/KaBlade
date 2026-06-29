@@ -33,6 +33,15 @@ libs/*.jar
 
 # Project-specific
 CLAUDE.md
+
+# Build error logs
+err*.txt
+
+# Model work files
+model_work/
+
+# Local dev mod jars
+mods/
 gg.ps1
 claude_mimo.ps1
 step.ps1

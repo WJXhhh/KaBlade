@@ -5,6 +5,7 @@ import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -66,12 +67,12 @@ public final class CutMetalArts extends SlashArts {
         user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, STRENGTH_DURATION, 1, false, false));
         spawnBladeLight(level, user);
 
-        // 扫描周围敌人
+        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         AABB bb = user.getBoundingBox().inflate(RANGE_XZ, RANGE_Y, RANGE_XZ)
                 .move(user.getDeltaMovement());
         DamageSource src = user.level().damageSources().playerAttack((Player) user);
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, bb,
-                e -> e != user && e.isAlive());
+                e -> e != user && e.isAlive() && attackable.test(e));
 
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
 

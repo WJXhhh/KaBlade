@@ -4,6 +4,7 @@ import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -51,13 +52,13 @@ public final class AbsoluteZeroArts extends SlashArts {
         ServerLevel level = (ServerLevel) user.level();
         ItemStack blade = user.getMainHandItem();
 
+	        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         LivingEntity target = raycastTarget(level, user);
-        if (target != null) {
+        if (target != null && attackable.test(target)) {
             float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                     .map(ISlashBladeState::getBaseAttackModifier)
                     .orElse(4.0F);
             float damage = BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
-
             DamageSource src = user instanceof Player player
                     ? level.damageSources().playerAttack(player)
                     : level.damageSources().mobAttack(user);

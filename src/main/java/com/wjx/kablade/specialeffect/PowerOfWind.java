@@ -5,6 +5,8 @@ import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModSpecialEffects;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -37,6 +39,11 @@ public class PowerOfWind extends SpecialEffect {
 
     public PowerOfWind() {
         super(-1, true, true);
+    }
+
+    @Override
+    public Component getDescription() {
+        return Component.translatable(getDescriptionId()).withStyle(ChatFormatting.GREEN);
     }
 
     @SubscribeEvent

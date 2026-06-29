@@ -135,6 +135,18 @@ public final class ModEntities {
                     .noSave()
                     .build("shock_impact"));
 
+    /** Visual anchor for the Zaizan SA. */
+    public static final RegistryObject<EntityType<ZaizanEntity>> ZAIZAN = REGISTRY.register(
+            "zaizan",
+            () -> EntityType.Builder.<ZaizanEntity>of(ZaizanEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("zaizan"));
+
     /** 「风之结界」光环实体。 */
     public static final RegistryObject<EntityType<WindEnchantmentEntity>> WIND_ENCHANTMENT = REGISTRY.register(
             "wind_enchantment",

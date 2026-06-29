@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.WindEnchantmentEntity;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -86,9 +87,15 @@ public final class WindEnchantmentArts extends SlashArts {
         }
 
         // 2. 攻击目标
+        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
+        if (target != null && !attackable.test(target)) {
+            return super.doArts(type, user);
+        }
         if (target != null) {
-            blade.getItem().hurtEnemy(blade, target, player);  // ItemSlashBlade.attackTargetEntity 等价于 hurtEnemy + 后续
-            player.crit(target);  // player.onCriticalHit → player.crit
+            // 第一段：拔刀剑近战触发选择器（hurtEnemy 内部触发 HitEvent）
+            blade.getItem().hurtEnemy(blade, target, player);
+            player.crit(target);
+            // 第二段：额外伤害
             target.hurt(level.damageSources().playerAttack(player), EXTRA_DAMAGE);
         }
 

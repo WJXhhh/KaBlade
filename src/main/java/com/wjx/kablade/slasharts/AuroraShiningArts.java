@@ -8,6 +8,7 @@ import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityBlisteringSwords;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
+import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -225,7 +226,9 @@ public final class AuroraShiningArts extends SlashArts {
                     (rng.nextDouble() - 0.5) * 0.6, 1.0);
         }
 
+        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+            if (!attackable.test(t)) continue;
             t.hurt(level.damageSources().magic(), bypassDamage);
             t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SLOW_DURATION, 1));
             t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));
