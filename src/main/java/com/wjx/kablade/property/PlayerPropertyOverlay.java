@@ -71,11 +71,19 @@ public final class PlayerPropertyOverlay {
 
         // 条目
         for (PlayerProperty prop : active) {
+            int val = prop.getIntValue(player);
             Component cdText = buildCdText(
                     prop.displayName(),
-                    prop.getIntValue(player),
+                    val,
                     prop.maxValue());
             gui.drawString(font, cdText, x, y, COLOR_ENTRY);
+            // 对于有数值意义的属性（如护盾耐久），追加 ": 数值"
+            if (val > 0 && prop.id().equals("raikiri_shield_blood")) {
+                String suffix = ": " + val;
+                int sx = font.width(cdText);
+                gui.drawString(font, Component.literal(suffix).withStyle(ChatFormatting.WHITE),
+                        x + sx, y, COLOR_ENTRY);
+            }
             y += LINE_HEIGHT;
         }
     }
