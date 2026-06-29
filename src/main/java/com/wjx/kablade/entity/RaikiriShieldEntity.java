@@ -45,6 +45,8 @@ public class RaikiriShieldEntity extends Entity {
     private static final double CONTACT_RADIUS = 1.0;
 
     private LivingEntity thrower;
+    /** 客户端上一帧位置，手动跟踪用于 partialTick 插值 */
+    private double prevX, prevY, prevZ;
 
     public RaikiriShieldEntity(EntityType<? extends RaikiriShieldEntity> type, Level level) {
         super(type, level);
@@ -80,6 +82,10 @@ public class RaikiriShieldEntity extends Entity {
             if (tid != -1) {
                 Entity follow = this.level().getEntity(tid);
                 if (follow != null) {
+                    // 手动记录上一帧位置供 partialTick 插值
+                    this.prevX = this.getX();
+                    this.prevY = this.getY();
+                    this.prevZ = this.getZ();
                     this.setPos(follow.getX(), follow.getY(), follow.getZ());
                 }
             }
@@ -128,6 +134,13 @@ public class RaikiriShieldEntity extends Entity {
     public LivingEntity getThrower() {
         return this.thrower;
     }
+
+    /** 客户端上一帧 X（用于渲染插值） */
+    public double getPrevX() { return this.prevX; }
+    /** 客户端上一帧 Y（用于渲染插值） */
+    public double getPrevY() { return this.prevY; }
+    /** 客户端上一帧 Z（用于渲染插值） */
+    public double getPrevZ() { return this.prevZ; }
 
     public float getShieldBlood() {
         return this.entityData.get(SHIELD_BLOOD);

@@ -57,8 +57,8 @@ public class RaikiriShieldRenderer extends EntityRenderer<RaikiriShieldEntity> {
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         poseStack.translate(0.0F, -1.501F, 0.0F);
 
-        // 绕 Y 轴缓慢自转，partialTick 插值确保帧间平滑
-        float angle = (entity.tickCount + partialTick) * 0.012F;
+        // 绕 Y 轴自转，partialTick 插值确保帧间平滑
+        float angle = (entity.tickCount + partialTick) * 0.02F;
         poseStack.mulPose(com.mojang.math.Axis.YN.rotationDegrees(angle * 360.0F));
 
         // 使用 fullbright additive 渲染（复刻 disableLighting + setLightmapTextureCoords(240,240)）
