@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModEntities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -58,6 +59,10 @@ public class RaikiriShieldEntity extends Entity {
         this(ModEntities.RAIKIRI_SHIELD.get(), level);
         this.thrower = thrower;
         this.setPos(thrower.getX(), thrower.getY(), thrower.getZ());
+        this.xOld = this.getX();
+        this.yOld = this.getY();
+        this.zOld = this.getZ();
+        this.entityData.set(THROWER_ID, thrower.getId());
     }
 
     public static RaikiriShieldEntity spawn(Level level, LivingEntity thrower) {
@@ -93,12 +98,14 @@ public class RaikiriShieldEntity extends Entity {
         }
 
         if (this.thrower == null || !this.thrower.isAlive() || this.tickCount > LIFETIME) {
+            clearHud();
             this.discard();
             return;
         }
 
         // 护盾耐久归零时消失
         if (this.getShieldBlood() <= 0.0F) {
+            clearHud();
             this.discard();
             return;
         }
@@ -111,6 +118,9 @@ public class RaikiriShieldEntity extends Entity {
 
         // 跟随施法者位置
         this.setPos(this.thrower.getX(), this.thrower.getY(), this.thrower.getZ());
+
+        // 更新 HUD：写入护盾耐久
+        updateHud();
 
         // 对贴近的敌人造成伤害
         AABB box = this.getBoundingBox()
@@ -135,6 +145,11 @@ public class RaikiriShieldEntity extends Entity {
         return this.thrower;
     }
 
+    public Entity getOwner() {
+        int id = this.entityData.get(THROWER_ID);
+        return id >= 0 ? this.level().getEntity(id) : null;
+    }
+
     /** 客户端上一帧 X（用于渲染插值） */
     public double getPrevX() { return this.prevX; }
     /** 客户端上一帧 Y（用于渲染插值） */
@@ -157,6 +172,23 @@ public class RaikiriShieldEntity extends Entity {
                 player.displayClientMessage(
                         Component.translatable("msg.kablade.raikiri_shield_blood", (int) blood).withStyle(ChatFormatting.AQUA), true);
             }
+        }
+    }
+
+    /** 将当前护盾耐久写入玩家 HUD capability。 */
+    private void updateHud() {
+        if (this.thrower instanceof Player player) {
+            int blood = (int) this.getShieldBlood();
+            player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                    .ifPresent(cap -> cap.set("raikiri_shield_blood", blood));
+        }
+    }
+
+    /** 护盾消失时清除 HUD 显示。 */
+    private void clearHud() {
+        if (this.thrower instanceof Player player) {
+            player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                    .ifPresent(cap -> cap.set("raikiri_shield_blood", 0));
         }
     }
 

@@ -162,6 +162,7 @@
   "prop.kablade.fair_pow": "Power of Wind",
   "prop.kablade.wind_enchantment_boost": "Wind Enchantment",
   "prop.kablade.stage_light": "Stage Light",
+  "prop.kablade.raikiri_shield_blood": "Raikiri Shield",
 
   "msg.kablade.raikiri_shield_blood": "Raikiri shield durability remaining: %s",
   "msg.kablade.raikiri_shield_crash": "Raikiri Shield has crashed",

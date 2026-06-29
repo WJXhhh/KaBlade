@@ -2,7 +2,6 @@ package com.wjx.kablade.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.model.RaikiriShieldModel;
 import com.wjx.kablade.entity.RaikiriShieldEntity;
@@ -11,6 +10,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,6 +31,7 @@ public class RaikiriShieldRenderer extends EntityRenderer<RaikiriShieldEntity> {
     public RaikiriShieldRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.model = new RaikiriShieldModel(context.bakeLayer(RaikiriShieldModel.LAYER));
+        this.shadowRadius = 0.0F;
     }
 
     @Override
@@ -50,6 +52,16 @@ public class RaikiriShieldRenderer extends EntityRenderer<RaikiriShieldEntity> {
         float yOff = 0.35F;
 
         poseStack.pushPose();
+        Entity owner = entity.getOwner();
+        if (owner != null) {
+            double entX = Mth.lerp(partialTick, entity.xOld, entity.getX());
+            double entY = Mth.lerp(partialTick, entity.yOld, entity.getY());
+            double entZ = Mth.lerp(partialTick, entity.zOld, entity.getZ());
+            double ownX = Mth.lerp(partialTick, owner.xOld, owner.getX());
+            double ownY = Mth.lerp(partialTick, owner.yOld, owner.getY());
+            double ownZ = Mth.lerp(partialTick, owner.zOld, owner.getZ());
+            poseStack.translate(ownX - entX, ownY - entY, ownZ - entZ);
+        }
         poseStack.translate(0.0, yOff, 0.0);
 
         // 复刻 1.12.2 prepareScale: scale(-1, -1, 1) then translate(0, -1.501, 0)
@@ -58,7 +70,7 @@ public class RaikiriShieldRenderer extends EntityRenderer<RaikiriShieldEntity> {
         poseStack.translate(0.0F, -1.501F, 0.0F);
 
         // 绕 Y 轴自转，partialTick 插值确保帧间平滑
-        float angle = (entity.tickCount + partialTick) * 0.02F;
+        float angle = (entity.tickCount + partialTick) * 0.04F;
         poseStack.mulPose(com.mojang.math.Axis.YN.rotationDegrees(angle * 360.0F));
 
         // 使用 fullbright additive 渲染（复刻 disableLighting + setLightmapTextureCoords(240,240)）

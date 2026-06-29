@@ -44,5 +44,12 @@ public final class KabladeBladeProperties {
                 .capabilityKey("holy_energy_impact")
                 .maxValue(1)
                 .build());
+
+        // 雷切护盾（Raikiri Blade Shield）：护盾剩余耐久
+        PlayerPropertyRegistry.register(PlayerProperty.builder("raikiri_shield_blood")
+                .displayName(Component.translatable("prop.kablade.raikiri_shield_blood"))
+                .capabilityKey("raikiri_shield_blood")
+                .maxValue(10)
+                .build());
     }
 }
