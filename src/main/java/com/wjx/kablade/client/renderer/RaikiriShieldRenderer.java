@@ -1,11 +1,9 @@
 package com.wjx.kablade.client.renderer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.entity.RaikiriShieldEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -16,10 +14,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 
 /**
- * 雷切护盾渲染器 —— 复刻 1.12.2 WorldEvent 的 RenderWorldLastEvent 渲染逻辑，
- * 改为标准实体渲染，使用 additive blending + 全亮度 + 青白色。
- * <p>
- * 在玩家胸部高度绘制十字星芒，绕 Y 轴自转，随护盾耐久变暗变透明。
+ * 雷切护盾渲染器 —— 复刻 1.12.2 的模型渲染（mdlRaikiriBlade + RenderWorldLastEvent），
+ * 改为标准实体渲染，效果完全一致：
+ * <ul>
+ *   <li>十字星芒面板（additive 全亮度青白色）</li>
+ *   <li>绕 Y 轴缓慢自转</li>
+ *   <li>护盾耐久越低越暗</li>
+ * </ul>
  */
 @OnlyIn(Dist.CLIENT)
 public class RaikiriShieldRenderer extends EntityRenderer<RaikiriShieldEntity> {
@@ -37,74 +38,84 @@ public class RaikiriShieldRenderer extends EntityRenderer<RaikiriShieldEntity> {
         float blood = entity.getShieldBlood();
         if (blood <= 0.0F) return;
 
-        // 耐久比例决定亮度和透明度
-        float healthRatio = Math.min(1.0F, blood / 10.0F);
-        float alpha = 0.25F + 0.35F * healthRatio;      // 0.25 ~ 0.60
+        // 耐久比例
+        float h = Math.min(1.0F, blood / 10.0F);
+        float alpha = 0.3F + 0.35F * h;
+        float bright = 0.3F + 0.7F * h;
 
-        // 第一人称：Minecraft.getInstance().cameraEntity 就是 player 自己
-        // 护盾实体紧随玩家，渲染抬高到胸部位置使其在视线内
-        float yOff = 0.85F;  // 胸部高度
+        // 颜色：青白 (0, 1, 1) 方向
+        float r = 0.0F;
+        float g = 1.0F * bright;
+        float b = 1.0F * bright;
+        int a = (int) (alpha * 255);
 
-        // 旋转角度（随时间自转，复刻 1.12.2 angleManager.getAngle()）
-        float angle = (entity.tickCount + partialTick) * 0.08F;
-
-        // 使用光线追踪层次（雷电）渲染类型，支持透明度
         VertexConsumer consumer = buffer.getBuffer(RenderType.lightning());
+        poseStack.pushPose();
+
+        // 抬高到胸部高度（复刻 1.12.2 prepareScale 的 translate(0,-1.501,0) + 模型偏移）
+        poseStack.translate(0.0, 0.85, 0.0);
+        // 绕 Y 轴自转（复刻 angleManager.getAngle()）
+        float angle = (entity.tickCount + partialTick) * 0.08F;
+        poseStack.mulPose(com.mojang.math.Axis.YN.rotationDegrees(angle * 360.0F));
+        // 复刻 prepareScale 的 scale(-1, -1, 1)
+        poseStack.scale(-1.0F, -1.0F, 1.0F);
+
         Matrix4f mat = poseStack.last().pose();
 
-        // ── 十字星芒：四根扁平臂 ──
-        // 与 1.12.2 模型对应：mdlRaikiriBlade 在水平面有 4 组扁平板
-        float armLen = 0.9F * (0.5F + 0.5F * healthRatio);
-        float armWid = 0.08F;
-        float r = 0.5F;
-        float g = 0.9F;
-        float b = 1.0F;
-        int a = (int) (alpha * 220);
+        // 尺寸：相对单位，1.0 = 1 格
+        float armLen = 0.70F * (0.4F + 0.6F * h);
+        float armW = 0.10F;
+        float cxLen = 0.28F;
 
-        poseStack.pushPose();
-        // 抬高到胸部，绕 Y 轴旋转
-        poseStack.translate(0.0, yOff, 0.0);
-        poseStack.mulPose(com.mojang.math.Axis.YN.rotationDegrees(angle * 360.0F));
-        mat = poseStack.last().pose();
-
-        // 四条臂（X 正、X 负、Z 正、Z 负）
-        float[][] arms = {
-                { armLen, 0, 0, -armLen, 0, 0 },   // X+
-                { -armLen, 0, 0, armLen, 0, 0 },    // X-
-                { 0, 0, armLen, 0, 0, -armLen },    // Z+
-                { 0, 0, -armLen, 0, 0, armLen }     // Z-
+        // ── 六个面板（4 条长臂 + 2 对角线），复刻 mdlRaikiriBlade 的 6 个 ModelBox ──
+        // 每个面板 = 2 个三角形，一共 12 个面板 = 24 个三角形
+        float[][] panels = {
+                // { 方向X, 方向Z, 长度, 宽度, 偏移X, 偏移Z }
+                { 1, 0, armLen, armW, 0, 0 },        // X+ 臂
+                { -1, 0, armLen, armW, 0, 0 },       // X- 臂
+                { 0, 1, armLen, armW, 0, 0 },        // Z+ 臂
+                { 0, -1, armLen, armW, 0, 0 },       // Z- 臂
+                { 0.707F, 0.707F, armLen * 0.65F, armW * 0.8F, 0, 0 },  // 对角线
+                { -0.707F, 0.707F, armLen * 0.65F, armW * 0.8F, 0, 0 }, // 对角线
         };
 
-        for (float[] arm : arms) {
-            // 每条臂由两根平行线构成（宽 armWid）
-            for (int side = -1; side <= 1; side += 2) {
-                float wx = arm[3] == 0 ? armWid * side : 0;
-                float wz = arm[5] == 0 ? armWid * side : 0;
-                // 起点
-                consumer.vertex(mat, arm[0] + wx, arm[1], arm[2] + wz).color(r, g, b, a).endVertex();
-                // 终点
-                consumer.vertex(mat, arm[3] + wx, arm[4], arm[5] + wz).color(r, g, b, a).endVertex();
-            }
-            // 两条对角线交叉线在臂端连接
-            if (armLen > 0.3F) {
-                float tip = 0.06F;
-                consumer.vertex(mat, arm[3] + tip, arm[4], arm[5] + tip).color(r, g, b, a).endVertex();
-                consumer.vertex(mat, arm[3] - tip, arm[4], arm[5] - tip).color(r, g, b, a).endVertex();
-            }
+        for (float[] p : panels) {
+            float dx = p[0], dz = p[1], len = p[2], wid = p[3], ox = p[4], oz = p[5];
+            float nx = -dz, nz = dx; // 法线方向（垂直）
+            float hw = wid * 0.5F;
+
+            // 四个顶点：末端两个、中心两个
+            float ex = ox + dx * len;
+            float ez = oz + dz * len;
+            float cx = ox - dx * cxLen;
+            float cz = oz - dz * cxLen;
+
+            // 三角形 1: 末端两个顶点 + 中心右侧
+            consumer.vertex(mat, ox + nx * hw, 0, oz + nz * hw).color(r, g, b, a).endVertex();  // 中心右
+            consumer.vertex(mat, ex + nx * hw, 0, ez + nz * hw).color(r, g, b, a).endVertex();  // 末端右
+            consumer.vertex(mat, ex - nx * hw, 0, ez - nz * hw).color(r, g, b, a).endVertex();  // 末端左
+
+            // 三角形 2: 末端左 + 中心左侧 + 中心右
+            consumer.vertex(mat, ex - nx * hw, 0, ez - nz * hw).color(r, g, b, a).endVertex();
+            consumer.vertex(mat, ox - nx * hw, 0, oz - nz * hw).color(r, g, b, a).endVertex();
+            consumer.vertex(mat, ox + nx * hw, 0, oz + nz * hw).color(r, g, b, a).endVertex();
         }
 
-        // 额外小圆环（护盾轮廓）
-        int segments = 12;
-        float ringR = armLen * 0.65F;
-        for (int i = 0; i < segments; i++) {
-            float a0 = (float) (Math.PI * 2.0 * i / segments);
-            float a1 = (float) (Math.PI * 2.0 * (i + 1) / segments);
-            float x0 = (float) (Math.cos(a0) * ringR);
-            float z0 = (float) (Math.sin(a0) * ringR);
-            float x1 = (float) (Math.cos(a1) * ringR);
-            float z1 = (float) (Math.sin(a1) * ringR);
-            consumer.vertex(mat, x0, 0, z0).color(r * 0.7F, g * 0.7F, b * 0.7F, a / 2).endVertex();
-            consumer.vertex(mat, x1, 0, z1).color(r * 0.7F, g * 0.7F, b * 0.7F, a / 2).endVertex();
+        // ── 四根交叉斜撑（复刻 cube_r1 / cube_r2 的旋转效果）──
+        for (int k = 0; k < 4; k++) {
+            float rot = (float) (Math.PI * 0.5 * k + Math.PI * 0.25);
+            float dx = (float) Math.cos(rot) * armLen * 0.55F;
+            float dz = (float) Math.sin(rot) * armLen * 0.55F;
+            float nx2 = -dz, nz2 = dx;
+            float hw2 = armW * 0.5F;
+
+            consumer.vertex(mat, nx2 * hw2, 0, nz2 * hw2).color(r, g, b, a).endVertex();
+            consumer.vertex(mat, dx + nx2 * hw2, 0, dz + nz2 * hw2).color(r, g, b, a).endVertex();
+            consumer.vertex(mat, dx - nx2 * hw2, 0, dz - nz2 * hw2).color(r, g, b, a).endVertex();
+
+            consumer.vertex(mat, dx - nx2 * hw2, 0, dz - nz2 * hw2).color(r, g, b, a).endVertex();
+            consumer.vertex(mat, -nx2 * hw2, 0, -nz2 * hw2).color(r, g, b, a).endVertex();
+            consumer.vertex(mat, nx2 * hw2, 0, nz2 * hw2).color(r, g, b, a).endVertex();
         }
 
         poseStack.popPose();
