@@ -1,6 +1,8 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.RaikiriShieldEntity;
+import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -8,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -40,8 +43,14 @@ public final class BladeWardArts extends SlashArts {
             e.discard();
         }
 
+        // 读取当前拔刀剑的攻击力，用于护盾耐久和伤害计算
+        ItemStack blade = user.getMainHandItem();
+        float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
+                .map(ISlashBladeState::getBaseAttackModifier)
+                .orElse(4.0F);
+
         // 召唤新护盾
-        RaikiriShieldEntity.spawn((ServerLevel) user.level(), user);
+        RaikiriShieldEntity.spawn((ServerLevel) user.level(), user, bladeAttack);
 
         // 激活反馈：音效 + 粒子
         ServerLevel level = (ServerLevel) user.level();

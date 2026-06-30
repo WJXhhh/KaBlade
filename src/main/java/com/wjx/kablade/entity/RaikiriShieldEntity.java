@@ -3,6 +3,7 @@ package com.wjx.kablade.entity;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.MathFunc;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -26,9 +27,13 @@ import java.util.List;
  * 雷切护盾实体 —— 「雷切」SA 召唤的环绕护盾。
  * <p>
  * 从 1.12.2 {@code EntityRaikiriBlade} 移植而来：
- * 生成后跟随施法者 10 秒（200 tick），紧贴施法者并对周围敌人造成 2 点伤害；
- * 拥有 10 点护盾耐久：持有者受到的伤害优先由护盾吸收（{@link #onThrowerHurt}），
- * 耐久归零后消失。
+ * 生成后跟随施法者 10 秒（200 tick），紧贴施法者并对周围敌人造成伤害；
+ * 护盾耐久和接触伤害根据释放时的拔刀剑 baseAttackModifier 动态计算：
+ * <pre>
+ *   护盾耐久 = baseAttackModifier &times; 0.75 + amplifierCalc(baseAttackModifier, factor)
+ *   接触伤害 = (baseAttackModifier + amplifierCalc(baseAttackModifier, factor)) &times; 0.25
+ * </pre>
+ * 持有者受到的伤害优先由护盾吸收（{@link #onThrowerHurt}），耐久归零后消失。
  */
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class RaikiriShieldEntity extends Entity {
@@ -39,11 +44,13 @@ public class RaikiriShieldEntity extends Entity {
             SynchedEntityData.defineId(RaikiriShieldEntity.class, EntityDataSerializers.FLOAT);
 
     private static final int LIFETIME = 200;
-    private static final float DEFAULT_SHIELD_BLOOD = 10.0F;
-    private static final float CONTACT_DAMAGE = 2.0F;
     private static final double CONTACT_RADIUS = 1.0;
+    /** amplifierCalc 补正系数（耐久和伤害共用同一个放大器值）。 */
+    private static final float AMP_FACTOR = 1.0F;
 
     private LivingEntity thrower;
+    /** 召唤时施法者拔刀剑的 baseAttackModifier。 */
+    private float bladeAttack;
     /** 客户端上一帧位置，手动跟踪用于 partialTick 插值 */
     private double prevX, prevY, prevZ;
 
@@ -53,18 +60,21 @@ public class RaikiriShieldEntity extends Entity {
         this.setNoGravity(true);
     }
 
-    public RaikiriShieldEntity(Level level, LivingEntity thrower) {
+    public RaikiriShieldEntity(Level level, LivingEntity thrower, float bladeAttack) {
         this(ModEntities.RAIKIRI_SHIELD.get(), level);
         this.thrower = thrower;
+        this.bladeAttack = bladeAttack;
         this.setPos(thrower.getX(), thrower.getY(), thrower.getZ());
         this.xOld = this.getX();
         this.yOld = this.getY();
         this.zOld = this.getZ();
         this.entityData.set(THROWER_ID, thrower.getId());
+        // 根据刀的攻击力计算初始护盾耐久
+        this.entityData.set(SHIELD_BLOOD, calcShieldBlood(bladeAttack));
     }
 
-    public static RaikiriShieldEntity spawn(Level level, LivingEntity thrower) {
-        RaikiriShieldEntity shield = new RaikiriShieldEntity(level, thrower);
+    public static RaikiriShieldEntity spawn(Level level, LivingEntity thrower, float bladeAttack) {
+        RaikiriShieldEntity shield = new RaikiriShieldEntity(level, thrower, bladeAttack);
         level.addFreshEntity(shield);
         return shield;
     }
@@ -72,7 +82,7 @@ public class RaikiriShieldEntity extends Entity {
     @Override
     protected void defineSynchedData() {
         this.entityData.define(THROWER_ID, -1);
-        this.entityData.define(SHIELD_BLOOD, DEFAULT_SHIELD_BLOOD);
+        this.entityData.define(SHIELD_BLOOD, 0.0F);
     }
 
     @Override
@@ -120,13 +130,26 @@ public class RaikiriShieldEntity extends Entity {
         // 更新 HUD：写入护盾耐久
         updateHud();
 
-        // 对贴近的敌人造成伤害
+        // 对贴近的敌人造成伤害（按刀的攻击力动态计算）
+        float contactDamage = calcContactDamage(this.bladeAttack);
         AABB box = this.getBoundingBox()
                 .inflate(CONTACT_RADIUS, 0.0, CONTACT_RADIUS);
         DamageSource src = this.level().damageSources().mobAttack(this.thrower);
         for (Entity e : this.level().getEntities(this, box, this::canHurt)) {
-            e.hurt(src, CONTACT_DAMAGE);
+            e.hurt(src, contactDamage);
         }
+    }
+
+    /** 护盾耐久计算公式。 */
+    public static float calcShieldBlood(float attack) {
+        float amp = MathFunc.amplifierCalc(attack, AMP_FACTOR);
+        return attack * 0.75F + amp;
+    }
+
+    /** 接触伤害计算公式。 */
+    public static float calcContactDamage(float attack) {
+        float amp = MathFunc.amplifierCalc(attack, AMP_FACTOR);
+        return (attack + amp) * 0.25F;
     }
 
     private boolean canHurt(Entity e) {
@@ -166,7 +189,7 @@ public class RaikiriShieldEntity extends Entity {
     /** 将当前护盾耐久写入玩家 HUD capability。 */
     private void updateHud() {
         if (this.thrower instanceof Player player) {
-            int blood = (int) this.getShieldBlood();
+            int blood = Math.round(this.getShieldBlood());
             player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
                     .ifPresent(cap -> cap.set("raikiri_shield_blood", blood));
         }
@@ -222,10 +245,15 @@ public class RaikiriShieldEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        if (tag.contains("bladeAttack")) {
+            this.bladeAttack = tag.getFloat("bladeAttack");
+        }
     }
 
     @Override
     protected void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        tag.putFloat("bladeAttack", this.bladeAttack);
+        tag.putFloat("shieldBlood", this.getShieldBlood());
     }
 
     @Override
