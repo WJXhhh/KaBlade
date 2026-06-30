@@ -74,8 +74,10 @@ public final class BladeRecipePreviewHydrator {
             state.setRefine(Math.max(state.getRefine(), requestedCounts[2]));
             hydrated.getOrCreateTag().put("bladeState", state.serializeNBT());
         });
-        stack.setTag(hydrated.getTag() == null ? null : hydrated.getTag().copy());
-        syncStateFromTag(stack);
+        if(stack.hasTag()){
+            stack.setTag(hydrated.getTag() == null ? null : hydrated.getTag().copy());
+            syncStateFromTag(stack);
+        }
     }
 
     private static boolean isKabladeCarrier(ItemStack stack) {

@@ -133,7 +133,7 @@
   "entity.kablade.confinement_force_field": "禁锢力场",
   "effect.kablade.paralysis": "麻痹",
   "effect.kablade.confinement": "禁锢",
-  "se.kablade.turbulence": "乱流",
+  "se.kablade.turbulence": "§5乱流",
   "se.kablade.divine_penalty": "天罚",
   "special_effect.kablade.turbulence": "乱流",
   "special_effect.kablade.divine_penalty": "天罚",
@@ -163,6 +163,7 @@
   "prop.kablade.wind_enchantment_boost": "风之结界",
   "prop.kablade.stage_light": "聚光舞台",
   "prop.kablade.raikiri_shield_blood": "雷切护盾",
+  "prop.kablade.turbulence": "§5乱流",
 
   "msg.kablade.raikiri_shield_blood": "雷切护盾耐久还有：%s",
   "msg.kablade.raikiri_shield_crash": "雷切护盾已损毁",

@@ -51,5 +51,12 @@ public final class KabladeBladeProperties {
                 .capabilityKey("raikiri_shield_blood")
                 .maxValue(Integer.MAX_VALUE)
                 .build());
+
+        // 乱流（Turbulence SE — 藏锋专属）：被攻击后 100 tick 内反击触发雷电 + 麻痹
+        PlayerPropertyRegistry.register(PlayerProperty.builder("turbulence")
+                .displayName(Component.translatable("prop.kablade.turbulence").withStyle(ChatFormatting.DARK_PURPLE))
+                .capabilityKey("turbulence")
+                .maxValue(100)
+                .build());
     }
 }

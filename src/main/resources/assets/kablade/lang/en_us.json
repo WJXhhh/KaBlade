@@ -134,7 +134,7 @@
   "effect.kablade.paralysis": "Paralysis",
   "effect.kablade.confinement": "Confinement",
   "se.kablade.divine_penalty": "Divine_penalty",
-  "se.kablade.turbulence": "Turbulence",
+  "se.kablade.turbulence": "§5Turbulence",
   "special_effect.kablade.turbulence": "Turbulence",
   "special_effect.kablade.divine_penalty": "Divine_penalty",
   "entity.kablade.vorpal_black_hole": "Vorpal Black Hole",
@@ -163,6 +163,7 @@
   "prop.kablade.wind_enchantment_boost": "Wind Enchantment",
   "prop.kablade.stage_light": "Stage Light",
   "prop.kablade.raikiri_shield_blood": "Raikiri Shield",
+  "prop.kablade.turbulence": "§5Turbulence",
 
   "msg.kablade.raikiri_shield_blood": "Raikiri shield durability remaining: %s",
   "msg.kablade.raikiri_shield_crash": "Raikiri Shield has crashed",

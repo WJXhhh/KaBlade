@@ -1,6 +1,7 @@
 package com.wjx.kablade.specialeffect;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -18,27 +19,26 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 /**
  * 乱流 —— 「藏锋」专属特殊效果。
  * <p>
  * 从 1.12.2 {@code SETurbulence} 移植而来：
  * 持有者被攻击后进入 100 tick 的「乱流」状态；
  * 在此期间若持有者攻击敌人，则对目标召唤雷电、造成 4 点额外伤害并附加麻痹效果。
+ * <p>
+ * 乱流状态通过 {@link com.wjx.kablade.data.IPlayerPropertyData} capability 存储，
+ * 激活时在 HUD「斩无不断:效果」区以紫色文字显示。
  */
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class Turbulence extends SpecialEffect {
+
+    /** capability key，对应 HUD 属性注册和 lang key {@code prop.kablade.turbulence}。 */
+    public static final String PROP_KEY = "turbulence";
 
     private static final int TURBULENCE_TICKS = 100;
     private static final float EXTRA_DAMAGE = 4.0F;
     private static final int PARALYSIS_DURATION = 100;
     private static final int PARALYSIS_AMPLIFIER = 1;
-
-    /** 用 Map 替代 1.12.2 的 KaBladePlayerProp 来跟踪玩家的乱流计数。 */
-    private static final Map<UUID, Integer> TURBULENCE_MAP = new HashMap<>();
 
     public Turbulence() {
         super(-1, false, true);
@@ -54,18 +54,24 @@ public class Turbulence extends SpecialEffect {
         LivingEntity victim = event.getEntity();
         Level level = victim.level();
 
-        // 持有者被攻击时进入乱流状态
-        if (victim instanceof Player player && hasEffect(player)) {
-            TURBULENCE_MAP.put(player.getUUID(), TURBULENCE_TICKS);
+        // 持有者被活体实体攻击时进入乱流状态（环境伤害不触发）
+        if (source instanceof LivingEntity && victim instanceof Player player && hasEffect(player)) {
+            player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                    .ifPresent(cap -> cap.set(PROP_KEY, TURBULENCE_TICKS));
         }
 
         // 持有者攻击敌人且处于乱流状态时触发额外效果
         if (source instanceof Player player && hasEffect(player)) {
-            Integer ticks = TURBULENCE_MAP.get(player.getUUID());
-            if (ticks != null && ticks > 0) {
-                TURBULENCE_MAP.put(player.getUUID(), 0);
+            boolean active = player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                    .map(cap -> cap.isActive(PROP_KEY))
+                    .orElse(false);
+            if (active) {
+                player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                        .ifPresent(cap -> cap.set(PROP_KEY, 0));
                 LivingEntity target = event.getEntity();
+                // 纯视觉闪电（与 1.12.2 一致，不点燃/不伤旁人）
                 LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
+                bolt.setVisualOnly(true);
                 bolt.setPos(target.getX(), target.getY(), target.getZ());
                 level.addFreshEntity(bolt);
                 target.hurt(level.damageSources().playerAttack(player), EXTRA_DAMAGE);
@@ -82,14 +88,19 @@ public class Turbulence extends SpecialEffect {
         }
         Player player = event.player;
         if (!hasEffect(player)) {
-            TURBULENCE_MAP.remove(player.getUUID());
+            // 切刀后清除乱流状态
+            player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                    .ifPresent(cap -> cap.set(PROP_KEY, 0));
             return;
         }
-        UUID id = player.getUUID();
-        TURBULENCE_MAP.merge(id, 0, (oldVal, zero) -> Math.max(0, oldVal - 1));
-        if (TURBULENCE_MAP.getOrDefault(id, 0) <= 0) {
-            TURBULENCE_MAP.remove(id);
-        }
+        // 每 tick 递减（capability 内部自动在值 ≤ 0 时移除条目）
+        player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                .ifPresent(cap -> {
+                    int cur = cap.get(PROP_KEY);
+                    if (cur > 0) {
+                        cap.set(PROP_KEY, cur - 1);
+                    }
+                });
     }
 
     private static boolean hasEffect(Player player) {
