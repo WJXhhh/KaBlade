@@ -214,10 +214,9 @@ dependencies {
     // Forge already ships Mixin at runtime, so this is only needed at compile time.
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    // JEI — declared through Gradle (not placed in mods/) so fg.deobf() remaps SRG→MCP in dev.
+    // JEI — 仅编译期需要 API，运行时不需要（EMI 已替代）
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     // EMI — full jar at compile time and runtime (API 和实现都在同一 jar 中)
     implementation fg.deobf("dev.emi:emi-forge:${emi_version}")
