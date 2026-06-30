@@ -21,7 +21,7 @@ public class PlayerPropertyDataProvider implements ICapabilitySerializable<Compo
 
     /** capability 附着在玩家实体上的 key。 */
     public static final ResourceLocation KEY =
-            new ResourceLocation(Main.MODID + ":player_property_data");
+            ResourceLocation.fromNamespaceAndPath(Main.MODID, "player_property_data");
 
     private final PlayerPropertyData data = new PlayerPropertyData();
     private final LazyOptional<IPlayerPropertyData> holder = LazyOptional.of(() -> data);
