@@ -2,55 +2,75 @@ package com.wjx.kablade.event;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.config.KabladeConfig;
-import mods.flammpfeil.slashblade.event.SlashBladeRegistryEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 /**
- * 在本模组的拔刀剑被创建时（{@link SlashBladeRegistryEvent.Post}），按 {@link KabladeConfig} 里配置的
- * 全局倍率缩放它的基础攻击与最大耐久。只对 {@code kablade} 命名空间的刀生效，不影响拔刀剑本体及其他附属的刀。
+ * 在本模组的拔刀剑被创建时（{@code SlashBladeRegistryEvent.Post}，SlashBlade 1.9+），按 {@link KabladeConfig}
+ * 里配置的全局倍率缩放它的基础攻击与最大耐久。只对 {@code kablade} 命名空间的刀生效。
  *
- * <p>为什么拦在这里：拔刀剑的属性在 {@code SlashBladeDefinition.getBlade()} 创建成品时就被烤进了
- * capability（即 NBT），运行时从 capability 读、不实时读定义。所以只要在「创建那一刻」把成品刀
- * capability 里的值乘上倍率写回去即可——无需触碰冻结的数据包注册表，也不用 Mixin。
- *
- * <p>注意：只影响之后新创建的刀；存档里已经造好的刀其 NBT 已固定，不会被追溯修改。
+ * <p>兼容性：{@code SlashBladeRegistryEvent.Post} 是 SlashBlade 1.9+ 新增的。
+ * 为了让 mod 同时支持 SlashBlade 1.8，本类主体不引用该类型，而是通过内部类 {@link Handler} 实现；
+ * 由 {@link #tryRegister()} 先反射检测事件类是否存在，确认后再注册内部类。
  */
-@Mod.EventBusSubscriber(modid = Main.MODID)   // 默认 FORGE 总线，SlashBladeRegistryEvent 正是走这条总线发布
 public final class BladeAttributeOverride {
 
     private BladeAttributeOverride() {
     }
 
-    @SubscribeEvent
-    public static void onBladeCreated(SlashBladeRegistryEvent.Post event) {
-        // 只处理本模组（kablade 命名空间）的刀，拔刀剑本体及其他附属的刀保持原样。
-        if (!Main.MODID.equals(event.getSlashBladeDefinition().getName().getNamespace())) {
-            return;
+    /**
+     * 尝试注册属性缩放到 Forge 总线。
+     * 如果当前 SlashBlade 版本没有 {@code SlashBladeRegistryEvent.Post}（即 ≤1.8），
+     * 则静默跳过，不做任何事。
+     */
+    public static void tryRegister() {
+        try {
+            Class.forName("mods.flammpfeil.slashblade.event.SlashBladeRegistryEvent$Post");
+            MinecraftForge.EVENT_BUS.register(Handler.class);
+            Main.LOGGER.info("[kablade] BladeAttributeOverride registered (SlashBlade 1.9+)");
+        } catch (ClassNotFoundException e) {
+            Main.LOGGER.info("[kablade] BladeAttributeOverride skipped (SlashBlade ≤1.8, no SlashBladeRegistryEvent.Post)");
+        }
+    }
+
+    /**
+     * 实际的事件处理器。作为内部类单独存在，仅在 {@link #tryRegister()} 确认
+     * {@code SlashBladeRegistryEvent.Post} 存在后才会被 JVM 加载。
+     * 这样在 SlashBlade 1.8 下，该类型引用不会触发类加载错误。
+     */
+    @SuppressWarnings("unused")
+    private static final class Handler {
+        private Handler() {
         }
 
-        // 配置尚未加载时（理论上刀的创建都在加载之后，这里仅作保险）直接跳过，避免读取未加载的配置抛异常。
-        if (!KabladeConfig.SPEC.isLoaded()) {
-            return;
-        }
-
-        double attackMul = KabladeConfig.ATTACK_MULTIPLIER.get();
-        double durabilityMul = KabladeConfig.DURABILITY_MULTIPLIER.get();
-        if (attackMul == 1.0D && durabilityMul == 1.0D) {
-            return; // 都是默认倍率，无需改动
-        }
-
-        event.getBlade().getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
-            if (attackMul != 1.0D) {
-                state.setBaseAttackModifier((float) (state.getBaseAttackModifier() * attackMul));
+        @SubscribeEvent
+        public static void onBladeCreated(mods.flammpfeil.slashblade.event.SlashBladeRegistryEvent.Post event) {
+            if (!Main.MODID.equals(event.getSlashBladeDefinition().getName().getNamespace())) {
+                return;
             }
-            if (durabilityMul != 1.0D) {
-                int baseMaxDamage = state.getMaxDamage();
-                if (baseMaxDamage > 0) {  // 原本不可破坏/无耐久（<=0）的刀保持原样
-                    state.setMaxDamage(Math.max(1, (int) Math.round(baseMaxDamage * durabilityMul)));
+
+            if (!KabladeConfig.SPEC.isLoaded()) {
+                return;
+            }
+
+            double attackMul = KabladeConfig.ATTACK_MULTIPLIER.get();
+            double durabilityMul = KabladeConfig.DURABILITY_MULTIPLIER.get();
+            if (attackMul == 1.0D && durabilityMul == 1.0D) {
+                return;
+            }
+
+            event.getBlade().getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
+                if (attackMul != 1.0D) {
+                    state.setBaseAttackModifier((float) (state.getBaseAttackModifier() * attackMul));
                 }
-            }
-        });
+                if (durabilityMul != 1.0D) {
+                    int baseMaxDamage = state.getMaxDamage();
+                    if (baseMaxDamage > 0) {
+                        state.setMaxDamage(Math.max(1, (int) Math.round(baseMaxDamage * durabilityMul)));
+                    }
+                }
+            });
+        }
     }
 }

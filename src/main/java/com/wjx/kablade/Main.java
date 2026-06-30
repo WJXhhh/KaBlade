@@ -112,6 +112,9 @@ public final class Main {
         //   MinecraftForge.EVENT_BUS.register(this);
 
         LOGGER.info("[{}] constructed (dist={})", MODID, FMLEnvironment.dist);
+
+        // BladeAttributeOverride 使用了 SlashBlade 1.9+ 的 API，在 1.8 下静默跳过
+        com.wjx.kablade.event.BladeAttributeOverride.tryRegister();
     }
 
     /** Runs after all mods are constructed -- safe place to read other mods metadata. */
