@@ -83,7 +83,7 @@ public final class WindEnchantmentEntity extends Entity {
      */
     @Override
     public AABB getBoundingBoxForCulling() {
-        return super.getBoundingBoxForCulling().inflate(10.0, 1.0, 10.0);
+        return super.getBoundingBoxForCulling().inflate(10.0, 5.0, 10.0);
     }
 
     @Override
@@ -91,9 +91,9 @@ public final class WindEnchantmentEntity extends Entity {
         super.tick();
 
         if (!this.level().isClientSide()) {
-            // 扫描附近玩家，写入 wind_enchantment_boost
+            // 扫描附近玩家（水平 10 格，垂直 ±5 格），写入 wind_enchantment_boost
             List<Player> players = this.level().getEntitiesOfClass(Player.class,
-                    this.getBoundingBox().inflate(SCAN_RADIUS, 0, SCAN_RADIUS).expandTowards(0, 4, 0));
+                    this.getBoundingBox().inflate(SCAN_RADIUS, 5.0, SCAN_RADIUS));
             for (Player p : players) {
                 p.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
                         .ifPresent(cap -> cap.set("wind_enchantment_boost", BOOST_TICKS));
