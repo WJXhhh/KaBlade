@@ -45,11 +45,11 @@ public final class KabladeBladeProperties {
                 .maxValue(1)
                 .build());
 
-        // 雷切护盾（Raikiri Blade Shield）：护盾剩余耐久（动态计算，上限 50）
+        // 雷切护盾（Raikiri Blade Shield）：护盾剩余耐久（动态计算）
         PlayerPropertyRegistry.register(PlayerProperty.builder("raikiri_shield_blood")
                 .displayName(Component.translatable("prop.kablade.raikiri_shield_blood").withStyle(ChatFormatting.AQUA))
                 .capabilityKey("raikiri_shield_blood")
-                .maxValue(50)
+                .maxValue(Integer.MAX_VALUE)
                 .build());
     }
 }
