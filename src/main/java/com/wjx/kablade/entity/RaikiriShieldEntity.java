@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.MathFunc;
+import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -130,12 +131,14 @@ public class RaikiriShieldEntity extends Entity {
         // 更新 HUD：写入护盾耐久
         updateHud();
 
-        // 对贴近的敌人造成伤害（按刀的攻击力动态计算）
+        // 对贴近的敌人造成伤害（按刀的攻击力动态计算，使用 TargetSelector 过滤）
         float contactDamage = calcContactDamage(this.bladeAttack);
         AABB box = this.getBoundingBox()
                 .inflate(CONTACT_RADIUS, 0.0, CONTACT_RADIUS);
         DamageSource src = this.level().damageSources().mobAttack(this.thrower);
-        for (Entity e : this.level().getEntities(this, box, this::canHurt)) {
+        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
+        for (Entity e : this.level().getEntities(this, box,
+                e -> e != this && e != this.thrower && e instanceof LivingEntity && attackable.test((LivingEntity) e))) {
             e.hurt(src, contactDamage);
         }
     }
@@ -150,16 +153,6 @@ public class RaikiriShieldEntity extends Entity {
     public static float calcContactDamage(float attack) {
         float amp = MathFunc.amplifierCalc(attack, AMP_FACTOR);
         return (attack + amp) * 0.25F;
-    }
-
-    private boolean canHurt(Entity e) {
-        if (e == this || e == this.thrower) {
-            return false;
-        }
-        if (e instanceof Player player) {
-            return !player.isCreative() && !player.isSpectator();
-        }
-        return e instanceof LivingEntity;
     }
 
     public LivingEntity getThrower() {
