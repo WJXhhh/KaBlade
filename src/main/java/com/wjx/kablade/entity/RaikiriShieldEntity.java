@@ -3,8 +3,6 @@ package com.wjx.kablade.entity;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModEntities;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -30,7 +28,7 @@ import java.util.List;
  * 从 1.12.2 {@code EntityRaikiriBlade} 移植而来：
  * 生成后跟随施法者 10 秒（200 tick），紧贴施法者并对周围敌人造成 2 点伤害；
  * 拥有 10 点护盾耐久：持有者受到的伤害优先由护盾吸收（{@link #onThrowerHurt}），
- * 耐久归零后向持有者发送提示并消失。
+ * 耐久归零后消失。
  */
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class RaikiriShieldEntity extends Entity {
@@ -163,16 +161,6 @@ public class RaikiriShieldEntity extends Entity {
 
     public void setShieldBlood(float blood) {
         this.entityData.set(SHIELD_BLOOD, blood);
-        // 复刻 1.12.2：向持有者用动作栏播报剩余护盾 / 破盾提示。
-        if (!this.level().isClientSide() && this.thrower instanceof Player player) {
-            if (blood <= 0.0F) {
-                player.displayClientMessage(
-                        Component.translatable("msg.kablade.raikiri_shield_crash").withStyle(ChatFormatting.AQUA), true);
-            } else {
-                player.displayClientMessage(
-                        Component.translatable("msg.kablade.raikiri_shield_blood", (int) blood).withStyle(ChatFormatting.AQUA), true);
-            }
-        }
     }
 
     /** 将当前护盾耐久写入玩家 HUD capability。 */
