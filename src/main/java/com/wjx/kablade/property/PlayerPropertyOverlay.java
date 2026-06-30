@@ -72,18 +72,16 @@ public final class PlayerPropertyOverlay {
         // 条目
         for (PlayerProperty prop : active) {
             int val = prop.getIntValue(player);
-            Component cdText = buildCdText(
-                    prop.displayName(),
-                    val,
-                    prop.maxValue());
-            gui.drawString(font, cdText, x, y, COLOR_ENTRY);
-            // 对于有数值意义的属性（如护盾耐久），追加 ": 数值"
-            if (val > 0 && prop.id().equals("raikiri_shield_blood")) {
-                String suffix = ": " + val;
-                int sx = font.width(cdText);
-                gui.drawString(font, Component.literal(suffix).withStyle(ChatFormatting.AQUA),
-                        x + sx, y, COLOR_ENTRY);
+            Component text;
+            if (prop.id().equals("raikiri_shield_blood")) {
+                // 雷切护盾：显示名 + 数值，始终天蓝，不随耐久比例变色
+                text = Component.literal("")
+                        .append(prop.displayName())
+                        .append(Component.literal(": " + val).withStyle(ChatFormatting.AQUA));
+            } else {
+                text = buildCdText(prop.displayName(), val, prop.maxValue());
             }
+            gui.drawString(font, text, x, y, COLOR_ENTRY);
             y += LINE_HEIGHT;
         }
     }
