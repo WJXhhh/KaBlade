@@ -34,9 +34,6 @@ public class PowerOfWind extends SpecialEffect {
             UUID.fromString("739B518D-F9EF-04F7-AD8E-98AE7D3C5FE8");
     private static final String MODIFIER_NAME = "pow_att";
 
-    /** 状态切换标记，对应 1.12.2 的 flagpow，避免每 tick 重复 sync。 */
-    private static boolean wasActive = false;
-
     public PowerOfWind() {
         super(-1, true, true);
     }
@@ -67,23 +64,17 @@ public class PowerOfWind extends SpecialEffect {
                                 extraAttack, AttributeModifier.Operation.ADDITION));
             }
 
-            if (!wasActive) {
-                player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
-                        .ifPresent(cap -> cap.set("fair_pow", 1));
-                wasActive = true;
-            }
+            player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                    .ifPresent(cap -> cap.set("fair_pow", 1));
         } else {
-            // 非激活：清零 FAIR_POW、移除 modifier
+            // 非激活：移除 modifier、清零 FAIR_POW
             var attrib = player.getAttribute(Attributes.ATTACK_DAMAGE);
             if (attrib != null) {
                 attrib.removeModifier(MODIFIER_UUID);
             }
 
-            if (wasActive) {
-                player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
-                        .ifPresent(cap -> cap.set("fair_pow", 0));
-                wasActive = false;
-            }
+            player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                    .ifPresent(cap -> cap.set("fair_pow", 0));
         }
     }
 
