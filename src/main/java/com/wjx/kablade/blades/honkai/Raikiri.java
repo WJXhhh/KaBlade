@@ -28,7 +28,7 @@ public class Raikiri extends BladeDefineBase {
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
                         .modelName(ResourceUtil.getLocation("model/named/raikiri_plas/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/raikiri_plas/tex.png"))
+                        .textureName(ResourceUtil.getLocation("model/named/raikiri_plas/tex_raikiri.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
