@@ -1,0 +1,24 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gravity_nugget": {
+      "conditions": {
+        "items": [{ "items": ["kablade:gravity_nugget"] }]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "kablade:gravity_crystal"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    ["has_gravity_nugget", "has_the_recipe"]
+  ],
+  "rewards": {
+    "recipes": ["kablade:gravity_crystal"]
+  },
+  "sends_telemetry_event": false
+}

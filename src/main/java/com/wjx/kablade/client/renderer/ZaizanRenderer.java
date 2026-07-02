@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.wjx.kablade.client.KabladeRenderTypes;
+import com.wjx.kablade.client.shader.OculusSkillRenderer;
 import com.wjx.kablade.entity.ZaizanEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -31,6 +32,11 @@ public final class ZaizanRenderer extends EntityRenderer<ZaizanEntity> {
     @Override
     public void render(ZaizanEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        if (OculusSkillRenderer.runIfNeeded(immediate ->
+                render(entity, entityYaw, partialTick, poseStack, immediate, packedLight))) {
+            return;
+        }
+
         float age = entity.tickCount + partialTick;
         float life = Math.max(1.0F, entity.getLifetime());
         float progress = Mth.clamp(age / life, 0.0F, 1.0F);
@@ -76,11 +82,15 @@ public final class ZaizanRenderer extends EntityRenderer<ZaizanEntity> {
         preFlash(vc, mat, age, charge);
         impactEmbers(vc, mat, age, charge + after * 0.48F, flash);
         if (burst > 0.001F) {
-            screenWash(vc, mat, burst, flash, alpha);
-            mainBladeFlash(vc, mat, age, slashT, burst, flash, alpha);
-            redFeatherSlashes(vc, mat, age, slashT, burst, alpha);
+            if (KabladeRenderTypes.useShaderFallbackTextures()) {
+                oculusBladeBurst(vc, mat, age, slashT, burst, flash, alpha);
+            } else {
+                screenWash(vc, mat, burst, flash, alpha);
+                mainBladeFlash(vc, mat, age, slashT, burst, flash, alpha);
+                redFeatherSlashes(vc, mat, age, slashT, burst, alpha);
+            }
         }
-        sparksAndShards(vc, mat, age, progress, alpha, burst + after * 0.55F, flash);
+        sparksAndShards(vc, mat, age, progress, alpha, burst * 0.55F + after * 0.40F, flash);
 
         poseStack.popPose();
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
@@ -131,6 +141,9 @@ public final class ZaizanRenderer extends EntityRenderer<ZaizanEntity> {
     }
 
     private static void screenWash(VertexConsumer vc, Matrix4f mat, float burst, float flash, float alpha) {
+        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+            return;
+        }
         float a = alpha * burst * (0.42F + flash * 0.42F);
         smokeRibbon(vc, mat, -12.0F, 2.72F, 1.72F, 12.5F, 3.00F, 1.42F,
                 2.65F, 1.0F, 0.10F, 0.08F, a, 8.0F);
@@ -138,6 +151,37 @@ public final class ZaizanRenderer extends EntityRenderer<ZaizanEntity> {
                 1.75F, 1.0F, 0.05F, 0.045F, a * 0.76F, 8.0F);
         smokeRibbon(vc, mat, -10.2F, 0.74F, 0.92F, 10.8F, 1.40F, 0.76F,
                 1.10F, 1.0F, 0.035F, 0.035F, a * 0.48F, 8.0F);
+    }
+
+    private static void oculusBladeBurst(VertexConsumer vc, Matrix4f mat, float age, float slashT,
+                                         float burst, float flash, float alpha) {
+        float travel = smootherStep(slashT);
+        float xShift = -1.62F + travel * 2.70F;
+        float yLift = 0.08F + flash * 0.18F;
+        float z = 1.00F + flash * 0.06F;
+        float a = alpha * burst;
+
+        slashRibbon(vc, mat, -8.6F + xShift, -0.10F + yLift, z + 0.05F,
+                8.9F + xShift, 0.92F + yLift, z + 0.06F,
+                0.46F + flash * 0.10F, 1.0F, 0.06F, 0.035F, a * 0.42F, 2.0F);
+        slashRibbon(vc, mat, -8.2F + xShift, 0.02F + yLift, z + 0.09F,
+                8.4F + xShift, 0.80F + yLift, z + 0.10F,
+                0.18F + flash * 0.05F, 1.0F, 0.44F, 0.20F, a * 0.56F, 2.0F);
+        slashRibbon(vc, mat, -7.6F + xShift, 0.13F + yLift, z + 0.13F,
+                7.8F + xShift, 0.68F + yLift, z + 0.14F,
+                0.055F + flash * 0.025F, 1.0F, 0.88F, 0.62F, a * 0.62F, 2.0F);
+
+        for (int i = 0; i < 7; i++) {
+            float f = i / 6.0F;
+            float y = -0.74F + f * 1.10F;
+            float zz = 0.78F + f * 0.18F;
+            float x0 = -6.2F + f * 0.9F + travel * 1.8F;
+            float x1 = 4.9F + f * 1.9F + travel * 2.1F;
+            slashRibbon(vc, mat, x0, y, zz,
+                    x1, y + 0.28F + Mth.sin(f * Mth.PI) * 0.42F, zz + 0.06F,
+                    0.055F + f * 0.040F, 1.0F, 0.035F, 0.025F,
+                    a * (0.18F + (1.0F - f) * 0.10F), 0.0F);
+        }
     }
 
     private static void mainBladeFlash(VertexConsumer vc, Matrix4f mat, float age, float slashT,
@@ -378,7 +422,8 @@ public final class ZaizanRenderer extends EntityRenderer<ZaizanEntity> {
     private static void vertex(VertexConsumer vc, Matrix4f mat,
                                float x, float y, float z, float u, float v,
                                float r, float g, float b, float alpha) {
-        vc.vertex(mat, x, y, z).color(r, g, b, alpha).uv(u, v).endVertex();
+        vc.vertex(mat, x, y, z).color(r, g, b, KabladeRenderTypes.fallbackAlpha(alpha, 0.12F))
+                .uv(KabladeRenderTypes.zaizanU(u), v).endVertex();
     }
 
     @Override

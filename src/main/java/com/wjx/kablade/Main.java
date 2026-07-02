@@ -2,6 +2,7 @@ package com.wjx.kablade;
 
 import com.mojang.logging.LogUtils;
 import com.wjx.kablade.config.KabladeConfig;
+import com.wjx.kablade.config.KabladeClientConfig;
 import com.wjx.kablade.init.ModBlocks;
 import com.wjx.kablade.init.ModComboStates;
 import com.wjx.kablade.init.ModEntities;
@@ -96,6 +97,7 @@ public final class Main {
         // --- Config --- COMMON config for global defaults; players can edit config/kablade-common.toml
         // context is an FMLJavaModLoadingContext; call registerConfig directly, no static get().
         context.registerConfig(ModConfig.Type.COMMON, KabladeConfig.SPEC);
+        context.registerConfig(ModConfig.Type.CLIENT, KabladeClientConfig.SPEC);
 
         // --- Content registration ---
         ModItems.ITEM_REGISTRY.register(modBus);

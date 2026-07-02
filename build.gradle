@@ -195,6 +195,13 @@ repositories {
         url 'https://maven.terraformersmc.com/'
         content { includeGroup 'dev.emi' }
     }
+
+    // Modrinth Maven for the dev-client shader stack.
+    maven {
+        name 'Modrinth'
+        url 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
 }
 
 dependencies {
@@ -221,6 +228,10 @@ dependencies {
 
     // EMI — 仅编译期需要 API，运行时禁用（JEI 已替代）
     compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
+
+    // Client-only dev runtime shader stack for runClient.
+    runtimeOnly fg.deobf("maven.modrinth:embeddium:${embeddium_version}")
+    runtimeOnly fg.deobf("maven.modrinth:oculus:${oculus_version}")
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.wjx.kablade.client.KabladeRenderTypes;
+import com.wjx.kablade.client.shader.OculusSkillRenderer;
 import com.wjx.kablade.entity.ShockImpactEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -56,6 +57,11 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
     @Override
     public void render(ShockImpactEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        if (OculusSkillRenderer.runIfNeeded(immediate ->
+                render(entity, entityYaw, partialTick, poseStack, immediate, packedLight))) {
+            return;
+        }
+
         float age = entity.tickCount + partialTick;
         float life = Math.max(1.0F, entity.getLifetime());
         float progress = Mth.clamp(age / life, 0.0F, 1.0F);
@@ -406,7 +412,8 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
 
     private static void vertex(VertexConsumer vc, Matrix4f mat,
                                float x, float y, float z, float u, float v, float alpha) {
-        vc.vertex(mat, x, y, z).color(0.34F, 0.92F, 1.0F, alpha).uv(u, v).endVertex();
+        vc.vertex(mat, x, y, z).color(0.34F, 0.92F, 1.0F, KabladeRenderTypes.fallbackAlpha(alpha, 0.42F))
+                .uv(KabladeRenderTypes.shockImpactU(u), v).endVertex();
     }
 
     @Override
