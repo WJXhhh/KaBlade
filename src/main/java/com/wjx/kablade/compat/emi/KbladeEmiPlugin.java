@@ -1,78 +1,143 @@
 package com.wjx.kablade.compat.emi;
 
+import com.wjx.kablade.Main;
+import com.wjx.kablade.client.BladeRecipePreviewHydrator;
 import com.wjx.kablade.init.ModItems;
-import com.wjx.kablade.util.ResourceUtil;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiStack;
 import mods.flammpfeil.slashblade.recipe.SlashBladeShapedRecipe;
+import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.Blocks;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
- * 为本模组的拔刀剑与刀配方提供 EMI 兼容。
- * <p>
- * 通过 {@code @EmiEntrypoint} 自动发现（仅当 EMI 存在时加载）。功能：
- * <ul>
- *   <li>注册四类载体物品的默认比较器，使不同命名刀在 EMI 中显示为独立物品</li>
- *   <li>将 {@code slashblade:shaped_blade} 刀配方注册为 EMI 工作台配方</li>
- * </ul>
+ * Registers EMI support for KBlade carriers and SlashBlade-shaped recipes.
  */
 @EmiEntrypoint
-public class KbladeEmiPlugin implements EmiPlugin {
+public final class KbladeEmiPlugin implements EmiPlugin {
 
-    /** 刀配方分类（使用工作台图标，与普通合成表同组显示）。 */
-    static final EmiRecipeCategory BLADE_CATEGORY = new EmiRecipeCategory(
-            ResourceUtil.getLocation("shaped_blade"),
-            EmiStack.of(Blocks.CRAFTING_TABLE));
+    public static final Comparison BLADE_COMPARISON = Comparison.compareData(KbladeEmiPlugin::getBladeIdentity);
 
     @Override
     public void register(EmiRegistry registry) {
-        // ——— 自定义比较器：让 EMI 按 bladeState.translationKey 区分命名刀 ———
-        Comparison bladeComparison = Comparison.of((a, b) -> {
-            String keyA = getBladeTranslationKey(a);
-            String keyB = getBladeTranslationKey(b);
-            return !keyA.isEmpty() && keyA.equals(keyB);
-        });
-        registry.setDefaultComparison(ModItems.KABLADE_BLADE.get(), bladeComparison);
-        registry.setDefaultComparison(ModItems.KABLADE_HONKAI_BLADE.get(), bladeComparison);
-        registry.setDefaultComparison(ModItems.KABLADE_SL_BLADE.get(), bladeComparison);
-        registry.setDefaultComparison(ModItems.KABLADE_AW_BLADE.get(), bladeComparison);
+        registry.setDefaultComparison(ModItems.KABLADE_BLADE.get(), BLADE_COMPARISON);
+        registry.setDefaultComparison(ModItems.KABLADE_HONKAI_BLADE.get(), BLADE_COMPARISON);
+        registry.setDefaultComparison(ModItems.KABLADE_SL_BLADE.get(), BLADE_COMPARISON);
+        registry.setDefaultComparison(ModItems.KABLADE_AW_BLADE.get(), BLADE_COMPARISON);
 
-        // ——— 注册刀配方 ———
-        registry.addCategory(BLADE_CATEGORY);
-        registry.addWorkstation(BLADE_CATEGORY, EmiStack.of(Blocks.CRAFTING_TABLE));
+        Set<ResourceLocation> carrierIds = getCarrierIds();
+        registry.removeEmiStacks(stack -> carrierIds.contains(stack.getId()) && getBladeState(stack) == null);
 
-        RecipeManager rm = registry.getRecipeManager();
-        var access = Minecraft.getInstance().level != null
-                ? Minecraft.getInstance().level.registryAccess()
-                : null;
-        if (access == null) return;
+        RecipeManager recipeManager = registry.getRecipeManager();
+        RegistryAccess registryAccess = resolveRegistryAccess();
+        if (registryAccess == null) {
+            Main.LOGGER.warn("[{}] EMI registry access unavailable during plugin registration; using raw blade preview stacks", Main.MODID);
+        } else {
+            registerNamedBladeStacks(registry, registryAccess, carrierIds);
+        }
 
-        for (var recipe : rm.getAllRecipesFor(RecipeType.CRAFTING)) {
-            if (recipe instanceof SlashBladeShapedRecipe sbsr) {
-                registry.addRecipe(new EmiShapedBladeRecipe(BLADE_CATEGORY, sbsr, access));
+        Set<ResourceLocation> slashBladeRecipeIds = new LinkedHashSet<>();
+        for (var recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
+            if (recipe instanceof SlashBladeShapedRecipe shapedBladeRecipe && shouldWrapRecipe(shapedBladeRecipe)) {
+                slashBladeRecipeIds.add(recipe.getId());
+            }
+        }
+
+        registry.removeRecipes(recipe ->
+                recipe.getId() != null && slashBladeRecipeIds.contains(recipe.getId()));
+
+        for (var recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
+            if (recipe instanceof SlashBladeShapedRecipe shapedBladeRecipe && shouldWrapRecipe(shapedBladeRecipe)) {
+                registry.addRecipe(new EmiShapedBladeRecipe(shapedBladeRecipe, registryAccess));
             }
         }
     }
 
-    /** 从 EmiStack 的 NBT 中提取 bladeState.translationKey。 */
-    private static String getBladeTranslationKey(EmiStack stack) {
-        if (stack.getNbt() != null && stack.getNbt().contains("bladeState")) {
-            return stack.getNbt().getCompound("bladeState").getString("translationKey");
+    private static boolean shouldWrapRecipe(SlashBladeShapedRecipe recipe) {
+        ResourceLocation outputBlade = recipe.getOutputBlade();
+        return Main.MODID.equals(recipe.getId().getNamespace())
+                || outputBlade != null && Main.MODID.equals(outputBlade.getNamespace());
+    }
+
+    private static void registerNamedBladeStacks(EmiRegistry registry, RegistryAccess registryAccess, Set<ResourceLocation> carrierIds) {
+        for (SlashBladeDefinition definition : registryAccess.registryOrThrow(SlashBladeDefinition.REGISTRY_KEY)) {
+            if (!carrierIds.contains(definition.getItemName())) {
+                continue;
+            }
+            ItemStack stack = definition.getBlade();
+            if (stack.isEmpty()) {
+                continue;
+            }
+            BladeRecipePreviewHydrator.hydrate(stack);
+            registry.addEmiStack(EmiStack.of(stack).comparison(BLADE_COMPARISON));
         }
-        // 后备：从 ItemStack 本体读 capability（兼容 SlashBlade 已水化的堆叠）
+    }
+
+    private static Set<ResourceLocation> getCarrierIds() {
+        return Set.of(
+                ModItems.KABLADE_BLADE.getId(),
+                ModItems.KABLADE_HONKAI_BLADE.getId(),
+                ModItems.KABLADE_SL_BLADE.getId(),
+                ModItems.KABLADE_AW_BLADE.getId());
+    }
+
+    private static RegistryAccess resolveRegistryAccess() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level != null) {
+            return minecraft.level.registryAccess();
+        }
+        ClientPacketListener connection = minecraft.getConnection();
+        if (connection != null) {
+            return connection.registryAccess();
+        }
+        return null;
+    }
+
+    public static String getBladeIdentity(EmiStack stack) {
+        String translationKey = getBladeTranslationKey(stack);
+        if (!translationKey.isEmpty()) {
+            return translationKey;
+        }
+        CompoundTag bladeState = getBladeState(stack);
+        if (bladeState != null) {
+            String model = bladeState.getString("ModelName");
+            String texture = bladeState.getString("TextureName");
+            if (!model.isEmpty() || !texture.isEmpty()) {
+                return model + "|" + texture;
+            }
+        }
+        return stack.getId().toString();
+    }
+
+    private static CompoundTag getBladeState(EmiStack stack) {
+        if (stack.getNbt() != null && stack.getNbt().contains("bladeState")) {
+            return stack.getNbt().getCompound("bladeState");
+        }
+        return null;
+    }
+
+    private static String getBladeTranslationKey(EmiStack stack) {
+        CompoundTag bladeState = getBladeState(stack);
+        if (bladeState != null) {
+            return bladeState.getString("translationKey");
+        }
+
         ItemStack itemStack = stack.getItemStack();
         if (!itemStack.isEmpty()) {
             return itemStack.getCapability(
-                    mods.flammpfeil.slashblade.item.ItemSlashBlade.BLADESTATE)
+                            mods.flammpfeil.slashblade.item.ItemSlashBlade.BLADESTATE)
                     .map(mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState::getTranslationKey)
                     .orElse("");
         }

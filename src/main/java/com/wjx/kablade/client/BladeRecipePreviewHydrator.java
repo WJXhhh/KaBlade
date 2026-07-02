@@ -83,7 +83,8 @@ public final class BladeRecipePreviewHydrator {
     private static boolean isKabladeCarrier(ItemStack stack) {
         return stack.is(ModItems.KABLADE_BLADE.get())
                 || stack.is(ModItems.KABLADE_HONKAI_BLADE.get())
-                || stack.is(ModItems.KABLADE_SL_BLADE.get());
+                || stack.is(ModItems.KABLADE_SL_BLADE.get())
+                || stack.is(ModItems.KABLADE_AW_BLADE.get());
     }
 
     private static void syncStateFromTag(ItemStack stack) {

@@ -38,5 +38,6 @@ public class KbladeJeiPlugin implements IModPlugin {
         registration.registerSubtypeInterpreter(ModItems.KABLADE_BLADE.get(), JEICompat::syncSlashBlade);
         registration.registerSubtypeInterpreter(ModItems.KABLADE_HONKAI_BLADE.get(), JEICompat::syncSlashBlade);
         registration.registerSubtypeInterpreter(ModItems.KABLADE_SL_BLADE.get(), JEICompat::syncSlashBlade);
+        registration.registerSubtypeInterpreter(ModItems.KABLADE_AW_BLADE.get(), JEICompat::syncSlashBlade);
     }
 }
