@@ -14,6 +14,10 @@ public final class OculusSkillRenderer {
     private static final SkillEffectFramebuffer EFFECT_FRAMEBUFFER = new SkillEffectFramebuffer();
     private static final ThreadLocal<Boolean> RENDERING_PASS = ThreadLocal.withInitial(() -> false);
     private static boolean postDisabled;
+    private static boolean loggedNoPostPath;
+    private static boolean loggedNoTarget;
+    private static boolean loggedIncompleteTarget;
+    private static boolean loggedPostActive;
 
     private OculusSkillRenderer() {
     }
@@ -26,16 +30,48 @@ public final class OculusSkillRenderer {
             return false;
         }
 
-        if (postDisabled || RENDERING_PASS.get() || !ShaderCompat.shouldUseOculusPostPath()) {
+        return runPostIfNeeded(renderer);
+    }
+
+    public static boolean runPostIfNeeded(Consumer<MultiBufferSource.BufferSource> renderer) {
+        return runPostIfNeeded(() -> renderImmediate(renderer));
+    }
+
+    public static boolean runPostIfNeeded(Runnable renderer) {
+        if (postDisabled || RENDERING_PASS.get()) {
+            return false;
+        }
+        if (!ShaderCompat.shouldUseOculusPostPath()) {
+            if (!loggedNoPostPath) {
+                loggedNoPostPath = true;
+                Main.LOGGER.info("KBlade Oculus skill post-processing is not active; using the normal renderer path.");
+            }
             return false;
         }
 
         Optional<SkillShaderTarget> oculusTarget = OculusFramebufferAccess.findTranslucentTarget();
-        if (oculusTarget.isEmpty() || !oculusTarget.get().isComplete()) {
+        if (oculusTarget.isEmpty()) {
+            if (!loggedNoTarget) {
+                loggedNoTarget = true;
+                Main.LOGGER.warn("KBlade could not locate the Oculus/Iris translucent framebuffer; using shaderpack fallback geometry.");
+            }
+            return false;
+        }
+        if (!oculusTarget.get().isComplete()) {
+            if (!loggedIncompleteTarget) {
+                loggedIncompleteTarget = true;
+                Main.LOGGER.warn("KBlade found an Oculus/Iris framebuffer but it is incomplete: {}. Using shaderpack fallback geometry.",
+                        oculusTarget.get());
+            }
             return false;
         }
 
         SkillShaderTarget target = oculusTarget.get();
+        if (!loggedPostActive) {
+            loggedPostActive = true;
+            Main.LOGGER.info("KBlade Oculus skill post-processing active: fbo={}, color={}, depth={}, size={}x{}",
+                    target.framebufferId(), target.colorTextureId(), target.depthTextureId(), target.width(), target.height());
+        }
         RENDERING_PASS.set(true);
         try {
             renderColorPass(target, renderer);
@@ -51,14 +87,18 @@ public final class OculusSkillRenderer {
         return true;
     }
 
-    private static void renderColorPass(SkillShaderTarget target, Consumer<MultiBufferSource.BufferSource> renderer) {
-        EFFECT_FRAMEBUFFER.beginColor(target);
-        renderImmediate(renderer);
+    public static boolean isRenderingPass() {
+        return RENDERING_PASS.get();
     }
 
-    private static void renderMaskPass(SkillShaderTarget target, Consumer<MultiBufferSource.BufferSource> renderer) {
+    private static void renderColorPass(SkillShaderTarget target, Runnable renderer) {
+        EFFECT_FRAMEBUFFER.beginColor(target);
+        renderer.run();
+    }
+
+    private static void renderMaskPass(SkillShaderTarget target, Runnable renderer) {
         EFFECT_FRAMEBUFFER.beginMask(target);
-        renderImmediate(renderer);
+        renderer.run();
     }
 
     private static void renderImmediate(Consumer<MultiBufferSource.BufferSource> renderer) {

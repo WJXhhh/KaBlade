@@ -24,6 +24,11 @@ final class OculusFramebufferAccess {
             return Optional.empty();
         }
 
+        Optional<SkillShaderTarget> sodiumTarget = findSodiumTranslucentTarget(pipeline.get());
+        if (sodiumTarget.isPresent()) {
+            return sodiumTarget;
+        }
+
         Optional<Object> framebuffer = findFramebufferLike(
                 pipeline.get(),
                 Set.of("translucent", "terrain", "sodium", "framebuffer", "write"),
@@ -34,7 +39,36 @@ final class OculusFramebufferAccess {
             return Optional.empty();
         }
 
-        return extractTarget(framebuffer.get(), true);
+        return extractTarget(framebuffer.get(), findRenderTargets(pipeline.get()), true);
+    }
+
+    private static Optional<SkillShaderTarget> findSodiumTranslucentTarget(Object pipeline) {
+        Optional<Object> terrainPipeline = invokeFirstNoArgOptional(pipeline, "getSodiumTerrainPipeline");
+        if (terrainPipeline.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Optional<Object> framebuffer = invokeFirstNoArgOptional(terrainPipeline.get(), "getTranslucentFramebuffer");
+        if (framebuffer.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return extractTarget(framebuffer.get(), findRenderTargets(pipeline), true);
+    }
+
+    private static Optional<Object> findRenderTargets(Object pipeline) {
+        Optional<Object> viaMethod = invokeFirstNoArgOptional(pipeline, "getRenderTargets", "renderTargets");
+        if (viaMethod.isPresent()) {
+            return viaMethod;
+        }
+
+        try {
+            Field field = pipeline.getClass().getDeclaredField("renderTargets");
+            field.setAccessible(true);
+            return Optional.ofNullable(field.get(pipeline));
+        } catch (ReflectiveOperationException | RuntimeException | LinkageError ignored) {
+            return Optional.empty();
+        }
     }
 
     private static Optional<Object> findPipeline() {
@@ -120,20 +154,28 @@ final class OculusFramebufferAccess {
                 && canExtractFramebufferId(value);
     }
 
-    private static Optional<SkillShaderTarget> extractTarget(Object framebuffer, boolean shaderPackTarget) {
+    private static Optional<SkillShaderTarget> extractTarget(Object framebuffer, Optional<Object> renderTargets,
+                                                            boolean shaderPackTarget) {
         Optional<Integer> framebufferId = readInt(framebuffer,
                 "getId", "getGlId", "getGlFramebuffer", "getFramebufferId", "frameBufferId", "id");
         Optional<Integer> colorTextureId = readInt(framebuffer,
-                "getColorTextureId", "getColorAttachment", "getColorTexture", "colorTexture", "colorTextureId");
+                "getColorTextureId", "getColorTexture", "colorTexture", "colorTextureId")
+                .or(() -> readIntWithIntArg(framebuffer, 0, "getColorAttachment"));
         Optional<Integer> depthTextureId = readInt(framebuffer,
-                "getDepthTextureId", "getDepthAttachment", "getDepthTexture", "depthTexture", "depthTextureId");
+                "getDepthTextureId", "getDepthAttachment", "getDepthTexture", "depthTexture", "depthTextureId")
+                .or(() -> renderTargets.flatMap(targets -> readInt(targets,
+                        "getDepthTexture", "currentDepthTexture")));
 
         if (framebufferId.isEmpty() || colorTextureId.isEmpty() || depthTextureId.isEmpty()) {
             return Optional.empty();
         }
 
-        int width = readInt(framebuffer, "width", "getWidth").orElse(Minecraft.getInstance().getWindow().getWidth());
-        int height = readInt(framebuffer, "height", "getHeight").orElse(Minecraft.getInstance().getWindow().getHeight());
+        int width = readInt(framebuffer, "width", "getWidth")
+                .or(() -> renderTargets.flatMap(targets -> readInt(targets, "getCurrentWidth", "cachedWidth")))
+                .orElse(Minecraft.getInstance().getWindow().getWidth());
+        int height = readInt(framebuffer, "height", "getHeight")
+                .or(() -> renderTargets.flatMap(targets -> readInt(targets, "getCurrentHeight", "cachedHeight")))
+                .orElse(Minecraft.getInstance().getWindow().getHeight());
         return Optional.of(new SkillShaderTarget(
                 framebufferId.get(),
                 colorTextureId.get(),
@@ -176,6 +218,22 @@ final class OculusFramebufferAccess {
         return Optional.empty();
     }
 
+    private static Optional<Integer> readIntWithIntArg(Object target, int argument, String... names) {
+        Class<?> type = target.getClass();
+        for (String name : names) {
+            try {
+                Method method = type.getDeclaredMethod(name, int.class);
+                method.setAccessible(true);
+                Object value = method.invoke(target, argument);
+                if (value instanceof Number number) {
+                    return Optional.of(number.intValue());
+                }
+            } catch (ReflectiveOperationException | RuntimeException | LinkageError ignored) {
+            }
+        }
+        return Optional.empty();
+    }
+
     private static Object invokeFirstNoArg(Object target, String... names) throws ReflectiveOperationException {
         Class<?> type = target.getClass();
         for (String name : names) {
@@ -188,6 +246,33 @@ final class OculusFramebufferAccess {
             }
         }
         throw new NoSuchMethodException(type.getName());
+    }
+
+    private static Optional<Object> invokeFirstNoArgOptional(Object target, String... names) {
+        Class<?> type = target.getClass();
+        for (String name : names) {
+            try {
+                Method method = type.getMethod(name);
+                if (method.getParameterCount() == 0) {
+                    return Optional.ofNullable(method.invoke(target));
+                }
+            } catch (NoSuchMethodException ignored) {
+            } catch (ReflectiveOperationException | RuntimeException | LinkageError ignored) {
+                return Optional.empty();
+            }
+
+            try {
+                Method method = type.getDeclaredMethod(name);
+                if (method.getParameterCount() == 0) {
+                    method.setAccessible(true);
+                    return Optional.ofNullable(method.invoke(target));
+                }
+            } catch (NoSuchMethodException ignored) {
+            } catch (ReflectiveOperationException | RuntimeException | LinkageError ignored) {
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
     }
 
     private static Optional<Object> unwrapOptional(Object value) {

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.wjx.kablade.client.KabladeRenderTypes;
-import com.wjx.kablade.client.shader.OculusSkillRenderer;
 import com.wjx.kablade.entity.VorpalBlackHoleEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -32,11 +31,6 @@ public final class VorpalBlackHoleRenderer extends EntityRenderer<VorpalBlackHol
     @Override
     public void render(VorpalBlackHoleEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if (OculusSkillRenderer.runIfNeeded(immediate ->
-                render(entity, entityYaw, partialTick, poseStack, immediate, packedLight))) {
-            return;
-        }
-
         float age = entity.tickCount + partialTick;
         float activeEnd = Math.max(1.0F, entity.getLifetime());
         float visualEnd = Math.max(activeEnd, entity.getVisualLifetime());
