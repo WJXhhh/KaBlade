@@ -69,6 +69,14 @@ public final class VorpalBlackHoleRenderer extends EntityRenderer<VorpalBlackHol
         poseStack.mulPose(Axis.ZP.rotationDegrees(roll));
         Matrix4f mat = poseStack.last().pose();
 
+        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+            renderOculusFallback(vc, mat, age, activeEnd, visualEnd, alpha, burst, finale, impact, radius);
+            poseStack.popPose();
+            poseStack.popPose();
+            super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+            return;
+        }
+
         vortexQuad(vc, mat, radius * 1.42F,
                 0.40F, 0.005F, 0.004F, alpha * 0.34F, -0.004F);
         vortexQuad(vc, mat, radius * 1.16F,
@@ -98,6 +106,202 @@ public final class VorpalBlackHoleRenderer extends EntityRenderer<VorpalBlackHol
 
         poseStack.popPose();
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+    }
+
+    private static void renderOculusFallback(VertexConsumer vc, Matrix4f mat, float age,
+                                             float activeEnd, float visualEnd,
+                                             float alpha, float burst, float finale, float impact,
+                                             float radius) {
+        float pulse = 0.74F + 0.26F * Mth.sin(age * 0.30F);
+
+        colorDisc(vc, mat, radius * 0.52F,
+                0.0F, 0.0F, 0.0F, alpha * 0.88F);
+        colorRingBand(vc, mat, radius * 0.30F, radius * 0.58F, 0.003F,
+                0.16F, 0.0F, 0.0F, alpha * 0.56F);
+        colorRingBand(vc, mat, radius * 0.52F, radius * 0.70F, 0.007F,
+                1.0F, 0.030F, 0.012F, alpha * (0.62F + pulse * 0.32F));
+        colorRingBand(vc, mat, radius * 0.72F, radius * 1.08F, 0.002F,
+                0.36F, 0.0F, 0.0F, alpha * 0.32F);
+        colorRingBand(vc, mat, radius * 0.96F, radius * 1.12F, 0.010F,
+                0.95F, 0.020F, 0.010F, alpha * 0.34F);
+
+        for (int i = 0; i < 6; i++) {
+            float angle = i * Mth.TWO_PI / 3.0F + age * 0.060F + (i % 2) * 0.72F;
+            float armAlpha = alpha * (0.48F + deterministic(i, 2.7F) * 0.22F);
+            spiralArm(vc, mat, angle, radius * 0.24F, radius * (1.14F + deterministic(i, 4.1F) * 0.18F),
+                    radius * (0.070F + deterministic(i, 5.2F) * 0.030F),
+                    1.0F, 0.045F + deterministic(i, 6.3F) * 0.035F, 0.018F,
+                    armAlpha);
+        }
+        colorDisc(vc, mat, radius * 0.28F,
+                0.0F, 0.0F, 0.0F, alpha * 0.96F);
+
+        if (burst > 0.02F) {
+            for (int i = 0; i < 24; i++) {
+                float angle = i * Mth.TWO_PI / 18.0F + (deterministic(i, 7.2F) - 0.5F) * 0.24F + age * 0.018F;
+                float inner = radius * (0.34F + deterministic(i, 8.1F) * 0.20F);
+                float outer = radius * (1.24F + deterministic(i, 9.4F) * 0.66F);
+                float width = radius * (0.010F + deterministic(i, 10.6F) * 0.026F) * (1.0F + burst * 0.6F);
+                colorRadialRibbon(vc, mat, angle, inner, outer, width, 0.010F,
+                        1.0F, 0.060F, 0.025F, alpha * burst * (0.16F + deterministic(i, 11.8F) * 0.34F));
+            }
+            colorSlashBand(vc, mat, age, radius, alpha * burst * 0.45F, 0.92F,
+                    1.0F, 0.060F, 0.030F);
+            colorSlashBand(vc, mat, age + 4.5F, radius, alpha * burst * 0.32F, -0.68F,
+                    1.0F, 0.14F, 0.08F);
+        }
+
+        if (finale > 0.015F) {
+            float origin = activeEnd - 17.0F;
+            for (int i = 0; i < 5; i++) {
+                float progress = smootherStep(Mth.clamp((age - origin - i * 1.05F) / 12.0F, 0.0F, 1.0F));
+                if (progress > 0.001F && progress < 0.995F) {
+                    float peak = Mth.sin(progress * Mth.PI);
+                    float ringRadius = radius * (0.36F + progress * (1.80F + i * 0.20F));
+                    colorRingBand(vc, mat, ringRadius - radius * 0.030F, ringRadius + radius * 0.030F, 0.070F + i * 0.006F,
+                            1.0F, 0.035F + i * 0.014F, 0.014F,
+                            alpha * finale * (0.18F + peak * 0.36F));
+                }
+            }
+            float fiberStart = activeEnd - 11.0F;
+            for (int i = 0; i < 34; i++) {
+                float raw = Mth.clamp((age - fiberStart - deterministic(i, 16.2F) * 2.2F) / 20.0F, 0.0F, 1.0F);
+                if (raw <= 0.001F || raw >= 0.995F) {
+                    continue;
+                }
+                float launch = easeOutQuint(Mth.clamp(raw / 0.30F, 0.0F, 1.0F));
+                float fade = 1.0F - smootherStep(Mth.clamp(raw * 0.92F, 0.0F, 1.0F));
+                float angle = deterministic(i, 17.6F) * Mth.TWO_PI;
+                float travel = radius * (0.28F + launch * (2.35F + deterministic(i, 18.4F) * 1.55F));
+                float length = radius * (0.56F + deterministic(i, 19.7F) * 1.20F);
+                float inner = Math.max(radius * 0.10F, travel - length);
+                float outer = travel + length * 0.32F;
+                float width = radius * (0.022F + deterministic(i, 20.5F) * 0.070F);
+                colorRadialRibbon(vc, mat, angle, inner, outer, width, 0.105F,
+                        1.0F, 0.034F, 0.014F, alpha * finale * fade * 0.52F);
+            }
+        }
+
+        if (impact > 0.012F) {
+            float shock = Mth.sin(Mth.clamp(impact, 0.0F, 1.0F) * Mth.PI);
+            float ringRadius = radius * (0.82F + impact * 1.75F);
+            colorRingBand(vc, mat, ringRadius - radius * 0.035F, ringRadius + radius * 0.035F, 0.112F,
+                    1.0F, 0.070F, 0.030F, alpha * impact * (0.24F + shock * 0.32F));
+        }
+    }
+
+    private static void colorDisc(VertexConsumer vc, Matrix4f mat, float radius,
+                                  float r, float g, float b, float alpha) {
+        colorRingBand(vc, mat, 0.01F, radius * 0.45F, 0.0F, r, g, b, alpha * 0.72F);
+        colorRingBand(vc, mat, radius * 0.45F, radius, 0.001F, r, g, b, alpha);
+    }
+
+    private static void colorRingBand(VertexConsumer vc, Matrix4f mat, float inner, float outer, float z,
+                                      float r, float g, float b, float alpha) {
+        int segments = RING_SEGMENTS;
+        for (int i = 0; i < segments; i++) {
+            float a0 = i / (float) segments * Mth.TWO_PI;
+            float a1 = (i + 1) / (float) segments * Mth.TWO_PI;
+            float c0 = Mth.cos(a0);
+            float s0 = Mth.sin(a0);
+            float c1 = Mth.cos(a1);
+            float s1 = Mth.sin(a1);
+            colorQuad(vc, mat,
+                    c0 * inner, s0 * inner, z,
+                    c1 * inner, s1 * inner, z,
+                    c1 * outer, s1 * outer, z,
+                    c0 * outer, s0 * outer, z,
+                    r, g, b, alpha);
+        }
+    }
+
+    private static void spiralArm(VertexConsumer vc, Matrix4f mat, float baseAngle,
+                                  float inner, float outer, float width,
+                                  float r, float g, float b, float alpha) {
+        int segments = 14;
+        for (int i = 0; i < segments; i++) {
+            float t0 = i / (float) segments;
+            float t1 = (i + 1) / (float) segments;
+            float radius0 = Mth.lerp(t0, inner, outer);
+            float radius1 = Mth.lerp(t1, inner, outer);
+            float angle0 = baseAngle + t0 * 1.72F;
+            float angle1 = baseAngle + t1 * 1.72F;
+            float alphaMid = alpha * smootherStep(Mth.clamp(t0 / 0.22F, 0.0F, 1.0F))
+                    * (1.0F - smootherStep(Mth.clamp((t0 - 0.76F) / 0.24F, 0.0F, 1.0F)));
+            colorRibbonSegment(vc, mat, angle0, radius0, angle1, radius1,
+                    width * (0.72F + t0 * 0.58F), 0.012F, r, g, b, alphaMid);
+        }
+    }
+
+    private static void colorRadialRibbon(VertexConsumer vc, Matrix4f mat, float angle,
+                                          float inner, float outer, float width, float z,
+                                          float r, float g, float b, float alpha) {
+        colorRibbonSegment(vc, mat, angle, inner, angle, outer, width, z, r, g, b, alpha);
+    }
+
+    private static void colorRibbonSegment(VertexConsumer vc, Matrix4f mat,
+                                           float angle0, float radius0, float angle1, float radius1,
+                                           float width, float z,
+                                           float r, float g, float b, float alpha) {
+        float x0 = Mth.cos(angle0) * radius0;
+        float y0 = Mth.sin(angle0) * radius0;
+        float x1 = Mth.cos(angle1) * radius1;
+        float y1 = Mth.sin(angle1) * radius1;
+        float dx = x1 - x0;
+        float dy = y1 - y0;
+        float len = Mth.sqrt(dx * dx + dy * dy);
+        if (len <= 0.0001F) {
+            return;
+        }
+        float px = -dy / len * width;
+        float py = dx / len * width;
+        colorQuad(vc, mat,
+                x0 + px, y0 + py, z,
+                x1 + px, y1 + py, z,
+                x1 - px, y1 - py, z,
+                x0 - px, y0 - py, z,
+                r, g, b, alpha);
+    }
+
+    private static void colorSlashBand(VertexConsumer vc, Matrix4f mat, float age, float radius,
+                                       float alpha, float angle, float r, float g, float b) {
+        float local = 1.0F - Math.abs(age - 29.0F) / 7.5F;
+        float presence = smootherStep(Mth.clamp(local, 0.0F, 1.0F));
+        if (presence <= 0.01F) {
+            return;
+        }
+        float length = radius * 1.95F;
+        float width = radius * (0.045F + presence * 0.035F);
+        float dx = Mth.cos(angle);
+        float dy = Mth.sin(angle);
+        float px = -dy * width;
+        float py = dx * width;
+        float hx = dx * length * 0.5F;
+        float hy = dy * length * 0.5F;
+        colorQuad(vc, mat,
+                -hx + px, -hy + py, 0.016F,
+                hx + px, hy + py, 0.016F,
+                hx - px, hy - py, 0.016F,
+                -hx - px, -hy - py, 0.016F,
+                r, g, b, alpha * presence);
+    }
+
+    private static void colorQuad(VertexConsumer vc, Matrix4f mat,
+                                  float x0, float y0, float z0,
+                                  float x1, float y1, float z1,
+                                  float x2, float y2, float z2,
+                                  float x3, float y3, float z3,
+                                  float r, float g, float b, float alpha) {
+        colorVertex(vc, mat, x0, y0, z0, r, g, b, alpha);
+        colorVertex(vc, mat, x1, y1, z1, r, g, b, alpha);
+        colorVertex(vc, mat, x2, y2, z2, r, g, b, alpha);
+        colorVertex(vc, mat, x3, y3, z3, r, g, b, alpha);
+    }
+
+    private static void colorVertex(VertexConsumer vc, Matrix4f mat,
+                                    float x, float y, float z,
+                                    float r, float g, float b, float alpha) {
+        vc.vertex(mat, x, y, z).color(r, g, b, alpha).endVertex();
     }
 
     private static float burstPresence(float age) {

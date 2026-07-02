@@ -27,7 +27,7 @@ KBlade2 (`kablade`) — a Forge 1.20.1 addon for **SlashBlade Resharped (拔刀�
 ./gradlew genEclipseRuns    # Eclipse
 ```
 
-**Note:** Gradle daemon is disabled (`org.gradle.daemon=false` in gradle.properties). The sandbox blocks the Gradle daemon loopback, so `gradlew` tasks can't execute inside this session — validate syntactically with `javac` instead.
+**Note:** If you are Opus,Sonnet,Haiku using desktop app,please read,if you are ChatGPT or other LLM,please bypass this note:Gradle daemon is disabled (`org.gradle.daemon=false` in gradle.properties). The sandbox blocks the Gradle daemon loopback, so `gradlew` tasks can't execute inside this session — validate syntactically with `javac` instead.
 
 ## Key Architecture
 

@@ -58,7 +58,6 @@ public final class KabladeRenderTypes extends RenderType {
 
     private static final RenderType VORPAL_BLACK_HOLE_FALLBACK = shaderFallback(
             "kablade_vorpal_black_hole_fallback",
-            FALLBACK_TEXTURE,
             65536,
             TRANSLUCENT_TRANSPARENCY);
 
