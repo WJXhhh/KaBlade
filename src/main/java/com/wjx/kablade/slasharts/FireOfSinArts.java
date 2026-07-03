@@ -33,6 +33,7 @@ public final class FireOfSinArts extends SlashArts {
     private static final float ATTACK_FACTOR = 3.0F;
     /** Drive 寿命（tick）。 */
     private static final int DRIVE_LIFETIME = 90;
+    private static final float DRIVE_SPEED = 1.5F;
     /** 点燃时间（秒）。 */
     private static final int FIRE_SECONDS = 4;
     /** 点燃范围（格）。 */
@@ -82,6 +83,8 @@ public final class FireOfSinArts extends SlashArts {
         drive.setColor(DRIVE_COLOR);
         drive.setLifetime(DRIVE_LIFETIME);
         drive.setPos(user.getX(), user.getY() + user.getEyeHeight(), user.getZ());
+        Vec3 look = user.getLookAngle();
+        drive.shoot(look.x, look.y, look.z, DRIVE_SPEED, 0.0F);
         level.addFreshEntity(drive);
     }
 

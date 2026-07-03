@@ -32,8 +32,8 @@ import java.util.function.Function;
 public final class FrostCometArts extends SlashArts {
 
     private static final float BASE_DAMAGE = 1.0F;
-    /** 攻击力补正系数（1.12.2 amplifierCalc(attack, 1)），对数补正。 */
-    private static final float ATTACK_FACTOR = 1.0F;
+    /** 攻击力补正系数，翻倍以匹配高攻武器的期望伤害。 */
+    private static final float ATTACK_FACTOR = 2.0F;
     private static final double RANGE_XZ = 5.0;
     private static final double RANGE_Y = 1.0;
 
