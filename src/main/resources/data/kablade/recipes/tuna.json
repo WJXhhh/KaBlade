@@ -1,0 +1,29 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:tuna",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:murayoto"
+      }
+    },
+    "B": {
+      "item": "minecraft:cooked_beef"
+    },
+    "C": {
+      "item": "minecraft:gold_block"
+    }
+  },
+  "pattern": [
+    "B C",
+    " C ",
+    "A B"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

@@ -9,6 +9,7 @@ import com.wjx.kablade.specialeffect.Phoenix;
 import com.wjx.kablade.specialeffect.PowerOfWind;
 import com.wjx.kablade.specialeffect.SPLighting;
 import com.wjx.kablade.specialeffect.Turbulence;
+import com.wjx.kablade.specialeffect.UndyingSaltiness;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -44,6 +45,9 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> HOLY_ENERGY_IMPACT = REGISTRY.register(
             "holy_energy_impact", HolyEnergyImpact::new);
+
+    public static final RegistryObject<SpecialEffect> UNDYING_SALTINESS = REGISTRY.register(
+            "undying_saltiness", UndyingSaltiness::new);
 
     private ModSpecialEffects() {
     }

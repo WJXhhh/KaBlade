@@ -1,0 +1,29 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:sakura_blossom",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:dawn_breaker"
+      }
+    },
+    "B": {
+      "item": "minecraft:pink_petals"
+    },
+    "C": {
+      "item": "minecraft:grass_block"
+    }
+  },
+  "pattern": [
+    "C C",
+    "BBB",
+    " A "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

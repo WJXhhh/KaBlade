@@ -36,5 +36,11 @@ public final class KabladeNetwork {
                 .decoder(InductionCollapseFxPacket::decode)
                 .consumerMainThread((packet, context) -> InductionCollapseFxPacket.handle(packet, context.get()))
                 .add();
+
+        CHANNEL.messageBuilder(FallingPetalsMarkPacket.class, 3)
+                .encoder(FallingPetalsMarkPacket::encode)
+                .decoder(FallingPetalsMarkPacket::decode)
+                .consumerMainThread((packet, context) -> FallingPetalsMarkPacket.handle(packet, context.get()))
+                .add();
     }
 }

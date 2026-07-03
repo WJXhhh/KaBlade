@@ -34,6 +34,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.FROST_BLADE_EDGE.get(), FrostBladeRenderer::new);
         event.registerEntityRenderer(ModEntities.SHOCK_IMPACT.get(), ShockImpactRenderer::new);
         event.registerEntityRenderer(ModEntities.ZAIZAN.get(), ZaizanRenderer::new);
+        event.registerEntityRenderer(ModEntities.TUNA.get(), TunaRenderer::new);
 
         // SP Light SA entities
         event.registerEntityRenderer(ModEntities.EX_SLASH_DRIVE.get(), ExDriveRenderer::new);

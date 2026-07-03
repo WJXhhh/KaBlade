@@ -148,6 +148,17 @@ public final class ModEntities {
                     .build("zaizan"));
 
     /** 「风之结界」光环实体。 */
+    public static final RegistryObject<EntityType<TunaEntity>> TUNA = REGISTRY.register(
+            "tuna",
+            () -> EntityType.Builder.<TunaEntity>of(TunaEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("tuna"));
+
     public static final RegistryObject<EntityType<WindEnchantmentEntity>> WIND_ENCHANTMENT = REGISTRY.register(
             "wind_enchantment",
             () -> EntityType.Builder.<WindEnchantmentEntity>of(WindEnchantmentEntity::new, MobCategory.MISC)

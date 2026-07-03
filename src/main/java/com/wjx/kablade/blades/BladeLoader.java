@@ -14,12 +14,14 @@ import com.wjx.kablade.blades.honkai.MuraSeshu;
 import com.wjx.kablade.blades.honkai.MuraUson;
 import com.wjx.kablade.blades.honkai.MuraYoto;
 import com.wjx.kablade.blades.honkai.Nue;
+import com.wjx.kablade.blades.honkai.OneSaltyTuna;
 import com.wjx.kablade.blades.honkai.Osahoko;
 import com.wjx.kablade.blades.honkai.Phoenix;
 import com.wjx.kablade.blades.honkai.PlasmaKagehide;
 import com.wjx.kablade.blades.honkai.PulseKatanaType17;
 import com.wjx.kablade.blades.honkai.PulseKatanaType19;
 import com.wjx.kablade.blades.honkai.Raikiri;
+import com.wjx.kablade.blades.honkai.SakuraBlossom;
 import com.wjx.kablade.blades.honkai.SkyBreaker;
 import com.wjx.kablade.blades.honkai.ThermalCutter;
 import com.wjx.kablade.blades.honkai.ThirdSacredRelic;
@@ -82,6 +84,7 @@ public final class BladeLoader {
     public static BladeDefineBase MURA_HORI;
     public static BladeDefineBase MURA_USON;
     public static BladeDefineBase MURA_YOTO;
+    public static BladeDefineBase ONE_SALTY_TUNA;
     // 崩坏线·苗刀系列（雷妖/电魂，由村正 Lv3 升级而来）
     public static BladeDefineBase BYO_RAI;
     public static BladeDefineBase BYO_DEN;
@@ -101,6 +104,7 @@ public final class BladeLoader {
     public static BladeDefineBase VORPAL_SWORD;
     public static BladeDefineBase DAWN_BREAKER;
     public static BladeDefineBase THIRD_SACRED;
+    public static BladeDefineBase SAKURA_BLOSSOM;
     public static BladeDefineBase NUE;
     // 崩坏线·脉冲太刀分支
     public static BladeDefineBase XUANYUAN_KATANA;
@@ -158,6 +162,7 @@ public final class BladeLoader {
             "murahori",
             "murauson",
             "murayoto",
+            "tuna",
             // 崩坏线·村正分支 → 复合系列（柳叶/朱雀）
             "fuheliuye",
             "fuhezhuque",
@@ -175,6 +180,7 @@ public final class BladeLoader {
             "galactic",
             "vorpal_sword",
             "dawn_breaker",
+            "sakura_blossom",
             "fairy_sword",
             "third_sacred",
             "nue",
@@ -229,6 +235,7 @@ public final class BladeLoader {
         MURA_HORI = new MuraHori(context);
         MURA_USON = new MuraUson(context);
         MURA_YOTO = new MuraYoto(context);
+        ONE_SALTY_TUNA = new OneSaltyTuna(context);
         // 崩坏线·脉冲太刀系列
         PULSE_KATANA_T17 = new PulseKatanaType17(context);
         PULSE_KATANA_T19 = new PulseKatanaType19(context);
@@ -237,6 +244,7 @@ public final class BladeLoader {
         GALACTIC_NOVA = new GalacticNova(context);
         VORPAL_SWORD = new VorpalSword(context);
         DAWN_BREAKER = new DawnBreaker(context);
+        SAKURA_BLOSSOM = new SakuraBlossom(context);
         THIRD_SACRED = new ThirdSacredRelic(context);
         NUE = new Nue(context);
         // 崩坏线·苗刀系列

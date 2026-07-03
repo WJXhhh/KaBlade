@@ -9,6 +9,7 @@ import com.wjx.kablade.slasharts.BreakTheDawnArts;
 import com.wjx.kablade.slasharts.ChopWillowArts;
 import com.wjx.kablade.slasharts.CutMetalArts;
 import com.wjx.kablade.slasharts.DomainSuppressionArts;
+import com.wjx.kablade.slasharts.FallingPetalsArts;
 import com.wjx.kablade.slasharts.FireOfSinArts;
 import com.wjx.kablade.slasharts.FrostBladeArts;
 import com.wjx.kablade.slasharts.FrostCometArts;
@@ -16,6 +17,7 @@ import com.wjx.kablade.slasharts.AquaEdgeArts;
 import com.wjx.kablade.slasharts.InductionCollapseArts;
 import com.wjx.kablade.slasharts.LacerateBladeArts;
 import com.wjx.kablade.slasharts.LaveDriveArts;
+import com.wjx.kablade.slasharts.LethalThrustArts;
 import com.wjx.kablade.slasharts.LightningSwordsArts;
 import com.wjx.kablade.slasharts.LightsOnStageArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
@@ -103,6 +105,14 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> ZAIZAN = REGISTRY.register(
             "zaizan",
             () -> new ZaizanArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> FALLING_PETALS = REGISTRY.register(
+            "falling_petals",
+            () -> new FallingPetalsArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> LETHAL_THRUST = REGISTRY.register(
+            "lethal_thrust",
+            () -> new LethalThrustArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> INDUCTION_COLLAPSE = REGISTRY.register(
             "induction_collapse",
