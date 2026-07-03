@@ -9,16 +9,20 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 /**
- * 风之结界的四层贴地法阵。
+ * Renders Wind Enchantment as four flat XZ-plane magic-circle layers.
  *
- * <p>1.12.2 原版绘制的是 XZ 平面上的 20×20 四边形，不是面向镜头的竖直 billboard。
- * 每层像旧版一样分别提交上、下两个面，保留原有的绕序和 UV 朝向。</p>
+ * <p>The normal path keeps the original lightweight textured quads. When
+ * Oculus/Iris is using a shader pack, the same quads are submitted through a
+ * standard fullbright entity RenderType so the shader pipeline can pick them up.</p>
  */
 public class WindEnchantmentRenderer extends EntityRenderer<WindEnchantmentEntity> {
+    private static final int FULL_BRIGHT = 0xF000F0;
 
     private static final ResourceLocation TEX_EFFECT1 =
             ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/entity/wind_enchantment/effect1.png");
@@ -30,10 +34,10 @@ public class WindEnchantmentRenderer extends EntityRenderer<WindEnchantmentEntit
             ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/entity/wind_enchantment/effect4.png");
 
     private static final Layer[] LAYERS = {
-            new Layer(TEX_EFFECT1, "effect1", 1.0f, 1.0f),
-            new Layer(TEX_EFFECT2, "effect2", 0.5f, 1.0f),
-            new Layer(TEX_EFFECT3, "effect3", 0.1f, 1.0f),
-            new Layer(TEX_EFFECT4, "effect4", 0.1f, 0.4f),
+            new Layer(TEX_EFFECT1, "effect1", 1.0F, 1.0F),
+            new Layer(TEX_EFFECT2, "effect2", 0.5F, 1.0F),
+            new Layer(TEX_EFFECT3, "effect3", 0.1F, 1.0F),
+            new Layer(TEX_EFFECT4, "effect4", 0.1F, 0.4F),
     };
 
     public WindEnchantmentRenderer(EntityRendererProvider.Context ctx) {
@@ -49,22 +53,27 @@ public class WindEnchantmentRenderer extends EntityRenderer<WindEnchantmentEntit
             return;
         }
 
+        boolean shaderpackFallback = KabladeRenderTypes.useShaderFallbackTextures();
         for (Layer layer : LAYERS) {
-            RenderType renderType = KabladeRenderTypes.windEnchantment(layer.texture);
-            VertexConsumer vc = buffer.getBuffer(renderType);
-
-            // 1.12.2 原版直接使用整数 renderTick，不做 partial-tick 插值。
             float angle = renderTick * entity.rates.getOrDefault(layer.rateKey, 0.0F);
 
             poseStack.pushPose();
-            poseStack.translate(0, layer.yOffset, 0);
+            poseStack.translate(0.0F, layer.yOffset, 0.0F);
             poseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(angle));
 
-            Matrix4f mat = poseStack.last().pose();
-            float halfSize = 10.0f * layer.scale;
+            PoseStack.Pose pose = poseStack.last();
+            Matrix4f mat = pose.pose();
+            float halfSize = 10.0F * layer.scale;
 
-            emitTopFace(vc, mat, halfSize);
-            emitBottomFace(vc, mat, halfSize);
+            if (shaderpackFallback) {
+                VertexConsumer vc = buffer.getBuffer(RenderType.entityTranslucentEmissive(layer.texture));
+                emitTopFaceFullbright(vc, pose, halfSize);
+                emitBottomFaceFullbright(vc, pose, halfSize);
+            } else {
+                VertexConsumer vc = buffer.getBuffer(KabladeRenderTypes.windEnchantment(layer.texture));
+                emitTopFace(vc, mat, halfSize);
+                emitBottomFace(vc, mat, halfSize);
+            }
 
             poseStack.popPose();
         }
@@ -78,24 +87,55 @@ public class WindEnchantmentRenderer extends EntityRenderer<WindEnchantmentEntit
     }
 
     private static void emitTopFace(VertexConsumer vc, Matrix4f mat, float halfSize) {
-        // 等价于旧版绘制前的 rotate(-180, X)：向上绕序，V 轴翻转。
-        vertex(vc, mat, -halfSize, halfSize, 0, 0);
-        vertex(vc, mat, halfSize, halfSize, 1, 0);
-        vertex(vc, mat, halfSize, -halfSize, 1, 1);
-        vertex(vc, mat, -halfSize, -halfSize, 0, 1);
+        vertex(vc, mat, -halfSize, halfSize, 0.0F, 0.0F);
+        vertex(vc, mat, halfSize, halfSize, 1.0F, 0.0F);
+        vertex(vc, mat, halfSize, -halfSize, 1.0F, 1.0F);
+        vertex(vc, mat, -halfSize, -halfSize, 0.0F, 1.0F);
     }
 
     private static void emitBottomFace(VertexConsumer vc, Matrix4f mat, float halfSize) {
-        vertex(vc, mat, -halfSize, -halfSize, 0, 0);
-        vertex(vc, mat, halfSize, -halfSize, 1, 0);
-        vertex(vc, mat, halfSize, halfSize, 1, 1);
-        vertex(vc, mat, -halfSize, halfSize, 0, 1);
+        vertex(vc, mat, -halfSize, -halfSize, 0.0F, 0.0F);
+        vertex(vc, mat, halfSize, -halfSize, 1.0F, 0.0F);
+        vertex(vc, mat, halfSize, halfSize, 1.0F, 1.0F);
+        vertex(vc, mat, -halfSize, halfSize, 0.0F, 1.0F);
     }
 
     private static void vertex(VertexConsumer vc, Matrix4f mat,
                                float x, float z, float u, float v) {
-        // VertexConsumer#color 在这里命中 0..255 整数重载。
-        vc.vertex(mat, x, 0, z).color(255, 255, 255, 255).uv(u, v).endVertex();
+        vc.vertex(mat, x, 0.0F, z)
+                .color(255, 255, 255, 255)
+                .uv(u, v)
+                .endVertex();
+    }
+
+    private static void emitTopFaceFullbright(VertexConsumer vc, PoseStack.Pose pose, float halfSize) {
+        Matrix4f mat = pose.pose();
+        Matrix3f normal = pose.normal();
+        fullbrightVertex(vc, mat, normal, -halfSize, halfSize, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F);
+        fullbrightVertex(vc, mat, normal, halfSize, halfSize, 1.0F, 0.0F, 0.0F, 1.0F, 0.0F);
+        fullbrightVertex(vc, mat, normal, halfSize, -halfSize, 1.0F, 1.0F, 0.0F, 1.0F, 0.0F);
+        fullbrightVertex(vc, mat, normal, -halfSize, -halfSize, 0.0F, 1.0F, 0.0F, 1.0F, 0.0F);
+    }
+
+    private static void emitBottomFaceFullbright(VertexConsumer vc, PoseStack.Pose pose, float halfSize) {
+        Matrix4f mat = pose.pose();
+        Matrix3f normal = pose.normal();
+        fullbrightVertex(vc, mat, normal, -halfSize, -halfSize, 0.0F, 0.0F, 0.0F, -1.0F, 0.0F);
+        fullbrightVertex(vc, mat, normal, halfSize, -halfSize, 1.0F, 0.0F, 0.0F, -1.0F, 0.0F);
+        fullbrightVertex(vc, mat, normal, halfSize, halfSize, 1.0F, 1.0F, 0.0F, -1.0F, 0.0F);
+        fullbrightVertex(vc, mat, normal, -halfSize, halfSize, 0.0F, 1.0F, 0.0F, -1.0F, 0.0F);
+    }
+
+    private static void fullbrightVertex(VertexConsumer vc, Matrix4f mat, Matrix3f normal,
+                                         float x, float z, float u, float v,
+                                         float normalX, float normalY, float normalZ) {
+        vc.vertex(mat, x, 0.0F, z)
+                .color(255, 255, 255, 255)
+                .uv(u, v)
+                .overlayCoords(OverlayTexture.NO_OVERLAY)
+                .uv2(FULL_BRIGHT)
+                .normal(normal, normalX, normalY, normalZ)
+                .endVertex();
     }
 
     private record Layer(ResourceLocation texture, String rateKey, float yOffset, float scale) {}

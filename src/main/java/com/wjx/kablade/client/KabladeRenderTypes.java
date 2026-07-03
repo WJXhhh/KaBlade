@@ -202,7 +202,7 @@ public final class KabladeRenderTypes extends RenderType {
                 .setTextureState(new TextureStateShard(tex, false, false))
                 .setTransparencyState(LIGHTNING_TRANSPARENCY)
                 .setDepthTestState(LEQUAL_DEPTH_TEST)
-                .setCullState(CULL)
+                .setCullState(NO_CULL)
                 .setWriteMaskState(COLOR_WRITE)
                 .createCompositeState(false);
         return create("kablade_wind_enchantment",
