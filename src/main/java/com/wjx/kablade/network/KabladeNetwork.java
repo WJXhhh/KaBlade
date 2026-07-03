@@ -30,5 +30,11 @@ public final class KabladeNetwork {
                 .decoder(PropertyDataSyncPacket::decode)
                 .consumerMainThread((packet, context) -> PropertyDataSyncPacket.handle(packet, context.get()))
                 .add();
+
+        CHANNEL.messageBuilder(InductionCollapseFxPacket.class, 2)
+                .encoder(InductionCollapseFxPacket::encode)
+                .decoder(InductionCollapseFxPacket::decode)
+                .consumerMainThread((packet, context) -> InductionCollapseFxPacket.handle(packet, context.get()))
+                .add();
     }
 }

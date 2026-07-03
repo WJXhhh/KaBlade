@@ -21,6 +21,21 @@ public final class KabladeRenderTypes extends RenderType {
     private static final RenderStateShard.ShaderStateShard ZAIZAN_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::zaizan);
 
+    private static final RenderType INDUCTION_COLLAPSE = create(
+            "kablade_induction_collapse",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.QUADS,
+            65536,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
     private static final RenderType STAGE_LIGHT = create(
             "kablade_stage_light",
             DefaultVertexFormat.POSITION_COLOR_TEX,
@@ -80,7 +95,22 @@ public final class KabladeRenderTypes extends RenderType {
             "kablade_shock_impact_fallback",
             FALLBACK_TEXTURE,
             32768,
-            LIGHTNING_TRANSPARENCY);
+            TRANSLUCENT_TRANSPARENCY);
+
+    private static final RenderType SHOCK_IMPACT_LINES = create(
+            "kablade_shock_impact_lines",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.QUADS,
+            32768,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
 
     private static final RenderType ZAIZAN = create(
             "kablade_zaizan",
@@ -136,8 +166,16 @@ public final class KabladeRenderTypes extends RenderType {
         return useShaderFallbackTextures() ? SHOCK_IMPACT_FALLBACK : SHOCK_IMPACT;
     }
 
+    public static RenderType shockImpactLines() {
+        return SHOCK_IMPACT_LINES;
+    }
+
     public static RenderType zaizan() {
         return useShaderFallbackTextures() ? ZAIZAN_FALLBACK : ZAIZAN;
+    }
+
+    public static RenderType inductionCollapse() {
+        return INDUCTION_COLLAPSE;
     }
 
     public static boolean useShaderFallbackTextures() {

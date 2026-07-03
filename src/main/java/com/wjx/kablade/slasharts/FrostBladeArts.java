@@ -28,6 +28,7 @@ public final class FrostBladeArts extends SlashArts {
     private static final int SWORD_COUNT = 6;
     private static final int SWORD_COLOR = 0x20DDF4;
     private static final float ATTACK_FACTOR = 1.0F;
+    private static final float DAMAGE_MULTIPLIER = 2.0F;
     private static final double SEEK_RANGE = 24.0D;
 
     /** 每把剑相对使用者的（右、前、上）偏移，形成参考画面中的贴地扇形队列。 */
@@ -58,7 +59,7 @@ public final class FrostBladeArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
+        float damage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR) * DAMAGE_MULTIPLIER;
 
         LivingEntity target = findTarget(level, user, blade);
         Vec3 fallbackDirection = target == null

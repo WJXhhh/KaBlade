@@ -37,7 +37,7 @@ import java.util.UUID;
  * 源能裁决 —— 源能刃「碎钢」专属特殊效果。
  * 从 1.12.2 {@code SEOripursuit} 移植而来。
  * <p>
- * 用 {@link SlashBladeEvent.ChargeActionEvent} 替代 1.12.2 的 mixin+SaEvent，
+ * 用 {@code SlashBladeEvent.ChargeActionEvent} 替代 1.12.2 的 mixin+SaEvent，
  * 用 {@link SlashBladeEvent.HitEvent} 替代 1.12.2 的 mixin+BladeAttackEvent。
  * <ul>
  *   <li>SA 时射线锁定前方 10 格最近敌人，存储 UUID（600 tick 有效）</li>

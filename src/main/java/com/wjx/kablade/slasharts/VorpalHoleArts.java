@@ -22,6 +22,7 @@ import java.util.function.Function;
  */
 public final class VorpalHoleArts extends SlashArts {
 
+    private static final float DAMAGE_MULTIPLIER = 1.5F;
     private static final float OPENING_DAMAGE_RATIO = 0.8F;
     private static final float PULSE_DAMAGE_RATIO = 0.2F;
     private static final int LIFETIME = 56;
@@ -40,12 +41,14 @@ public final class VorpalHoleArts extends SlashArts {
         float bladeAttack = bladeAttack(user);
         Vec3 look = SaFx.flatLook(user);
         Vec3 origin = user.position().add(look.scale(2.35)).add(0.0, 1.35, 0.0);
+        float openingDamage = bladeAttack * OPENING_DAMAGE_RATIO * DAMAGE_MULTIPLIER;
+        float pulseDamage = bladeAttack * PULSE_DAMAGE_RATIO * DAMAGE_MULTIPLIER;
 
         VorpalBlackHoleEntity.spawn(level, user, origin, LIFETIME,
-                bladeAttack * OPENING_DAMAGE_RATIO,
-                bladeAttack * PULSE_DAMAGE_RATIO);
+                openingDamage,
+                pulseDamage);
         openingFx(level, origin);
-        spawnCutLines(level, user, origin, look, bladeAttack * OPENING_DAMAGE_RATIO);
+        spawnCutLines(level, user, origin, look, openingDamage);
 
         return super.doArts(type, user);
     }

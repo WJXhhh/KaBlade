@@ -3,74 +3,93 @@ package com.wjx.kablade.event;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.config.KabladeConfig;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.EventPriority;
 
 /**
- * 在本模组的拔刀剑被创建时（{@code SlashBladeRegistryEvent.Post}，SlashBlade 1.9+），按 {@link KabladeConfig}
- * 里配置的全局倍率缩放它的基础攻击与最大耐久。只对 {@code kablade} 命名空间的刀生效。
- *
- * <p>兼容性：{@code SlashBladeRegistryEvent.Post} 是 SlashBlade 1.9+ 新增的。
- * 为了让 mod 同时支持 SlashBlade 1.8，本类主体不引用该类型，而是通过内部类 {@link Handler} 实现；
- * 由 {@link #tryRegister()} 先反射检测事件类是否存在，确认后再注册内部类。
+ * Applies Kablade's global blade attribute multipliers when SlashBlade 1.9+
+ * fires SlashBladeRegistryEvent.Post. Older SlashBlade builds do not have that
+ * event, so this class keeps the event type behind runtime reflection.
  */
 public final class BladeAttributeOverride {
+
+    private static final String REGISTRY_POST_EVENT =
+            "mods.flammpfeil.slashblade.event.SlashBladeRegistryEvent$Post";
 
     private BladeAttributeOverride() {
     }
 
-    /**
-     * 尝试注册属性缩放到 Forge 总线。
-     * 如果当前 SlashBlade 版本没有 {@code SlashBladeRegistryEvent.Post}（即 ≤1.8），
-     * 则静默跳过，不做任何事。
-     */
+    @SuppressWarnings("unchecked")
     public static void tryRegister() {
         try {
-            Class.forName("mods.flammpfeil.slashblade.event.SlashBladeRegistryEvent$Post");
-            MinecraftForge.EVENT_BUS.register(Handler.class);
-            Main.LOGGER.info("[kablade] BladeAttributeOverride registered (SlashBlade 1.9+)");
+            Class<?> eventClass = Class.forName(REGISTRY_POST_EVENT);
+            if (!Event.class.isAssignableFrom(eventClass)) {
+                Main.LOGGER.warn("[{}] BladeAttributeOverride skipped: {} is not a Forge event",
+                        Main.MODID, REGISTRY_POST_EVENT);
+                return;
+            }
+
+            MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false,
+                    (Class<Event>) eventClass.asSubclass(Event.class), BladeAttributeOverride::onBladeCreated);
+            Main.LOGGER.info("[{}] BladeAttributeOverride registered (SlashBlade 1.9+)", Main.MODID);
         } catch (ClassNotFoundException e) {
-            Main.LOGGER.info("[kablade] BladeAttributeOverride skipped (SlashBlade ≤1.8, no SlashBladeRegistryEvent.Post)");
+            Main.LOGGER.info("[{}] BladeAttributeOverride skipped: SlashBladeRegistryEvent.Post is unavailable",
+                    Main.MODID);
         }
     }
 
-    /**
-     * 实际的事件处理器。作为内部类单独存在，仅在 {@link #tryRegister()} 确认
-     * {@code SlashBladeRegistryEvent.Post} 存在后才会被 JVM 加载。
-     * 这样在 SlashBlade 1.8 下，该类型引用不会触发类加载错误。
-     */
-    @SuppressWarnings("unused")
-    private static final class Handler {
-        private Handler() {
+    private static void onBladeCreated(Event event) {
+        ResourceLocation bladeName = readBladeName(event);
+        if (bladeName == null || !Main.MODID.equals(bladeName.getNamespace())) {
+            return;
         }
 
-        @SubscribeEvent
-        public static void onBladeCreated(mods.flammpfeil.slashblade.event.SlashBladeRegistryEvent.Post event) {
-            if (!Main.MODID.equals(event.getSlashBladeDefinition().getName().getNamespace())) {
-                return;
-            }
-
-            if (!KabladeConfig.SPEC.isLoaded()) {
-                return;
-            }
-
-            double attackMul = KabladeConfig.ATTACK_MULTIPLIER.get();
-            double durabilityMul = KabladeConfig.DURABILITY_MULTIPLIER.get();
-            if (attackMul == 1.0D && durabilityMul == 1.0D) {
-                return;
-            }
-
-            event.getBlade().getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
-                if (attackMul != 1.0D) {
-                    state.setBaseAttackModifier((float) (state.getBaseAttackModifier() * attackMul));
-                }
-                if (durabilityMul != 1.0D) {
-                    int baseMaxDamage = state.getMaxDamage();
-                    if (baseMaxDamage > 0) {
-                        state.setMaxDamage(Math.max(1, (int) Math.round(baseMaxDamage * durabilityMul)));
-                    }
-                }
-            });
+        if (!KabladeConfig.SPEC.isLoaded()) {
+            return;
         }
+
+        double attackMul = KabladeConfig.ATTACK_MULTIPLIER.get();
+        double durabilityMul = KabladeConfig.DURABILITY_MULTIPLIER.get();
+        if (attackMul == 1.0D && durabilityMul == 1.0D) {
+            return;
+        }
+
+        ItemStack blade = invokeNoArg(event, "getBlade", ItemStack.class);
+        if (blade == null) {
+            return;
+        }
+
+        blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
+            if (attackMul != 1.0D) {
+                state.setBaseAttackModifier((float) (state.getBaseAttackModifier() * attackMul));
+            }
+            if (durabilityMul != 1.0D) {
+                int baseMaxDamage = state.getMaxDamage();
+                if (baseMaxDamage > 0) {
+                    state.setMaxDamage(Math.max(1, (int) Math.round(baseMaxDamage * durabilityMul)));
+                }
+            }
+        });
+    }
+
+    private static ResourceLocation readBladeName(Event event) {
+        Object definition = invokeRawNoArg(event, "getSlashBladeDefinition");
+        return definition == null ? null : invokeNoArg(definition, "getName", ResourceLocation.class);
+    }
+
+    private static Object invokeRawNoArg(Object target, String methodName) {
+        try {
+            return target.getClass().getMethod(methodName).invoke(target);
+        } catch (ReflectiveOperationException | SecurityException e) {
+            return null;
+        }
+    }
+
+    private static <T> T invokeNoArg(Object target, String methodName, Class<T> type) {
+        Object value = invokeRawNoArg(target, methodName);
+        return type.isInstance(value) ? type.cast(value) : null;
     }
 }

@@ -6,7 +6,6 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -34,6 +33,7 @@ public final class FrostCometArts extends SlashArts {
     private static final float BASE_DAMAGE = 1.0F;
     /** 攻击力补正系数，翻倍以匹配高攻武器的期望伤害。 */
     private static final float ATTACK_FACTOR = 2.0F;
+    private static final float DAMAGE_MULTIPLIER = 2.2F;
     private static final double RANGE_XZ = 5.0;
     private static final double RANGE_Y = 1.0;
 
@@ -52,7 +52,7 @@ public final class FrostCometArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
+        float damage = (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR)) * DAMAGE_MULTIPLIER;
 
         Vec3 pos = user.position();
         AABB box = new AABB(

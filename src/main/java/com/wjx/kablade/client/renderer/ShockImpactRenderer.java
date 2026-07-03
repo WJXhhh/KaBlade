@@ -57,7 +57,8 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
     @Override
     public void render(ShockImpactEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if (OculusSkillRenderer.runIfNeeded(immediate ->
+        if (!KabladeRenderTypes.useShaderFallbackTextures()
+                && OculusSkillRenderer.runIfNeeded(immediate ->
                 render(entity, entityYaw, partialTick, poseStack, immediate, packedLight))) {
             return;
         }
@@ -103,6 +104,14 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
         poseStack.scale(scale, scale, scale);
         Matrix4f mat = poseStack.last().pose();
 
+        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+            renderShaderFallback(buffer.getBuffer(KabladeRenderTypes.shockImpactLines()),
+                    mat, age, sweep, alpha, spark);
+            poseStack.popPose();
+            super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+            return;
+        }
+
         for (int i = AFTERIMAGE_COUNT - 1; i >= 0; i--) {
             float imageAlpha = alpha * (0.075F + i * 0.026F) * (1.0F - progress * 0.50F);
             bladeTrail(vc(buffer), mat, sweep, 0.88F + i * 0.08F, imageAlpha, 1.0F,
@@ -128,6 +137,173 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
 
     private static VertexConsumer vc(MultiBufferSource buffer) {
         return buffer.getBuffer(KabladeRenderTypes.shockImpact());
+    }
+
+    private static void renderShaderFallback(VertexConsumer vc, Matrix4f mat, float age,
+                                             float sweep, float alpha, float spark) {
+        fallbackTrail(vc, mat, sweep, 0.105F, 0.02F, -0.040F,
+                0.04F, 0.52F, 1.0F, alpha * 0.72F);
+        fallbackTrail(vc, mat, sweep, 0.074F, 0.0F, 0.0F,
+                0.18F, 0.94F, 1.0F, alpha * 1.22F);
+        fallbackTrail(vc, mat, sweep, 0.030F, 0.0F, 0.030F,
+                0.98F, 1.0F, 1.0F, alpha * (1.02F + spark * 0.34F));
+        fallbackTrail(vc, mat, sweep, 0.046F, -0.28F, -0.095F,
+                0.04F, 0.68F, 1.0F, alpha * 0.38F);
+        fallbackTrail(vc, mat, sweep, 0.046F, 0.28F, -0.095F,
+                0.04F, 0.68F, 1.0F, alpha * 0.38F);
+        fallbackTrail(vc, mat, sweep, 0.034F, -0.56F, -0.150F,
+                0.04F, 0.56F, 1.0F, alpha * 0.26F);
+        fallbackTrail(vc, mat, sweep, 0.034F, 0.56F, -0.150F,
+                0.04F, 0.56F, 1.0F, alpha * 0.26F);
+        fallbackTrail(vc, mat, sweep, 0.024F, -0.86F, 0.015F,
+                0.72F, 1.0F, 1.0F, alpha * 0.40F);
+        fallbackTrail(vc, mat, sweep, 0.024F, 0.86F, 0.015F,
+                0.72F, 1.0F, 1.0F, alpha * 0.40F);
+        fallbackEdgeFlare(vc, mat, sweep, alpha * (0.78F + spark * 0.34F));
+        fallbackSpeedLines(vc, mat, age, sweep, alpha, spark);
+        fallbackFragments(vc, mat, age, sweep, alpha, spark);
+        fallbackEnergyShards(vc, mat, age, sweep, alpha, spark);
+    }
+
+    private static void fallbackTrail(VertexConsumer vc, Matrix4f mat, float sweep, float width,
+                                      float sideOffset, float depthOffset,
+                                      float r, float g, float b, float alpha) {
+        float visibleEnd = visibleEnd(sweep);
+        int visibleSegments = Math.max(2, Mth.ceil(TRAIL_SEGMENTS * visibleEnd));
+        Vector3f w0 = new Vector3f();
+        Vector3f b0 = new Vector3f();
+        Vector3f w1 = new Vector3f();
+        Vector3f b1 = new Vector3f();
+        for (int i = 0; i < visibleSegments; i++) {
+            float t0 = i / (float) TRAIL_SEGMENTS;
+            float t1 = (i + 1) / (float) TRAIL_SEGMENTS;
+            if (t0 > visibleEnd) {
+                break;
+            }
+            t1 = Math.min(t1, visibleEnd);
+
+            Vector3f c0 = center(t0);
+            Vector3f c1 = center(t1);
+            frame(t0, w0, b0);
+            frame(t1, w1, b1);
+            float width0 = width * (0.35F + trailWidth(t0) * 0.65F);
+            float width1 = width * (0.35F + trailWidth(t1) * 0.65F);
+            float a0 = alpha * trailAlpha(t0, visibleEnd);
+            float a1 = alpha * trailAlpha(t1, visibleEnd);
+
+            float x0 = c0.x + w0.x * sideOffset + b0.x * depthOffset;
+            float y0 = c0.y + w0.y * sideOffset + b0.y * depthOffset;
+            float z0 = c0.z + w0.z * sideOffset + b0.z * depthOffset;
+            float x1 = c1.x + w1.x * sideOffset + b1.x * depthOffset;
+            float y1 = c1.y + w1.y * sideOffset + b1.y * depthOffset;
+            float z1 = c1.z + w1.z * sideOffset + b1.z * depthOffset;
+
+            colorQuad(vc, mat,
+                    x0 + b0.x * width0, y0 + b0.y * width0, z0 + b0.z * width0, a0,
+                    x1 + b1.x * width1, y1 + b1.y * width1, z1 + b1.z * width1, a1,
+                    x1 - b1.x * width1, y1 - b1.y * width1, z1 - b1.z * width1, a1,
+                    x0 - b0.x * width0, y0 - b0.y * width0, z0 - b0.z * width0, a0,
+                    r, g, b);
+        }
+    }
+
+    private static void fallbackEdgeFlare(VertexConsumer vc, Matrix4f mat, float sweep, float alpha) {
+        float t = Mth.clamp(visibleEnd(sweep) - 0.025F, 0.0F, 1.0F);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
+        frame(t, w, b);
+        Vector3f c = center(t);
+        Vector3f tan = sweepTangent(t);
+        float side = RIBBON_HALFWIDTH * trailWidth(t);
+        float x = c.x + w.x * side;
+        float y = c.y + w.y * side;
+        float z = c.z + w.z * side;
+        float len = 0.86F + sweep * 0.68F;
+        float width = 0.052F;
+        colorQuad(vc, mat,
+                x - tan.x * len * 0.32F + b.x * width, y - tan.y * len * 0.32F + b.y * width, z - tan.z * len * 0.32F + b.z * width, alpha * 0.34F,
+                x + tan.x * len + b.x * width * 0.35F, y + tan.y * len + b.y * width * 0.35F, z + tan.z * len + b.z * width * 0.35F, alpha,
+                x + tan.x * len - b.x * width * 0.35F, y + tan.y * len - b.y * width * 0.35F, z + tan.z * len - b.z * width * 0.35F, alpha,
+                x - tan.x * len * 0.32F - b.x * width, y - tan.y * len * 0.32F - b.y * width, z - tan.z * len * 0.32F - b.z * width, alpha * 0.34F,
+                0.70F, 0.96F, 1.0F);
+    }
+
+    private static void fallbackSpeedLines(VertexConsumer vc, Matrix4f mat, float age, float sweep,
+                                           float alpha, float spark) {
+        float visibleEnd = visibleEnd(sweep);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
+        for (int i = 0; i < 22; i++) {
+            float t = Mth.clamp(0.20F + deterministic(i, 2.4F) * 0.74F, 0.0F, visibleEnd);
+            frame(t, w, b);
+            Vector3f c = center(t);
+            Vector3f tan = sweepTangent(t);
+            float side = (deterministic(i, 3.8F) - 0.34F) * RIBBON_HALFWIDTH * 1.30F;
+            float drift = Mth.frac(age * 0.090F + deterministic(i, 7.1F));
+            float length = 0.74F + deterministic(i, 8.9F) * 1.42F + spark * 0.52F;
+            float width = 0.014F + deterministic(i, 10.6F) * 0.018F;
+            float px = c.x + w.x * side + tan.x * drift * 0.48F;
+            float py = c.y + w.y * side + tan.y * drift * 0.48F;
+            float pz = c.z + w.z * side + tan.z * drift * 0.48F;
+            float a = alpha * (0.30F + spark * 0.22F);
+            colorQuad(vc, mat,
+                    px - tan.x * length + b.x * width, py - tan.y * length + b.y * width, pz - tan.z * length + b.z * width, a * 0.20F,
+                    px + tan.x * length * 0.20F + b.x * width, py + tan.y * length * 0.20F + b.y * width, pz + tan.z * length * 0.20F + b.z * width, a,
+                    px + tan.x * length * 0.20F - b.x * width, py + tan.y * length * 0.20F - b.y * width, pz + tan.z * length * 0.20F - b.z * width, a,
+                    px - tan.x * length - b.x * width, py - tan.y * length - b.y * width, pz - tan.z * length - b.z * width, a * 0.20F,
+                    0.10F, 0.70F, 1.0F);
+        }
+    }
+
+    private static void fallbackFragments(VertexConsumer vc, Matrix4f mat, float age, float sweep,
+                                          float alpha, float spark) {
+        float visibleEnd = visibleEnd(sweep);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
+        for (int i = 0; i < 18; i++) {
+            float t = Mth.clamp(0.32F + deterministic(i, 12.3F) * 0.62F, 0.0F, visibleEnd);
+            float life = Mth.frac(age * 0.052F + deterministic(i, 14.7F));
+            frame(t, w, b);
+            Vector3f c = center(t);
+            float side = RIBBON_HALFWIDTH * (0.45F + deterministic(i, 16.2F) * 1.05F)
+                    + life * (0.25F + spark * 0.26F);
+            float depth = (deterministic(i, 17.4F) - 0.5F) * 0.42F;
+            float px = c.x + w.x * side + b.x * depth;
+            float py = c.y + w.y * side + b.y * depth;
+            float pz = c.z + w.z * side + b.z * depth;
+            float size = 0.055F + deterministic(i, 18.5F) * 0.105F;
+            float a = alpha * (1.0F - smootherStep(life))
+                    * (0.36F + deterministic(i, 19.7F) * 0.52F);
+            colorDiamond(vc, mat, px, py, pz, w, b, size * 1.35F, size,
+                    0.12F, 0.78F, 1.0F, a);
+        }
+    }
+
+    private static void fallbackEnergyShards(VertexConsumer vc, Matrix4f mat, float age, float sweep,
+                                             float alpha, float spark) {
+        float visibleEnd = visibleEnd(sweep);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
+        for (int i = 0; i < 16; i++) {
+            float t = Mth.clamp(0.44F + deterministic(i, 21.4F) * 0.50F, 0.0F, visibleEnd);
+            float life = Mth.frac(age * 0.080F + deterministic(i, 22.8F));
+            frame(t, w, b);
+            Vector3f c = center(t);
+            Vector3f tan = sweepTangent(t);
+            float side = RIBBON_HALFWIDTH * (0.88F + deterministic(i, 24.1F) * 0.85F)
+                    + life * (0.25F + spark * 0.28F);
+            float lead = life * (0.84F + deterministic(i, 26.9F) * 1.10F);
+            float depth = (deterministic(i, 25.7F) - 0.5F) * 0.50F;
+            float px = c.x + w.x * side + b.x * depth + tan.x * lead;
+            float py = c.y + w.y * side + b.y * depth + tan.y * lead
+                    + 0.04F + deterministic(i, 27.5F) * 0.14F;
+            float pz = c.z + w.z * side + b.z * depth + tan.z * lead;
+            float size = 0.060F + deterministic(i, 28.6F) * 0.110F;
+            float a = alpha * (1.0F - smootherStep(life))
+                    * (0.42F + deterministic(i, 29.8F) * 0.58F);
+            colorDiamond(vc, mat, px, py, pz, tan, b, size * 2.05F, size * 0.72F,
+                    0.66F, 0.96F, 1.0F, a);
+        }
     }
 
     private static float visibleEnd(float sweep) {
@@ -399,6 +575,37 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
         return Mth.frac(Mth.sin(index * 12.9898F + salt * 78.233F) * 43758.547F);
     }
 
+    private static void colorQuad(VertexConsumer vc, Matrix4f mat,
+                                  float x0, float y0, float z0, float a0,
+                                  float x1, float y1, float z1, float a1,
+                                  float x2, float y2, float z2, float a2,
+                                  float x3, float y3, float z3, float a3,
+                                  float r, float g, float b) {
+        colorVertex(vc, mat, x0, y0, z0, r, g, b, a0);
+        colorVertex(vc, mat, x1, y1, z1, r, g, b, a1);
+        colorVertex(vc, mat, x2, y2, z2, r, g, b, a2);
+        colorVertex(vc, mat, x3, y3, z3, r, g, b, a3);
+    }
+
+    private static void colorDiamond(VertexConsumer vc, Matrix4f mat,
+                                     float x, float y, float z,
+                                     Vector3f major, Vector3f minor,
+                                     float majorSize, float minorSize,
+                                     float r, float g, float b, float alpha) {
+        colorQuad(vc, mat,
+                x - major.x * majorSize, y - major.y * majorSize, z - major.z * majorSize, alpha * 0.18F,
+                x + minor.x * minorSize, y + minor.y * minorSize, z + minor.z * minorSize, alpha,
+                x + major.x * majorSize, y + major.y * majorSize, z + major.z * majorSize, alpha * 0.18F,
+                x - minor.x * minorSize, y - minor.y * minorSize, z - minor.z * minorSize, alpha,
+                r, g, b);
+    }
+
+    private static void colorVertex(VertexConsumer vc, Matrix4f mat,
+                                    float x, float y, float z,
+                                    float r, float g, float b, float alpha) {
+        vc.vertex(mat, x, y, z).color(r, g, b, alpha).endVertex();
+    }
+
     private static void quad(VertexConsumer vc, Matrix4f mat,
                              float x0, float y0, float z0, float u0, float v0, float a0,
                              float x1, float y1, float z1, float u1, float v1, float a1,
@@ -412,7 +619,7 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
 
     private static void vertex(VertexConsumer vc, Matrix4f mat,
                                float x, float y, float z, float u, float v, float alpha) {
-        vc.vertex(mat, x, y, z).color(0.34F, 0.92F, 1.0F, KabladeRenderTypes.fallbackAlpha(alpha, 0.42F))
+        vc.vertex(mat, x, y, z).color(0.34F, 0.92F, 1.0F, alpha)
                 .uv(KabladeRenderTypes.shockImpactU(u), v).endVertex();
     }
 

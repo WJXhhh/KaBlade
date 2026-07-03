@@ -245,6 +245,9 @@ dependencies {
     // Maps to ./libs/prinegorerouse-1.3.3-all.jar ; group id "blank" is ignored by flatDir.
     runtimeOnly fg.deobf("blank:prinegorerouse:1.3.3-all")
 
+    // Damage Numbers - local dev runtime jar in ./libs.
+    runtimeOnly fg.deobf("blank:damagenumbers:1.4.0-forge")
+
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html

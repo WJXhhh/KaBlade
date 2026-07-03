@@ -48,8 +48,8 @@ public class VorpalBlackHoleEntity extends Entity {
     private static final int PULSE_COUNT = 6;
     private static final int VISUAL_AFTER_TICKS = 26;
 
-    private static final double PULL_RADIUS = 7.25;
-    private static final double PULL_VERTICAL_RADIUS = 4.0;
+    private static final double PULL_RADIUS = 14.5;
+    private static final double PULL_VERTICAL_RADIUS = 8.0;
     private static final double DAMAGE_RADIUS = 6.25;
     private static final double DAMAGE_VERTICAL_RADIUS = 3.4;
 

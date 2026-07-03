@@ -29,13 +29,13 @@ import java.util.function.Function;
 public final class FireOfSinArts extends SlashArts {
 
     /** 基础伤害（1.12.2 基础值 10；额外伤害 = amplifierCalc(attack, 3)，对数补正）。 */
-    private static final float BASE_DAMAGE = 10.0F;
-    private static final float ATTACK_FACTOR = 3.0F;
+    private static final float BASE_DAMAGE = 1.65F;
+    private static final float ATTACK_FACTOR = 0.5F;
     /** Drive 寿命（tick）。 */
     private static final int DRIVE_LIFETIME = 90;
     private static final float DRIVE_SPEED = 1.5F;
     /** 点燃时间（秒）。 */
-    private static final int FIRE_SECONDS = 4;
+    private static final int FIRE_SECONDS = 1;
     /** 点燃范围（格）。 */
     private static final double IGNITE_RANGE = 4.0;
     /** 火焰刀光颜色（橙红）。 */

@@ -149,10 +149,10 @@ public class RaikiriShieldEntity extends Entity {
         return attack * 0.75F + amp;
     }
 
-    /** 接触伤害计算公式。 */
+    /** 接触伤害计算公式（基础 ×0.5，翻倍以匹配雷切的高攻定位）。 */
     public static float calcContactDamage(float attack) {
         float amp = MathFunc.amplifierCalc(attack, AMP_FACTOR);
-        return (attack + amp) * 0.25F;
+        return (attack + amp) * 0.5F;
     }
 
     public LivingEntity getThrower() {

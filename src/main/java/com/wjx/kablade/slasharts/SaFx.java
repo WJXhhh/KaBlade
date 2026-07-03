@@ -3,12 +3,15 @@ package com.wjx.kablade.slasharts;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
+import com.wjx.kablade.init.ModComboStates;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import org.joml.Vector3f;
 
 import java.util.List;
@@ -25,6 +28,9 @@ final class SaFx {
      * 需要竖斩的飞刃用此值作 roll。
      */
     static final float VERTICAL_ROLL = 90.0F;
+    static final int PIERCING_LUNGE_TICKS = 4;
+    private static final float PIERCING_SPEED = 1.05F;
+    private static final float PIERCING_WATER_SPEED = 0.45F;
 
     private SaFx() {
     }
@@ -54,7 +60,60 @@ final class SaFx {
         return flat.lengthSqr() < 1.0e-6 ? new Vec3(0.0, 0.0, 1.0) : flat.normalize();
     }
 
-    /** 由 Minecraft yaw（度）得到对应的水平朝向向量（与 {@code getLookAngle} 的水平分量一致），再乘上速度。 */
+    static double piercingProjection(LivingEntity user) {
+        return (user.isInWater() ? PIERCING_WATER_SPEED : PIERCING_SPEED) * 1.45D;
+    }
+
+    static void applyPiercingBoost(LivingEntity user) {
+        Vec3 direction = flatLook(user);
+        double speed = user.isInWater() ? PIERCING_WATER_SPEED : PIERCING_SPEED;
+        user.setDeltaMovement(direction.x * speed, user.getDeltaMovement().y, direction.z * speed);
+        user.fallDistance = 0.0F;
+        user.hurtMarked = true;
+        user.hasImpulse = true;
+    }
+
+    static ResourceLocation startPiercingCombo(LivingEntity user, SlashArts.ArtsType type) {
+        ResourceLocation combo = type == SlashArts.ArtsType.Jackpot
+                ? mods.flammpfeil.slashblade.registry.ComboStateRegistry.PIERCING_JUST.getId()
+                : mods.flammpfeil.slashblade.registry.ComboStateRegistry.PIERCING_2.getId();
+        startCombo(user, combo);
+        return combo;
+    }
+
+    static boolean cancelPiercingCharge(LivingEntity user) {
+        if (!isPiercingCharge(user)) {
+            return false;
+        }
+        startCombo(user, ModComboStates.PIERCING_CHARGE_CANCEL.getId());
+        return true;
+    }
+
+    private static void startCombo(LivingEntity user, ResourceLocation combo) {
+        user.getMainHandItem().getCapability(mods.flammpfeil.slashblade.item.ItemSlashBlade.BLADESTATE)
+                .ifPresent(state -> state.updateComboSeq(user, combo));
+    }
+
+    private static boolean isPiercingCharge(LivingEntity user) {
+        return user.getMainHandItem().getCapability(mods.flammpfeil.slashblade.item.ItemSlashBlade.BLADESTATE)
+                .map(state -> ModComboStates.PIERCING_CHARGE.getId().equals(state.getComboSeq()))
+                .orElse(false);
+    }
+
+    static boolean isPiercingLungeWindow(LivingEntity user) {
+        return user.getMainHandItem().getCapability(mods.flammpfeil.slashblade.item.ItemSlashBlade.BLADESTATE)
+                .map(state -> isPiercingRushCombo(state.getComboSeq())
+                        && mods.flammpfeil.slashblade.registry.combo.ComboState.getElapsed(user)
+                        < PIERCING_LUNGE_TICKS)
+                .orElse(false);
+    }
+
+    private static boolean isPiercingRushCombo(ResourceLocation combo) {
+        return mods.flammpfeil.slashblade.registry.ComboStateRegistry.PIERCING.getId().equals(combo)
+                || mods.flammpfeil.slashblade.registry.ComboStateRegistry.PIERCING_2.getId().equals(combo)
+                || mods.flammpfeil.slashblade.registry.ComboStateRegistry.PIERCING_JUST.getId().equals(combo);
+    }
+
     static Vec3 yawDir(float yawDeg, double speed) {
         double r = Math.toRadians(yawDeg);
         return new Vec3(-Math.sin(r), 0.0, Math.cos(r)).scale(speed);

@@ -35,7 +35,8 @@ public final class StageLightRenderer extends EntityRenderer<StageLightEntity> {
     @Override
     public void render(StageLightEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if (OculusSkillRenderer.runIfNeeded(immediate ->
+        if (!KabladeRenderTypes.useShaderFallbackTextures()
+                && OculusSkillRenderer.runIfNeeded(immediate ->
                 render(entity, entityYaw, partialTick, poseStack, immediate, packedLight))) {
             return;
         }

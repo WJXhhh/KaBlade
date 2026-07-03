@@ -32,7 +32,8 @@ public final class ZaizanRenderer extends EntityRenderer<ZaizanEntity> {
     @Override
     public void render(ZaizanEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if (OculusSkillRenderer.runIfNeeded(immediate ->
+        if (!KabladeRenderTypes.useShaderFallbackTextures()
+                && OculusSkillRenderer.runIfNeeded(immediate ->
                 render(entity, entityYaw, partialTick, poseStack, immediate, packedLight))) {
             return;
         }

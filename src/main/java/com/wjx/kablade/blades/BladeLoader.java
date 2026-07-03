@@ -129,72 +129,76 @@ public final class BladeLoader {
     /**
      * 创造模式物品栏的显示顺序（按合成链路排列）。
      * 新刀加进来时在对应位置插入其 getKey() 返回值即可。
+     *
+     * 排序策略：每个 tab 独立排序——只取当前 tab 载体对应的条目，
+     * 按本列表出现顺序排列，不在列表中的刀排在末尾。
      */
     private static final List<String> BLADE_ORDER = List.of(
-            // 起点
-            "hangtu",              // 基础：无铭「夯土」
-            // 岩石线：矍铄 → 嶙峋 → 明磬 → 千岩之锋
-            "rocky_anshan",        // 岩石Lv1：自铭「矍铄」
-            "rocky_huagang",       // 岩石Lv1：自铭「嶙峋」
-            "rocky_shanchang",     // 岩石Lv1：自铭「明磬」
-            "rocky_ex",            // 岩石Lv2：千岩之锋
+            // 崩坏线·起点：势州村正（所有村正分支的根）
+            "muraseshu",
+            // 岩石线：夯土 → 矍铄 → 嶙峋 → 明磬 → 千岩之锋
+            "hangtu",
+            "rocky_anshan",
+            "rocky_huagang",
+            "rocky_shanchang",
+            "rocky_ex",
             // 自然线：夯土 → 青藤
-            "noted_vine",          // 自然Lv1：铭刀「青藤」
-            // 竹线：铁刃「竹光」→ 战刃「竹光」→ 流萤「竹光」→ 弧光刃「流芒」
-            "bamboo_iron",         // 竹Lv1：铁刃「竹光」
-            "bamboo_battler",      // 竹Lv2：战刃「竹光」
-            "bamboo_lumi",         // 竹Lv2：流萤「竹光」
-            "arc_light",           // 竹Lv3：弧光刃「流芒」
+            "noted_vine",
+            // 竹线：铁刃竹光 → 战刃竹光 → 流萤竹光 → 弧光刃流芒
+            "bamboo_iron",
+            "bamboo_battler",
+            "bamboo_lumi",
+            "arc_light",
             // 极光线：映天
-            "aurora_blade",        // 极光Lv1：极光刃「映天」
-            // 断铁线：竹光战刃 → 断铁
-            "cut_iron",            // 复合刃「斩铁」：由战刃「竹光」+ 铬锭 + 钻石合成
-            "originyer",            // 源能刃「碎钢」：由斩铁 + 重力微粒 + 钻石 + 红石块合成
+            "aurora_blade",
+            // 断铁线：斩铁 → 碎钢
+            "cut_iron",
+            "originyer",
             // 崩坏线·村正系列：势州村正 → 堀川国广 → 妖刀雨村 / 妖刀村正
-            "muraseshu",            // 村正Lv1：势州村正（钻石剑+铁块）
-            "murahori",             // 村正Lv2：堀川国广（势州村正+红石块）
-            "murauson",             // 村正Lv3：妖刀雨村（堀川国广+铁刃竹光+铁块）
-            "murayoto",              // 村正Lv3：妖刀村正（势州村正+自铭嶙峋+钻石块）
-            // 崩坏线·脉冲太刀系列：T17/T19（由村正 Lv3 双分支升级，T17 是等离子影秀前置）
-            "pulse_katana_t17",      // 脉冲太刀17式（妖刀雨村+红石块+活塞，SA=寒霜灵刃）
-            "pulse_katana_t19",      // 脉冲太刀19式（妖刀村正+红石块+活塞，无SA）
-            "xuanyuan_katana",       // 轩辕·脉冲太刀（脉冲T17+铬锭+雪，SA=寒霜灵刃）
-            // 崩坏线·银河新星线
-            "galactic",              // 银河追光（脉冲T17+脉冲T19+铬钼钢剑，SA=聚光舞台）
-            "vorpal_sword",          // 反力场打刀11式（银河追光+钻石+重力结晶，SA=时空黑洞）
-            "dawn_breaker",          // 破晓者：塔尔瓦（银河追光+钻石+极光金属锭，SA=震击）
-            "fairy_sword",           // 妖精剑·希尔文（反力场打刀11式+破晓者+钻石+荧石粉）
-            "third_sacred",          // 3rd圣遗物（银河追光+铬斧+下界之星，SA=樱花终结）
-            "nue",                   // 影鵺（破晓者+羽毛+钼剑，SA=罪斩）
-            // 崩坏线·苗刀系列：雷妖/电魂（由村正 Lv3 双分支升级）
-            "byorai",                // 苗刀Lv4：雷妖（妖刀雨村+红石+铁块，SA=樱花）
-            "byoden",                // 苗刀Lv4：电魂（妖刀村正+红石+铁块，亡灵杀手II）
-            "raikiri",               // 雷切（雷妖+电魂+钼剑，SA=刃盾）
-            "osahoko",               // 藏锋（雷妖+萤石+雷电结晶，SE=乱流）
-            "sky_breaker",           // 开天剑（电魂+红石+铬钼钢锭+萤石粉，SE=天罚）
-            "vibro_cutter",          // 高周波切割刀（雷妖+海晶碎片+青金石块，SA=高频坍缩）
-            // 崩坏线·复合系列：柳叶/朱雀（由势州村正分出）
-            "fuheliuye",             // 复合Lv1：柳叶（势州村正+钻石块+树叶，SA=锋刀抚柳）
-            "fuhezhuque",             // 复合Lv1：朱雀（势州村正+金块+烈焰棒，SA=罪业之火）
-            // 崩坏线·复合系列 Lv2/Lv3
-            "crystal_cutter",         // 复合Lv2：结晶逆刃刀（柳叶+钻石块，SA=霜冻彗星）
-            "thermal_cutter",         // 复合Lv2：热能切割刃（朱雀+烈焰棒，SA=熔铁之刃）
-            "plasma_kagehide",        // 复合Lv3：等离子影秀（结晶逆刃刀+脉冲T17+钼剑，SA=绝对零度）
-            "phoenix",                // 复合Lv3：凰剑（热能切割刃+熔岩桶+羽毛，SA=熔铁之刃，SE=凰）
+            "murahori",
+            "murauson",
+            "murayoto",
+            // 崩坏线·村正分支 → 复合系列（柳叶/朱雀）
+            "fuheliuye",
+            "fuhezhuque",
+            // 复合系列 Lv2：结晶逆刃刀 / 热能切割刃
+            "crystal_cutter",
+            "thermal_cutter",
+            // 复合系列 Lv3：等离子影秀 / 凰剑
+            "plasma_kagehide",
+            "phoenix",
+            // 崩坏线·脉冲太刀系列：T17/T19 → 轩辕
+            "pulse_katana_t17",
+            "pulse_katana_t19",
+            "xuanyuan_katana",
+            // 崩坏线·银河新星线：银河追光 → 反力场打刀11式 / 破晓者 / 妖精剑 / 3rd圣遗物 / 影鵺
+            "galactic",
+            "vorpal_sword",
+            "dawn_breaker",
+            "fairy_sword",
+            "third_sacred",
+            "nue",
+            // 崩坏线·苗刀系列：雷妖/电魂 → 雷切/藏锋/开天剑/高周波切割刀
+            "byorai",
+            "byoden",
+            "raikiri",
+            "osahoko",
+            "sky_breaker",
+            "vibro_cutter",
             // 龙一文字线
-            "splight_initial",        // 龙一「空」
-            "splight_normal",         // 龙一「无」
-            "splight_young1",         // 龙一「幼」（金）
-            "splight_young2",         // 龙一「稚」（绿）
-            "splight_origin",         // 龙一「源」
-            "splight_blackwatch",     // 龙一「黯」
-            "splight_senta",          // 龙一「塔」
+            "splight_initial",
+            "splight_normal",
+            "splight_young1",
+            "splight_young2",
+            "splight_origin",
+            "splight_blackwatch",
+            "splight_senta",
             // 万物皆刃线
-            "liurrh",                 // 炎王「流刃若火」
-            "chanshizhe",             // 夜空之剑「阐释者」
-            "guangjian",              // 光剑「监视者」
-            "fengshen",               // 奉神刀「鹿」
-            "zhanyue"                 // 白「天锁斩月」
+            "liurrh",
+            "chanshizhe",
+            "guangjian",
+            "fengshen",
+            "zhanyue"
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
@@ -299,13 +303,13 @@ public final class BladeLoader {
         HolderLookup.RegistryLookup<SlashBladeDefinition> definitions =
                 SlashBlade.getSlashBladeDefinitionRegistry(parameters.holders());
         definitions.listElements()
+                .filter(definition -> carrierItemId.equals(definition.value().getItemName()))
                 .sorted(Comparator.comparingInt(ref -> {
                     String path = ref.value().getName().getPath();
                     int idx = BLADE_ORDER.indexOf(path);
                     return idx >= 0 ? idx : Integer.MAX_VALUE;
                 }))
                 .map(Holder.Reference::value)
-                .filter(definition -> carrierItemId.equals(definition.getItemName()))
                 .map(SlashBladeDefinition::getBlade)
                 .filter(stack -> !stack.isEmpty())
                 .forEach(output::accept);
