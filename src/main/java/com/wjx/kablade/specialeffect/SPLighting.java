@@ -2,8 +2,10 @@ package com.wjx.kablade.specialeffect;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModSpecialEffects;
+import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -31,7 +33,8 @@ import java.util.WeakHashMap;
 public class SPLighting extends SpecialEffect {
 
     private static final int COLOR = 0xFFD700;
-    private static final float DAMAGE = 6.0F;
+    private static final float DAMAGE_BASE = 6.0F;
+    private static final float DAMAGE_FACTOR = 0.75F;
     private static final double COST = 2.0;
 
     /** 记录玩家是否已经过了本次挥刀的触发点，避免同一挥刀多次触发。 */
@@ -88,7 +91,7 @@ public class SPLighting extends SpecialEffect {
                     SlashBlade.RegistryEvents.SummonedSword, level);
             sword.setPos(pos.x, pos.y, pos.z);
             sword.setShooter(player);
-            sword.setDamage(DAMAGE);
+            sword.setDamage(dynamicDamage(blade));
             sword.setColor(COLOR);
             sword.setHitEntity(target);
 
@@ -97,6 +100,13 @@ public class SPLighting extends SpecialEffect {
             sword.shoot(dir.x, dir.y, dir.z, 1.5F, 0.0F);
             level.addFreshEntity(sword);
         });
+    }
+
+    private static float dynamicDamage(ItemStack blade) {
+        float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
+                .map(ISlashBladeState::getBaseAttackModifier)
+                .orElse(4.0F);
+        return DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_FACTOR);
     }
 
     private static void spawnParticles(ServerLevel level, Player player) {

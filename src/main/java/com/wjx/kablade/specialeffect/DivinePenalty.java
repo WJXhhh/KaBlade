@@ -3,6 +3,8 @@ package com.wjx.kablade.specialeffect;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
+import com.wjx.kablade.util.MathFunc;
+import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -26,7 +28,8 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class DivinePenalty extends SpecialEffect {
 
-    private static final float COUNTER_DAMAGE = 2.0F;
+    private static final float COUNTER_DAMAGE_BASE = 2.0F;
+    private static final float COUNTER_DAMAGE_FACTOR = 0.35F;
     private static final int PARALYSIS_DURATION = 60;
     private static final int PARALYSIS_AMPLIFIER = 1;
     private static final float DAMAGE_BOOST = 1.4F;
@@ -55,7 +58,8 @@ public class DivinePenalty extends SpecialEffect {
                 level.addFreshEntity(bolt);
                 countering = true;
                 try {
-                    attacker.hurt(level.damageSources().playerAttack(player), COUNTER_DAMAGE);
+                    attacker.hurt(level.damageSources().playerAttack(player),
+                            counterDamage(player.getMainHandItem()));
                 } finally {
                     countering = false;
                 }
@@ -81,5 +85,12 @@ public class DivinePenalty extends SpecialEffect {
         return blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(state -> state.hasSpecialEffect(ModSpecialEffects.DIVINE_PENALTY.getId()))
                 .orElse(false);
+    }
+
+    private static float counterDamage(ItemStack blade) {
+        float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
+                .map(ISlashBladeState::getBaseAttackModifier)
+                .orElse(4.0F);
+        return (COUNTER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, COUNTER_DAMAGE_FACTOR)) * 2.0F;
     }
 }

@@ -5,6 +5,10 @@ import com.wjx.kablade.client.model.RaikiriShieldModel;
 import com.wjx.kablade.client.model.RockSpikeModel;
 import com.wjx.kablade.client.renderer.*;
 import com.wjx.kablade.init.ModEntities;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -47,5 +51,39 @@ public final class EntityRendererEvents {
     public static void onRegisterLayers(final EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RockSpikeModel.LAYER, RockSpikeModel::createBodyLayer);
         event.registerLayerDefinition(RaikiriShieldModel.LAYER, RaikiriShieldModel::createBodyLayer);
+    }
+
+    @SubscribeEvent
+    public static void onAddLayers(final EntityRenderersEvent.AddLayers event) {
+        for (String skin : event.getSkins()) {
+            PlayerRenderer renderer = event.getSkin(skin);
+            if (renderer != null) {
+                renderer.addLayer(new FreezeLayer<>(renderer));
+            }
+        }
+
+        for (EntityType<?> entityType : ForgeRegistries.ENTITY_TYPES.getValues()) {
+            addFreezeLayer(event, entityType);
+        }
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static void addFreezeLayer(EntityRenderersEvent.AddLayers event, EntityType<?> entityType) {
+        if (entityType == EntityType.PLAYER) {
+            return;
+        }
+
+        try {
+            LivingEntityRenderer renderer = event.getRenderer((EntityType) entityType);
+            if (renderer != null) {
+                if (entityType == EntityType.SLIME) {
+                    renderer.addLayer(new SlimeFreezeLayer(renderer, event.getEntityModels()));
+                } else {
+                    renderer.addLayer(new FreezeLayer(renderer));
+                }
+            }
+        } catch (ClassCastException ignored) {
+            // Non-living renderers are present in the same renderer map; they cannot receive living layers.
+        }
     }
 }

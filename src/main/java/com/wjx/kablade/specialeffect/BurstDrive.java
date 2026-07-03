@@ -2,7 +2,9 @@ package com.wjx.kablade.specialeffect;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModSpecialEffects;
+import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -27,7 +29,8 @@ import java.util.WeakHashMap;
 public class BurstDrive extends SpecialEffect {
 
     private static final int COLOR = 0xFFFFFF;
-    private static final float DAMAGE = 5.0F;
+    private static final float DAMAGE_BASE = 5.0F;
+    private static final float DAMAGE_FACTOR = 1.0F;
     private static final double COST = 2.0;
 
     private static final WeakHashMap<Player, Integer> LAST_SWING = new WeakHashMap<>();
@@ -77,12 +80,19 @@ public class BurstDrive extends SpecialEffect {
             EntityDrive drive = new EntityDrive(SlashBlade.RegistryEvents.Drive, level);
             drive.setPos(pos.x, pos.y, pos.z);
             drive.setShooter(player);
-            drive.setDamage(DAMAGE);
+            drive.setDamage(dynamicDamage(blade));
             drive.setColor(COLOR);
             drive.setLifetime(20);
             drive.shoot(look.x, look.y, look.z, 1.5F, 0.0F);
             level.addFreshEntity(drive);
         });
+    }
+
+    private static float dynamicDamage(ItemStack blade) {
+        float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
+                .map(ISlashBladeState::getBaseAttackModifier)
+                .orElse(4.0F);
+        return DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_FACTOR);
     }
 
     private static void spawnParticles(ServerLevel level, Player player) {

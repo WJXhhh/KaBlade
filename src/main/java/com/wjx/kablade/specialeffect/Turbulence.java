@@ -4,6 +4,8 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
+import com.wjx.kablade.util.MathFunc;
+import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -36,7 +38,8 @@ public class Turbulence extends SpecialEffect {
     public static final String PROP_KEY = "turbulence";
 
     private static final int TURBULENCE_TICKS = 100;
-    private static final float EXTRA_DAMAGE = 4.0F;
+    private static final float DAMAGE_BASE = 4.0F;
+    private static final float DAMAGE_FACTOR = 0.5F;
     private static final int PARALYSIS_DURATION = 100;
     private static final int PARALYSIS_AMPLIFIER = 1;
 
@@ -74,7 +77,8 @@ public class Turbulence extends SpecialEffect {
                 bolt.setVisualOnly(true);
                 bolt.setPos(target.getX(), target.getY(), target.getZ());
                 level.addFreshEntity(bolt);
-                target.hurt(level.damageSources().playerAttack(player), EXTRA_DAMAGE);
+                target.hurt(level.damageSources().playerAttack(player),
+                        dynamicDamage(player.getMainHandItem()));
                 target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                         PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
             }
@@ -111,5 +115,12 @@ public class Turbulence extends SpecialEffect {
         return blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(state -> state.hasSpecialEffect(ModSpecialEffects.TURBULENCE.getId()))
                 .orElse(false);
+    }
+
+    private static float dynamicDamage(ItemStack blade) {
+        float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
+                .map(ISlashBladeState::getBaseAttackModifier)
+                .orElse(4.0F);
+        return (DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_FACTOR)) * 2.0F;
     }
 }
