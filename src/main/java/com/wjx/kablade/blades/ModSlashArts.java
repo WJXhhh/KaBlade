@@ -15,6 +15,7 @@ import com.wjx.kablade.slasharts.FrostBladeArts;
 import com.wjx.kablade.slasharts.FrostCometArts;
 import com.wjx.kablade.slasharts.AquaEdgeArts;
 import com.wjx.kablade.slasharts.InductionCollapseArts;
+import com.wjx.kablade.slasharts.KamiOfWarArts;
 import com.wjx.kablade.slasharts.LacerateBladeArts;
 import com.wjx.kablade.slasharts.LaveDriveArts;
 import com.wjx.kablade.slasharts.LethalThrustArts;
@@ -142,6 +143,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> LIGHTS_ON_STAGE = REGISTRY.register(
             "lights_on_stage",
             () -> new LightsOnStageArts(entity -> ModComboStates.LIGHTS_ON_STAGE_CHADI.getId()));
+
+    public static final RegistryObject<SlashArts> KAMI_OF_WAR = REGISTRY.register(
+            "kami_of_war",
+            () -> new KamiOfWarArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> WIND_ENCHANTMENT = REGISTRY.register(
             "wind_enchantment",

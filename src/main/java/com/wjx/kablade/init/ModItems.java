@@ -74,7 +74,9 @@ public final class ModItems {
     public static final RegistryObject<Item> GRAVITY_CRYSTAL = registerItemBase("gravity_crystal", Main.TAB_KABLADE);
 
     // ─── Thunder ────────────────────────────────────────────────────
-    public static final RegistryObject<Item> THUNDER_CRYSTAL = registerItemBase("thunder_crystal", Main.TAB_KABLADE);
+    // 雷霆凝晶：表面平静、内蕴雷霆之力的晶体（右键/左键均有主动效果）
+    public static final RegistryObject<Item> THUNDER_CRYSTAL = registerItem(
+            "thunder_crystal", () -> new com.wjx.kablade.object.item.ThunderCrystalItem(new Item.Properties()), Main.TAB_KABLADE);
 
     // ─── Aurora Metal ──────────────────────────────────────────────
 

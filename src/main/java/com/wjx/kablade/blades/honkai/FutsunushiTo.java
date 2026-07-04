@@ -1,5 +1,6 @@
 package com.wjx.kablade.blades.honkai;
 
+import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.ResourceUtil;
@@ -14,37 +15,36 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-/**
- * 藏锋 —— 崩坏线苗刀分支，由苗刀·雷妖 + 萤石 + 雷霆凝晶合成。
- * 从 1.12.2 移植而来，无 SA，自带特殊效果「乱流（Turbulence）」。
- * <p>
- * 属性：攻击 13.0、耐久 700、默认妖化、自带锋利 II、召唤剑颜色 0x536474。
- */
-public class Osahoko extends BladeDefineBase {
-    public Osahoko(BootstapContext<SlashBladeDefinition> context) {
+public class FutsunushiTo extends BladeDefineBase {
+    public FutsunushiTo(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/osahoko/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/osahoko/tex.png"))
-                        .effectColor(0x536474)
+                        .modelName(ResourceUtil.getLocation("model/named/futsunushi_to/mdlFutsunushiTo.obj"))
+                        .textureName(ResourceUtil.getLocation("model/named/futsunushi_to/texFutsunushiTo.png"))
+                        .effectColor(16642509)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(13.0F)
-                        .maxDamage(700)
+                        .baseAttackModifier(19.0F)
+                        .maxDamage(730)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .addSpecialEffect(ModSpecialEffects.TURBULENCE.getId())
+                        .slashArtsType(ModSlashArts.KAMI_OF_WAR.getId())
+                        .addSpecialEffect(ModSpecialEffects.RAGING_IZUMO.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(
-                        ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2))
+                List.of(
+                        new EnchantmentDefinition(
+                                ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 6),
+                        new EnchantmentDefinition(
+                                ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 3)
+                )
         ));
     }
 
     @Override
     public String getKey() {
-        return "osahoko";
+        return "futsunushi_to";
     }
 }

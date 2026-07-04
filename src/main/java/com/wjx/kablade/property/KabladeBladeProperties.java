@@ -58,5 +58,11 @@ public final class KabladeBladeProperties {
                 .capabilityKey("turbulence")
                 .maxValue(100)
                 .build());
+
+        PlayerPropertyRegistry.register(PlayerProperty.builder("kami_of_war_count")
+                .displayName(Component.translatable("prop.kablade.kami_of_war_count").withStyle(ChatFormatting.YELLOW))
+                .capabilityKey("kami_of_war_count")
+                .maxValue(6)
+                .build());
     }
 }

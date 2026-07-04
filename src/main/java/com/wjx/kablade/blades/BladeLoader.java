@@ -6,6 +6,7 @@ import com.wjx.kablade.blades.honkai.ByoRai;
 import com.wjx.kablade.blades.honkai.CrystalCutter;
 import com.wjx.kablade.blades.honkai.DawnBreaker;
 import com.wjx.kablade.blades.honkai.FairySword;
+import com.wjx.kablade.blades.honkai.FutsunushiTo;
 import com.wjx.kablade.blades.honkai.FuheLiuye;
 import com.wjx.kablade.blades.honkai.FuheZhuque;
 import com.wjx.kablade.blades.honkai.GalacticNova;
@@ -114,6 +115,7 @@ public final class BladeLoader {
     public static BladeDefineBase RAIKIRI;
     public static BladeDefineBase OSAHOKO;
     public static BladeDefineBase SKY_BREAKER;
+    public static BladeDefineBase FUTSUNUSHI_TO;
     public static BladeDefineBase VIBRO_CUTTER;
     // 崩坏线·妖精剑
     public static BladeDefineBase FAIRY_SWORD;
@@ -193,6 +195,7 @@ public final class BladeLoader {
             "raikiri",
             "osahoko",
             "sky_breaker",
+            "futsunushi_to",
             "vibro_cutter",
             // 龙一文字线
             "splight_initial",
@@ -257,6 +260,7 @@ public final class BladeLoader {
         RAIKIRI = new Raikiri(context);
         OSAHOKO = new Osahoko(context);
         SKY_BREAKER = new SkyBreaker(context);
+        FUTSUNUSHI_TO = new FutsunushiTo(context);
         VIBRO_CUTTER = new VibroCutter(context);
         // 崩坏线·妖精剑
         FAIRY_SWORD = new FairySword(context);
