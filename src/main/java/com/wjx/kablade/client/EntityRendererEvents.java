@@ -32,6 +32,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.RAIKIRI_SHIELD.get(), RaikiriShieldRenderer::new);
         event.registerEntityRenderer(ModEntities.CONFINEMENT_FORCE_FIELD.get(), ConfinementForceFieldRenderer::new);
         event.registerEntityRenderer(ModEntities.FROST_BLADE_EDGE.get(), FrostBladeRenderer::new);
+        event.registerEntityRenderer(ModEntities.FREEZE_DOMAIN.get(), FreezeDomainRenderer::new);
         event.registerEntityRenderer(ModEntities.SHOCK_IMPACT.get(), ShockImpactRenderer::new);
         event.registerEntityRenderer(ModEntities.ZAIZAN.get(), ZaizanRenderer::new);
         event.registerEntityRenderer(ModEntities.TUNA.get(), TunaRenderer::new);

@@ -184,6 +184,17 @@
 
   "msg.kablade.raikiri_shield_blood": "雷切护盾耐久还有：%s",
   "msg.kablade.raikiri_shield_crash": "雷切护盾已损毁",
+  "item.kablade.iron_coil": "铁线圈",
+  "item.kablade.mag_storm": "§r磁暴斩",
+  "item.kablade.ice_epiphyllum": "§r仿灵刀·冰昙天",
+  "slash_art.kablade.mag_chaos_blade": "磁暴之刃",
+  "slash_art.kablade.snow_dance": "冰天雪舞",
+  "se.kablade.em_induction": "§b电磁感应",
+  "se.kablade.glacial_bane": "§b苦寒地狱",
+  "special_effect.kablade.em_induction": "电磁感应",
+  "special_effect.kablade.glacial_bane": "§b苦寒地狱",
+  "entity.kablade.freeze_domain": "冰霜领域",
+  "prop.kablade.glacial_bane_extra_tick": "§b苦寒地狱",
 
   "prop.kablade.title": "§6§l斩无不断:效果"
 }

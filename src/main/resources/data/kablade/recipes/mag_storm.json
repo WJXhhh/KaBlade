@@ -1,0 +1,36 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:mag_storm",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:osahoko"
+      }
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:third_sacred"
+      }
+    },
+    "C": {
+      "item": "kablade:iron_coil"
+    },
+    "D": {
+      "item": "kablade:thunder_crystal"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "DBD",
+    " A "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

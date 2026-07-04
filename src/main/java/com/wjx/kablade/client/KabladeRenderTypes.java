@@ -154,6 +154,22 @@ public final class KabladeRenderTypes extends RenderType {
                 VertexFormat.Mode.QUADS, 256, false, true, state);
     }
 
+    public static RenderType magChaosBlade(ResourceLocation texture) {
+        CompositeState state = CompositeState.builder()
+                .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                .setTextureState(new TextureStateShard(texture, false, false))
+                .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                .setDepthTestState(LEQUAL_DEPTH_TEST)
+                .setCullState(NO_CULL)
+                .setLightmapState(LIGHTMAP)
+                .setOverlayState(OVERLAY)
+                .setWriteMaskState(COLOR_WRITE)
+                .createCompositeState(false);
+        return create("kablade_mag_chaos_blade",
+                DefaultVertexFormat.NEW_ENTITY,
+                VertexFormat.Mode.QUADS, 256, false, true, state);
+    }
+
     public static RenderType stageLight() {
         return useShaderFallbackTextures() ? STAGE_LIGHT_FALLBACK : STAGE_LIGHT;
     }
@@ -244,6 +260,21 @@ public final class KabladeRenderTypes extends RenderType {
                 .setWriteMaskState(COLOR_WRITE)
                 .createCompositeState(false);
         return create("kablade_wind_enchantment",
+                DefaultVertexFormat.POSITION_COLOR_TEX,
+                VertexFormat.Mode.QUADS, 256, false, true, state);
+    }
+
+    /** Snow Dance's freeze domain uses the same additive blend as the 1.12.2 renderer. */
+    public static RenderType freezeDomain(ResourceLocation tex) {
+        CompositeState state = CompositeState.builder()
+                .setShaderState(POSITION_COLOR_TEX_SHADER)
+                .setTextureState(new TextureStateShard(tex, false, false))
+                .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                .setDepthTestState(LEQUAL_DEPTH_TEST)
+                .setCullState(NO_CULL)
+                .setWriteMaskState(COLOR_WRITE)
+                .createCompositeState(false);
+        return create("kablade_freeze_domain",
                 DefaultVertexFormat.POSITION_COLOR_TEX,
                 VertexFormat.Mode.QUADS, 256, false, true, state);
     }

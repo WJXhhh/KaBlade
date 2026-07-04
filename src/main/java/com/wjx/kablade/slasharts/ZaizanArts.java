@@ -25,7 +25,8 @@ import java.util.function.Function;
 public final class ZaizanArts extends SlashArts {
 
     private static final float BASE_DAMAGE = 20.0F;
-    private static final double AOE_RADIUS = 5.0;
+    private static final double AOE_RADIUS = 5.8;
+    private static final double AOE_FRONT_EXTENSION = 1.3;
     private static final int STRENGTH_DURATION = 140;
     private static final int STRENGTH_AMPLIFIER = 2;
     private static final int DELAYED_STRENGTH_TICKS = 12;
@@ -86,8 +87,10 @@ public final class ZaizanArts extends SlashArts {
         float extraDamage = (float) MathFunc.amplifierCalc(bladeAttack, 20.0F);
 
         TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
+        Vec3 look = SaFx.flatLook(user);
         AABB box = user.getBoundingBox()
                 .inflate(AOE_RADIUS, 1.0, AOE_RADIUS)
+                .expandTowards(look.scale(AOE_FRONT_EXTENSION))
                 .move(user.getDeltaMovement());
         List<Entity> entities = level.getEntities(user, box,
                 e -> e instanceof LivingEntity && e != user && e.isAlive() && attackable.test((LivingEntity) e));

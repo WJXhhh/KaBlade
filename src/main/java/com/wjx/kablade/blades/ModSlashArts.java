@@ -22,6 +22,7 @@ import com.wjx.kablade.slasharts.LethalThrustArts;
 import com.wjx.kablade.slasharts.LightningSwordsArts;
 import com.wjx.kablade.slasharts.LightsOnStageArts;
 import com.wjx.kablade.slasharts.LoveIsWarArts;
+import com.wjx.kablade.slasharts.MagChaosBladeArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
 import com.wjx.kablade.slasharts.MoonFangArts;
 import com.wjx.kablade.slasharts.OverSlashArts;
@@ -31,6 +32,7 @@ import com.wjx.kablade.slasharts.RockStrikeArts;
 import com.wjx.kablade.slasharts.StarBurstArts;
 import com.wjx.kablade.slasharts.StarChaseArts;
 import com.wjx.kablade.slasharts.ShockImpactArts;
+import com.wjx.kablade.slasharts.SnowDanceArts;
 import com.wjx.kablade.slasharts.VorpalHoleArts;
 import com.wjx.kablade.slasharts.WindEnchantmentArts;
 import com.wjx.kablade.slasharts.ZaizanArts;
@@ -172,6 +174,14 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> MOON_FANG = REGISTRY.register(
             "moon_fang",
             () -> new MoonFangArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> MAG_CHAOS_BLADE = REGISTRY.register(
+            "mag_chaos_blade",
+            () -> new MagChaosBladeArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> SNOW_DANCE = REGISTRY.register(
+            "snow_dance",
+            () -> new SnowDanceArts(entity -> ComboStateRegistry.NONE.getId()));
 
     private ModSlashArts() {
     }

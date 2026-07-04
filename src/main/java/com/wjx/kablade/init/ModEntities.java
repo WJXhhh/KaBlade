@@ -123,6 +123,18 @@ public final class ModEntities {
                     .noSave()
                     .build("frost_blade_edge"));
 
+    /** Visible freeze domain for Ice Epiphyllum's Snow Dance. */
+    public static final RegistryObject<EntityType<FreezeDomainEntity>> FREEZE_DOMAIN = REGISTRY.register(
+            "freeze_domain",
+            () -> EntityType.Builder.<FreezeDomainEntity>of(FreezeDomainEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("freeze_domain"));
+
     /** Visual anchor for the Shock Impact SA. */
     public static final RegistryObject<EntityType<ShockImpactEntity>> SHOCK_IMPACT = REGISTRY.register(
             "shock_impact",

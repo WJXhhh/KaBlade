@@ -42,5 +42,11 @@ public final class KabladeNetwork {
                 .decoder(FallingPetalsMarkPacket::decode)
                 .consumerMainThread((packet, context) -> FallingPetalsMarkPacket.handle(packet, context.get()))
                 .add();
+
+        CHANNEL.messageBuilder(MagChaosBladeFxPacket.class, 4)
+                .encoder(MagChaosBladeFxPacket::encode)
+                .decoder(MagChaosBladeFxPacket::decode)
+                .consumerMainThread((packet, context) -> MagChaosBladeFxPacket.handle(packet, context.get()))
+                .add();
     }
 }

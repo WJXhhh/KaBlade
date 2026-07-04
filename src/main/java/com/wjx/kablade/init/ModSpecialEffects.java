@@ -3,6 +3,8 @@ package com.wjx.kablade.init;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.specialeffect.BurstDrive;
 import com.wjx.kablade.specialeffect.DivinePenalty;
+import com.wjx.kablade.specialeffect.EMInduction;
+import com.wjx.kablade.specialeffect.GlacialBane;
 import com.wjx.kablade.specialeffect.HolyEnergyImpact;
 import com.wjx.kablade.specialeffect.Oripursuit;
 import com.wjx.kablade.specialeffect.Phoenix;
@@ -52,6 +54,12 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> RAGING_IZUMO = REGISTRY.register(
             "raging_izumo", RagingIzumo::new);
+
+    public static final RegistryObject<SpecialEffect> EM_INDUCTION = REGISTRY.register(
+            "em_induction", EMInduction::new);
+
+    public static final RegistryObject<SpecialEffect> GLACIAL_BANE = REGISTRY.register(
+            "glacial_bane", GlacialBane::new);
 
     private ModSpecialEffects() {
     }

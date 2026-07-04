@@ -10,6 +10,8 @@ import com.wjx.kablade.blades.honkai.FutsunushiTo;
 import com.wjx.kablade.blades.honkai.FuheLiuye;
 import com.wjx.kablade.blades.honkai.FuheZhuque;
 import com.wjx.kablade.blades.honkai.GalacticNova;
+import com.wjx.kablade.blades.honkai.IceEpiphyllum;
+import com.wjx.kablade.blades.honkai.MagStorm;
 import com.wjx.kablade.blades.honkai.MuraHori;
 import com.wjx.kablade.blades.honkai.MuraSeshu;
 import com.wjx.kablade.blades.honkai.MuraUson;
@@ -117,6 +119,8 @@ public final class BladeLoader {
     public static BladeDefineBase SKY_BREAKER;
     public static BladeDefineBase FUTSUNUSHI_TO;
     public static BladeDefineBase VIBRO_CUTTER;
+    public static BladeDefineBase MAG_STORM;
+    public static BladeDefineBase ICE_EPIPHYLLUM;
     // 崩坏线·妖精剑
     public static BladeDefineBase FAIRY_SWORD;
     // 万物皆刃线（首批 5 把招牌刀，世界合成获取）
@@ -197,6 +201,8 @@ public final class BladeLoader {
             "sky_breaker",
             "futsunushi_to",
             "vibro_cutter",
+            "mag_storm",
+            "ice_epiphyllum",
             // 龙一文字线
             "splight_initial",
             "splight_normal",
@@ -262,6 +268,8 @@ public final class BladeLoader {
         SKY_BREAKER = new SkyBreaker(context);
         FUTSUNUSHI_TO = new FutsunushiTo(context);
         VIBRO_CUTTER = new VibroCutter(context);
+        MAG_STORM = new MagStorm(context);
+        ICE_EPIPHYLLUM = new IceEpiphyllum(context);
         // 崩坏线·妖精剑
         FAIRY_SWORD = new FairySword(context);
         // 崩坏线·复合系列

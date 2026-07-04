@@ -59,6 +59,12 @@ public final class KabladeBladeProperties {
                 .maxValue(100)
                 .build());
 
+        PlayerPropertyRegistry.register(PlayerProperty.builder("glacial_bane_extra_tick")
+                .displayName(Component.translatable("prop.kablade.glacial_bane_extra_tick").withStyle(ChatFormatting.AQUA))
+                .capabilityKey("glacial_bane_extra_tick")
+                .maxValue(120)
+                .build());
+
         PlayerPropertyRegistry.register(PlayerProperty.builder("kami_of_war_count")
                 .displayName(Component.translatable("prop.kablade.kami_of_war_count").withStyle(ChatFormatting.YELLOW))
                 .capabilityKey("kami_of_war_count")
