@@ -20,6 +20,7 @@ import com.wjx.kablade.slasharts.LaveDriveArts;
 import com.wjx.kablade.slasharts.LethalThrustArts;
 import com.wjx.kablade.slasharts.LightningSwordsArts;
 import com.wjx.kablade.slasharts.LightsOnStageArts;
+import com.wjx.kablade.slasharts.LoveIsWarArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
 import com.wjx.kablade.slasharts.MoonFangArts;
 import com.wjx.kablade.slasharts.OverSlashArts;
@@ -113,6 +114,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> LETHAL_THRUST = REGISTRY.register(
             "lethal_thrust",
             () -> new LethalThrustArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> LOVE_IS_WAR = REGISTRY.register(
+            "love_is_war",
+            () -> new LoveIsWarArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> INDUCTION_COLLAPSE = REGISTRY.register(
             "induction_collapse",

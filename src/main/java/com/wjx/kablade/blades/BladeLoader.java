@@ -16,6 +16,7 @@ import com.wjx.kablade.blades.honkai.MuraYoto;
 import com.wjx.kablade.blades.honkai.Nue;
 import com.wjx.kablade.blades.honkai.OneSaltyTuna;
 import com.wjx.kablade.blades.honkai.Osahoko;
+import com.wjx.kablade.blades.honkai.PledgeOfRain;
 import com.wjx.kablade.blades.honkai.Phoenix;
 import com.wjx.kablade.blades.honkai.PlasmaKagehide;
 import com.wjx.kablade.blades.honkai.PulseKatanaType17;
@@ -105,6 +106,7 @@ public final class BladeLoader {
     public static BladeDefineBase DAWN_BREAKER;
     public static BladeDefineBase THIRD_SACRED;
     public static BladeDefineBase SAKURA_BLOSSOM;
+    public static BladeDefineBase PLEDGE_OF_RAIN;
     public static BladeDefineBase NUE;
     // 崩坏线·脉冲太刀分支
     public static BladeDefineBase XUANYUAN_KATANA;
@@ -183,6 +185,7 @@ public final class BladeLoader {
             "sakura_blossom",
             "fairy_sword",
             "third_sacred",
+            "pledge_of_rain",
             "nue",
             // 崩坏线·苗刀系列：雷妖/电魂 → 雷切/藏锋/开天剑/高周波切割刀
             "byorai",
@@ -246,6 +249,7 @@ public final class BladeLoader {
         DAWN_BREAKER = new DawnBreaker(context);
         SAKURA_BLOSSOM = new SakuraBlossom(context);
         THIRD_SACRED = new ThirdSacredRelic(context);
+        PLEDGE_OF_RAIN = new PledgeOfRain(context);
         NUE = new Nue(context);
         // 崩坏线·苗刀系列
         BYO_RAI = new ByoRai(context);

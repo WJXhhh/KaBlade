@@ -247,4 +247,50 @@ public final class KabladeRenderTypes extends RenderType {
                 DefaultVertexFormat.POSITION_COLOR_TEX,
                 VertexFormat.Mode.QUADS, 256, false, true, state);
     }
+
+    /** Pledge of Rain petals use the standard entity layout so shader packs read the vertex data correctly. */
+    public static RenderType rainPetal(ResourceLocation tex) {
+        CompositeState state = CompositeState.builder()
+                .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
+                .setTextureState(new TextureStateShard(tex, false, false))
+                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setDepthTestState(LEQUAL_DEPTH_TEST)
+                .setCullState(NO_CULL)
+                .setLightmapState(LIGHTMAP)
+                .setOverlayState(OVERLAY)
+                .setWriteMaskState(COLOR_WRITE)
+                .createCompositeState(false);
+        return create("kablade_rain_petal",
+                DefaultVertexFormat.NEW_ENTITY,
+                VertexFormat.Mode.QUADS, 2048, false, true, state);
+    }
+
+    public static RenderType rainPetalBloom(ResourceLocation tex) {
+        CompositeState state = CompositeState.builder()
+                .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                .setTextureState(new TextureStateShard(tex, false, false))
+                .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                .setDepthTestState(LEQUAL_DEPTH_TEST)
+                .setCullState(NO_CULL)
+                .setLightmapState(LIGHTMAP)
+                .setOverlayState(OVERLAY)
+                .setWriteMaskState(COLOR_WRITE)
+                .createCompositeState(false);
+        return create("kablade_rain_petal_bloom",
+                DefaultVertexFormat.NEW_ENTITY,
+                VertexFormat.Mode.QUADS, 2048, false, true, state);
+    }
+
+    public static RenderType rainEndingRing() {
+        CompositeState state = CompositeState.builder()
+                .setShaderState(POSITION_COLOR_SHADER)
+                .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                .setDepthTestState(NO_DEPTH_TEST)
+                .setCullState(NO_CULL)
+                .setWriteMaskState(COLOR_WRITE)
+                .createCompositeState(false);
+        return create("kablade_rain_ending_ring",
+                DefaultVertexFormat.POSITION_COLOR,
+                VertexFormat.Mode.QUADS, 4096, false, true, state);
+    }
 }

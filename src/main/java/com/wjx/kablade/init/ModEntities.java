@@ -159,6 +159,28 @@ public final class ModEntities {
                     .noSave()
                     .build("tuna"));
 
+    public static final RegistryObject<EntityType<RainUmbrellaEntity>> RAIN_UMBRELLA = REGISTRY.register(
+            "rain_umbrella",
+            () -> EntityType.Builder.<RainUmbrellaEntity>of(RainUmbrellaEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("rain_umbrella"));
+
+    public static final RegistryObject<EntityType<SummonedHedraEntity>> SUMMONED_HEDRA = REGISTRY.register(
+            "summoned_hedra",
+            () -> EntityType.Builder.<SummonedHedraEntity>of(SummonedHedraEntity::new, MobCategory.MISC)
+                    .sized(0.3F, 0.2F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("summoned_hedra"));
+
     public static final RegistryObject<EntityType<WindEnchantmentEntity>> WIND_ENCHANTMENT = REGISTRY.register(
             "wind_enchantment",
             () -> EntityType.Builder.<WindEnchantmentEntity>of(WindEnchantmentEntity::new, MobCategory.MISC)
