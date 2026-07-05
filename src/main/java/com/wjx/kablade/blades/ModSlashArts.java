@@ -7,6 +7,7 @@ import com.wjx.kablade.slasharts.AuroraShiningArts;
 import com.wjx.kablade.slasharts.BladeWardArts;
 import com.wjx.kablade.slasharts.BreakTheDawnArts;
 import com.wjx.kablade.slasharts.ChopWillowArts;
+import com.wjx.kablade.slasharts.CrimsonSakuraArts;
 import com.wjx.kablade.slasharts.CutMetalArts;
 import com.wjx.kablade.slasharts.DomainSuppressionArts;
 import com.wjx.kablade.slasharts.FallingPetalsArts;
@@ -113,6 +114,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> FALLING_PETALS = REGISTRY.register(
             "falling_petals",
             () -> new FallingPetalsArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> CRIMSON_SAKURA = REGISTRY.register(
+            "crimson_sakura",
+            () -> new CrimsonSakuraArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> LETHAL_THRUST = REGISTRY.register(
             "lethal_thrust",

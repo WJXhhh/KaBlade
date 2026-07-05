@@ -4,7 +4,6 @@
   "itemGroup.kablade.honkai": "斩无不断 崩坏",
   "itemGroup.kablade.sp_light": "斩无不断 龙一文字改",
   "itemGroup.kablade.allweapon": "斩无不断 万物皆刃",
-
   "item.kablade.kablade_blade": "Kablade 刀",
   "item.kablade.kablade_honkai_named": "Kablade 崩坏刀",
   "item.kablade.kablade_sl_named": "Kablade 龙一刀",
@@ -13,7 +12,6 @@
   "item.kablade.honkai_icon": "崩坏Tab图标",
   "item.kablade.sp_light_icon": "龙一文字Tab图标",
   "item.kablade.allweapon_icon": "万物皆刃Tab图标",
-
   "item.kablade.liurrh": "§c炎王§9「§l§c流刃若火§r§9」",
   "item.kablade.chanshizhe": "夜空之剑§9「§l§8阐释者§r§9」",
   "item.kablade.guangjian": "§e光剑§9「§l§5监视者§r§9」",
@@ -27,7 +25,6 @@
   "block.kablade.rimmed_earth": "夯土",
   "item.kablade.rimmed_earth_stick": "夯土棍",
   "item.kablade.noted": "知名",
-
   "item.kablade.hangtu": "§r无铭「夯土」",
   "item.kablade.rocky_anshan": "§r自铭「矍铄」",
   "item.kablade.rocky_huagang": "§r自铭「嶙峋」",
@@ -37,9 +34,7 @@
   "item.kablade.bamboo_battler": "§r战刃「竹光」",
   "item.kablade.bamboo_lumi": "§r流萤「竹光」",
   "item.kablade.rocky_ex": "千岩之锋",
-
   "item.kablade.arc_light": "§r弧光刃「流芒」",
-
   "slash_art.kablade.rock_strike": "岩石撼击",
   "slash_art.kablade.break_the_dawn": "弧光破晓",
   "entity.kablade.rock_spike": "岩刺",
@@ -47,7 +42,6 @@
   "entity.kablade.dawn_crescent": "破晓弧月",
   "entity.kablade.cut_metal_ring": "斩铁环光",
   "entity.kablade.origin_free_sword": "源能自由剑",
-
   "block.kablade.chromium_ore": "铬矿石",
   "item.kablade.gravity_nugget": "重力微粒",
   "item.kablade.gravity_crystal": "重力结晶",
@@ -57,7 +51,6 @@
   "item.kablade.chromium_pickaxe": "铬镐",
   "item.kablade.chromium_axe": "铬斧",
   "item.kablade.chromium_hoe": "铬锄",
-
   "block.kablade.molybdenite": "辉钼矿石",
   "item.kablade.molybdenum_ingot": "钼锭",
   "item.kablade.crude_chromoly": "铬钼钢粗胚",
@@ -70,7 +63,6 @@
   "item.kablade.chromoly_pickaxe": "铬钼钢镐",
   "item.kablade.chromoly_axe": "铬钼钢斧",
   "item.kablade.chromoly_hoe": "铬钼钢锄",
-
   "block.kablade.aurora_ore": "极光矿石",
   "item.kablade.aurora_fragment": "极光残片",
   "item.kablade.aurora_metal_ingot": "极光金属锭",
@@ -79,11 +71,9 @@
   "item.kablade.aurora_metal_pickaxe": "极光金属镐",
   "item.kablade.aurora_metal_axe": "极光金属斧",
   "item.kablade.aurora_metal_hoe": "极光金属锄",
-
   "item.kablade.aurora_blade": "§r极光刃「映天」",
   "item.kablade.cut_iron": "§r复合刃「斩铁」",
   "item.kablade.originyer": "§r源能刃「碎钢」",
-
   "item.kablade.muraseshu": "§r势州村正",
   "item.kablade.murahori": "§r堀川国广",
   "item.kablade.murauson": "§r妖刀雨村",
@@ -102,6 +92,7 @@
   "item.kablade.vorpal_sword": "§r反力场打刀11式",
   "item.kablade.dawn_breaker": "§r破晓者：塔尔瓦",
   "item.kablade.sakura_blossom": "§r灵刀·樱吹雪",
+  "item.kablade.florid_sakura": "§r妖刀·赤染樱",
   "item.kablade.tuna": "一条咸鱼",
   "item.kablade.third_sacred": "§r3rd圣遗物",
   "item.kablade.pledge_of_rain": "雨后誓言",
@@ -133,6 +124,7 @@
   "slash_art.kablade.shock_impact": "震荡冲击",
   "slash_art.kablade.zaizan": "罪斩",
   "slash_art.kablade.falling_petals": "灼樱乱神",
+  "slash_art.kablade.crimson_sakura": "血色落樱",
   "slash_art.kablade.lethal_thrust": "致命突刺",
   "slash_art.kablade.love_is_war": "恋爱即战争！",
   "slash_art.kablade.induction_collapse": "高频坍缩",
@@ -141,6 +133,7 @@
   "entity.kablade.tuna": "一条咸鱼",
   "entity.kablade.rain_umbrella": "雨伞",
   "entity.kablade.summoned_hedra": "召唤光棱",
+  "entity.kablade.crimson_sakura": "血色落樱",
   "effect.kablade.paralysis": "麻痹",
   "effect.kablade.confinement": "禁锢",
   "se.kablade.turbulence": "§5乱流",
@@ -181,7 +174,6 @@
   "prop.kablade.raikiri_shield_blood": "雷切护盾",
   "prop.kablade.turbulence": "§5乱流",
   "prop.kablade.kami_of_war_count": "神威镇世",
-
   "msg.kablade.raikiri_shield_blood": "雷切护盾耐久还有：%s",
   "msg.kablade.raikiri_shield_crash": "雷切护盾已损毁",
   "item.kablade.iron_coil": "铁线圈",
@@ -195,6 +187,5 @@
   "special_effect.kablade.glacial_bane": "§b苦寒地狱",
   "entity.kablade.freeze_domain": "冰霜领域",
   "prop.kablade.glacial_bane_extra_tick": "§b苦寒地狱",
-
   "prop.kablade.title": "§6§l斩无不断:效果"
 }

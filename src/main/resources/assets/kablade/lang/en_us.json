@@ -4,7 +4,6 @@
   "itemGroup.kablade.honkai": "Kablade Honkai",
   "itemGroup.kablade.sp_light": "KaBlade:SP Light",
   "itemGroup.kablade.allweapon": "KaBlade:AllWeapon",
-
   "item.kablade.kablade_blade": "Kablade Blade",
   "item.kablade.kablade_honkai_named": "Kablade Honkai Blade",
   "item.kablade.kablade_sl_named": "Kablade SP Light Blade",
@@ -13,7 +12,6 @@
   "item.kablade.honkai_icon": "Honkai Tab Icon",
   "item.kablade.sp_light_icon": "SP Light Tab Icon",
   "item.kablade.allweapon_icon": "AllWeapon Tab Icon",
-
   "item.kablade.liurrh": "§cFlame King§9[§l§cFlowing Blade of the Sun§r§9]",
   "item.kablade.chanshizhe": "Night Sky Sword§9[§l§8Interpreter§r§9]",
   "item.kablade.guangjian": "§eLight Sword§9[§l§5Guardian§r§9]",
@@ -27,7 +25,6 @@
   "block.kablade.rimmed_earth": "Rimmed Earth",
   "item.kablade.rimmed_earth_stick": "Rimmed Earth Stick",
   "item.kablade.noted": "Noted",
-
   "item.kablade.hangtu": "§rAnonymity -RimmedEarth-",
   "item.kablade.rocky_anshan": "§rInscribed -Hearty-",
   "item.kablade.rocky_huagang": "§rInscribed -Jagged-",
@@ -37,9 +34,7 @@
   "item.kablade.bamboo_battler": "§rWarrior -BambooLight-",
   "item.kablade.bamboo_lumi": "§rFirefly -BambooLight-",
   "item.kablade.rocky_ex": "Rocky Ex",
-
   "item.kablade.arc_light": "§rArcLight Blade[Light Flowing]",
-
   "slash_art.kablade.rock_strike": "Rock Strike",
   "slash_art.kablade.break_the_dawn": "Break the Dawn",
   "entity.kablade.rock_spike": "Rock Spike",
@@ -47,7 +42,6 @@
   "entity.kablade.dawn_crescent": "Dawn Crescent",
   "entity.kablade.cut_metal_ring": "Cut Metal Ring",
   "entity.kablade.origin_free_sword": "Origin Free Sword",
-
   "block.kablade.chromium_ore": "Chromium Ore",
   "item.kablade.gravity_nugget": "Gravity Nugget",
   "item.kablade.gravity_crystal": "Gravity Crystal",
@@ -57,7 +51,6 @@
   "item.kablade.chromium_pickaxe": "Chromium Pickaxe",
   "item.kablade.chromium_axe": "Chromium Axe",
   "item.kablade.chromium_hoe": "Chromium Hoe",
-
   "block.kablade.molybdenite": "Molybdenite",
   "item.kablade.molybdenum_ingot": "Molybdenum Ingot",
   "item.kablade.crude_chromoly": "Crude Chromoly",
@@ -70,7 +63,6 @@
   "item.kablade.chromoly_pickaxe": "Chromoly Pickaxe",
   "item.kablade.chromoly_axe": "Chromoly Axe",
   "item.kablade.chromoly_hoe": "Chromoly Hoe",
-
   "block.kablade.aurora_ore": "Aurora Ore",
   "item.kablade.aurora_fragment": "Aurora Fragment",
   "item.kablade.aurora_metal_ingot": "Aurora Metal Ingot",
@@ -79,11 +71,9 @@
   "item.kablade.aurora_metal_pickaxe": "Aurora Metal Pickaxe",
   "item.kablade.aurora_metal_axe": "Aurora Metal Axe",
   "item.kablade.aurora_metal_hoe": "Aurora Metal Hoe",
-
   "item.kablade.aurora_blade": "§rAurora Blade[Sky Shining]",
   "item.kablade.cut_iron": "§rcomposite Blade[Iron Cutter]",
   "item.kablade.originyer": "§rOriginyer",
-
   "item.kablade.muraseshu": "§rSeshu Muramasa",
   "item.kablade.murahori": "§rHorikawa Kunihiro",
   "item.kablade.murauson": "§rYoto Uson",
@@ -102,6 +92,7 @@
   "item.kablade.vorpal_sword": "§rVorpal Sword Type-11",
   "item.kablade.dawn_breaker": "§rDawn Breaker:Talwar",
   "item.kablade.sakura_blossom": "§rSakura Blossom",
+  "item.kablade.florid_sakura": "§rDemonblade - Florid Sakura",
   "item.kablade.tuna": "One Salty Tuna",
   "item.kablade.third_sacred": "§r3rd Sacred Relic",
   "item.kablade.pledge_of_rain": "Pledge Of Rain",
@@ -133,6 +124,7 @@
   "slash_art.kablade.shock_impact": "Shock Impact",
   "slash_art.kablade.zaizan": "Zaizan of Guilt",
   "slash_art.kablade.falling_petals": "Falling Petals",
+  "slash_art.kablade.crimson_sakura": "Crimson Sakura",
   "slash_art.kablade.lethal_thrust": "Lethal Thrust",
   "slash_art.kablade.love_is_war": "Love is War!",
   "slash_art.kablade.induction_collapse": "Induction Collapse",
@@ -141,6 +133,7 @@
   "entity.kablade.tuna": "One Salty Tuna",
   "entity.kablade.rain_umbrella": "Rain Umbrella",
   "entity.kablade.summoned_hedra": "Summoned Hedra",
+  "entity.kablade.crimson_sakura": "Crimson Sakura",
   "effect.kablade.paralysis": "Paralysis",
   "effect.kablade.freeze": "Freeze",
   "effect.kablade.confinement": "Confinement",
@@ -182,7 +175,6 @@
   "prop.kablade.raikiri_shield_blood": "Raikiri Shield",
   "prop.kablade.turbulence": "§5Turbulence",
   "prop.kablade.kami_of_war_count": "Kami of War",
-
   "msg.kablade.raikiri_shield_blood": "Raikiri shield durability remaining: %s",
   "msg.kablade.raikiri_shield_crash": "Raikiri Shield has crashed",
   "item.kablade.iron_coil": "Iron Coil",
@@ -196,6 +188,5 @@
   "special_effect.kablade.glacial_bane": "§bGlacial Bane",
   "entity.kablade.freeze_domain": "Freeze Domain",
   "prop.kablade.glacial_bane_extra_tick": "§bGlacial Bane",
-
   "prop.kablade.title": "§6§lKablade:Effects"
 }

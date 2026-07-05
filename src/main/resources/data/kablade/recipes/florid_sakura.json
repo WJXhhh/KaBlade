@@ -1,0 +1,40 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:florid_sakura",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:phoenix"
+      }
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:third_sacred"
+      }
+    },
+    "C": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:sakura_blossom"
+      }
+    },
+    "D": {
+      "item": "minecraft:redstone_block"
+    }
+  },
+  "pattern": [
+    "D C",
+    " B ",
+    "A D"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

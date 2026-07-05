@@ -6,6 +6,7 @@ import com.wjx.kablade.blades.honkai.ByoRai;
 import com.wjx.kablade.blades.honkai.CrystalCutter;
 import com.wjx.kablade.blades.honkai.DawnBreaker;
 import com.wjx.kablade.blades.honkai.FairySword;
+import com.wjx.kablade.blades.honkai.FloridSakura;
 import com.wjx.kablade.blades.honkai.FutsunushiTo;
 import com.wjx.kablade.blades.honkai.FuheLiuye;
 import com.wjx.kablade.blades.honkai.FuheZhuque;
@@ -109,6 +110,7 @@ public final class BladeLoader {
     public static BladeDefineBase DAWN_BREAKER;
     public static BladeDefineBase THIRD_SACRED;
     public static BladeDefineBase SAKURA_BLOSSOM;
+    public static BladeDefineBase FLORID_SAKURA;
     public static BladeDefineBase PLEDGE_OF_RAIN;
     public static BladeDefineBase NUE;
     // 崩坏线·脉冲太刀分支
@@ -191,6 +193,7 @@ public final class BladeLoader {
             "sakura_blossom",
             "fairy_sword",
             "third_sacred",
+            "florid_sakura",
             "pledge_of_rain",
             "nue",
             // 崩坏线·苗刀系列：雷妖/电魂 → 雷切/藏锋/开天剑/高周波切割刀
@@ -257,6 +260,7 @@ public final class BladeLoader {
         VORPAL_SWORD = new VorpalSword(context);
         DAWN_BREAKER = new DawnBreaker(context);
         SAKURA_BLOSSOM = new SakuraBlossom(context);
+        FLORID_SAKURA = new FloridSakura(context);
         THIRD_SACRED = new ThirdSacredRelic(context);
         PLEDGE_OF_RAIN = new PledgeOfRain(context);
         NUE = new Nue(context);

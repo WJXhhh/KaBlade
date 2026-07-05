@@ -159,6 +159,17 @@ public final class ModEntities {
                     .noSave()
                     .build("zaizan"));
 
+    public static final RegistryObject<EntityType<CrimsonSakuraAttackEntity>> CRIMSON_SAKURA = REGISTRY.register(
+            "crimson_sakura",
+            () -> EntityType.Builder.<CrimsonSakuraAttackEntity>of(CrimsonSakuraAttackEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("crimson_sakura"));
+
     /** 「风之结界」光环实体。 */
     public static final RegistryObject<EntityType<TunaEntity>> TUNA = REGISTRY.register(
             "tuna",
