@@ -7,6 +7,7 @@ import com.wjx.kablade.blades.honkai.CrystalCutter;
 import com.wjx.kablade.blades.honkai.DawnBreaker;
 import com.wjx.kablade.blades.honkai.FairySword;
 import com.wjx.kablade.blades.honkai.FloridSakura;
+import com.wjx.kablade.blades.honkai.FrozenNaraka;
 import com.wjx.kablade.blades.honkai.FutsunushiTo;
 import com.wjx.kablade.blades.honkai.FuheLiuye;
 import com.wjx.kablade.blades.honkai.FuheZhuque;
@@ -140,6 +141,7 @@ public final class BladeLoader {
     public static BladeDefineBase MAG_STORM;
     public static BladeDefineBase KEY_OF_CASTIGATION;
     public static BladeDefineBase ICE_EPIPHYLLUM;
+    public static BladeDefineBase FROZEN_NARAKA;
     // 崩坏线·妖精剑
     public static BladeDefineBase FAIRY_SWORD;
     // 万物皆刃线（首批 5 把招牌刀，世界合成获取）
@@ -240,6 +242,7 @@ public final class BladeLoader {
             "mag_storm",
             "key_of_castigation",
             "ice_epiphyllum",
+            "frozen_naraka",
             // 龙一文字线
             "splight_initial",
             "splight_normal",
@@ -324,6 +327,7 @@ public final class BladeLoader {
         MAG_STORM = new MagStorm(context);
         KEY_OF_CASTIGATION = new KeyOfCastigation(context);
         ICE_EPIPHYLLUM = new IceEpiphyllum(context);
+        FROZEN_NARAKA = new FrozenNaraka(context);
         // 崩坏线·妖精剑
         FAIRY_SWORD = new FairySword(context);
         // 崩坏线·复合系列
