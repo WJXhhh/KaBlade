@@ -71,154 +71,176 @@ public class SaDomainSuppression extends SpecialAttackBase {
                 }
             }
         }
-        if (pointedEntity != null){
-            if (pointedEntity instanceof EntityLivingBase){
-                if (!world.isRemote){
-                    pointedEntity.motionY = 0.5f;
-                    float a = 0f;
-                    float radius = 2f;
-                    float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),3f);
-                    float extraDamage2 = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),2f);
-                    float extraDamage3 = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),2f);
+        // 确定技能中心位置
+        double centerX, centerY, centerZ;
+        boolean hasTarget = false;
+        if (pointedEntity instanceof EntityLivingBase) {
+            centerX = pointedEntity.posX;
+            centerY = pointedEntity.posY;
+            centerZ = pointedEntity.posZ;
+            hasTarget = true;
+        } else {
+            // 通过射线追踪找玩家看向的方块
+            RayTraceResult ray = world.rayTraceBlocks(entityPlayer.getPositionEyes(1.0F), entityPlayer.getLook(1.0F).scale(10).add(entityPlayer.getPositionEyes(1.0F)));
+            if (ray != null && ray.hitVec != null) {
+                centerX = ray.hitVec.x;
+                centerY = ray.hitVec.y;
+                centerZ = ray.hitVec.z;
+            } else {
+                // fallback: 玩家面向方向前方10格
+                Vec3d look = entityPlayer.getLookVec();
+                centerX = entityPlayer.posX + look.x * 10;
+                centerY = entityPlayer.posY + entityPlayer.getEyeHeight();
+                centerZ = entityPlayer.posZ + look.z * 10;
+            }
+        }
 
-                    for (int i = 0;i < 6;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + pointedEntity.getEyeHeight() + 1d;
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        double ap1 = Math.toDegrees((pointedEntity.posY - py)/(pointedEntity.posX - px));
-                        double ay;
-                        double n = Math.toDegrees(Math.atan(Math.abs(pointedEntity.posX - px) / Math.abs(pointedEntity.posZ - pz)));
-                        double k = Math.toDegrees(Math.atan(Math.abs(pointedEntity.posZ - pz) / Math.abs(pointedEntity.posX - px)));
-                        if (pointedEntity.posY > ap1){
-                            ap1 = -ap1;
-                        }
-                        if (pz < pointedEntity.posZ){
-                            if (px > pointedEntity.posX){
-                                ay = (float) n;
-                            }
-                            else {
-                                ay = -(float) n;
-                            }
-                        }
-                        else {
-                            if (px > pointedEntity.posX){
-                                ay = 90f + (float) k;
-                            }
-                            else {
-                                ay = -90f -(float) k;
-                            }
-                        }
-                        EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,10f + extraDamage,px,py,pz,(float) ap1,(float)ay);
-                        p.setColor(65535);
-                        world.spawnEntity(p);
-                        a += 60;
+        if (!world.isRemote){
+            if (hasTarget) {
+                pointedEntity.motionY = 0.5f;
+            }
+            float a = 0f;
+            float radius = 2f;
+            float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),3f);
+            float extraDamage2 = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),2f);
+            float extraDamage3 = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),2f);
+
+            for (int i = 0;i < 6;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 1.0d + 1d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                double ap1 = Math.toDegrees((centerY - py)/(centerX - px));
+                double ay;
+                double n = Math.toDegrees(Math.atan(Math.abs(centerX - px) / Math.abs(centerZ - pz)));
+                double k = Math.toDegrees(Math.atan(Math.abs(centerZ - pz) / Math.abs(centerX - px)));
+                if (centerY > ap1){
+                    ap1 = -ap1;
+                }
+                if (pz < centerZ){
+                    if (px > centerX){
+                        ay = (float) n;
                     }
-                    radius = 6f;
-                    for (int i = 0;i < 6;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + pointedEntity.getEyeHeight() + 1d;
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        double ap1 = Math.toDegrees((pointedEntity.posY - py)/(pointedEntity.posX - px));
-                        double ay;
-                        double n = Math.toDegrees(Math.atan(Math.abs(pointedEntity.posX - px) / Math.abs(pointedEntity.posZ - pz)));
-                        double k = Math.toDegrees(Math.atan(Math.abs(pointedEntity.posZ - pz) / Math.abs(pointedEntity.posX - px)));
-                        if (pointedEntity.posY > ap1){
-                            ap1 = -ap1;
-                        }
-                        if (pz < pointedEntity.posZ){
-                            if (px > pointedEntity.posX){
-                                ay = (float) n;
-                            }
-                            else {
-                                ay = -(float) n;
-                            }
-                        }
-                        else {
-                            if (px > pointedEntity.posX){
-                                ay = 90f + (float) k;
-                            }
-                            else {
-                                ay = -90f -(float) k;
-                            }
-                        }
-                        EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,4f + extraDamage2,px,py,pz,(float) ap1,(float)ay);
-                        p.setColor(65535);
-                        world.spawnEntity(p);
-                        a += 60;
-                    }
-                    for (int i = 0;i<10;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + pointedEntity.getEyeHeight();
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        EntitySummonSwordFree p = new EntitySummonSwordFree(world,entityPlayer,3f + extraDamage3,px,py,pz,-90f,0f);
-                        p.setColor(65535);
-                        world.spawnEntity(p);
-                        a+=36;
-                    }
-                    radius = 1f;
-                    for (int i = 0;i < 20;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + 0.1d;
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.5,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.5));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + 0.1d;
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.3,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.3));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + 0.1d;
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.2,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.2));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + 0.1d;
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + 2d;
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.5,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.5));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + 2d;
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.3,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.3));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + 2d;
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.2,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.2));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = pointedEntity.posX + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = pointedEntity.posY + 2d;
-                        double pz = pointedEntity.posZ + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
-                        a+=18;
-                    }
-                    for (int i = 0;i<6;i++){
-                        for (int l = 0;l<6;l++){
-                            Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_LARGE,pointedEntity.posX,pointedEntity.posY,pointedEntity.posZ,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
-                        }
-                        world.addWeatherEffect(new EntityLightningBolt(world,pointedEntity.posX,pointedEntity.posY,pointedEntity.posZ,true));
+                    else {
+                        ay = -(float) n;
                     }
                 }
+                else {
+                    if (px > centerX){
+                        ay = 90f + (float) k;
+                    }
+                    else {
+                        ay = -90f -(float) k;
+                    }
+                }
+                EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,10f + extraDamage,px,py,pz,(float) ap1,(float)ay);
+                p.setColor(65535);
+                world.spawnEntity(p);
+                a += 60;
+            }
+            radius = 6f;
+            for (int i = 0;i < 6;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 1.0d + 1d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                double ap1 = Math.toDegrees((centerY - py)/(centerX - px));
+                double ay;
+                double n = Math.toDegrees(Math.atan(Math.abs(centerX - px) / Math.abs(centerZ - pz)));
+                double k = Math.toDegrees(Math.atan(Math.abs(centerZ - pz) / Math.abs(centerX - px)));
+                if (centerY > ap1){
+                    ap1 = -ap1;
+                }
+                if (pz < centerZ){
+                    if (px > centerX){
+                        ay = (float) n;
+                    }
+                    else {
+                        ay = -(float) n;
+                    }
+                }
+                else {
+                    if (px > centerX){
+                        ay = 90f + (float) k;
+                    }
+                    else {
+                        ay = -90f -(float) k;
+                    }
+                }
+                EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,4f + extraDamage2,px,py,pz,(float) ap1,(float)ay);
+                p.setColor(65535);
+                world.spawnEntity(p);
+                a += 60;
+            }
+            for (int i = 0;i<10;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 1.0d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                EntitySummonSwordFree p = new EntitySummonSwordFree(world,entityPlayer,3f + extraDamage3,px,py,pz,-90f,0f);
+                p.setColor(65535);
+                world.spawnEntity(p);
+                a+=36;
+            }
+            radius = 1f;
+            for (int i = 0;i < 20;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 0.1d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.5,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.5));
+                a+=18;
+            }
+            for (int i = 0;i < 20;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 0.1d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.3,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.3));
+                a+=18;
+            }
+            for (int i = 0;i < 20;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 0.1d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.2,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.2));
+                a+=18;
+            }
+            for (int i = 0;i < 20;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 0.1d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
+                a+=18;
+            }
+            for (int i = 0;i < 20;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 2d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.5,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.5));
+                a+=18;
+            }
+            for (int i = 0;i < 20;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 2d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.3,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.3));
+                a+=18;
+            }
+            for (int i = 0;i < 20;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 2d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.2,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.2));
+                a+=18;
+            }
+            for (int i = 0;i < 20;i++){
+                double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
+                double py = centerY + 2d;
+                double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
+                Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
+                a+=18;
+            }
+            for (int i = 0;i<6;i++){
+                for (int l = 0;l<6;l++){
+                    Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_LARGE,centerX,centerY,centerZ,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
+                }
+                world.addWeatherEffect(new EntityLightningBolt(world,centerX,centerY,centerZ,true));
             }
         }
     }

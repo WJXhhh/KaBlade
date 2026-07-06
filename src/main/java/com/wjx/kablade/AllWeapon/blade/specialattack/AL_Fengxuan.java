@@ -31,7 +31,7 @@ public class AL_Fengxuan extends SpecialAttackBase {
         if(!world.isRemote) {
             ItemSlashBlade blade = (ItemSlashBlade) (itemStack.getItem());
             float baseModif = ItemSlashBlade.BaseAttackModifier.get(tag) / 3.4f;
-            float magicDamage = baseModif + MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),3f);
+            float magicDamage = (baseModif + MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),3f)) * 0.5f;
             EntitySlashDimensionAdd dim = new EntitySlashDimensionAdd(world, entityPlayer, magicDamage);
             if (dim != null) {
                 Vec3d tmppos;

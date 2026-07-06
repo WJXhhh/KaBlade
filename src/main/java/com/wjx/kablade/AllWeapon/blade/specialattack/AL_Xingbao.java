@@ -42,7 +42,7 @@ public class AL_Xingbao extends SpecialAttackBase {
                 entityDrive.setChangeTime(20);
                 entityDrive.setNextSpeed(1.3f);
                 entityDrive.setLocationAndAngles(entityPlayer.posX + (double)rand.nextInt(25) * 0.1, entityPlayer.posY + (double)rand.nextInt(13) + (double)entityPlayer.getEyeHeight() / 2.0, entityPlayer.posZ + (double)rand.nextInt(25) * 0.1, entityPlayer.rotationYaw, 0.0f);
-                entityDrive.getDataManager().set(EntityDriveAdd.SCALE_X,2f);
+                entityDrive.getDataManager().set(EntityDriveAdd.SCALE_X,0.5f);
                 entityDrive.getDataManager().set(EntityDriveAdd.SCALE_Y,2f);
                 entityDrive.getDataManager().set(EntityDriveAdd.SCALE_Z,2f);
                 entityDrive.setInitialSpeed(5.0E-4f * (float)i + 0.001f);
