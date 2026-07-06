@@ -249,7 +249,7 @@ public class WorldEvent {
                 player.setHealth(player.getMaxHealth());
                 player.deathTime = 0;
                 player.isDead = false;
-                player.preparePlayerToSpawn();
+                //player.preparePlayerToSpawn();
                 if (event.isCancelable()) {
                     event.setCanceled(true);
                 }
