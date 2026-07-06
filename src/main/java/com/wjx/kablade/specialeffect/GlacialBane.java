@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -92,8 +93,7 @@ public class GlacialBane extends SpecialEffect {
                 .inflate(RANGE, RANGE, RANGE)
                 .move(player.getDeltaMovement());
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                target -> target != player && target.isAlive() && !target.isAlliedTo(player)
-                        && !(target instanceof Player p && (p.isCreative() || p.isSpectator())));
+                target -> SaTargeting.canDamage(player, target));
 
         for (LivingEntity target : targets) {
             target.hurt(level.damageSources().playerAttack(player), damage);

@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -277,7 +278,7 @@ public class PhantomSwordExEntity extends Entity {
         double ambit = HIT_AMBIT;
         AABB bb = getBoundingBox().inflate(ambit);
         List<LivingEntity> list = level().getEntitiesOfClass(LivingEntity.class, bb,
-                e -> e.isAlive() && !alreadyHit.contains(e.getUUID()) && e != thrower);
+                e -> SaTargeting.canDamage(thrower, e) && !alreadyHit.contains(e.getUUID()));
         // 优先命中锁定的目标
         int targetId = getTargetEntityId();
         if (targetId != 0) {
@@ -357,6 +358,9 @@ public class PhantomSwordExEntity extends Entity {
 
     /** 骑乘结束时对目标造成终结伤害（默认每20 tick触发一次额外伤害）。 */
     protected void doFinalHit(LivingEntity target) {
+        if (!SaTargeting.canDamage(thrower, target)) {
+            return;
+        }
         target.invulnerableTime = 0;
         target.hurt(damageSource(), Math.max(attackDamage / 2.0F, 1.0F));
         hitBlade(target);

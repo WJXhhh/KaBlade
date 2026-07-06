@@ -3,7 +3,6 @@ package com.wjx.kablade.util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -34,7 +33,8 @@ public final class SATool {
             AABB box = watcher.getBoundingBox()
                     .inflate(8.0D, 8.0D, 8.0D)
                     .move(dx, dy, dz);
-            List<Entity> list = level.getEntities(watcher, box, SATool::isAttackable);
+            List<Entity> list = level.getEntities(watcher, box,
+                    entity -> isAttackable(watcher, entity));
 
             float closest = 30.0f;
             for (Entity cur : list) {
@@ -51,13 +51,13 @@ public final class SATool {
         return target;
     }
 
-    private static boolean isAttackable(Entity entity) {
-        if (!(entity instanceof LivingEntity)) {
+    private static boolean isAttackable(LivingEntity watcher, Entity entity) {
+        if (!(entity instanceof LivingEntity living)) {
             return false;
         }
-        if (entity instanceof Player player && (player.isCreative() || player.isSpectator())) {
+        if (!SaTargeting.canDamage(watcher, living)) {
             return false;
         }
-        return entity instanceof Enemy || entity instanceof Mob;
+        return entity instanceof Mob || entity instanceof Player;
     }
 }

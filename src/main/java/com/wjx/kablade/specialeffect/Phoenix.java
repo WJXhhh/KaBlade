@@ -2,6 +2,7 @@ package com.wjx.kablade.specialeffect;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModSpecialEffects;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -40,6 +41,7 @@ public class Phoenix extends mods.flammpfeil.slashblade.registry.specialeffects.
                 .map(state -> state.hasSpecialEffect(ModSpecialEffects.PHOENIX.getId()))
                 .orElse(false);
         if (!hasPhoenix) return;
+        if (!SaTargeting.canDamage(player, target)) return;
 
         if (target.isOnFire()) {
             event.setAmount(event.getAmount() * DAMAGE_BOOST);

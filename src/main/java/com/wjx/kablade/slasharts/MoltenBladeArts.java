@@ -2,10 +2,10 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -146,13 +146,7 @@ public final class MoltenBladeArts extends SlashArts {
     }
 
     private static boolean isAttackable(LivingEntity user, LivingEntity target) {
-        if (target == user || !target.isAlive() || target.isAlliedTo(user)) {
-            return false;
-        }
-        if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
-            return false;
-        }
-        return new TargetSelector.AttackablePredicate().test(target);
+        return SaTargeting.canDamageAttackable(user, target);
     }
 
     private static final class LungeState {

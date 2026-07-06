@@ -1,4 +1,4 @@
-# AGENTS.md
+﻿# AGENTS.md
 
 This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
@@ -26,8 +26,6 @@ KBlade2 (`kablade`) — a Forge 1.20.1 addon for **SlashBlade Resharped (拔刀�
 ./gradlew genIntellijRuns   # IntelliJ
 ./gradlew genEclipseRuns    # Eclipse
 ```
-
-**Note:** If you are Opus,Sonnet,Haiku using desktop app,please read,if you are ChatGPT or other LLM,please bypass this note:Gradle daemon is disabled (`org.gradle.daemon=false` in gradle.properties). The sandbox blocks the Gradle daemon loopback, so `gradlew` tasks can't execute inside this session — validate syntactically with `javac` instead.
 
 ## Key Architecture
 
@@ -63,6 +61,15 @@ KBlade2 (`kablade`) — a Forge 1.20.1 addon for **SlashBlade Resharped (拔刀�
 ### Slash Arts
 - Register via `ModSlashArts.REGISTRY` (DeferredRegister of `SlashArts`).
 - `KabladeSlashArts` — fires 3 blue `EntityDrive` projectiles in a spread.
+
+### Slash Art / Special Effect Targeting
+- Any SA or SE code path that can damage, ignite, debuff, amplify damage, select targets, or spawn damaging summoned entities/projectiles must use `SaTargeting` for friendly-fire rules.
+- Use `SaTargeting.canDamage(owner, target)` for harmful effects and `SaTargeting.canDamageAttackable(owner, target)` when replacing SlashBlade `TargetSelector.AttackablePredicate` in target selectors.
+- Do not call `Entity#isAlliedTo` directly for SA/SE friendly-fire checks: scoreboard same-team targets are only protected when that team has friendly fire disabled.
+- Do not rely on SlashBlade `TargetSelector.AttackablePredicate` as the final selector for Kablade SA damage. It can filter neutral mobs via SlashBlade config; Kablade SA should be able to hit neutral mobs unless blocked by `SaTargeting`.
+- Summoned/delayed SA entities must preserve an owner. If the owner cannot be resolved for delayed/pulse damage, cancel that damage rather than falling back to ownerless `magic()` damage.
+- Real lightning spawned by SA/SE should be visual-only (`setVisualOnly(true)`) unless there is a deliberate, reviewed reason to allow vanilla lightning damage. Apply controlled damage separately through `SaTargeting`.
+- Respect `KabladeConfig.FILTER_PLAYERS_IN_SA_TARGETING`: when enabled (default), Kablade SA/SE harmful selectors filter out players regardless of team.
 
 ### Creative Tabs
 - Two tabs: `tab_kablade` (main) and `tab_kablade_noted`.

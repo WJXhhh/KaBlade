@@ -3,6 +3,7 @@ package com.wjx.kablade.entity;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -137,13 +138,7 @@ public class ConfinementForceFieldEntity extends Entity {
     }
 
     private boolean canAffect(LivingEntity e) {
-        if (!e.isAlive() || e == this.owner) {
-            return false;
-        }
-        if (e instanceof Player player) {
-            return !player.isCreative() && !player.isSpectator();
-        }
-        return true;
+        return SaTargeting.canDamage(this.owner, e);
     }
 
     @Override
@@ -181,6 +176,10 @@ public class ConfinementForceFieldEntity extends Entity {
     public static void onLivingHurt(LivingHurtEvent event) {
         LivingEntity entity = event.getEntity();
         if (entity.level().isClientSide()) {
+            return;
+        }
+        if (event.getSource().getEntity() instanceof LivingEntity attacker
+                && !SaTargeting.canDamage(attacker, entity)) {
             return;
         }
         if (entity.hasEffect(ModMobEffects.CONFINEMENT.get())) {

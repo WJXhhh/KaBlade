@@ -2,10 +2,10 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.StageLightEntity;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -21,11 +21,8 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 聚光舞台（Lights on Stage）——银河追光专属 SA。
- * <p>
- * 起手旋斩后在脚下展开金白色舞台光环；第 5 tick 对舞台范围内的非友方目标结算一次
- * 环形斩击，光环随后作为演出残留并缓慢淡出。
- */
+ * 鑱氬厜鑸炲彴锛圠ights on Stage锛夆€斺€旈摱娌宠拷鍏変笓灞?SA銆? * <p>
+ * 璧锋墜鏃嬫柀鍚庡湪鑴氫笅灞曞紑閲戠櫧鑹茶垶鍙板厜鐜紱绗?5 tick 瀵硅垶鍙拌寖鍥村唴鐨勯潪鍙嬫柟鐩爣缁撶畻涓€娆? * 鐜舰鏂╁嚮锛屽厜鐜殢鍚庝綔涓烘紨鍑烘畫鐣欏苟缂撴參娣″嚭銆? */
 public final class LightsOnStageArts extends SlashArts {
 
     private static final int STAGE_LIFETIME = 80;
@@ -73,7 +70,7 @@ public final class LightsOnStageArts extends SlashArts {
         AABB bounds = AABB.ofSize(origin.add(0.0, 1.0, 0.0),
                 RANGE * 2.0, VERTICAL_RANGE * 2.0, RANGE * 2.0);
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, bounds, target -> {
-            if (target == user || !target.isAlive() || target.isAlliedTo(user)) {
+            if (!SaTargeting.canDamageAttackable(user, target)) {
                 return false;
             }
             double dx = target.getX() - origin.x;
@@ -82,9 +79,7 @@ public final class LightsOnStageArts extends SlashArts {
         });
 
         DamageSource source = level.damageSources().mobAttack(user);
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         for (LivingEntity target : targets) {
-            if (!attackable.test(target)) continue;
             target.hurt(source, damage);
             target.knockback(0.55,
                     origin.x - target.getX(), origin.z - target.getZ());

@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.entity.IShootable;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -249,19 +250,13 @@ public class VorpalBlackHoleEntity extends Entity {
             return !player.isCreative() && !player.isSpectator();
         }
         if (entity instanceof LivingEntity living) {
-            return living.isAlive() && (this.owner == null || !living.isAlliedTo(this.owner));
+            return SaTargeting.canDamage(this.owner, living);
         }
         return entity instanceof IShootable;
     }
 
     private boolean canDamage(LivingEntity target) {
-        if (!target.isAlive() || target == this.owner) {
-            return false;
-        }
-        if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
-            return false;
-        }
-        return this.owner == null || !target.isAlliedTo(this.owner);
+        return SaTargeting.canDamage(this.owner, target);
     }
 
     private DamageSource damageSource(ServerLevel level) {

@@ -5,6 +5,7 @@ import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.network.KabladeNetwork;
 import com.wjx.kablade.network.OripursuitLockPacket;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
@@ -264,7 +265,7 @@ public class Oripursuit extends SpecialEffect {
                 .inflate(1.0);
 
         List<LivingEntity> candidates = level.getEntitiesOfClass(
-                LivingEntity.class, scanBox, e -> e != user && e.isAlive() && e.isPickable());
+                LivingEntity.class, scanBox, e -> e.isPickable() && SaTargeting.canDamage(user, e));
 
         LivingEntity closest = null;
         double closestDist = RAY_DISTANCE;

@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.FrostBladeEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -109,23 +110,21 @@ public final class FrostBladeArts extends SlashArts {
                 .map(state -> state.getTargetEntity(level))
                 .orElse(null);
         if (locked instanceof LivingEntity living
-                && living.isAlive()
-                && !living.isAlliedTo(user)
+                && SaTargeting.canDamage(user, living)
                 && living.distanceToSqr(user) <= SEEK_RANGE * SEEK_RANGE) {
             return living;
         }
 
         Entity watched = SATool.getEntityToWatch(user);
         if (watched instanceof LivingEntity living
-                && living.isAlive()
-                && !living.isAlliedTo(user)
+                && SaTargeting.canDamage(user, living)
                 && living.distanceToSqr(user) <= SEEK_RANGE * SEEK_RANGE) {
             return living;
         }
 
         return level.getEntitiesOfClass(LivingEntity.class,
                         user.getBoundingBox().inflate(12.0D),
-                        e -> e != user && e.isAlive() && !e.isAlliedTo(user))
+                        e -> SaTargeting.canDamage(user, e))
                 .stream()
                 .min(java.util.Comparator.comparingDouble(user::distanceToSqr))
                 .orElse(null);

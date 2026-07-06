@@ -34,6 +34,8 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.FROST_BLADE_EDGE.get(), FrostBladeRenderer::new);
         event.registerEntityRenderer(ModEntities.FREEZE_DOMAIN.get(), FreezeDomainRenderer::new);
         event.registerEntityRenderer(ModEntities.SHOCK_IMPACT.get(), ShockImpactRenderer::new);
+        event.registerEntityRenderer(ModEntities.THUNDER_EDGE_ATTACK.get(), ThunderEdgeAttackRenderer::new);
+        event.registerEntityRenderer(ModEntities.FENGXUAN_DIMENSION.get(), FengxuanDimensionRenderer::new);
         event.registerEntityRenderer(ModEntities.ZAIZAN.get(), ZaizanRenderer::new);
         event.registerEntityRenderer(ModEntities.CRIMSON_SAKURA.get(), CrimsonSakuraRenderer::new);
         event.registerEntityRenderer(ModEntities.TUNA.get(), TunaRenderer::new);
@@ -46,6 +48,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.FLARE_EDGE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.AQUA_EDGE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.PHANTOM_SWORD_EX.get(), PhantomSwordExRenderer::new);
+        event.registerEntityRenderer(ModEntities.BUTTERFLY_SWORD.get(), ButterflySwordRenderer::new);
         event.registerEntityRenderer(ModEntities.LIGHTNING_SWORD.get(), PhantomSwordExRenderer::new);
         event.registerEntityRenderer(ModEntities.STAR_SWORD.get(), PhantomSwordExRenderer::new);
         event.registerEntityRenderer(ModEntities.STAGE_LIGHT.get(), StageLightRenderer::new);

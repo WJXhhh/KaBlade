@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
@@ -96,7 +97,7 @@ public final class FireOfSinArts extends SlashArts {
                 pos.x + IGNITE_RANGE, pos.y + 2.0, pos.z + IGNITE_RANGE);
 
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e != user && e.isAlive() && !e.isAlliedTo(user));
+                e -> SaTargeting.canDamage(user, e));
 
         for (LivingEntity target : targets) {
             target.setSecondsOnFire(FIRE_SECONDS);

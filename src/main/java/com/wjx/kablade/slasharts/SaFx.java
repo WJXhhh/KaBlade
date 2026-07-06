@@ -1,13 +1,18 @@
 package com.wjx.kablade.slasharts;
 
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
 import com.wjx.kablade.init.ModComboStates;
+import com.wjx.kablade.util.SaTargeting;
+import mods.flammpfeil.slashblade.util.AttackHelper;
+import mods.flammpfeil.slashblade.util.AttackManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -126,7 +131,7 @@ final class SaFx {
         double oz = user.getZ();
         AABB box = user.getBoundingBox().inflate(range);
         return level.getEntitiesOfClass(LivingEntity.class, box, e -> {
-            if (e == user || !e.isAlive() || e.isAlliedTo(user)) {
+            if (!SaTargeting.canDamage(user, e)) {
                 return false;
             }
             double dx = e.getX() - ox;
@@ -166,6 +171,33 @@ final class SaFx {
         d.shoot(dir.x, dir.y, dir.z, speed, 0.6F);
         level.addFreshEntity(d);
         return d;
+    }
+
+    /**
+     * Convert a desired final hit into EntityDrive's internal damage coefficient.
+     * SlashBlade 1.20 multiplies drive damage by the owner's attack attribute again,
+     * so old 1.12-style "final damage" values must be normalized first.
+     */
+    static double driveDamageCoeff(LivingEntity user, double desiredFinalDamage) {
+        double attack = Math.max(user.getAttributeValue(Attributes.ATTACK_DAMAGE), 0.001D);
+        double scale = Math.max(AttackManager.getSlashBladeDamageScale(user), 0.001F);
+        double config = ((Double) SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER.get());
+        double additive = AttackHelper.getRankBonus(user);
+        double preScaled = desiredFinalDamage / Math.max(scale * config, 0.001D);
+        return Math.max((preScaled - additive) / attack, 0.0D);
+    }
+
+    static EntityDrive driveWithFinalDamage(ServerLevel level, LivingEntity user, Vec3 pos, Vec3 dir,
+                                            float speed, double desiredFinalDamage, int color,
+                                            float size, float lifetime) {
+        return driveWithFinalDamage(level, user, pos, dir, speed, desiredFinalDamage, color, size, lifetime, 0.0F);
+    }
+
+    static EntityDrive driveWithFinalDamage(ServerLevel level, LivingEntity user, Vec3 pos, Vec3 dir,
+                                            float speed, double desiredFinalDamage, int color,
+                                            float size, float lifetime, float roll) {
+        return drive(level, user, pos, dir, speed, driveDamageCoeff(user, desiredFinalDamage),
+                color, size, lifetime, roll);
     }
 
     /** 射出一道裂空审判斩（EntityJudgementCut），开启循环命中——大招收尾的标志性大斩。 */

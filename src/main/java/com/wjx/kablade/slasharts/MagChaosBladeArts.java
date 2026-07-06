@@ -5,10 +5,10 @@ import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.network.KabladeNetwork;
 import com.wjx.kablade.network.MagChaosBladeFxPacket;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
@@ -176,15 +176,11 @@ public final class MagChaosBladeArts extends SlashArts {
     }
 
     private static boolean isAttackable(LivingEntity user, LivingEntity target) {
-        if (target == user || !target.isAlive() || !target.isPickable() || target.isAlliedTo(user)) {
-            return false;
-        }
-        if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
+        if (!target.isPickable() || !SaTargeting.canDamage(user, target)) {
             return false;
         }
         try {
-            return target instanceof Mob || target instanceof Player
-                    || new TargetSelector.AttackablePredicate().test(target);
+            return SaTargeting.canDamageAttackable(user, target);
         } catch (NullPointerException ignored) {
             return false;
         }

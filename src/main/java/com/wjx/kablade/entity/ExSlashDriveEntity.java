@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -330,7 +331,7 @@ public class ExSlashDriveEntity extends Entity {
         AABB bb = getBoundingBox().inflate(ambit);
         java.util.List<LivingEntity> targets = level().getEntitiesOfClass(
                 LivingEntity.class, bb,
-                e -> e.isAlive() && e != thrower && !alreadyHit.contains(e.getUUID()));
+                e -> SaTargeting.canDamage(thrower, e) && !alreadyHit.contains(e.getUUID()));
 
         for (LivingEntity target : targets) {
             if (isMultiHit() || !alreadyHit.contains(target.getUUID())) {

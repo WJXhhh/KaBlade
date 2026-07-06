@@ -2,6 +2,7 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.RainUmbrellaEntity;
 import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraft.resources.ResourceLocation;
@@ -60,12 +61,7 @@ public final class LoveIsWarArts extends SlashArts {
     }
 
     private static boolean isValidTarget(LivingEntity user, LivingEntity target) {
-        if (target == user || !target.isAlive() || target.distanceToSqr(user) > LOCK_RANGE * LOCK_RANGE) {
-            return false;
-        }
-        if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
-            return false;
-        }
-        return !target.isAlliedTo(user);
+        return SaTargeting.canDamage(user, target)
+                && target.distanceToSqr(user) <= LOCK_RANGE * LOCK_RANGE;
     }
 }

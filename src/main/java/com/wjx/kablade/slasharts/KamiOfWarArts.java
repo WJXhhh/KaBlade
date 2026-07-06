@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -146,10 +147,7 @@ public final class KamiOfWarArts extends SlashArts {
                 .move(user.getDeltaMovement());
         ItemStack blade = user.getMainHandItem();
         for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> target != user && target.isAlive())) {
-            if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
-                continue;
-            }
+                target -> SaTargeting.canDamage(user, target))) {
             target.hurt(level.damageSources().explosion(user, user), BASE_DAMAGE + extraDamage);
             if (blade.getItem() instanceof ItemSlashBlade && user instanceof Player player) {
                 blade.hurtEnemy(target, player);

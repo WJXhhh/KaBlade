@@ -2,6 +2,7 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -93,7 +94,7 @@ public final class AbsoluteZeroArts extends SlashArts {
                 .inflate(1.0D, 1.0D, 1.0D);
 
         List<LivingEntity> candidates = level.getEntitiesOfClass(
-                LivingEntity.class, scanBox, e -> e != user && canBeFrozenTarget(e));
+                LivingEntity.class, scanBox, e -> canBeFrozenTarget(user, e));
 
         LivingEntity pointed = null;
         double closestDistance = RAY_DISTANCE;
@@ -125,13 +126,10 @@ public final class AbsoluteZeroArts extends SlashArts {
         return pointed;
     }
 
-    private static boolean canBeFrozenTarget(LivingEntity entity) {
-        if (!entity.isAlive() || !entity.isPickable()) {
+    private static boolean canBeFrozenTarget(LivingEntity user, LivingEntity entity) {
+        if (!entity.isPickable() || !SaTargeting.canDamage(user, entity)) {
             return false;
         }
-        if (entity instanceof Player player) {
-            return !player.isSpectator();
-        }
-        return entity instanceof Mob;
+        return entity instanceof Mob || entity instanceof Player;
     }
 }

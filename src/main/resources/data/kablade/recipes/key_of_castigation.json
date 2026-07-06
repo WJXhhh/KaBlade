@@ -1,0 +1,33 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:key_of_castigation",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:mag_storm"
+      }
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:nue"
+      }
+    },
+    "C": {
+      "item": "kablade:electro_signet"
+    }
+  },
+  "pattern": [
+    "C C",
+    "CBC",
+    " A "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

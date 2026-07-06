@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,16 +47,22 @@ public class LightningSwordEntity extends PhantomSwordExEntity {
 
     @Override
     protected void onHitEntity(LivingEntity target) {
+        if (!SaTargeting.canDamage(thrower, target)) {
+            discard();
+            return;
+        }
         // 1.12.2 used a real lightning bolt here: it damaged and ignited the target.
         if (!level().isClientSide()) {
             LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level());
             if (bolt != null) {
                 bolt.setPos(target.getX(), target.getY(), target.getZ());
-                bolt.setVisualOnly(false);
+                bolt.setVisualOnly(true);
                 level().addFreshEntity(bolt);
             }
+            target.invulnerableTime = 0;
+            target.hurt(damageSource(), Math.max(attackDamage, 1.0F));
+            target.setRemainingFireTicks(100);
         }
-        // The old lightning sword did not add a second direct-magic hit.
         discard();
     }
 }

@@ -1,10 +1,10 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -23,36 +23,29 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 锋刀抚柳 —— 复合刀·柳叶专属 SA。
- * 从 1.12.2 {@code HonKaiChopWillow} 移植并简化而来。
- * <p>
- * 原版实现：SA 给玩家 Y 速度 +1.1 弹起，再通过 entityData 标志位
- * （{@code to_chop_willow}/{@code start_chop_willow}/{@code chop_willow_retry_count}）
- * 在 {@code WorldEvent} 每 tick 轮询，倒计时 10 tick 后对周围 4×2×4 范围结算伤害；
- * 若未命中则每 tick 重试，最多 40 次。
- * <p>
- * 1.20.1 简化：把跨 tick 状态机收敛进 SA 类内部，用 {@link TickTask} 调度，
- * 不再依赖 entityData 标志位或全局事件监听。行为等价：
+ * 閿嬪垁鎶氭煶 鈥斺€?澶嶅悎鍒€路鏌冲彾涓撳睘 SA銆? * 浠?1.12.2 {@code HonKaiChopWillow} 绉绘骞剁畝鍖栬€屾潵銆? * <p>
+ * 鍘熺増瀹炵幇锛歋A 缁欑帺瀹?Y 閫熷害 +1.1 寮硅捣锛屽啀閫氳繃 entityData 鏍囧織浣? * 锛坽@code to_chop_willow}/{@code start_chop_willow}/{@code chop_willow_retry_count}锛? * 鍦?{@code WorldEvent} 姣?tick 杞锛屽€掕鏃?10 tick 鍚庡鍛ㄥ洿 4脳2脳4 鑼冨洿缁撶畻浼ゅ锛? * 鑻ユ湭鍛戒腑鍒欐瘡 tick 閲嶈瘯锛屾渶澶?40 娆°€? * <p>
+ * 1.20.1 绠€鍖栵細鎶婅法 tick 鐘舵€佹満鏀舵暃杩?SA 绫诲唴閮紝鐢?{@link TickTask} 璋冨害锛? * 涓嶅啀渚濊禆 entityData 鏍囧織浣嶆垨鍏ㄥ眬浜嬩欢鐩戝惉銆傝涓虹瓑浠凤細
  * <ol>
- *   <li>玩家弹起（Y 速度 +1.1）</li>
- *   <li>10 tick 后 AABB 扫描周围 4×2×4 范围，对每个生物造成 {@code 4 + min(attack, 4)} 伤害</li>
- *   <li>若未命中且重试次数 &lt; 40，则下一 tick 再结算；否则结束</li>
+ *   <li>鐜╁寮硅捣锛圷 閫熷害 +1.1锛?/li>
+ *   <li>10 tick 鍚?AABB 鎵弿鍛ㄥ洿 4脳2脳4 鑼冨洿锛屽姣忎釜鐢熺墿閫犳垚 {@code 4 + min(attack, 4)} 浼ゅ</li>
+ *   <li>鑻ユ湭鍛戒腑涓旈噸璇曟鏁?&lt; 40锛屽垯涓嬩竴 tick 鍐嶇粨绠楋紱鍚﹀垯缁撴潫</li>
  * </ol>
  */
 public final class ChopWillowArts extends SlashArts {
 
-    /** 弹起 Y 速度（1.12.2 原值）。 */
+    /** 寮硅捣 Y 閫熷害锛?.12.2 鍘熷€硷級銆?*/
     private static final double LAUNCH_Y = 1.1;
-    /** 倒计时 tick 数（1.12.2 原值 10）。 */
+    /** 鍊掕鏃?tick 鏁帮紙1.12.2 鍘熷€?10锛夈€?*/
     private static final int DELAY_TICKS = 10;
-    /** 范围伤害基础值。 */
+    /** 鑼冨洿浼ゅ鍩虹鍊笺€?*/
     private static final float BASE_DAMAGE = 4.0F;
-    /** 攻击力补正系数：extraDamage = amplifierCalc(attack, 4)，对数补正。 */
+    /** 鏀诲嚮鍔涜ˉ姝ｇ郴鏁帮細extraDamage = amplifierCalc(attack, 4)锛屽鏁拌ˉ姝ｃ€?*/
     private static final float ATTACK_FACTOR = 4.0F;
-    /** AABB 范围（格）。 */
+    /** AABB 鑼冨洿锛堟牸锛夈€?*/
     private static final double RANGE_XZ = 4.0;
     private static final double RANGE_Y = 2.0;
-    /** 最大重试次数（1.12.2 原值 40）。 */
+    /** 鏈€澶ч噸璇曟鏁帮紙1.12.2 鍘熷€?40锛夈€?*/
     private static final int MAX_RETRY = 40;
 
     public ChopWillowArts(Function<LivingEntity, ResourceLocation> state) {
@@ -65,7 +58,7 @@ public final class ChopWillowArts extends SlashArts {
             return super.doArts(type, user);
         }
 
-        // 弹起
+        // 寮硅捣
         user.setDeltaMovement(user.getDeltaMovement().x, LAUNCH_Y, user.getDeltaMovement().z);
         user.hurtMarked = true;
 
@@ -75,7 +68,6 @@ public final class ChopWillowArts extends SlashArts {
             return super.doArts(type, user);
         }
 
-        // 10 tick 后开始结算
         server.tell(new TickTask(server.getTickCount() + DELAY_TICKS,
                 () -> chopWillowTask(server, level, user, 0)));
 
@@ -83,9 +75,7 @@ public final class ChopWillowArts extends SlashArts {
     }
 
     /**
-     * 范围斩击结算任务。
-     * 命中敌人则一次结算完毕；未命中则下一 tick 重试，最多 {@link #MAX_RETRY} 次。
-     */
+     * 鑼冨洿鏂╁嚮缁撶畻浠诲姟銆?     * 鍛戒腑鏁屼汉鍒欎竴娆＄粨绠楀畬姣曪紱鏈懡涓垯涓嬩竴 tick 閲嶈瘯锛屾渶澶?{@link #MAX_RETRY} 娆°€?     */
     private static void chopWillowTask(MinecraftServer server, ServerLevel level, LivingEntity user, int retry) {
         if (!user.isAlive() || retry > MAX_RETRY) {
             return;
@@ -106,28 +96,25 @@ public final class ChopWillowArts extends SlashArts {
         DamageSource src = user instanceof Player player
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
-
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e != user && e.isAlive() && !e.isAlliedTo(user) && attackable.test(e));
+                e -> SaTargeting.canDamageAttackable(user, e));
 
         if (targets.isEmpty() && retry < MAX_RETRY) {
-            // 未命中，下一 tick 重试
+            // 鏈懡涓紝涓嬩竴 tick 閲嶈瘯
             server.tell(new TickTask(server.getTickCount() + 1,
                     () -> chopWillowTask(server, level, user, retry + 1)));
             return;
         }
 
-        // 结算伤害
+        // 缁撶畻浼ゅ
         for (LivingEntity target : targets) {
             target.hurt(src, damage);
         }
-        // 命中才扣一次耐久（无论命中几个目标，与 1.12.2 行为对齐）
         if (!targets.isEmpty()) {
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
         }
 
-        // 落地爆裂粒子
+        // 钀藉湴鐖嗚绮掑瓙
         for (int i = 0; i < 10; i++) {
             double ox = (level.random.nextBoolean() ? 1 : -1) * level.random.nextDouble();
             double oz = (level.random.nextBoolean() ? 1 : -1) * level.random.nextDouble();

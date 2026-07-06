@@ -147,6 +147,30 @@ public final class ModEntities {
                     .noSave()
                     .build("shock_impact"));
 
+    /** Visual anchor for Key of Castigation's Thunder Edge SA. */
+    public static final RegistryObject<EntityType<ThunderEdgeAttackEntity>> THUNDER_EDGE_ATTACK = REGISTRY.register(
+            "thunder_edge_attack",
+            () -> EntityType.Builder.<ThunderEdgeAttackEntity>of(ThunderEdgeAttackEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("thunder_edge_attack"));
+
+    /** Visual and hitbox entity for AllWeapon Fengxuan's modified SlashDimension. */
+    public static final RegistryObject<EntityType<FengxuanDimensionEntity>> FENGXUAN_DIMENSION = REGISTRY.register(
+            "fengxuan_dimension",
+            () -> EntityType.Builder.<FengxuanDimensionEntity>of(FengxuanDimensionEntity::new, MobCategory.MISC)
+                    .sized(4.0F, 4.0F)
+                    .clientTrackingRange(12)
+                    .updateInterval(20)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("fengxuan_dimension"));
+
     /** Visual anchor for the Zaizan SA. */
     public static final RegistryObject<EntityType<ZaizanEntity>> ZAIZAN = REGISTRY.register(
             "zaizan",
@@ -276,6 +300,18 @@ public final class ModEntities {
                     .noSummon()
                     .noSave()
                     .build("phantom_sword_ex"));
+
+    /** AllWeapon Phantom Butterfly's 1.12.2 butterfly-shaped phantom sword. */
+    public static final RegistryObject<EntityType<ButterflySwordEntity>> BUTTERFLY_SWORD = REGISTRY.register(
+            "butterfly_sword",
+            () -> EntityType.Builder.<ButterflySwordEntity>of(ButterflySwordEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("butterfly_sword"));
 
     /** 「追星剑」金色归航幻影剑（奉神刀·鹿）。 */
     public static final RegistryObject<EntityType<StarSwordEntity>> STAR_SWORD = REGISTRY.register(

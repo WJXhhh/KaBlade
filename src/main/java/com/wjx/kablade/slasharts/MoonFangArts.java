@@ -37,7 +37,7 @@ public final class MoonFangArts extends SlashArts {
         final ServerLevel level = (ServerLevel) user.level();
         final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F);
-        final float damage = DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO);
+        final float damage = (DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO)) * 3.0F;
 
         final Vec3 eye = user.getEyePosition(1.0F);
         final Vec3 look = user.getLookAngle();
@@ -52,7 +52,7 @@ public final class MoonFangArts extends SlashArts {
                 if (!user.isAlive()) return;
                 Vec3 e = user.getEyePosition(1.0F);
                 Vec3 l = user.getLookAngle();
-                SaFx.drive(level, user, e, l, speed, damage, WHITE, size, 40.0F, SaFx.VERTICAL_ROLL);
+                SaFx.driveWithFinalDamage(level, user, e, l, speed, damage, WHITE, size, 40.0F, SaFx.VERTICAL_ROLL);
                 for (int s = 0; s < 14; s++) {
                     double d = s * 0.7;
                     level.sendParticles(ParticleTypes.END_ROD,

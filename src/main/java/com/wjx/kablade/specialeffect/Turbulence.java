@@ -5,6 +5,7 @@ import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -69,9 +70,12 @@ public class Turbulence extends SpecialEffect {
                     .map(cap -> cap.isActive(PROP_KEY))
                     .orElse(false);
             if (active) {
+                LivingEntity target = event.getEntity();
+                if (!SaTargeting.canDamage(player, target)) {
+                    return;
+                }
                 player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
                         .ifPresent(cap -> cap.set(PROP_KEY, 0));
-                LivingEntity target = event.getEntity();
                 // 纯视觉闪电（与 1.12.2 一致，不点燃/不伤旁人）
                 LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
                 bolt.setVisualOnly(true);

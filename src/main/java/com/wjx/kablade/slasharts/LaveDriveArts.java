@@ -2,11 +2,11 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.entity.FlareEdgeEntity;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -28,13 +28,10 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 龙一文字线 SA「熔岩驱动」—— 1.12.2 {@code LaveDriveEx} 完整移植。
- *
- * <p>流程：
- * <ol>
- *   <li>爆炸音效 + 100 个熔岩粒子
- *   <li>AOE 斩击（周围 5 格）
- *   <li>飞刃按固定时间间隔逐个生成，从面前矩形区域依次弹出
+ * 榫欎竴鏂囧瓧绾?SA銆岀啍宀╅┍鍔ㄣ€嶁€斺€?1.12.2 {@code LaveDriveEx} 瀹屾暣绉绘銆? *
+ * <p>娴佺▼锛? * <ol>
+ *   <li>鐖嗙偢闊虫晥 + 100 涓啍宀╃矑瀛? *   <li>AOE 鏂╁嚮锛堝懆鍥?5 鏍硷級
+ *   <li>椋炲垉鎸夊浐瀹氭椂闂撮棿闅旈€愪釜鐢熸垚锛屼粠闈㈠墠鐭╁舰鍖哄煙渚濇寮瑰嚭
  * </ol>
  */
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -42,7 +39,7 @@ public final class LaveDriveArts extends SlashArts {
 
     private static final int DRIVE_COLOR = 0x600030; // 6291504
 
-    /** 挂起的飞刃生成队列 */
+    /** 鎸傝捣鐨勯鍒冪敓鎴愰槦鍒?*/
     private static final List<FlareSpawnEntry> PENDING = new ArrayList<>();
 
     public LaveDriveArts(Function<LivingEntity, ResourceLocation> state) {
@@ -61,12 +58,10 @@ public final class LaveDriveArts extends SlashArts {
             return super.doArts(type, user);
         }
 
-        // 爆炸音
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
                 SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
                 (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
 
-        // 100 个熔岩粒子
         for (int i = 0; i < 100; i++) {
             double d0 = user.getRandom().nextGaussian() * 0.02;
             double d2 = user.getRandom().nextGaussian() * 0.02;
@@ -78,7 +73,7 @@ public final class LaveDriveArts extends SlashArts {
                     1, d0, d2, d3, 0.0);
         }
 
-        // ── 服务端逻辑 ──────────────────────────────────────
+        // 鈹€鈹€ 鏈嶅姟绔€昏緫 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
         float baseAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
@@ -88,11 +83,10 @@ public final class LaveDriveArts extends SlashArts {
                 .orElse(0);
         int powerLevel = Math.max(1, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, blade));
 
-        // AOE 斩击
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
+        // AOE 鏂╁嚮
         AABB box = user.getBoundingBox().inflate(5.0, 0.25, 5.0);
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e != user && e.isAlive() && !e.isAlliedTo(user) && !e.hasEffect(MobEffects.INVISIBILITY) && attackable.test(e));
+                e -> SaTargeting.canDamageAttackable(user, e) && !e.hasEffect(MobEffects.INVISIBILITY));
         for (LivingEntity target : targets) {
             target.hurt(level.damageSources().mobAttack(user), baseAttack);
             target.invulnerableTime = 0;
@@ -102,7 +96,7 @@ public final class LaveDriveArts extends SlashArts {
                     target.getBbWidth() * 0.3, 0.15);
         }
 
-        // 飞刃伤害计算
+        // 椋炲垉浼ゅ璁＄畻
         float magicDamage = baseAttack * 0.53F;
         if (rank >= 5) {
             magicDamage += (baseAttack * (0.2F + (float) powerLevel / 5.0F)) * 0.5F;
@@ -111,7 +105,7 @@ public final class LaveDriveArts extends SlashArts {
             magicDamage *= 2.0F;
         }
 
-        // ── 构建逐个生成的队列（4 发，每 3 tick 出一根） ──────
+        // 鈹€鈹€ 鏋勫缓閫愪釜鐢熸垚鐨勯槦鍒楋紙4 鍙戯紝姣?3 tick 鍑轰竴鏍癸級 鈹€鈹€鈹€鈹€鈹€鈹€
         Vec3 forward = user.getLookAngle();
         Vec3 right = new Vec3(-forward.z, 0, forward.x).normalize();
         double depth = 3.0;
@@ -135,7 +129,7 @@ public final class LaveDriveArts extends SlashArts {
             boolean particle = level.random.nextInt(10) < 3;
             String pstyle = particle ? "LAVA" : "";
 
-            long spawnTick = baseTick + (long) idx * 3; // 每 3 tick 出一根
+            long spawnTick = baseTick + (long) idx * 3;
             PENDING.add(new FlareSpawnEntry(level, user, spawnPos, vel, magicDamage,
                     particle, pstyle, spawnTick));
         }
@@ -143,13 +137,12 @@ public final class LaveDriveArts extends SlashArts {
         return super.doArts(type, user);
     }
 
-    /** 每 tick 检查队列，到期即生成。 */
+    /** 姣?tick 妫€鏌ラ槦鍒楋紝鍒版湡鍗崇敓鎴愩€?*/
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         if (PENDING.isEmpty()) return;
 
-        // 找到第一个有效 entry 所在 level 的时间
         var entry = PENDING.get(0);
         long now = entry.level.getServer().getTickCount();
 
@@ -159,7 +152,7 @@ public final class LaveDriveArts extends SlashArts {
         }
     }
 
-    /** 一条待生成的飞刃记录。 */
+    /** 涓€鏉″緟鐢熸垚鐨勯鍒冭褰曘€?*/
     private static class FlareSpawnEntry {
         final ServerLevel level;
         final LivingEntity user;

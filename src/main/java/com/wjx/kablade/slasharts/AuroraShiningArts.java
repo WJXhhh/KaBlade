@@ -3,12 +3,12 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.AuroraVeilEntity;
 import com.wjx.kablade.event.AuroraColorCycling;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityBlisteringSwords;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -25,15 +25,12 @@ import net.minecraft.world.phys.Vec3;
 import java.util.function.Function;
 
 /**
- * 极光耀天 —— 极光刃「映天」专属 SA（在 1.12.2 {@code SaAuroraShining} 基础上重做为<b>向前突进式</b>大招）。
- * <p>
- * 全程朝玩家面向方向倾泻：蓄力 → 极光刃洪流向前喷射 → 把极光从天召至<b>正前方</b>的打击区 →
- * 最后裂空三连「极光斩」向前撕开天幕、引爆前方一片。颜色取自极光色谱并平滑流转。
- * <ul>
- *   <li>t=0：自身夜视、前方敌人发光；脚下极光蓄力环 + 一道指向前方的极光光束（蓄力，不放招）+ 8 把环身索敌幻影剑</li>
- *   <li>t=6：16 道极光飞斩呈锥形向前喷射</li>
- *   <li>t=12：极光自天而降，砸向正前方约 8 格处的打击区</li>
- *   <li>t=18：向前裂空「极光斩」五连 + 前方极光爆发 + 前方扇区无视护甲伤害/缓速/发光</li>
+ * 鏋佸厜鑰€澶?鈥斺€?鏋佸厜鍒冦€屾槧澶┿€嶄笓灞?SA锛堝湪 1.12.2 {@code SaAuroraShining} 鍩虹涓婇噸鍋氫负<b>鍚戝墠绐佽繘寮?/b>澶ф嫑锛夈€? * <p>
+ * 鍏ㄧ▼鏈濈帺瀹堕潰鍚戞柟鍚戝€炬郴锛氳搫鍔?鈫?鏋佸厜鍒冩椽娴佸悜鍓嶅柗灏?鈫?鎶婃瀬鍏変粠澶╁彫鑷?b>姝ｅ墠鏂?/b>鐨勬墦鍑诲尯 鈫? * 鏈€鍚庤绌轰笁杩炪€屾瀬鍏夋柀銆嶅悜鍓嶆挄寮€澶╁箷銆佸紩鐖嗗墠鏂逛竴鐗囥€傞鑹插彇鑷瀬鍏夎壊璋卞苟骞虫粦娴佽浆銆? * <ul>
+ *   <li>t=0锛氳嚜韬瑙嗐€佸墠鏂规晫浜哄彂鍏夛紱鑴氫笅鏋佸厜钃勫姏鐜?+ 涓€閬撴寚鍚戝墠鏂圭殑鏋佸厜鍏夋潫锛堣搫鍔涳紝涓嶆斁鎷涳級+ 8 鎶婄幆韬储鏁屽够褰卞墤</li>
+ *   <li>t=6锛?6 閬撴瀬鍏夐鏂╁憟閿ュ舰鍚戝墠鍠峰皠</li>
+ *   <li>t=12锛氭瀬鍏夎嚜澶╄€岄檷锛岀牳鍚戞鍓嶆柟绾?8 鏍煎鐨勬墦鍑诲尯</li>
+ *   <li>t=18锛氬悜鍓嶈绌恒€屾瀬鍏夋柀銆嶄簲杩?+ 鍓嶆柟鏋佸厜鐖嗗彂 + 鍓嶆柟鎵囧尯鏃犺鎶ょ敳浼ゅ/缂撻€?鍙戝厜</li>
  * </ul>
  */
 public final class AuroraShiningArts extends SlashArts {
@@ -42,18 +39,16 @@ public final class AuroraShiningArts extends SlashArts {
     private static final int STORM_DRIVES = 10;
     private static final int RAIN_DRIVES = 8;
 
-    // 伤害 = BASE + amplifierCalc(刀当前攻击力, 系数)（对数补正，刀攻击力已含 config 倍率）。
-    // 每项数值都是弧光破晓的 1.5 倍 → 极光耀天强 50%。
     private static final float DRIVE_BASE = 0.84F;
     private static final float SWORD_BASE = 1.41F;
     private static final float HIT_RATIO = 0.169F;
-    /** 终结技无视护甲、前方扇区一击的主伤害。 */
+    /** 缁堢粨鎶€鏃犺鎶ょ敳銆佸墠鏂规墖鍖轰竴鍑荤殑涓讳激瀹炽€?*/
     private static final float AOE_BASE = 6.75F;
     private static final float AOE_RATIO = 1.41F;
 
-    /** 前方打击 / 结算射程（格）。 */
+    /** 鍓嶆柟鎵撳嚮 / 缁撶畻灏勭▼锛堟牸锛夈€?*/
     private static final double FORWARD_RANGE = 18.0;
-    /** 召唤区在正前方多少格。 */
+    /** 鍙敜鍖哄湪姝ｅ墠鏂瑰灏戞牸銆?*/
     private static final double STRIKE_AHEAD = 8.0;
     private static final int GLOW_DURATION = 2400;
     private static final int NIGHT_VISION_DURATION = 2400;
@@ -88,7 +83,7 @@ public final class AuroraShiningArts extends SlashArts {
         final float swordDamage = SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
         final float bypassDamage = AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO);
 
-        // ── t=0：蓄力（不放招，向前蓄势）──
+        // 鈹€鈹€ t=0锛氳搫鍔涳紙涓嶆斁鎷涳紝鍚戝墠钃勫娍锛夆攢鈹€
         if (user instanceof Player player) {
             player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, NIGHT_VISION_DURATION, 0, false, false));
         }
@@ -99,7 +94,6 @@ public final class AuroraShiningArts extends SlashArts {
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
                 SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 1.4F, 1.7F);
 
-        // 环身极光幻影剑（自动索敌，朝前方目标补刀）
         for (int i = 0; i < GUARD_SWORDS; i++) {
             EntityBlisteringSwords sword = new EntityBlisteringSwords(
                     SlashBlade.RegistryEvents.BlisteringSwords, level);
@@ -112,7 +106,7 @@ public final class AuroraShiningArts extends SlashArts {
             sword.startRiding(user, true);
         }
 
-        // ── t=6：极光刃洪流向前喷射 ──
+        // 鈹€鈹€ t=6锛氭瀬鍏夊垉娲祦鍚戝墠鍠峰皠 鈹€鈹€
         SaFx.schedule(level, 6, () -> {
             if (!user.isAlive()) return;
             auroraStorm(level, user, rng, driveDamage);
@@ -120,7 +114,7 @@ public final class AuroraShiningArts extends SlashArts {
                     SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.3F, 1.4F);
         });
 
-        // ── t=12：极光自天而降，砸向正前方打击区 ──
+        // 鈹€鈹€ t=12锛氭瀬鍏夎嚜澶╄€岄檷锛岀牳鍚戞鍓嶆柟鎵撳嚮鍖?鈹€鈹€
         SaFx.schedule(level, 12, () -> {
             if (!user.isAlive()) return;
             auroraRainAhead(level, user, rng, driveDamage);
@@ -128,7 +122,7 @@ public final class AuroraShiningArts extends SlashArts {
                     SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.2F, 1.1F);
         });
 
-        // ── t=18：向前裂空极光斩 + 前方引爆 ──
+        // 鈹€鈹€ t=18锛氬悜鍓嶈绌烘瀬鍏夋柀 + 鍓嶆柟寮曠垎 鈹€鈹€
         SaFx.schedule(level, 18, () -> {
             if (!user.isAlive()) return;
             auroraFinale(level, user, rng, bypassDamage, driveDamage);
@@ -137,7 +131,7 @@ public final class AuroraShiningArts extends SlashArts {
         return super.doArts(type, user);
     }
 
-    /** 蓄力：脚下极光环 + 一道指向前方的极光光束（END_ROD 芯 + 极光尘）。 */
+    /** 钃勫姏锛氳剼涓嬫瀬鍏夌幆 + 涓€閬撴寚鍚戝墠鏂圭殑鏋佸厜鍏夋潫锛圗ND_ROD 鑺?+ 鏋佸厜灏橈級銆?*/
     private static void auroraCharge(ServerLevel level, LivingEntity user, RandomSource rng) {
         Vec3 center = user.position();
         for (int i = 0; i < 24; i++) {
@@ -160,7 +154,7 @@ public final class AuroraShiningArts extends SlashArts {
         }
     }
 
-    /** 极光刃洪流：16 道飞斩朝视线呈锥形向前喷射。 */
+    /** 鏋佸厜鍒冩椽娴侊細16 閬撻鏂╂湞瑙嗙嚎鍛堥敟褰㈠悜鍓嶅柗灏勩€?*/
     private static void auroraStorm(ServerLevel level, LivingEntity user, RandomSource rng, float damage) {
         Vec3 eye = user.getEyePosition(1.0F);
         Vec3 look = user.getLookAngle();
@@ -172,7 +166,6 @@ public final class AuroraShiningArts extends SlashArts {
             float speed = 1.5F + rng.nextFloat() * 0.5F;
             SaFx.drive(level, user, eye, dir, speed, damage, auroraColor(rng), 1.1F, 20.0F);
         }
-        // 招牌：三道平行极光帷幕向前飘扫
         Vec3 flat = SaFx.flatLook(user);
         Vec3 perp = new Vec3(-flat.z, 0.0, flat.x);
         Vec3 vel = flat.scale(0.55);
@@ -188,7 +181,7 @@ public final class AuroraShiningArts extends SlashArts {
         }
     }
 
-    /** 极光自天而降，砸向正前方约 {@link #STRIKE_AHEAD} 格的打击区。 */
+    /** 鏋佸厜鑷ぉ鑰岄檷锛岀牳鍚戞鍓嶆柟绾?{@link #STRIKE_AHEAD} 鏍肩殑鎵撳嚮鍖恒€?*/
     private static void auroraRainAhead(ServerLevel level, LivingEntity user, RandomSource rng, float damage) {
         Vec3 flat = SaFx.flatLook(user);
         Vec3 base = user.position();
@@ -206,16 +199,15 @@ public final class AuroraShiningArts extends SlashArts {
         }
     }
 
-    /** 向前裂空极光斩五连 + 前方极光爆发 + 前方扇区引爆。 */
+    /** 鍚戝墠瑁傜┖鏋佸厜鏂╀簲杩?+ 鍓嶆柟鏋佸厜鐖嗗彂 + 鍓嶆柟鎵囧尯寮曠垎銆?*/
     private static void auroraFinale(ServerLevel level, LivingEntity user, RandomSource rng,
                                      float bypassDamage, float veilDamage) {
         Vec3 eye = user.getEyePosition(1.0F);
         Vec3 look = user.getLookAngle();
-        // 招牌收尾：一道巨幕极光向前横扫（自带扫过即伤）
         AuroraVeilEntity.spawn(level, user.getX(), user.getY() + 0.2, user.getZ(),
                 user.getYRot(), SaFx.flatLook(user).scale(0.45), 2.2F, 34, rng.nextInt(), user, veilDamage);
 
-        // 前方爆发点（眼前约 2.5 格）
+        // 鍓嶆柟鐖嗗彂鐐癸紙鐪煎墠绾?2.5 鏍硷級
         Vec3 burst = eye.add(look.scale(2.5));
         for (int i = 0; i < 20; i++) {
             level.sendParticles(auroraDust(rng, 1.6F), burst.x, burst.y, burst.z, 7, 0.6, 0.6, 0.6, 0.35);
@@ -225,10 +217,8 @@ public final class AuroraShiningArts extends SlashArts {
                     0, (rng.nextDouble() - 0.5) * 0.6, (rng.nextDouble() - 0.5) * 0.6,
                     (rng.nextDouble() - 0.5) * 0.6, 1.0);
         }
-
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
-            if (!attackable.test(t)) continue;
+            if (!SaTargeting.canDamageAttackable(user, t)) continue;
             t.hurt(level.damageSources().magic(), bypassDamage);
             t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SLOW_DURATION, 1));
             t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));

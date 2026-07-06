@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -132,7 +133,7 @@ public class StarSwordEntity extends PhantomSwordExEntity {
             return Optional.empty();
         }
         Entity t = level().getEntity(id);
-        if (t instanceof LivingEntity living && living.isAlive()
+        if (t instanceof LivingEntity living && SaTargeting.canDamage(thrower, living)
                 && !alreadyHit.contains(living.getUUID())
                 && getBoundingBox().inflate(HIT_REACH).intersects(living.getBoundingBox())) {
             return Optional.of(living);

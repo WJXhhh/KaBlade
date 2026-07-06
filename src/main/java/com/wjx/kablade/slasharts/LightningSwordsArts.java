@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.LightningSwordEntity;
 import com.wjx.kablade.entity.PhantomSwordExEntity;
 import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -61,7 +62,7 @@ public final class LightningSwordsArts extends SlashArts {
         if (target == null || !target.isAlive() || target.distanceTo(user) >= 30.0F) {
             target = SATool.getEntityToWatch(user);
         }
-        if (!(target instanceof LivingEntity livingTarget) || !target.isAlive()) {
+        if (!(target instanceof LivingEntity livingTarget) || !SaTargeting.canDamage(user, livingTarget)) {
             return super.doArts(type, user);
         }
 

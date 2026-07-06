@@ -3,6 +3,7 @@ package com.wjx.kablade.specialeffect;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModSpecialEffects;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -68,6 +69,9 @@ public class HolyEnergyImpact extends SpecialEffect {
             return;
         }
         if (!hasEffect(player)) {
+            return;
+        }
+        if (!SaTargeting.canDamage(player, event.getEntity())) {
             return;
         }
 

@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Set;
+
 /**
  * 「万物皆刃」世界合成的公共工具：方块阵匹配（含 4 向旋转）、刀架/基础刀判定、
  * 结果刀构建（继承击杀数/骄魂/精炼）。复刻 1.12.2 {@code CommonProxy} + {@code ArrayLib}。
@@ -24,8 +26,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class WorldCraftUtil {
 
     /** 1.12.2 standType==1「耀魂铁锭」对应重锋的铁质刀架物品。 */
-    public static final ResourceLocation IRON_STAND_ID =
-            ResourceLocation.fromNamespaceAndPath("slashblade", "bladestand_1");
+    private static final Set<ResourceLocation> BLADE_STAND_IDS = Set.of(
+            ResourceLocation.fromNamespaceAndPath("slashblade", "bladestand_1"),
+            ResourceLocation.fromNamespaceAndPath("slashblade", "bladestand_2"),
+            ResourceLocation.fromNamespaceAndPath("slashblade", "bladestand_v"),
+            ResourceLocation.fromNamespaceAndPath("slashblade", "bladestand_s"),
+            ResourceLocation.fromNamespaceAndPath("slashblade", "bladestand_1w"),
+            ResourceLocation.fromNamespaceAndPath("slashblade", "bladestand_2w")
+    );
 
     private WorldCraftUtil() {
     }
@@ -37,7 +45,7 @@ public final class WorldCraftUtil {
     /** 刀架是否为铁质（耀魂铁锭）刀架。 */
     public static boolean isIronStand(BladeStandEntity stand) {
         Item type = stand.currentType;
-        return type != null && IRON_STAND_ID.equals(ForgeRegistries.ITEMS.getKey(type));
+        return type != null && BLADE_STAND_IDS.contains(ForgeRegistries.ITEMS.getKey(type));
     }
 
     /** 刀架上是否为「基础未命名」拔刀剑（只有基础刀才能被世界合成转化）。 */
@@ -46,7 +54,14 @@ public final class WorldCraftUtil {
             return false;
         }
         String key = state.getTranslationKey();
-        return key == null || key.isEmpty();
+        if (key == null || key.isBlank() || state.isEmpty()) {
+            return true;
+        }
+        ResourceLocation itemKey = ForgeRegistries.ITEMS.getKey(blade.getItem());
+        String defaultItemKey = itemKey == null
+                ? ""
+                : "item." + itemKey.getNamespace() + "." + itemKey.getPath();
+        return key.equals(defaultItemKey) && state.getModel().isEmpty() && state.getTexture().isEmpty();
     }
 
     /**
@@ -115,7 +130,7 @@ public final class WorldCraftUtil {
         return res;
     }
 
-    private static boolean sameOrder(Block[] a, Block[] b) {
+    static boolean sameOrder(Block[] a, Block[] b) {
         for (int i = 0; i < 4; i++) {
             if (a[i] != b[i]) {
                 return false;
@@ -125,7 +140,7 @@ public final class WorldCraftUtil {
     }
 
     /** 环绕顺序 ur→ul→dl→dr 的一次循环移位 = 把期望阵旋转 90°。 */
-    private static void rotateCw(Block[] cw) {
+    static void rotateCw(Block[] cw) {
         Block last = cw[3];
         cw[3] = cw[2];
         cw[2] = cw[1];

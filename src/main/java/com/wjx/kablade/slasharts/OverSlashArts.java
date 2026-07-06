@@ -1,11 +1,11 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -21,10 +21,8 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 龙一文字线 SA「超越斩」—— 1.12.2 {@code OverSlash} 完整移植。
- * <p>
- * 消耗 40 魂围绕玩家迸发一次 5 格范围的冲击波 + 6 道紫色飞斩。
- */
+ * 榫欎竴鏂囧瓧绾?SA銆岃秴瓒婃柀銆嶁€斺€?1.12.2 {@code OverSlash} 瀹屾暣绉绘銆? * <p>
+ * 娑堣€?40 榄傚洿缁曠帺瀹惰扛鍙戜竴娆?5 鏍艰寖鍥寸殑鍐插嚮娉?+ 6 閬撶传鑹查鏂┿€? */
 public final class OverSlashArts extends SlashArts {
 
     private static final int SOUL_COST = 40;
@@ -48,7 +46,7 @@ public final class OverSlashArts extends SlashArts {
             return super.doArts(type, user);
         }
 
-        // 女巫粒子 (20 个)
+        // 濂冲帆绮掑瓙 (20 涓?
         for (int i = 0; i < 20; i++) {
             double d0 = user.getRandom().nextGaussian() * 0.02;
             double d1 = user.getRandom().nextGaussian() * 0.02;
@@ -60,12 +58,10 @@ public final class OverSlashArts extends SlashArts {
                     1, d0, d1, d2, 0.0);
         }
 
-        // 爆炸音
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
                 SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
                 (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
 
-        // 魂耗
         boolean paid = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(state -> {
                     if (state.getProudSoulCount() >= SOUL_COST) {
@@ -78,27 +74,23 @@ public final class OverSlashArts extends SlashArts {
             blade.hurtAndBreak(10, user, e -> {});
         }
 
-        // AOE 冲击波
         float baseAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float magicDamage = baseAttack / 2.0F;
-
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         AABB box = user.getBoundingBox().inflate(AOE_RADIUS, 0.25, AOE_RADIUS);
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e != user && e.isAlive() && !e.isAlliedTo(user) && attackable.test(e));
+                e -> SaTargeting.canDamageAttackable(user, e));
         for (LivingEntity target : targets) {
             target.hurt(level.damageSources().mobAttack(user), magicDamage);
         }
-        // 暴击效果（粒子由客户端处理）
+        // 鏆村嚮鏁堟灉锛堢矑瀛愮敱瀹㈡埛绔鐞嗭級
 
-        // 雷声
+        // 闆峰０
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
                 SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.BLOCKS, 0.4F,
                 (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
 
-        // 6 道飞斩（匹配 1.12.2 定位：playerYaw + 60i + random, 跑偏随机, 速度 0.5, 寿命 10, multi-hit, roll 随机）
         Vec3 center = new Vec3(user.getX(), user.getY() + user.getEyeHeight() / 2.0, user.getZ());
         for (int i = 0; i < DRIVE_COUNT; i++) {
             float yaw = user.getYRot() + (60 * i) + (level.random.nextFloat() - 0.5F) * 60.0F;
@@ -115,7 +107,7 @@ public final class OverSlashArts extends SlashArts {
             EntityDrive drive = new EntityDrive(SlashBlade.RegistryEvents.Drive, level);
             drive.setPos(center.x, center.y, center.z);
             drive.setShooter(user);
-            drive.setDamage(magicDamage * 2.0F);   // 实际伤害翻倍弥补简化
+            drive.setDamage(magicDamage * 2.0F);
             drive.setColor(DRIVE_COLOR);
             drive.setLifetime(10);
             drive.shoot(dir.x, dir.y, dir.z, 0.5F, 0.0F);

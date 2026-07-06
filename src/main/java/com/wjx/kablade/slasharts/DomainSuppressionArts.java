@@ -5,6 +5,7 @@ import com.wjx.kablade.entity.OriginFreeSwordEntity;
 import com.wjx.kablade.specialeffect.Oripursuit;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
@@ -273,6 +274,7 @@ public final class DomainSuppressionArts extends SlashArts {
             net.minecraft.world.entity.LightningBolt bolt = net.minecraft.world.entity.EntityType.LIGHTNING_BOLT.create(level);
             if (bolt != null) {
                 bolt.moveTo(x, y, z);
+                bolt.setVisualOnly(true);
                 level.addFreshEntity(bolt);
             }
         }
@@ -303,7 +305,7 @@ public final class DomainSuppressionArts extends SlashArts {
                 .inflate(2.0);
 
         List<LivingEntity> candidates = level.getEntitiesOfClass(
-                LivingEntity.class, scanBox, e -> e != user && e.isAlive() && e.isPickable());
+                LivingEntity.class, scanBox, e -> e.isPickable() && SaTargeting.canDamage(user, e));
 
         // 1) 精确射线优先：碰撞箱略放宽 0.3 增加容差。
         LivingEntity closest = null;

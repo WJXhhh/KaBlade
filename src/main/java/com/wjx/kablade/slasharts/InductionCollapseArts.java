@@ -3,8 +3,8 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.InductionCollapseFxPacket;
 import com.wjx.kablade.network.KabladeNetwork;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
@@ -36,11 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
- * 高频坍缩 -- 「高周波切割刀」专属 SA。
- * <p>
- * 释放后向目标水平突进；命中目标会使其陷入 4 秒的高频电弧坍缩：
- * 缓慢 III、蓝色电弧缠身，并每 0.4 秒受到一次伤害。
- */
+ * 楂橀鍧嶇缉 -- 銆岄珮鍛ㄦ尝鍒囧壊鍒€銆嶄笓灞?SA銆? * <p>
+ * 閲婃斁鍚庡悜鐩爣姘村钩绐佽繘锛涘懡涓洰鏍囦細浣垮叾闄峰叆 4 绉掔殑楂橀鐢靛姬鍧嶇缉锛? * 缂撴參 III銆佽摑鑹茬數寮х紶韬紝骞舵瘡 0.4 绉掑彈鍒颁竴娆′激瀹炽€? */
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class InductionCollapseArts extends SlashArts {
 
@@ -79,21 +76,8 @@ public final class InductionCollapseArts extends SlashArts {
     }
 
     private static boolean isValidTarget(LivingEntity user, LivingEntity target) {
-        if (user == null || target == null || target == user || !target.isAlive()) {
-            return false;
-        }
         try {
-            if (target.isAlliedTo(user)) {
-                return false;
-            }
-        } catch (NullPointerException ignored) {
-            return false;
-        }
-        if (target instanceof Player player) {
-            return !player.isCreative() && !player.isSpectator();
-        }
-        try {
-            return new TargetSelector.AttackablePredicate().test(target);
+            return SaTargeting.canDamageAttackable(user, target);
         } catch (NullPointerException ignored) {
             return false;
         }
@@ -179,13 +163,15 @@ public final class InductionCollapseArts extends SlashArts {
                 return true;
             }
 
-            LivingEntity owner = null;
+            LivingEntity owner;
             Entity ownerEntity = level.getEntity(state.ownerUUID);
             if (ownerEntity instanceof LivingEntity livingOwner && livingOwner.isAlive()) {
                 owner = livingOwner;
-                if (target.isAlliedTo(owner)) {
+                if (!SaTargeting.canDamage(owner, target)) {
                     return true;
                 }
+            } else {
+                return true;
             }
 
             int age = (int) (EFFECT_DURATION - (state.expiresAt - now));

@@ -3,6 +3,7 @@ package com.wjx.kablade.specialeffect;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -32,6 +33,9 @@ public class EMInduction extends SpecialEffect {
 
         Entity source = event.getSource().getEntity();
         if (!(source instanceof Player player) || !hasEffect(player)) {
+            return;
+        }
+        if (!SaTargeting.canDamage(player, event.getEntity())) {
             return;
         }
 

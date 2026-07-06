@@ -2,6 +2,7 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.RockSpikeEntity;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -28,49 +29,43 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import mods.flammpfeil.slashblade.util.TargetSelector;
 
 /**
- * 岩石撼击 — 千岩之锋专属 SA。
- * <p>
- * 以刀顿地，一道环形冲击波由近及远向外扩散，沿途从地里顶出一圈圈<b>真正的 3D 石矛</b>
- * （{@link RockSpikeEntity}，模型/动画在客户端手搓，会出土、停留、再缩回）。被波及的敌人会先
- * 吃满伤害、再被整个掀飞到空中——先伤害后击飞，杜绝「人先飞走、攻击却追不上」。
- * <p>
- * 实现要点：
- * <ul>
- *   <li><b>伤害</b>用 AABB 直接扫描，与表现实体解耦：范围可控、一定先于击飞结算；每个敌人只被
- *       最先到达它的那一圈结算一次（{@code damaged} 去重）。</li>
- *   <li><b>表现</b>是成片的岩刺实体 + 刺根扬起的少量碎岩，不再是满地乱飞的方块碎屑和白烟。</li>
- *   <li><b>节奏</b>用 {@link TickTask} 把每一圈错开几 tick 触发，形成向外荡开的涟漪。</li>
+ * 宀╃煶鎾煎嚮 鈥?鍗冨博涔嬮攱涓撳睘 SA銆? * <p>
+ * 浠ュ垁椤垮湴锛屼竴閬撶幆褰㈠啿鍑绘尝鐢辫繎鍙婅繙鍚戝鎵╂暎锛屾部閫斾粠鍦伴噷椤跺嚭涓€鍦堝湀<b>鐪熸鐨?3D 鐭崇煕</b>
+ * 锛坽@link RockSpikeEntity}锛屾ā鍨?鍔ㄧ敾鍦ㄥ鎴风鎵嬫悡锛屼細鍑哄湡銆佸仠鐣欍€佸啀缂╁洖锛夈€傝娉㈠強鐨勬晫浜轰細鍏? * 鍚冩弧浼ゅ銆佸啀琚暣涓巰椋炲埌绌轰腑鈥斺€斿厛浼ゅ鍚庡嚮椋烇紝鏉滅粷銆屼汉鍏堥璧般€佹敾鍑诲嵈杩戒笉涓娿€嶃€? * <p>
+ * 瀹炵幇瑕佺偣锛? * <ul>
+ *   <li><b>浼ゅ</b>鐢?AABB 鐩存帴鎵弿锛屼笌琛ㄧ幇瀹炰綋瑙ｈ€︼細鑼冨洿鍙帶銆佷竴瀹氬厛浜庡嚮椋炵粨绠楋紱姣忎釜鏁屼汉鍙
+ *       鏈€鍏堝埌杈惧畠鐨勯偅涓€鍦堢粨绠椾竴娆★紙{@code damaged} 鍘婚噸锛夈€?/li>
+ *   <li><b>琛ㄧ幇</b>鏄垚鐗囩殑宀╁埡瀹炰綋 + 鍒烘牴鎵捣鐨勫皯閲忕宀╋紝涓嶅啀鏄弧鍦颁贡椋炵殑鏂瑰潡纰庡睉鍜岀櫧鐑熴€?/li>
+ *   <li><b>鑺傚</b>鐢?{@link TickTask} 鎶婃瘡涓€鍦堥敊寮€鍑?tick 瑙﹀彂锛屽舰鎴愬悜澶栬崱寮€鐨勬稛婕€?/li>
  * </ul>
- * <b>强度：</b>
+ * <b>寮哄害锛?/b>
  * <ul>
- *   <li>{@code Success}（普通蓄力）— 2 圈</li>
- *   <li>{@code Jackpot}/{@code Super}（Just 时机）— 3 圈，伤害 ×1.3、掀飞更高</li>
- *   <li>精炼度每 10 级 +1 圈（上限 +2），精炼 20+ 追加爆炸轰鸣</li>
+ *   <li>{@code Success}锛堟櫘閫氳搫鍔涳級鈥?2 鍦?/li>
+ *   <li>{@code Jackpot}/{@code Super}锛圝ust 鏃舵満锛夆€?3 鍦堬紝浼ゅ 脳1.3銆佹巰椋炴洿楂?/li>
+ *   <li>绮剧偧搴︽瘡 10 绾?+1 鍦堬紙涓婇檺 +2锛夛紝绮剧偧 20+ 杩藉姞鐖嗙偢杞伴福</li>
  * </ul>
- * 伤害 = amplifierCalc(刀当前攻击力, 系数) × 环系数 × 时机倍率（对数补正，与其余 SA 统一）；
- * config 的 attack_multiplier 已烤入刀 NBT，经 {@link ISlashBladeState#getBaseAttackModifier()} 读取后自动生效。
- */
+ * 浼ゅ = amplifierCalc(鍒€褰撳墠鏀诲嚮鍔? 绯绘暟) 脳 鐜郴鏁?脳 鏃舵満鍊嶇巼锛堝鏁拌ˉ姝ｏ紝涓庡叾浣?SA 缁熶竴锛夛紱
+ * config 鐨?attack_multiplier 宸茬儰鍏ュ垁 NBT锛岀粡 {@link ISlashBladeState#getBaseAttackModifier()} 璇诲彇鍚庤嚜鍔ㄧ敓鏁堛€? */
 public final class RockStrikeArts extends SlashArts {
 
-    /** 最内圈半径（格）。 */
+    /** 鏈€鍐呭湀鍗婂緞锛堟牸锛夈€?*/
     private static final double INNER_RADIUS = 2.0;
-    /** 相邻两圈的半径差（格）。 */
+    /** 鐩搁偦涓ゅ湀鐨勫崐寰勫樊锛堟牸锛夈€?*/
     private static final double RING_STEP = 2.2;
-    /** 判定带宽：敌人离冲击波边缘这么近就算被扫到，略大于步长以免漏判。 */
+    /** 鍒ゅ畾甯﹀锛氭晫浜虹鍐插嚮娉㈣竟缂樿繖涔堣繎灏辩畻琚壂鍒帮紝鐣ュぇ浜庢闀夸互鍏嶆紡鍒ゃ€?*/
     private static final double HIT_BAND = 1.6;
-    /** 相邻两圈触发的间隔（tick），制造向外扩散的涟漪。 */
+    /** 鐩搁偦涓ゅ湀瑙﹀彂鐨勯棿闅旓紙tick锛夛紝鍒堕€犲悜澶栨墿鏁ｇ殑娑熸吉銆?*/
     private static final int RING_DELAY = 2;
 
-    /** 攻击力补正系数：单圈基础伤害 = amplifierCalc(bladeAttack, ATTACK_FACTOR)，对数补正。 */
+    /** 鏀诲嚮鍔涜ˉ姝ｇ郴鏁帮細鍗曞湀鍩虹浼ゅ = amplifierCalc(bladeAttack, ATTACK_FACTOR)锛屽鏁拌ˉ姝ｃ€?*/
     private static final float ATTACK_FACTOR = 4.0F;
 
-    /** 各圈伤害系数（越外圈余波越弱）。数组覆盖最大圈数（2 基础 + 2 精炼 + 1 余量）。 */
+    /** 鍚勫湀浼ゅ绯绘暟锛堣秺澶栧湀浣欐尝瓒婂急锛夈€傛暟缁勮鐩栨渶澶у湀鏁帮紙2 鍩虹 + 2 绮剧偧 + 1 浣欓噺锛夈€?*/
     private static final float[] RING_DAMAGE_FACTOR = {1.1F, 0.95F, 0.8F, 0.65F, 0.5F};
 
-    /** 刺根扬尘用的碎岩贴图。 */
+    /** 鍒烘牴鎵皹鐢ㄧ殑纰庡博璐村浘銆?*/
     private static final BlockState DUST_ROCK = Blocks.STONE.defaultBlockState();
 
     public RockStrikeArts(Function<LivingEntity, ResourceLocation> state) {
@@ -104,27 +99,24 @@ public final class RockStrikeArts extends SlashArts {
 
         final boolean empowered = type == ArtsType.Jackpot || type == ArtsType.Super;
         final float tierMultiplier = empowered ? 1.3F : 1.0F;
-        final double launchUp = empowered ? 1.15 : 0.85;   // 掀飞高度（垂直初速）
+        final double launchUp = empowered ? 1.15 : 0.85;   // 鎺€椋為珮搴︼紙鍨傜洿鍒濋€燂級
         final boolean hasExplosion = refine >= 20;
 
         final int refineBonus = Math.min(refine / 10, 2);
         final int rings = (empowered ? 3 : 2) + refineBonus;
 
-        // 顿地点固定为施放瞬间脚下位置，之后玩家移动也不影响波纹原点。
         final Vec3 origin = user.position();
         final DamageSource source = user instanceof Player player
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
 
-        // 同一敌人只被最先到达它的那一圈结算一次，跨 tick 共享。
         final Set<Entity> damaged = new HashSet<>();
 
-        // ── 顿地瞬间：中心一根大石矛 + 碎岩爆裂 ──
+        // 鈹€鈹€ 椤垮湴鐬棿锛氫腑蹇冧竴鏍瑰ぇ鐭崇煕 + 纰庡博鐖嗚 鈹€鈹€
         impactBurst(level, origin);
         level.playSound(null, origin.x, origin.y, origin.z,
                 SoundEvents.ANVIL_LAND, SoundSource.PLAYERS,
                 1.6F, 0.5F + level.getRandom().nextFloat() * 0.15F);
-        // 一层低沉的轰鸣垫底，让顿地更有分量。
         level.playSound(null, origin.x, origin.y, origin.z,
                 SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 0.9F, 0.45F);
         if (hasExplosion) {
@@ -132,7 +124,7 @@ public final class RockStrikeArts extends SlashArts {
                     SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.6F, 0.6F);
         }
 
-        // ── 一圈圈向外荡开 ──
+        // 鈹€鈹€ 涓€鍦堝湀鍚戝鑽″紑 鈹€鈹€
         for (int ring = 0; ring < rings; ring++) {
             final int r = ring;
             final double radius = INNER_RADIUS + ring * RING_STEP;
@@ -157,14 +149,13 @@ public final class RockStrikeArts extends SlashArts {
         return super.doArts(type, user);
     }
 
-    /** 触发一整圈：先沿圆周顶出一圈石矛，再把波及范围内的敌人掀飞。 */
+    /** 瑙﹀彂涓€鏁村湀锛氬厛娌垮渾鍛ㄩ《鍑轰竴鍦堢煶鐭涳紝鍐嶆妸娉㈠強鑼冨洿鍐呯殑鏁屼汉鎺€椋炪€?*/
     private static void spawnWave(ServerLevel level, LivingEntity user, Vec3 origin,
                                   double radius, int ring, double damage,
                                   DamageSource source, double launchUp, Set<Entity> damaged) {
 
         RandomSource rng = level.getRandom();
 
-        // —— 表现：沿圆周顶出一圈岩刺 ——
         int spikes = 4 + ring * 2;
         double groundY = origin.y;
         for (int i = 0; i < spikes; i++) {
@@ -175,38 +166,34 @@ public final class RockStrikeArts extends SlashArts {
             spawnSpike(level, x, groundY, z, scale, rng);
         }
 
-        // 把这一圈连成一道贴地的冲击波尘环。
         shockwaveRing(level, origin, radius);
 
         level.playSound(null, origin.x, origin.y, origin.z,
                 SoundEvents.STONE_BREAK, SoundSource.PLAYERS,
                 1.4F, 0.55F + ring * 0.1F);
 
-        // —— 伤害 + 击飞：扫描以 origin 为心、半径 (radius+HIT_BAND) 的圆盘 ——
-        // target 筛选走 SlashBlade 的 AttackablePredicate，与拔刀剑默认攻击行为一致
+        // Damage and launch targets in a circle centered at origin.
         double reach = radius + HIT_BAND;
         AABB box = new AABB(
                 origin.x - reach, origin.y - 1.0, origin.z - reach,
                 origin.x + reach, origin.y + 3.0, origin.z + reach);
         double reachSq = reach * reach;
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
 
         for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, box,
                 e -> e.isAlive() && e != user && !damaged.contains(e)
-                        && !e.isAlliedTo(user) && attackable.test(e))) {
+                        && SaTargeting.canDamageAttackable(user, e))) {
             double dx = target.getX() - origin.x;
             double dz = target.getZ() - origin.z;
             if (dx * dx + dz * dz > reachSq) {
-                continue;   // 在 AABB 角落但超出圆盘
-            }
+                continue;
+                }
             damaged.add(target);
             target.hurt(source, (float) damage);
-            // 先结算伤害，再覆写速度把人整个掀起来（清掉香草命中的横向击退，主要向上）。
             launchUp(target, origin, launchUp);
         }
     }
 
-    /** 在一点顶出一根岩刺实体，并扬起少量碎岩。 */
+    /** 鍦ㄤ竴鐐归《鍑轰竴鏍瑰博鍒哄疄浣擄紝骞舵壃璧峰皯閲忕宀┿€?*/
     private static void spawnSpike(ServerLevel level, double x, double y, double z,
                                    float scale, RandomSource rng) {
         float yaw = rng.nextFloat() * 360.0F;
@@ -215,20 +202,19 @@ public final class RockStrikeArts extends SlashArts {
         spikeFx(level, x, y, z);
     }
 
-    /** 刺根特效：崩起的碎岩 + 喷溅的火星余烬 + 缓缓上升的尘烟。 */
+    /** 鍒烘牴鐗规晥锛氬穿璧风殑纰庡博 + 鍠锋簠鐨勭伀鏄熶綑鐑?+ 缂撶紦涓婂崌鐨勫皹鐑熴€?*/
     private static void spikeFx(ServerLevel level, double x, double y, double z) {
         BlockParticleOption rock = new BlockParticleOption(ParticleTypes.BLOCK, DUST_ROCK);
-        // 紧凑崩起的碎岩（不四散乱飞）
+        // 绱у噾宕╄捣鐨勭宀╋紙涓嶅洓鏁ｄ贡椋烇級
         level.sendParticles(rock, x, y + 0.1, z, 4, 0.12, 0.05, 0.12, 0.05);
         level.sendParticles(rock, x, y + 0.1, z, 0, 0.0, 1.0, 0.0, 0.4);
         level.sendParticles(rock, x, y + 0.1, z, 0, 0.15, 0.9, 0.1, 0.35);
-        // 熔岩火星：随岩矛喷出、上抛后回落
+        // 鐔斿博鐏槦锛氶殢宀╃煕鍠峰嚭銆佷笂鎶涘悗鍥炶惤
         level.sendParticles(ParticleTypes.LAVA, x, y + 0.25, z, 2, 0.08, 0.1, 0.08, 0.0);
-        // 升腾的尘烟
         level.sendParticles(ParticleTypes.LARGE_SMOKE, x, y + 0.15, z, 1, 0.08, 0.0, 0.08, 0.015);
     }
 
-    /** 沿半径画一道贴地的尘环，把整圈岩刺连成一道冲击波。 */
+    /** 娌垮崐寰勭敾涓€閬撹创鍦扮殑灏樼幆锛屾妸鏁村湀宀╁埡杩炴垚涓€閬撳啿鍑绘尝銆?*/
     private static void shockwaveRing(ServerLevel level, Vec3 origin, double radius) {
         BlockParticleOption rock = new BlockParticleOption(ParticleTypes.BLOCK, DUST_ROCK);
         int points = Math.min(40, Math.max(16, (int) (radius * 6.0)));
@@ -240,7 +226,7 @@ public final class RockStrikeArts extends SlashArts {
         }
     }
 
-    /** 将目标掀飞：垂直为主、带一点向外的水平分量。 */
+    /** 灏嗙洰鏍囨巰椋烇細鍨傜洿涓轰富銆佸甫涓€鐐瑰悜澶栫殑姘村钩鍒嗛噺銆?*/
     private static void launchUp(LivingEntity target, Vec3 origin, double up) {
         double dx = target.getX() - origin.x;
         double dz = target.getZ() - origin.z;
@@ -249,21 +235,19 @@ public final class RockStrikeArts extends SlashArts {
         double ox = len < 1.0e-4 ? 0.0 : dx / len * outward;
         double oz = len < 1.0e-4 ? 0.0 : dz / len * outward;
         target.setDeltaMovement(ox, up, oz);
-        target.hurtMarked = true;   // 强制把新速度同步到客户端
+        target.hurtMarked = true;   // 寮哄埗鎶婃柊閫熷害鍚屾鍒板鎴风
     }
 
-    /** 中心顿地特效：一根更大的石矛 + 碎岩爆裂 + 火星喷泉 + 升腾尘柱（无白色爆炸球）。 */
+    /** 涓績椤垮湴鐗规晥锛氫竴鏍规洿澶х殑鐭崇煕 + 纰庡博鐖嗚 + 鐏槦鍠锋硥 + 鍗囪吘灏樻煴锛堟棤鐧借壊鐖嗙偢鐞冿級銆?*/
     private static void impactBurst(ServerLevel level, Vec3 origin) {
         RandomSource rng = level.getRandom();
         RockSpikeEntity.spawn(level, origin.x, origin.y, origin.z,
                 rng.nextFloat() * 360.0F, 1.7F, 22, rng.nextInt());
 
         BlockParticleOption rock = new BlockParticleOption(ParticleTypes.BLOCK, DUST_ROCK);
-        // 向上崩开的大量碎岩
         level.sendParticles(rock, origin.x, origin.y + 0.4, origin.z, 30, 0.3, 0.3, 0.3, 0.35);
-        // 火星喷泉
+        // 鐏槦鍠锋硥
         level.sendParticles(ParticleTypes.LAVA, origin.x, origin.y + 0.3, origin.z, 12, 0.3, 0.25, 0.3, 0.0);
-        // 升腾的尘柱
         level.sendParticles(ParticleTypes.LARGE_SMOKE, origin.x, origin.y + 0.2, origin.z, 8, 0.25, 0.1, 0.25, 0.03);
     }
 }

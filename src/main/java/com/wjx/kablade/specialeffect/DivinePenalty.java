@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -52,9 +53,11 @@ public class DivinePenalty extends SpecialEffect {
 
         // 持有者被攻击时反击（带重入守卫，防止互相反击递归）
         if (!countering && victim instanceof Player player && hasEffect(player)) {
-            if (event.getSource().getEntity() instanceof LivingEntity attacker) {
+            if (event.getSource().getEntity() instanceof LivingEntity attacker
+                    && SaTargeting.canDamage(player, attacker)) {
                 LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
                 bolt.setPos(attacker.getX(), attacker.getY(), attacker.getZ());
+                bolt.setVisualOnly(true);
                 level.addFreshEntity(bolt);
                 countering = true;
                 try {
@@ -71,6 +74,9 @@ public class DivinePenalty extends SpecialEffect {
         // 持有者攻击麻痹目标时增伤
         if (event.getSource().getEntity() instanceof Player player && hasEffect(player)) {
             LivingEntity target = event.getEntity();
+            if (!SaTargeting.canDamage(player, target)) {
+                return;
+            }
             if (target.hasEffect(ModMobEffects.PARALYSIS.get())) {
                 event.setAmount(event.getAmount() * DAMAGE_BOOST);
             }

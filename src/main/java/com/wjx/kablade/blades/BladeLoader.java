@@ -12,6 +12,7 @@ import com.wjx.kablade.blades.honkai.FuheLiuye;
 import com.wjx.kablade.blades.honkai.FuheZhuque;
 import com.wjx.kablade.blades.honkai.GalacticNova;
 import com.wjx.kablade.blades.honkai.IceEpiphyllum;
+import com.wjx.kablade.blades.honkai.KeyOfCastigation;
 import com.wjx.kablade.blades.honkai.MagStorm;
 import com.wjx.kablade.blades.honkai.MuraHori;
 import com.wjx.kablade.blades.honkai.MuraSeshu;
@@ -33,10 +34,25 @@ import com.wjx.kablade.blades.honkai.ThirdSacredRelic;
 import com.wjx.kablade.blades.honkai.VibroCutter;
 import com.wjx.kablade.blades.honkai.VorpalSword;
 import com.wjx.kablade.blades.honkai.XuanYuanKatana;
+import com.wjx.kablade.blades.allweapon.AwBailan;
+import com.wjx.kablade.blades.allweapon.AwBaiQiYue;
+import com.wjx.kablade.blades.allweapon.AwBaiShouJianWang;
+import com.wjx.kablade.blades.allweapon.AwBaiYueDing;
 import com.wjx.kablade.blades.allweapon.AwChanShiZhe;
 import com.wjx.kablade.blades.allweapon.AwFengShen;
+import com.wjx.kablade.blades.allweapon.AwFengZhiYing;
 import com.wjx.kablade.blades.allweapon.AwGuangJian;
+import com.wjx.kablade.blades.allweapon.AwHtkg;
+import com.wjx.kablade.blades.allweapon.AwHuami;
+import com.wjx.kablade.blades.allweapon.AwJie;
+import com.wjx.kablade.blades.allweapon.AwJiyi;
 import com.wjx.kablade.blades.allweapon.AwLiuRRHuo;
+import com.wjx.kablade.blades.allweapon.AwLvluo;
+import com.wjx.kablade.blades.allweapon.AwShangguYizhi;
+import com.wjx.kablade.blades.allweapon.AwShangguYujin;
+import com.wjx.kablade.blades.allweapon.AwXuezou;
+import com.wjx.kablade.blades.allweapon.AwYingyue;
+import com.wjx.kablade.blades.allweapon.AwYouming;
 import com.wjx.kablade.blades.allweapon.AwZhanYue;
 import com.wjx.kablade.blades.ordinary.ArcLight;
 import com.wjx.kablade.blades.ordinary.AuroraBlade;
@@ -122,6 +138,7 @@ public final class BladeLoader {
     public static BladeDefineBase FUTSUNUSHI_TO;
     public static BladeDefineBase VIBRO_CUTTER;
     public static BladeDefineBase MAG_STORM;
+    public static BladeDefineBase KEY_OF_CASTIGATION;
     public static BladeDefineBase ICE_EPIPHYLLUM;
     // 崩坏线·妖精剑
     public static BladeDefineBase FAIRY_SWORD;
@@ -131,6 +148,22 @@ public final class BladeLoader {
     public static BladeDefineBase AW_GUANGJIAN;
     public static BladeDefineBase AW_FENGSHEN;
     public static BladeDefineBase AW_ZHANYUE;
+    // 万物皆刃线（第一批扩展 6 把）
+    public static BladeDefineBase AW_LVLUO;
+    public static BladeDefineBase AW_XUEZOU;
+    public static BladeDefineBase AW_JIE;
+    public static BladeDefineBase AW_HTKG;
+    public static BladeDefineBase AW_BAILAN;
+    public static BladeDefineBase AW_YINGYUE;
+    public static BladeDefineBase AW_YOUMING;
+    public static BladeDefineBase AW_JIYI;
+    public static BladeDefineBase AW_HUAMI;
+    public static BladeDefineBase AW_FENGZHIYING;
+    public static BladeDefineBase AW_BAIYUEDING;
+    public static BladeDefineBase AW_BAIQIYUE;
+    public static BladeDefineBase AW_BAISHOUJIANWANG;
+    public static BladeDefineBase AW_SHANGGUYUJIN;
+    public static BladeDefineBase AW_SHANGGUYIZHI;
     // 龙一文字线
     public static BladeDefineBase SPLIGHT_INITIAL;
     public static BladeDefineBase SPLIGHT_NORMAL;
@@ -205,6 +238,7 @@ public final class BladeLoader {
             "futsunushi_to",
             "vibro_cutter",
             "mag_storm",
+            "key_of_castigation",
             "ice_epiphyllum",
             // 龙一文字线
             "splight_initial",
@@ -219,7 +253,22 @@ public final class BladeLoader {
             "chanshizhe",
             "guangjian",
             "fengshen",
-            "zhanyue"
+            "zhanyue",
+            "lvluo",
+            "xuezou",
+            "jie",
+            "htkg",
+            "bailan",
+            "yingyue",
+            "youming",
+            "jiyi",
+            "huami",
+            "fengzhiying",
+            "baiyueding",
+            "baiqiyue",
+            "baishoujianwang",
+            "shangguyujin",
+            "shangguyizhi"
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
@@ -273,6 +322,7 @@ public final class BladeLoader {
         FUTSUNUSHI_TO = new FutsunushiTo(context);
         VIBRO_CUTTER = new VibroCutter(context);
         MAG_STORM = new MagStorm(context);
+        KEY_OF_CASTIGATION = new KeyOfCastigation(context);
         ICE_EPIPHYLLUM = new IceEpiphyllum(context);
         // 崩坏线·妖精剑
         FAIRY_SWORD = new FairySword(context);
@@ -289,6 +339,22 @@ public final class BladeLoader {
         AW_GUANGJIAN = new AwGuangJian(context);
         AW_FENGSHEN = new AwFengShen(context);
         AW_ZHANYUE = new AwZhanYue(context);
+        // 万物皆刃线（第一批扩展 6 把）
+        AW_LVLUO = new AwLvluo(context);
+        AW_XUEZOU = new AwXuezou(context);
+        AW_JIE = new AwJie(context);
+        AW_HTKG = new AwHtkg(context);
+        AW_BAILAN = new AwBailan(context);
+        AW_YINGYUE = new AwYingyue(context);
+        AW_YOUMING = new AwYouming(context);
+        AW_JIYI = new AwJiyi(context);
+        AW_HUAMI = new AwHuami(context);
+        AW_FENGZHIYING = new AwFengZhiYing(context);
+        AW_BAIYUEDING = new AwBaiYueDing(context);
+        AW_BAIQIYUE = new AwBaiQiYue(context);
+        AW_BAISHOUJIANWANG = new AwBaiShouJianWang(context);
+        AW_SHANGGUYUJIN = new AwShangguYujin(context);
+        AW_SHANGGUYIZHI = new AwShangguYizhi(context);
         // 龙一文字线
         SPLIGHT_INITIAL = new SL_Initial(context);
         SPLIGHT_NORMAL = new SL_Normal(context);

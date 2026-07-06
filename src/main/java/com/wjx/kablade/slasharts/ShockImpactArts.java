@@ -2,10 +2,10 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.ShockImpactEntity;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -58,17 +58,12 @@ public final class ShockImpactArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float extraDamage = (float) MathFunc.amplifierCalc(bladeAttack, 10.0F);
-
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         AABB box = user.getBoundingBox()
                 .inflate(AOE_RADIUS, AOE_VERTICAL, AOE_RADIUS)
                 .move(user.getDeltaMovement().scale(0.5));
         List<LivingEntity> enemies = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e != user && e.isAlive() && attackable.test(e));
+                e -> SaTargeting.canDamageAttackable(user, e));
         for (LivingEntity target : enemies) {
-            if (target instanceof Player) {
-                continue;
-            }
             target.hurt(level.damageSources().mobAttack(user), BASE_DAMAGE + extraDamage);
         }
 

@@ -20,6 +20,9 @@ public final class KabladeConfig {
     /** 耐久倍率：成品刀的最大耐久（max_damage）= 定义值 × 本倍率。默认 1.0。 */
     public static final ForgeConfigSpec.DoubleValue DURABILITY_MULTIPLIER;
 
+    /** When true, Kablade SA target selectors ignore players entirely. */
+    public static final ForgeConfigSpec.BooleanValue FILTER_PLAYERS_IN_SA_TARGETING;
+
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment(
@@ -34,6 +37,14 @@ public final class KabladeConfig {
         DURABILITY_MULTIPLIER = builder
                 .comment("耐久倍率：作用于刀的最大耐久（max_damage）。")
                 .defineInRange("durability_multiplier", 1.0D, 0.0D, 1024.0D);
+
+        builder.pop();
+        builder.comment("Slash Art targeting behavior.")
+                .push("slash_art_targeting");
+
+        FILTER_PLAYERS_IN_SA_TARGETING = builder
+                .comment("When true, Kablade slash art target selectors filter out players regardless of team.")
+                .define("filter_players", true);
 
         builder.pop();
         SPEC = builder.build();

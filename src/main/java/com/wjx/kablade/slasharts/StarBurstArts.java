@@ -55,7 +55,7 @@ public final class StarBurstArts extends SlashArts {
             // 随机滚转角（星爆的散乱观感来自滚转角随机，而非方向），统一水平前射
             float roll = rng.nextFloat() * 360.0F;
             float speed = 1.4F + rng.nextFloat() * 0.3F;
-            SaFx.drive(level, user, pos, flat, speed, damage, 0xFF1010, 2.0F, 90.0F, roll);
+            SaFx.driveWithFinalDamage(level, user, pos, flat, speed, damage, 0xFF1010, 2.0F, 90.0F, roll);
         }
 
         Vec3 center = user.position().add(0.0, user.getBbHeight() * 0.6, 0.0);

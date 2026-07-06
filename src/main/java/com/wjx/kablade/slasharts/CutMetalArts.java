@@ -2,10 +2,10 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.CutMetalRingEntity;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -25,23 +25,19 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 斩铁断金 —— 复合刃「斩铁」专属 SA。
- * 从 1.12.2 {@code SaCutMetal} 移植而来。
- * <p>
- * 自身获得力量 II 3 秒，对周围大范围敌人造成高额伤害（基础 8 + 刀攻击力补正），
- * 并追加目标护甲值 50% 的额外伤害。被击中的敌人爆出伤害指示粒子。
- */
+ * 鏂╅搧鏂噾 鈥斺€?澶嶅悎鍒冦€屾柀閾併€嶄笓灞?SA銆? * 浠?1.12.2 {@code SaCutMetal} 绉绘鑰屾潵銆? * <p>
+ * 鑷韩鑾峰緱鍔涢噺 II 3 绉掞紝瀵瑰懆鍥村ぇ鑼冨洿鏁屼汉閫犳垚楂橀浼ゅ锛堝熀纭€ 8 + 鍒€鏀诲嚮鍔涜ˉ姝ｏ級锛? * 骞惰拷鍔犵洰鏍囨姢鐢插€?50% 鐨勯澶栦激瀹炽€傝鍑讳腑鐨勬晫浜虹垎鍑轰激瀹虫寚绀虹矑瀛愩€? */
 public final class CutMetalArts extends SlashArts {
 
-    /** 基础伤害（不含攻击力补正）。 */
+    /** 鍩虹浼ゅ锛堜笉鍚敾鍑诲姏琛ユ锛夈€?*/
     private static final float BASE_DAMAGE = 8.0F;
-    /** 攻击力补正系数：extraDamage = amplifierCalc(bladeAttack, 8)。 */
+    /** 鏀诲嚮鍔涜ˉ姝ｇ郴鏁帮細extraDamage = amplifierCalc(bladeAttack, 8)銆?*/
     private static final float ATTACK_FACTOR = 8.0F;
-    /** 护甲追加伤害倍率。 */
+    /** 鎶ょ敳杩藉姞浼ゅ鍊嶇巼銆?*/
     private static final float ARMOR_RATIO = 0.5F;
-    /** 力量效果持续时间（tick）。 */
+    /** 鍔涢噺鏁堟灉鎸佺画鏃堕棿锛坱ick锛夈€?*/
     private static final int STRENGTH_DURATION = 60;
-    /** AABB 扩展范围。 */
+    /** AABB 鎵╁睍鑼冨洿銆?*/
     private static final double RANGE_XZ = 8.0;
     private static final double RANGE_Y = 4.0;
     private static final int RING_WHITE = 0xF7FBFF;
@@ -63,34 +59,31 @@ public final class CutMetalArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
 
-        // 力量 II 3 秒
         user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, STRENGTH_DURATION, 1, false, false));
         spawnBladeLight(level, user);
-
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         AABB bb = user.getBoundingBox().inflate(RANGE_XZ, RANGE_Y, RANGE_XZ)
                 .move(user.getDeltaMovement());
         DamageSource src = user.level().damageSources().playerAttack((Player) user);
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, bb,
-                e -> e != user && e.isAlive() && attackable.test(e));
+                e -> SaTargeting.canDamageAttackable(user, e));
 
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
 
         for (LivingEntity target : targets) {
-            // 暴击特效
+            // 鏆村嚮鐗规晥
             target.level().playSound(null, target.getX(), target.getY(), target.getZ(),
                     SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, 1.0F, 1.0F);
             target.hurt(src, BASE_DAMAGE + extraDamage);
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
 
-            // 护甲追加伤害
+            // 鎶ょ敳杩藉姞浼ゅ
             double armor = target.getAttribute(Attributes.ARMOR).getValue();
             if (armor > 0) {
                 target.hurt(src, (float) (armor * ARMOR_RATIO));
                 blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
             }
 
-            // 伤害指示粒子
+            // 浼ゅ鎸囩ず绮掑瓙
             for (int i = 0; i < 20; i++) {
                 double px = target.getX() + (level.random.nextDouble() - 0.5) * 4;
                 double py = target.getY() + level.random.nextDouble() * target.getBbHeight();
@@ -99,14 +92,14 @@ public final class CutMetalArts extends SlashArts {
             }
         }
 
-        // 音效
+        // 闊虫晥
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
                 SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.0F, 0.8F);
 
         return super.doArts(type, user);
     }
 
-    /** 白色环形刀光：主环 + 两道错峰余辉，贴近拔刀剑重锋的干净银白刀痕。 */
+    /** 鐧借壊鐜舰鍒€鍏夛細涓荤幆 + 涓ら亾閿欏嘲浣欒緣锛岃创杩戞嫈鍒€鍓戦噸閿嬬殑骞插噣閾剁櫧鍒€鐥曘€?*/
     private static void spawnBladeLight(ServerLevel level, LivingEntity user) {
         Vec3 center = user.position();
         double y = user.getY() + user.getBbHeight() * 0.58;

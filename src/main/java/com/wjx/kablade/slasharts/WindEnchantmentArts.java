@@ -1,9 +1,9 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.WindEnchantmentEntity;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,14 +17,12 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 风之结界 —— 「妖精剑·希尔文」专属 SA。
- * <p>
- * 对应 1.12.2 的 {@code HonkaiWindEnchantment}（SA ID 451）。
- * <ol>
- *   <li>向前射线追踪 8 格锁定目标</li>
- *   <li>若命中：执行 SA 组合攻击 + 暴击 + 20 点额外伤害</li>
- *   <li>玩家周身爆发 60 颗烟雾粒子</li>
- *   <li>生成 {@link WindEnchantmentEntity} 风之结界光环（AOE 给附近玩家加风之力 buff）</li>
+ * 椋庝箣缁撶晫 鈥斺€?銆屽绮惧墤路甯屽皵鏂囥€嶄笓灞?SA銆? * <p>
+ * 瀵瑰簲 1.12.2 鐨?{@code HonkaiWindEnchantment}锛圫A ID 451锛夈€? * <ol>
+ *   <li>鍚戝墠灏勭嚎杩借釜 8 鏍奸攣瀹氱洰鏍?/li>
+ *   <li>鑻ュ懡涓細鎵ц SA 缁勫悎鏀诲嚮 + 鏆村嚮 + 20 鐐归澶栦激瀹?/li>
+ *   <li>鐜╁鍛ㄨ韩鐖嗗彂 60 棰楃儫闆剧矑瀛?/li>
+ *   <li>鐢熸垚 {@link WindEnchantmentEntity} 椋庝箣缁撶晫鍏夌幆锛圓OE 缁欓檮杩戠帺瀹跺姞椋庝箣鍔?buff锛?/li>
  * </ol>
  */
 public final class WindEnchantmentArts extends SlashArts {
@@ -39,7 +37,6 @@ public final class WindEnchantmentArts extends SlashArts {
 
     @Override
     public ResourceLocation doArts(ArtsType type, LivingEntity user) {
-        // 仅在服务端和执行成功时干活
         if (user.level().isClientSide() || type == ArtsType.Fail) {
             return super.doArts(type, user);
         }
@@ -54,7 +51,7 @@ public final class WindEnchantmentArts extends SlashArts {
             return super.doArts(type, user);
         }
 
-        // 1. 射线锁定目标
+        // 1. 灏勭嚎閿佸畾鐩爣
         Vec3 eye = player.getEyePosition();
         Vec3 look = player.getLookAngle();
         Vec3 end = eye.add(look.scale(RAY_DISTANCE));
@@ -86,20 +83,17 @@ public final class WindEnchantmentArts extends SlashArts {
             }
         }
 
-        // 2. 攻击目标
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
-        if (target != null && !attackable.test(target)) {
+        // 2. 鏀诲嚮鐩爣
+        if (target != null && !SaTargeting.canDamageAttackable(player, target)) {
             return super.doArts(type, user);
         }
         if (target != null) {
-            // 第一段：拔刀剑近战触发选择器（hurtEnemy 内部触发 HitEvent）
             blade.getItem().hurtEnemy(blade, target, player);
             player.crit(target);
-            // 第二段：额外伤害
+            // 绗簩娈碉細棰濆浼ゅ
             target.hurt(level.damageSources().playerAttack(player), EXTRA_DAMAGE);
         }
 
-        // 3. 烟雾粒子：保留 1.12.2 原版的正负 3 格分布。
         for (int i = 0; i < SMOKE_PARTICLES; i++) {
             double px = player.getX() + signedRandomOffset(level, 3.0);
             double py = player.getY() + level.random.nextDouble();
@@ -108,7 +102,7 @@ public final class WindEnchantmentArts extends SlashArts {
                     0, 0.1, 0, 0);
         }
 
-        // 4. 生成风之结界光环
+        // 4. 鐢熸垚椋庝箣缁撶晫鍏夌幆
         WindEnchantmentEntity.spawn(level, player.getX(), player.getY(), player.getZ());
 
         return super.doArts(type, user);

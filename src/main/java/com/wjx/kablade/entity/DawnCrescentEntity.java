@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -119,7 +120,7 @@ public class DawnCrescentEntity extends Entity {
                 this.getX() + rad, this.getY() + 2.0, this.getZ() + rad);
         DamageSource src = this.level().damageSources().indirectMagic(this, this.owner);
         for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box,
-                e -> e != this.owner && e.isAlive() && !e.isAlliedTo(this.owner))) {
+                e -> SaTargeting.canDamage(this.owner, e))) {
             if (this.alreadyHit.add(target.getUUID())) {
                 target.hurt(src, this.damage);
             }

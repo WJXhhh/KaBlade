@@ -11,6 +11,7 @@ import com.wjx.kablade.specialeffect.Phoenix;
 import com.wjx.kablade.specialeffect.PowerOfWind;
 import com.wjx.kablade.specialeffect.RagingIzumo;
 import com.wjx.kablade.specialeffect.SPLighting;
+import com.wjx.kablade.specialeffect.ThunderBlitz;
 import com.wjx.kablade.specialeffect.Turbulence;
 import com.wjx.kablade.specialeffect.UndyingSaltiness;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -60,6 +61,9 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> GLACIAL_BANE = REGISTRY.register(
             "glacial_bane", GlacialBane::new);
+
+    public static final RegistryObject<SpecialEffect> THUNDER_BLITZ = REGISTRY.register(
+            "thunder_blitz", ThunderBlitz::new);
 
     private ModSpecialEffects() {
     }

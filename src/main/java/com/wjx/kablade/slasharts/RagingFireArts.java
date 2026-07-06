@@ -37,13 +37,13 @@ public final class RagingFireArts extends SlashArts {
         final RandomSource rng = level.random;
         final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F);
-        final float damage = DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO);
+        final float damage = (DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO)) * 3.0F;
 
         final Vec3 eye = user.getEyePosition(1.0F);
         final Vec3 look = user.getLookAngle();
 
         // 单独一道巨型赤焰竖斩贯穿向前（1.12.2 AL_YanjiFZ 只放 1 道、scale 40 超大；roll=90 使刃面竖立）
-        SaFx.drive(level, user, eye, look, 1.3F, damage, 0xFF2A00, 5.0F, 50.0F, SaFx.VERTICAL_ROLL);
+        SaFx.driveWithFinalDamage(level, user, eye, look, 1.3F, damage, 0xFF2A00, 5.0F, 50.0F, SaFx.VERTICAL_ROLL);
 
         // 火焰演出：沿视线倾泻火舌
         for (int s = 0; s < 24; s++) {

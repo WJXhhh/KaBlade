@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -16,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -99,9 +99,8 @@ public class TunaEntity extends Entity {
     private void damageNearby(float damage) {
         ServerLevel level = (ServerLevel) this.level();
         AABB area = this.getBoundingBox().inflate(HIT_RANGE_XZ, HIT_RANGE_Y, HIT_RANGE_XZ);
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> canHit(target, attackable));
+                this::canHit);
 
         for (LivingEntity target : targets) {
             target.invulnerableTime = 0;
@@ -113,18 +112,9 @@ public class TunaEntity extends Entity {
         }
     }
 
-    private boolean canHit(LivingEntity target, TargetSelector.AttackablePredicate attackable) {
-        if (target == this.owner || !target.isAlive()) {
-            return false;
-        }
-        if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
-            return false;
-        }
-        if (this.owner != null && target.isAlliedTo(this.owner)) {
-            return false;
-        }
+    private boolean canHit(LivingEntity target) {
         try {
-            return attackable.test(target);
+            return SaTargeting.canDamageAttackable(this.owner, target);
         } catch (NullPointerException ignored) {
             return false;
         }

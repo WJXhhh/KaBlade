@@ -50,7 +50,7 @@ public final class RainbowSlashArts extends SlashArts {
             // 同方向、同滚转角(竖直)，仅颜色与速度不同 —— 红在前、紫在后，沿同一直线拉开拖尾。
             // 速度用正常飞刃量级（重锋无 1.12.2 的初速→加速机制），前快后慢保留虹序拖尾。
             float speed = 1.7F - i * 0.13F;
-            SaFx.drive(level, user, pos, look, speed, damage, COLORS[i], 1.6F, 80.0F, SaFx.VERTICAL_ROLL);
+            SaFx.driveWithFinalDamage(level, user, pos, look, speed, damage, COLORS[i], 1.6F, 80.0F, SaFx.VERTICAL_ROLL);
         }
 
         for (int s = 0; s < 16; s++) {

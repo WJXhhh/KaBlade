@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
@@ -98,10 +99,7 @@ public class RagingIzumo extends SpecialEffect {
                 .inflate(RADIUS, VERTICAL_RADIUS, RADIUS)
                 .move(player.getDeltaMovement());
         for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> target != player && target.isAlive())) {
-            if (target instanceof Player other && (other.isCreative() || other.isSpectator())) {
-                continue;
-            }
+                target -> SaTargeting.canDamage(player, target))) {
             target.hurt(level.damageSources().explosion(player, player), BASE_DAMAGE + extraDamage);
             target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(), 40, 2));
         }

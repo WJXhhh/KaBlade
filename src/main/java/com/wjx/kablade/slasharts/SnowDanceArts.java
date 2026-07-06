@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.FreezeDomainEntity;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -56,7 +57,7 @@ public final class SnowDanceArts extends SlashArts {
                 user.getX() - DOMAIN_RANGE_XZ, user.getY(), user.getZ() - DOMAIN_RANGE_XZ,
                 user.getX() + DOMAIN_RANGE_XZ, user.getY() + DOMAIN_RANGE_UP, user.getZ() + DOMAIN_RANGE_XZ);
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                target -> target != user && target.isAlive() && !(target instanceof Player));
+                target -> SaTargeting.canDamage(user, target));
 
         for (LivingEntity target : targets) {
             target.addEffect(new MobEffectInstance(ModMobEffects.FREEZE.get(),
@@ -79,7 +80,7 @@ public final class SnowDanceArts extends SlashArts {
                 .inflate(AREA_RANGE, AREA_RANGE, AREA_RANGE)
                 .move(user.getDeltaMovement());
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                target -> target != user && target.isAlive() && !(target instanceof Player));
+                target -> SaTargeting.canDamage(user, target));
 
         for (LivingEntity target : targets) {
             if (user instanceof Player player) {

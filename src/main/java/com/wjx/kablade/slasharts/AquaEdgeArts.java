@@ -1,10 +1,10 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.AquaEdgeEntity;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -19,11 +19,9 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 龙一文字线 SA「苍流刃」—— 1.12.2 {@code AquaEdgeEx} 完整移植。
- * <p>
- * 扑灭自身火焰，对周围 5 格敌人造成 AOE 斩击，并向玩家前方扇形射出 3×N 列水流飞刃，
- * 水流飞刃命中时造成溺水伤害 + 灭火。
- */
+ * 榫欎竴鏂囧瓧绾?SA銆岃媿娴佸垉銆嶁€斺€?1.12.2 {@code AquaEdgeEx} 瀹屾暣绉绘銆? * <p>
+ * 鎵戠伃鑷韩鐏劙锛屽鍛ㄥ洿 5 鏍兼晫浜洪€犳垚 AOE 鏂╁嚮锛屽苟鍚戠帺瀹跺墠鏂规墖褰㈠皠鍑?3脳N 鍒楁按娴侀鍒冿紝
+ * 姘存祦椋炲垉鍛戒腑鏃堕€犳垚婧烘按浼ゅ + 鐏伀銆? */
 public final class AquaEdgeArts extends SlashArts {
 
     private static final float AOE_RADIUS = 5.0F;
@@ -45,11 +43,9 @@ public final class AquaEdgeArts extends SlashArts {
             return super.doArts(type, user);
         }
 
-        // 游泳声
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
                 SoundEvents.PLAYER_SWIM, SoundSource.PLAYERS, 1.0F, 1.5F);
 
-        // 100 个水花粒子
         for (int i = 0; i < 100; i++) {
             double d0 = user.getRandom().nextGaussian() * 0.02;
             double d2 = user.getRandom().nextGaussian() * 0.02;
@@ -61,7 +57,7 @@ public final class AquaEdgeArts extends SlashArts {
                     1, d0, d2, d3, 0.0);
         }
 
-        // 扑灭自身火焰
+        // 鎵戠伃鑷韩鐏劙
         if (user.isOnFire()) {
             user.clearFire();
             level.playSound(null, user.getX(), user.getY(), user.getZ(),
@@ -69,38 +65,36 @@ public final class AquaEdgeArts extends SlashArts {
                     1.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.4F);
         }
 
-        // ── 服务端逻辑 ──────────────────────────────────────
+        // 鈹€鈹€ 鏈嶅姟绔€昏緫 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
         float baseAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float magicDamage = baseAttack * 0.27F;
 
-        // AOE 斩击
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
+        // AOE 鏂╁嚮
         AABB box = user.getBoundingBox().inflate(AOE_RADIUS, 0.25, AOE_RADIUS);
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e != user && e.isAlive() && !e.isAlliedTo(user) && attackable.test(e));
+                e -> SaTargeting.canDamageAttackable(user, e));
         for (LivingEntity target : targets) {
             target.hurt(level.damageSources().mobAttack(user), baseAttack);
         }
 
-        // 扇形射出水流飞刃
+        // 鎵囧舰灏勫嚭姘存祦椋炲垉
         int maxCol = 3;
-        int maxCount = 3;  // rank=0 时，1.12.2 默认 3
+        int maxCount = 3;  // rank=0 鏃讹紝1.12.2 榛樿 3
         int halfCount = (int) Math.floor((double) maxCount / 2);
 
         for (int j = 0; j < maxCol; j++) {
             for (int i = 0; i < maxCount; i++) {
                 double posY = user.getY() + user.getEyeHeight() / 2.0;
 
-                // 1.12.2 定位: player.rotationYaw + 15 * (floor(maxCount/2)+1 - i)
+                // 1.12.2 瀹氫綅: player.rotationYaw + 15 * (floor(maxCount/2)+1 - i)
                 float yawOffset = (halfCount + 1 - i) * 15.0F;
                 float spawnYaw = user.getYRot() + yawOffset;
                 float yawRad = spawnYaw * ((float) Math.PI / 180.0F);
 
                 Vec3 dir = user.getLookAngle();
 
-                // 位置从玩家出发+偏航方向推 1 格
                 double px = user.getX() - Math.sin(yawRad);
                 double pz = user.getZ() + Math.cos(yawRad);
 
@@ -111,7 +105,7 @@ public final class AquaEdgeArts extends SlashArts {
                         magicDamage,
                         DRIVE_COLOR,
                         30 + 5 * j + i,  // lifetime
-                        (j - 1) * 3.0F,   // roll：每列差 3°，平躺基础上略有区别
+                        (j - 1) * 3.0F,
                         true              // multiHit
                 );
                 aqua.setInitialSpeed(0.1F);

@@ -4,11 +4,11 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.network.FallingPetalsMarkPacket;
 import com.wjx.kablade.network.KabladeNetwork;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SakuraEnd;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -147,13 +147,10 @@ public final class FallingPetalsArts extends SlashArts {
     }
 
     private static boolean isAttackable(LivingEntity user, LivingEntity target) {
-        if (target == user || !target.isAlive() || !target.isPickable() || target.isAlliedTo(user)) {
+        if (!target.isPickable()) {
             return false;
         }
-        if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
-            return false;
-        }
-        return target instanceof Mob || target instanceof Player || new TargetSelector.AttackablePredicate().test(target);
+        return SaTargeting.canDamageAttackable(user, target);
     }
 
     private static void markTarget(ServerLevel level, LivingEntity target) {
@@ -181,7 +178,7 @@ public final class FallingPetalsArts extends SlashArts {
         }
 
         Entity attacker = event.getSource().getEntity();
-        if (attacker instanceof Player) {
+        if (attacker instanceof Player && SaTargeting.canDamage(attacker, target)) {
             event.setAmount(event.getAmount() * 2.0F);
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
                     SLOW_DURATION, SLOW_AMPLIFIER));

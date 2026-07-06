@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -175,8 +176,7 @@ public class OriginFreeSwordEntity extends Entity {
     }
 
     private boolean canHit(LivingEntity target) {
-        return target.isAlive()
-                && (this.owner == null || (target != this.owner && !target.isAlliedTo(this.owner)))
+        return SaTargeting.canDamage(this.owner, target)
                 && !this.alreadyHit.contains(target.getUUID());
     }
 

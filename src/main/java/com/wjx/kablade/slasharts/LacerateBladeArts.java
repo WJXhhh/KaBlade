@@ -2,6 +2,7 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.LacerateDriveEntity;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -72,7 +73,7 @@ public final class LacerateBladeArts extends SlashArts {
 
         // 对正在攻击玩家的敌人施加凋零 II
         LivingEntity attacker = user.getLastHurtByMob();
-        if (attacker != null && attacker.isAlive()) {
+        if (attacker != null && SaTargeting.canDamage(user, attacker)) {
             attacker.addEffect(new MobEffectInstance(MobEffects.WITHER, WITHER_DURATION, WITHER_AMPLIFIER, false, false));
         }
 

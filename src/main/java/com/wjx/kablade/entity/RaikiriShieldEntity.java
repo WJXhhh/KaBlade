@@ -4,7 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.MathFunc;
-import mods.flammpfeil.slashblade.util.TargetSelector;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,17 +25,13 @@ import net.minecraftforge.network.NetworkHooks;
 import java.util.List;
 
 /**
- * 雷切护盾实体 —— 「雷切」SA 召唤的环绕护盾。
- * <p>
- * 从 1.12.2 {@code EntityRaikiriBlade} 移植而来：
- * 生成后跟随施法者 10 秒（200 tick），紧贴施法者并对周围敌人造成伤害；
- * 护盾耐久和接触伤害根据释放时的拔刀剑 baseAttackModifier 动态计算：
+ * 闆峰垏鎶ょ浘瀹炰綋 鈥斺€?銆岄浄鍒囥€峉A 鍙敜鐨勭幆缁曟姢鐩俱€? * <p>
+ * 浠?1.12.2 {@code EntityRaikiriBlade} 绉绘鑰屾潵锛? * 鐢熸垚鍚庤窡闅忔柦娉曡€?10 绉掞紙200 tick锛夛紝绱ц创鏂芥硶鑰呭苟瀵瑰懆鍥存晫浜洪€犳垚浼ゅ锛? * 鎶ょ浘鑰愪箙鍜屾帴瑙︿激瀹虫牴鎹噴鏀炬椂鐨勬嫈鍒€鍓?baseAttackModifier 鍔ㄦ€佽绠楋細
  * <pre>
- *   护盾耐久 = baseAttackModifier &times; 0.75 + amplifierCalc(baseAttackModifier, factor)
- *   接触伤害 = (baseAttackModifier + amplifierCalc(baseAttackModifier, factor)) &times; 0.25
+ *   鎶ょ浘鑰愪箙 = baseAttackModifier &times; 0.75 + amplifierCalc(baseAttackModifier, factor)
+ *   鎺ヨЕ浼ゅ = (baseAttackModifier + amplifierCalc(baseAttackModifier, factor)) &times; 0.25
  * </pre>
- * 持有者受到的伤害优先由护盾吸收（{@link #onThrowerHurt}），耐久归零后消失。
- */
+ * 鎸佹湁鑰呭彈鍒扮殑浼ゅ浼樺厛鐢辨姢鐩惧惛鏀讹紙{@link #onThrowerHurt}锛夛紝鑰愪箙褰掗浂鍚庢秷澶便€? */
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class RaikiriShieldEntity extends Entity {
 
@@ -46,13 +42,13 @@ public class RaikiriShieldEntity extends Entity {
 
     private static final int LIFETIME = 200;
     private static final double CONTACT_RADIUS = 1.0;
-    /** amplifierCalc 补正系数（耐久和伤害共用同一个放大器值）。 */
+    /** amplifierCalc 琛ユ绯绘暟锛堣€愪箙鍜屼激瀹冲叡鐢ㄥ悓涓€涓斁澶у櫒鍊硷級銆?*/
     private static final float AMP_FACTOR = 1.0F;
 
     private LivingEntity thrower;
-    /** 召唤时施法者拔刀剑的 baseAttackModifier。 */
+    /** 鍙敜鏃舵柦娉曡€呮嫈鍒€鍓戠殑 baseAttackModifier銆?*/
     private float bladeAttack;
-    /** 客户端上一帧位置，手动跟踪用于 partialTick 插值 */
+    /** 瀹㈡埛绔笂涓€甯т綅缃紝鎵嬪姩璺熻釜鐢ㄤ簬 partialTick 鎻掑€?*/
     private double prevX, prevY, prevZ;
 
     public RaikiriShieldEntity(EntityType<? extends RaikiriShieldEntity> type, Level level) {
@@ -70,7 +66,7 @@ public class RaikiriShieldEntity extends Entity {
         this.yOld = this.getY();
         this.zOld = this.getZ();
         this.entityData.set(THROWER_ID, thrower.getId());
-        // 根据刀的攻击力计算初始护盾耐久
+        // 鏍规嵁鍒€鐨勬敾鍑诲姏璁＄畻鍒濆鎶ょ浘鑰愪箙
         this.entityData.set(SHIELD_BLOOD, calcShieldBlood(bladeAttack));
     }
 
@@ -91,12 +87,10 @@ public class RaikiriShieldEntity extends Entity {
         super.tick();
 
         if (this.level().isClientSide()) {
-            // 客户端直接跟随 thrower 位置，消除网络同步延迟
             int tid = this.entityData.get(THROWER_ID);
             if (tid != -1) {
                 Entity follow = this.level().getEntity(tid);
                 if (follow != null) {
-                    // 手动记录上一帧位置供 partialTick 插值
                     this.prevX = this.getX();
                     this.prevY = this.getY();
                     this.prevZ = this.getZ();
@@ -112,44 +106,41 @@ public class RaikiriShieldEntity extends Entity {
             return;
         }
 
-        // 护盾耐久归零时消失
         if (this.getShieldBlood() <= 0.0F) {
             clearHud();
             this.discard();
             return;
         }
 
-        // 同步 throwerID 供客户端渲染器使用
         int id = this.thrower.getId();
         if (this.entityData.get(THROWER_ID) != id) {
             this.entityData.set(THROWER_ID, id);
         }
 
-        // 跟随施法者位置
         this.setPos(this.thrower.getX(), this.thrower.getY(), this.thrower.getZ());
 
-        // 更新 HUD：写入护盾耐久
+        // 鏇存柊 HUD锛氬啓鍏ユ姢鐩捐€愪箙
         updateHud();
 
-        // 对贴近的敌人造成伤害（按刀的攻击力动态计算，使用 TargetSelector 过滤）
+        // 瀵硅创杩戠殑鍙敾鍑荤洰鏍囬€犳垚浼ゅ锛堟寜鍒€鐨勬敾鍑诲姏鍔ㄦ€佽绠楋級
         float contactDamage = calcContactDamage(this.bladeAttack);
         AABB box = this.getBoundingBox()
                 .inflate(CONTACT_RADIUS, 0.0, CONTACT_RADIUS);
         DamageSource src = this.level().damageSources().mobAttack(this.thrower);
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         for (Entity e : this.level().getEntities(this, box,
-                e -> e != this && e != this.thrower && e instanceof LivingEntity && attackable.test((LivingEntity) e))) {
+                e -> e != this && e instanceof LivingEntity living
+                        && SaTargeting.canDamageAttackable(this.thrower, living))) {
             e.hurt(src, contactDamage);
         }
     }
 
-    /** 护盾耐久计算公式。 */
+    /** 鎶ょ浘鑰愪箙璁＄畻鍏紡銆?*/
     public static float calcShieldBlood(float attack) {
         float amp = MathFunc.amplifierCalc(attack, AMP_FACTOR);
         return attack * 0.75F + amp;
     }
 
-    /** 接触伤害计算公式（基础 ×0.5，翻倍以匹配雷切的高攻定位）。 */
+    /** 鎺ヨЕ浼ゅ璁＄畻鍏紡锛堝熀纭€ 脳0.5锛岀炕鍊嶄互鍖归厤闆峰垏鐨勯珮鏀诲畾浣嶏級銆?*/
     public static float calcContactDamage(float attack) {
         float amp = MathFunc.amplifierCalc(attack, AMP_FACTOR);
         return (attack + amp) * 0.5F;
@@ -164,11 +155,11 @@ public class RaikiriShieldEntity extends Entity {
         return id >= 0 ? this.level().getEntity(id) : null;
     }
 
-    /** 客户端上一帧 X（用于渲染插值） */
+    /** 瀹㈡埛绔笂涓€甯?X锛堢敤浜庢覆鏌撴彃鍊硷級 */
     public double getPrevX() { return this.prevX; }
-    /** 客户端上一帧 Y（用于渲染插值） */
+    /** 瀹㈡埛绔笂涓€甯?Y锛堢敤浜庢覆鏌撴彃鍊硷級 */
     public double getPrevY() { return this.prevY; }
-    /** 客户端上一帧 Z（用于渲染插值） */
+    /** 瀹㈡埛绔笂涓€甯?Z锛堢敤浜庢覆鏌撴彃鍊硷級 */
     public double getPrevZ() { return this.prevZ; }
 
     public float getShieldBlood() {
@@ -179,7 +170,7 @@ public class RaikiriShieldEntity extends Entity {
         this.entityData.set(SHIELD_BLOOD, blood);
     }
 
-    /** 将当前护盾耐久写入玩家 HUD capability。 */
+    /** 灏嗗綋鍓嶆姢鐩捐€愪箙鍐欏叆鐜╁ HUD capability銆?*/
     private void updateHud() {
         if (this.thrower instanceof Player player) {
             int blood = Math.round(this.getShieldBlood());
@@ -188,7 +179,7 @@ public class RaikiriShieldEntity extends Entity {
         }
     }
 
-    /** 护盾消失时清除 HUD 显示。 */
+    /** 鎶ょ浘娑堝け鏃舵竻闄?HUD 鏄剧ず銆?*/
     private void clearHud() {
         if (this.thrower instanceof Player player) {
             player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
@@ -197,9 +188,7 @@ public class RaikiriShieldEntity extends Entity {
     }
 
     /**
-     * 护盾抵伤 —— 一比一复刻 1.12.2 {@code WorldEvent#onLivingHurt} 的护盾逻辑：
-     * 持有者受到的伤害优先由其护盾的耐久吸收，耗尽则把剩余伤害透传。
-     */
+     * 鎶ょ浘鎶典激 鈥斺€?涓€姣斾竴澶嶅埢 1.12.2 {@code WorldEvent#onLivingHurt} 鐨勬姢鐩鹃€昏緫锛?     * 鎸佹湁鑰呭彈鍒扮殑浼ゅ浼樺厛鐢卞叾鎶ょ浘鐨勮€愪箙鍚告敹锛岃€楀敖鍒欐妸鍓╀綑浼ゅ閫忎紶銆?     */
     @SubscribeEvent
     public static void onThrowerHurt(LivingHurtEvent event) {
         if (event.getEntity().level().isClientSide()) {

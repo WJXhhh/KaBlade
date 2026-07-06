@@ -2,6 +2,7 @@ package com.wjx.kablade.entity;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -14,7 +15,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -38,6 +38,7 @@ public class FreezeDomainEntity extends Entity {
     private static final float DAMAGE_BOOST = 1.4F;
     private static final double RANGE_XZ = 8.0D;
     private static final double RANGE_UP = 4.0D;
+    private LivingEntity owner;
 
     public FreezeDomainEntity(EntityType<? extends FreezeDomainEntity> type, Level level) {
         super(type, level);
@@ -48,6 +49,7 @@ public class FreezeDomainEntity extends Entity {
 
     public FreezeDomainEntity(Level level, LivingEntity owner) {
         this(ModEntities.FREEZE_DOMAIN.get(), level);
+        this.owner = owner;
         this.setPos(owner.getX(), owner.getY(), owner.getZ());
     }
 
@@ -96,10 +98,7 @@ public class FreezeDomainEntity extends Entity {
     }
 
     private boolean canAffect(LivingEntity target) {
-        if (!target.isAlive()) {
-            return false;
-        }
-        return !(target instanceof Player);
+        return SaTargeting.canDamage(this.owner, target);
     }
 
     @SubscribeEvent
@@ -124,6 +123,10 @@ public class FreezeDomainEntity extends Entity {
     public static void onLivingHurt(LivingHurtEvent event) {
         LivingEntity entity = event.getEntity();
         if (entity.level().isClientSide() || event.getAmount() <= 0.0F) {
+            return;
+        }
+        if (event.getSource().getEntity() instanceof LivingEntity attacker
+                && !SaTargeting.canDamage(attacker, entity)) {
             return;
         }
         if (entity.getPersistentData().getInt(BOOSTER_TAG) > 0) {

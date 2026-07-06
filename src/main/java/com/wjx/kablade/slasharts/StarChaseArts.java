@@ -2,6 +2,7 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.StarSwordEntity;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -113,7 +114,7 @@ public final class StarChaseArts extends SlashArts {
         LivingEntity best = null;
         double bestDist = LOCK_RANGE;
         for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e != user && e.isAlive() && !e.isAlliedTo(user))) {
+                e -> SaTargeting.canDamage(user, e))) {
             double d = e.distanceTo(user);
             if (d < bestDist) {
                 best = e;

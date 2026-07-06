@@ -2,10 +2,10 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.ZaizanEntity;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
-import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -85,15 +85,14 @@ public final class ZaizanArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float extraDamage = (float) MathFunc.amplifierCalc(bladeAttack, 20.0F);
-
-        TargetSelector.AttackablePredicate attackable = new TargetSelector.AttackablePredicate();
         Vec3 look = SaFx.flatLook(user);
         AABB box = user.getBoundingBox()
                 .inflate(AOE_RADIUS, 1.0, AOE_RADIUS)
                 .expandTowards(look.scale(AOE_FRONT_EXTENSION))
                 .move(user.getDeltaMovement());
         List<Entity> entities = level.getEntities(user, box,
-                e -> e instanceof LivingEntity && e != user && e.isAlive() && attackable.test((LivingEntity) e));
+                e -> e instanceof LivingEntity living
+                        && SaTargeting.canDamageAttackable(user, living));
 
         for (Entity entity : entities) {
             LivingEntity target = (LivingEntity) entity;

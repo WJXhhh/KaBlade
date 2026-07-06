@@ -12,6 +12,8 @@ import com.wjx.kablade.slasharts.CutMetalArts;
 import com.wjx.kablade.slasharts.DomainSuppressionArts;
 import com.wjx.kablade.slasharts.FallingPetalsArts;
 import com.wjx.kablade.slasharts.FireOfSinArts;
+import com.wjx.kablade.slasharts.FengxuanArts;
+import com.wjx.kablade.slasharts.FlashArts;
 import com.wjx.kablade.slasharts.FrostBladeArts;
 import com.wjx.kablade.slasharts.FrostCometArts;
 import com.wjx.kablade.slasharts.AquaEdgeArts;
@@ -20,6 +22,7 @@ import com.wjx.kablade.slasharts.KamiOfWarArts;
 import com.wjx.kablade.slasharts.LacerateBladeArts;
 import com.wjx.kablade.slasharts.LaveDriveArts;
 import com.wjx.kablade.slasharts.LethalThrustArts;
+import com.wjx.kablade.slasharts.LiediArts;
 import com.wjx.kablade.slasharts.LightningSwordsArts;
 import com.wjx.kablade.slasharts.LightsOnStageArts;
 import com.wjx.kablade.slasharts.LoveIsWarArts;
@@ -27,15 +30,21 @@ import com.wjx.kablade.slasharts.MagChaosBladeArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
 import com.wjx.kablade.slasharts.MoonFangArts;
 import com.wjx.kablade.slasharts.OverSlashArts;
+import com.wjx.kablade.slasharts.PhantomButterflyArts;
+import com.wjx.kablade.slasharts.PhantomButterflySArts;
 import com.wjx.kablade.slasharts.RagingFireArts;
 import com.wjx.kablade.slasharts.RainbowSlashArts;
 import com.wjx.kablade.slasharts.RockStrikeArts;
 import com.wjx.kablade.slasharts.StarBurstArts;
 import com.wjx.kablade.slasharts.StarChaseArts;
+import com.wjx.kablade.slasharts.RandomSaArts;
 import com.wjx.kablade.slasharts.ShockImpactArts;
 import com.wjx.kablade.slasharts.SnowDanceArts;
+import com.wjx.kablade.slasharts.SoulOfFrostArts;
+import com.wjx.kablade.slasharts.ThunderEdgeArts;
 import com.wjx.kablade.slasharts.VorpalHoleArts;
 import com.wjx.kablade.slasharts.WindEnchantmentArts;
+import com.wjx.kablade.slasharts.YuqiArts;
 import com.wjx.kablade.slasharts.ZaizanArts;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -172,6 +181,18 @@ public final class ModSlashArts {
             "rainbow_slash",
             () -> new RainbowSlashArts(entity -> ComboStateRegistry.NONE.getId()));
 
+    public static final RegistryObject<SlashArts> FENGXUAN = REGISTRY.register(
+            "fengxuan",
+            () -> new FengxuanArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> YUQI = REGISTRY.register(
+            "yuqi",
+            () -> new YuqiArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> RANDOM_SA = REGISTRY.register(
+            "random_sa",
+            () -> new RandomSaArts(entity -> ComboStateRegistry.NONE.getId()));
+
     public static final RegistryObject<SlashArts> STAR_CHASE = REGISTRY.register(
             "star_chase",
             () -> new StarChaseArts(entity -> ComboStateRegistry.NONE.getId()));
@@ -187,6 +208,30 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> SNOW_DANCE = REGISTRY.register(
             "snow_dance",
             () -> new SnowDanceArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> THUNDER_EDGE = REGISTRY.register(
+            "thunder_edge",
+            () -> new ThunderEdgeArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> SOUL_OF_FROST = REGISTRY.register(
+            "soul_of_frost",
+            () -> new SoulOfFrostArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> FLASH = REGISTRY.register(
+            "flash",
+            () -> new FlashArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> LIEDI = REGISTRY.register(
+            "liedi",
+            () -> new LiediArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> PHANTOM_BUTTERFLY = REGISTRY.register(
+            "phantom_butterfly",
+            () -> new PhantomButterflyArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> PHANTOM_BUTTERFLY_S = REGISTRY.register(
+            "phantom_butterfly_s",
+            () -> new PhantomButterflySArts(entity -> ComboStateRegistry.NONE.getId()));
 
     private ModSlashArts() {
     }

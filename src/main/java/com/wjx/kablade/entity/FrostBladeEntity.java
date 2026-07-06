@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -148,7 +149,7 @@ public class FrostBladeEntity extends PhantomSwordExEntity {
         if (targetId != 0) {
             Entity target = level().getEntity(targetId);
             if (target instanceof LivingEntity living
-                    && living.isAlive()
+                    && SaTargeting.canDamage(thrower, living)
                     && hitBox.intersects(living.getBoundingBox())) {
                 return Optional.of(living);
             }
@@ -156,7 +157,7 @@ public class FrostBladeEntity extends PhantomSwordExEntity {
         }
 
         return level().getEntitiesOfClass(LivingEntity.class, hitBox,
-                        e -> e != thrower && e.isAlive() && !e.isAlliedTo(thrower)
+                        e -> SaTargeting.canDamage(thrower, e)
                                 && !alreadyHit.contains(e.getUUID()))
                 .stream()
                 .min(Comparator.comparingDouble(this::distanceToSqr));
