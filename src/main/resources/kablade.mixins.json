@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "kablade.refmap.json",
   "mixins": [
-    "ItemSlashBladeMixin",
     "SlashBladeShapedRecipeMixin"
   ],
   "client": [

@@ -1,6 +1,7 @@
 package com.wjx.kablade.object.item;
 
 import com.wjx.kablade.Main;
+import mods.flammpfeil.slashblade.entity.BladeStandEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -33,6 +35,7 @@ import java.util.List;
 public class ThunderCrystalItem extends Item {
 
     private static final String TAG_DELAY = Main.MODID + ":thunder_crystal_attack";
+    private static final String TAG_EXPLOSION = Main.MODID + ":thunder_crystal_explosion";
     private static final int DELAY_TICKS = 100;
     private static final float EXPLOSION_POWER = 2.0F;
 
@@ -64,7 +67,7 @@ public class ThunderCrystalItem extends Item {
         }
 
         BlockPos pos = event.getPos();
-        triggerExplosion((ServerLevel) event.getLevel(), pos.getX(), pos.getY(), pos.getZ());
+        triggerLightning((ServerLevel) event.getLevel(), pos.getX(), pos.getY(), pos.getZ());
         stack.shrink(1);
         event.setCanceled(true);
     }
@@ -108,17 +111,26 @@ public class ThunderCrystalItem extends Item {
         if (remaining <= 0) {
             data.remove(TAG_DELAY);
             ServerLevel level = (ServerLevel) entity.level();
-            triggerExplosion(level, entity.getX(), entity.getY(), entity.getZ());
+            triggerLightning(level, entity.getX(), entity.getY(), entity.getZ());
         } else {
             data.putInt(TAG_DELAY, remaining);
         }
     }
 
-    private static void triggerExplosion(ServerLevel level, double x, double y, double z) {
+    private static void triggerLightning(ServerLevel level, double x, double y, double z) {
         LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
-        bolt.setVisualOnly(true);
+        bolt.getPersistentData().putBoolean(TAG_EXPLOSION, true);
         bolt.setPos(x, y, z);
         level.addFreshEntity(bolt);
-        level.explode(null, x, y + 1, z, EXPLOSION_POWER, false, Level.ExplosionInteraction.NONE);
+        level.explode(bolt, x, y + 1, z, EXPLOSION_POWER, false, Level.ExplosionInteraction.BLOCK);
+    }
+
+    @SubscribeEvent
+    public static void onExplosionDetonate(ExplosionEvent.Detonate event) {
+        Entity source = event.getExplosion().getDirectSourceEntity();
+        if (source == null || !source.getPersistentData().getBoolean(TAG_EXPLOSION)) {
+            return;
+        }
+        event.getAffectedEntities().removeIf(BladeStandEntity.class::isInstance);
     }
 }

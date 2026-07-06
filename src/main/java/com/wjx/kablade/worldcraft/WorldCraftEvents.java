@@ -6,10 +6,12 @@ import mods.flammpfeil.slashblade.entity.BladeStandEntity;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -18,8 +20,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraft.world.phys.EntityHitResult;
 
 /**
  * 「万物皆刃」世界合成监听器：基础拔刀剑放在铁质刀架上，满足方块阵 / 维度 / 光照 /
@@ -86,25 +91,49 @@ public final class WorldCraftEvents {
         }
         ItemStack blade = event.getBlade();
         ISlashBladeState state = event.getSlashBladeState();
-        if (state == null || !WorldCraftUtil.isBaseBlade(blade, state) || !WorldCraftUtil.isIronStand(stand)) {
+        if (tryTransformStand(server, stand, blade, state, event.getDamageSource())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onBladeStandStruckByLightning(EntityStruckByLightningEvent event) {
+        if (!(event.getEntity() instanceof BladeStandEntity stand)) {
+            return;
+        }
+        Level level = stand.level();
+        if (level.isClientSide() || !(level instanceof ServerLevel server)) {
             return;
         }
 
-        DamageSource src = event.getDamageSource();
+        ItemStack blade = stand.getItem();
+        ISlashBladeState state = blade.getCapability(mods.flammpfeil.slashblade.item.ItemSlashBlade.BLADESTATE)
+                .orElse(null);
+        if (tryTransformStand(server, stand, blade, state, server.damageSources().lightningBolt())) {
+            event.setCanceled(true);
+        }
+    }
+
+    private static boolean tryTransformStand(ServerLevel server, BladeStandEntity stand, ItemStack blade,
+                                             ISlashBladeState state, DamageSource src) {
+        if (state == null || !WorldCraftUtil.isBaseBlade(blade, state) || !WorldCraftUtil.isIronStand(stand)) {
+            return false;
+        }
+
         BlockPos pos = stand.blockPosition();
         int refine = state.getRefine();
         int proud = state.getProudSoulCount();
 
         String result = match(server, stand, blade, state, src, pos, refine, proud);
         if (result == null) {
-            return;
+            return false;
         }
         ItemStack res = WorldCraftUtil.buildResult(server, result, state);
         if (res.isEmpty()) {
-            return;
+            return false;
         }
         stand.setItem(res);
-        event.setCanceled(true);
+        return true;
     }
 
     /** 命中则返回目标命名刀的定义路径，否则 null。消耗方块的副作用在各分支内完成。 */
@@ -172,9 +201,20 @@ public final class WorldCraftEvents {
                 && WorldCraftUtil.block(level, pos.offset(1, 1, 0)) == Blocks.SOUL_SAND
                 && WorldCraftUtil.block(level, pos.offset(1, 1, 1)) == Blocks.SOUL_SAND
                 && WorldCraftUtil.block(level, pos.offset(1, 1, -1)) == Blocks.SOUL_SAND
-                && WorldCraftUtil.block(level, pos.offset(1, 2, 0)) == Blocks.PUMPKIN) {
+                && (WorldCraftUtil.block(level, pos.offset(1, 2, 0)) == Blocks.PUMPKIN
+                    || WorldCraftUtil.block(level, pos.offset(1, 2, 0)) == Blocks.CARVED_PUMPKIN)) {
             clearLShape(level, pos);
             return "youming";
+        }
+
+        // 机翼「极意」：苦力怕爆炸，对角火/冰 + 灵魂沙，精炼≥25，耐久Ⅲ
+        // 该结构包含「劫」的灵魂沙核心，必须先判定更严格的配方。
+        if (src.getEntity() instanceof net.minecraft.world.entity.monster.Creeper
+                && refine >= 25
+                && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, blade) >= 3
+                && isJiYiPattern(level, pos)) {
+            clearJiYiPattern(level, pos);
+            return "jiyi";
         }
 
         // 灾厄之源「劫」：苦力怕爆炸，刀架下方 1 个灵魂沙，精炼≥20
@@ -188,18 +228,9 @@ public final class WorldCraftEvents {
         // 花天狂骨「花天」：苦力怕爆炸，刀架下方 1 个花，精炼≥10
         if (src.getEntity() instanceof net.minecraft.world.entity.monster.Creeper
                 && refine >= 10
-                && isAnyFlower(level, pos)) {
+                && isSmallFlower(level, pos)) {
             level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             return "htkg";
-        }
-
-        // 机翼「极意」：苦力怕爆炸，对角火/冰 + 灵魂沙，精炼≥25，耐久Ⅲ
-        if (src.getEntity() instanceof net.minecraft.world.entity.monster.Creeper
-                && refine >= 25
-                && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, blade) >= 3
-                && isJiYiPattern(level, pos)) {
-            clearJiYiPattern(level, pos);
-            return "jiyi";
         }
 
         // 白兽剑王「巨狮」：苦力怕爆炸，十字 TNT + 黑曜石，精炼≥50，锋利Ⅴ
@@ -248,56 +279,63 @@ public final class WorldCraftEvents {
         return null;
     }
 
-    // ── 右键交互类配方（PlayerInteractEvent） ────────────────────────────────
-
     /**
-     * 右键击打刀架：白兰剑和生机「绿萝」。
-     * <p>
-     * 1.12.2 原版通过 {@code AWRec.java} 的 {@code hit==1}（右键）实现。
+     * 箭命中刀架：白兰剑、生机「绿萝」。
      */
     @SubscribeEvent
-    public static void onRightClickStand(net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract event) {
-        if (event.getLevel().isClientSide() || event.getEntity() == null) {
+    public static void onArrowImpactStand(ProjectileImpactEvent event) {
+        if (!(event.getProjectile() instanceof AbstractArrow)
+                || !(event.getRayTraceResult() instanceof EntityHitResult hit)
+                || !(hit.getEntity() instanceof BladeStandEntity stand)) {
             return;
         }
-        Entity target = event.getTarget();
-        if (!(target instanceof BladeStandEntity stand)) {
-            return;
-        }
-        if (!WorldCraftUtil.isIronStand(stand)) {
+        Level level = stand.level();
+        if (level.isClientSide() || !(level instanceof ServerLevel server) || !WorldCraftUtil.isIronStand(stand)) {
             return;
         }
 
         ItemStack blade = stand.getItem();
-        ISlashBladeState state = blade.getCapability(mods.flammpfeil.slashblade.item.ItemSlashBlade.BLADESTATE).orElse(null);
+        ISlashBladeState state = blade.getCapability(mods.flammpfeil.slashblade.item.ItemSlashBlade.BLADESTATE)
+                .orElse(null);
+        if (tryTransformBailan(server, stand, blade, state) || tryTransformLvluo(server, stand, blade, state)) {
+            event.setImpactResult(ProjectileImpactEvent.ImpactResult.STOP_AT_CURRENT_NO_DAMAGE);
+        }
+    }
+
+    private static boolean tryTransformBailan(ServerLevel level, BladeStandEntity stand, ItemStack blade,
+                                              ISlashBladeState state) {
         if (state == null || !WorldCraftUtil.isBaseBlade(blade, state)) {
-            return;
+            return false;
         }
-
-        ServerLevel level = (ServerLevel) event.getLevel();
-        BlockPos pos = stand.blockPosition();
-        int refine = state.getRefine();
-
-        // 白兰剑：刀架站在花上，精炼≥10
-        if (refine >= 10 && isAnyFlower(level, pos)) {
-            ItemStack res = WorldCraftUtil.buildResult(level, "bailan", state);
-            if (!res.isEmpty()) {
-                level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-                stand.setItem(res);
-                event.setCanceled(true);
-            }
-            return;
+        BlockPos flowerPos = stand.blockPosition();
+        if (state.getRefine() < 10 || !isSmallFlower(level, flowerPos)) {
+            return false;
         }
-
-        // 生机「绿萝」：刀架站在树叶上，精炼≥10
-        if (refine >= 10 && isAnyLeaves(level, pos.below())) {
-            ItemStack res = WorldCraftUtil.buildResult(level, "lvluo", state);
-            if (!res.isEmpty()) {
-                level.setBlockAndUpdate(pos.below(), Blocks.AIR.defaultBlockState());
-                stand.setItem(res);
-                event.setCanceled(true);
-            }
+        ItemStack res = WorldCraftUtil.buildResult(level, "bailan", state);
+        if (res.isEmpty()) {
+            return false;
         }
+        level.setBlockAndUpdate(flowerPos, Blocks.AIR.defaultBlockState());
+        stand.setItem(res);
+        return true;
+    }
+
+    private static boolean tryTransformLvluo(ServerLevel level, BladeStandEntity stand, ItemStack blade,
+                                             ISlashBladeState state) {
+        if (state == null || !WorldCraftUtil.isBaseBlade(blade, state)) {
+            return false;
+        }
+        BlockPos leavesPos = stand.blockPosition().below();
+        if (state.getRefine() < 10 || !isAnyLeaves(level, leavesPos)) {
+            return false;
+        }
+        ItemStack res = WorldCraftUtil.buildResult(level, "lvluo", state);
+        if (res.isEmpty()) {
+            return false;
+        }
+        level.setBlockAndUpdate(leavesPos, Blocks.AIR.defaultBlockState());
+        stand.setItem(res);
+        return true;
     }
 
     // ── 方块阵辅助方法 ──────────────────────────────────────────────────────
@@ -357,23 +395,17 @@ public final class WorldCraftEvents {
     }
 
     /** 任意花方块（1.20.1 花方块类名已变，用已知实例检查） */
-    private static boolean isAnyFlower(Level lvl, BlockPos pos) {
-        Block b = WorldCraftUtil.block(lvl, pos);
-        return b == Blocks.DANDELION || b == Blocks.POPPY || b == Blocks.BLUE_ORCHID
-                || b == Blocks.ALLIUM || b == Blocks.AZURE_BLUET || b == Blocks.RED_TULIP
-                || b == Blocks.ORANGE_TULIP || b == Blocks.WHITE_TULIP || b == Blocks.PINK_TULIP
-                || b == Blocks.OXEYE_DAISY || b == Blocks.CORNFLOWER || b == Blocks.LILY_OF_THE_VALLEY
-                || b == Blocks.WITHER_ROSE || b == Blocks.SUNFLOWER || b == Blocks.LILAC
-                || b == Blocks.ROSE_BUSH || b == Blocks.PEONY;
+    private static boolean isSmallFlower(Level lvl, BlockPos pos) {
+        return lvl.getBlockState(pos).is(BlockTags.SMALL_FLOWERS);
     }
 
     private static boolean isFlowerField(Level lvl, BlockPos center, int radius) {
-        if (!isAnyFlower(lvl, center)) {
+        if (!isSmallFlower(lvl, center)) {
             return false;
         }
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
-                if (!isAnyFlower(lvl, center.offset(x, 0, z))) {
+                if (!isSmallFlower(lvl, center.offset(x, 0, z))) {
                     return false;
                 }
             }
@@ -391,10 +423,7 @@ public final class WorldCraftEvents {
 
     /** 任意树叶方块 */
     private static boolean isAnyLeaves(Level lvl, BlockPos pos) {
-        Block b = WorldCraftUtil.block(lvl, pos);
-        return b == Blocks.OAK_LEAVES || b == Blocks.SPRUCE_LEAVES || b == Blocks.BIRCH_LEAVES
-                || b == Blocks.JUNGLE_LEAVES || b == Blocks.ACACIA_LEAVES || b == Blocks.DARK_OAK_LEAVES
-                || b == Blocks.MANGROVE_LEAVES || b == Blocks.CHERRY_LEAVES;
+        return lvl.getBlockState(pos).is(BlockTags.LEAVES);
     }
 
     // ── 工具方法 ────────────────────────────────────────────────────────────

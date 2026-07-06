@@ -6,6 +6,9 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 KBlade2 (`kablade`) — a Forge 1.20.1 addon for **SlashBlade Resharped (拔刀剑重锋)** 1.5.49. Java 17, official Mojang mappings.
 
+### Legacy Reference
+- The original 1.12.2 KBlade project is available locally at `E:\KaBlade`. Use it as the reference when comparing or porting old KBlade behavior, recipes, slash arts, world crafting, or blade definitions.
+
 ## Build Commands
 
 ```bash

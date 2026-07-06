@@ -50,7 +50,7 @@ public final class Main {
     public static final String MOD_NAME = "Kablade";
 
     /** Mod version. */
-    public static final String VERSION = "2.0.14-a";
+    public static final String VERSION = "2.0.15-a";
 
     /** Shared logger. */
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -131,7 +131,6 @@ public final class Main {
 
     /** Client-only setup (renderers, key mappings, etc.). */
     private void clientSetup(final FMLClientSetupEvent event) {
-        LOGGER.debug("[{}] client setup", MODID);
         // Fetches remote version; UpdateNotifier shows on login screen if newer version exists.
         com.wjx.kablade.update.UpdateChecker.start(VERSION);
     }
