@@ -25,7 +25,7 @@ public class RenderDriveEx extends Render<ExSaEntityDrive> {
 
     public void doRender(ExSaEntityDrive entity, double d0, double d1, double d2, float f, float f1) {
         if (entity instanceof ExSaEntityDrive) {
-            this.doDriveRender((ExSaEntityDrive)entity, d0, d1, d2, f, f1);
+            this.doDriveRender(entity, d0, d1, d2, f, f1);
         }
 
     }

@@ -1,6 +1,6 @@
 package com.wjx.kablade.SlashBlade.blades.recipe;
 
-import com.wjx.kablade.Main;
+import com.wjx.kablade.SlashBlade.BladeLoader;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.TagPropertyAccessor;
@@ -135,7 +135,7 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
                     && curIs.hasTagCompound()){
 
                 NBTTagCompound oldTag = curIs.getTagCompound();
-                oldTag = (NBTTagCompound)oldTag.copy();
+                oldTag = oldTag.copy();
 
                 {
                     NBTTagCompound newTag;

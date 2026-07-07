@@ -31,6 +31,7 @@ public class EntityFlareEdge extends ExSaEntityDrive{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onImpact(Entity curEntity, float damage) throws NoSuchFieldException, IllegalAccessException {
         EnderTeleportCanceller.setTeleportCancel(curEntity, 100);
         if (!curEntity.world.isRemote) {

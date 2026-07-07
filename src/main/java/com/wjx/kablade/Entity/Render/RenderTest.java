@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 
-public class RenderTest extends Render {
+public class RenderTest extends Render<Entity> {
 
     public static ICustomModelLoader model;
     public static ResourceLocation modelLocation;

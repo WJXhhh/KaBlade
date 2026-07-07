@@ -54,6 +54,8 @@ public class EntitySlashDimensionAdd extends Entity implements IThrowableEntity 
 
     protected float AttackLevel = 0.0f;
 
+    public final int particleSeed;
+
     /**
      * ■コンストラクタ
      * @param par1World
@@ -63,7 +65,7 @@ public class EntitySlashDimensionAdd extends Entity implements IThrowableEntity 
         super(par1World);
         ticksExisted = 0;
 
-        getEntityData().setInteger("seed", rand.nextInt(50));
+        this.particleSeed = rand.nextInt(50);
     }
 
     public EntitySlashDimensionAdd(World par1World, EntityLivingBase entityLiving, float AttackLevel, boolean multiHit){
@@ -208,7 +210,7 @@ public class EntitySlashDimensionAdd extends Entity implements IThrowableEntity 
                 this.playSound(SoundEvents.ENTITY_WITHER_HURT, 0.2F, 0.5F + 0.25f * this.rand.nextFloat());
             }
 
-            if(this.getThrower() != null){
+            if(this.getThrower() != null && (getIsSingleHit() || this.ticksExisted % 2 == 0)){
                 AxisAlignedBB bb = this.getEntityBoundingBox().grow(4f,5f,4f);
 
                 if(this.getThrower() instanceof EntityLivingBase){
@@ -250,7 +252,7 @@ public class EntitySlashDimensionAdd extends Entity implements IThrowableEntity 
                             ReflectionAccessHelper.setVelocity(curEntity, 0, 0, 0);
                             curEntity.setDead();
 
-                            for (int var1 = 0; var1 < 10; ++var1)
+                            for (int var1 = 0; var1 < 5; ++var1)
                             {
                                 Random rand = this.getRand();
                                 double var2 = rand.nextGaussian() * 0.02D;
@@ -271,7 +273,7 @@ public class EntitySlashDimensionAdd extends Entity implements IThrowableEntity 
                     }
                 }
 
-                if(getIsSingleHit() || this.ticksExisted % 2 == 0){
+                {
                     List<Entity> list = this.world.getEntitiesInAABBexcluding(this.getThrower(), bb, EntitySelectorAttackable.getInstance());
                     //list.removeAll(alreadyHitEntity);
 
@@ -282,6 +284,7 @@ public class EntitySlashDimensionAdd extends Entity implements IThrowableEntity 
 
                     StylishRankManager.setNextAttackType(this.thrower ,StylishRankManager.AttackTypes.SlashDimMagic);
                     float catchSpeed =12.2f;
+                    int punchLevel = blade.isEmpty() ? 0 : EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, blade);
                     for(Entity curEntity : list){
                         if(blade.isEmpty()) break;
 
@@ -335,17 +338,16 @@ public class EntitySlashDimensionAdd extends Entity implements IThrowableEntity 
 
 
                                 }else{
-                                    int level = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, blade);
-                                    if(0 < level){
+                                    if(0 < punchLevel){
                                         curEntity.addVelocity(
-                                                (double) (Math.sin(getThrower().rotationYaw * (float) Math.PI / 180.0F) * (float) level * 0.5F),
+                                                Math.sin(getThrower().rotationYaw * (float) Math.PI / 180.0F) * (float) punchLevel * 0.5F,
                                                 0.2D,
-                                                (double) (-Math.cos(getThrower().rotationYaw * (float) Math.PI / 180.0F) * (float) level * 0.5F));
+                                                -Math.cos(getThrower().rotationYaw * (float) Math.PI / 180.0F) * (float) punchLevel * 0.5F);
                                     }else{
                                         curEntity.addVelocity(
-                                                (double) (-Math.sin(getThrower().rotationYaw * (float) Math.PI / 180.0F) * 0.5),
+                                                -Math.sin(getThrower().rotationYaw * (float) Math.PI / 180.0F) * 0.5,
                                                 0.2D,
-                                                (double) (Math.cos(getThrower().rotationYaw * (float) Math.PI / 180.0F)) * 0.5);
+                                                Math.cos(getThrower().rotationYaw * (float) Math.PI / 180.0F) * 0.5);
 
                                     }
                                 }

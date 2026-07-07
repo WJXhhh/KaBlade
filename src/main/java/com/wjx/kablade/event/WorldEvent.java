@@ -9,7 +9,7 @@ import com.wjx.kablade.Entity.Render.RenderRaikiriBlade;
 import com.wjx.kablade.Entity.Render.RenderWindEnchantment;
 import com.wjx.kablade.Lib;
 import com.wjx.kablade.Main;
-import com.wjx.kablade.SlashBlade.BladeProxy;
+
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
 import com.wjx.kablade.capability.CapabilityLoader;
 import com.wjx.kablade.capability.CapabilitySlashPotion;
@@ -24,7 +24,7 @@ import com.wjx.kablade.util.interfaces.IKabladeOre;
 import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
+
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -62,7 +62,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -232,8 +231,8 @@ public class WorldEvent {
     public void onTooltip(ItemTooltipEvent event) {
         if (event.getItemStack().getItem() instanceof MagicBlade) {
             for (int x = 0; x < event.getToolTip().size(); ++x) {
-                if (event.getToolTip().get(x).contains(I18n.translateToLocal("attribute.name.generic.attackDamage")) || event.getToolTip().get(x).contains(I18n.translateToLocal("Attack Damage"))) {
-                    event.getToolTip().set(x, TextFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.damageguer1111.name")) + " " + TextFormatting.BLUE + I18n.translateToLocal("attribute.name.generic.attackDamage"));
+                if (event.getToolTip().get(x).contains(I18nUtil.translate("attribute.name.generic.attackDamage")) || event.getToolTip().get(x).contains(I18nUtil.translate("Attack Damage"))) {
+                    event.getToolTip().set(x, TextFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18nUtil.translate("info.damageguer1111.name")) + " " + TextFormatting.BLUE + I18nUtil.translate("attribute.name.generic.attackDamage"));
                     return;
                 }
             }
@@ -349,7 +348,7 @@ public class WorldEvent {
                     Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeEntityProperties.PROP_WINE_BIND_ATTACKER));
                     float extraDamage = 0f;
                     if (attacker instanceof EntityLivingBase && ((EntityLivingBase) attacker).getHeldItemMainhand().getItem() instanceof ItemSlashBlade) {
-                        extraDamage = (float)MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(((EntityLivingBase) attacker).getHeldItemMainhand().getTagCompound()),4f);
+                        extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(((EntityLivingBase) attacker).getHeldItemMainhand().getTagCompound()),4f);
                     }
                     if (world.getTotalWorldTime() % 20 == 0 && attacker != null && !attacker.isDead) {
                         if (attacker instanceof EntityLivingBase) {

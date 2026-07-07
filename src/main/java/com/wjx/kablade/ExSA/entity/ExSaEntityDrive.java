@@ -96,7 +96,7 @@ public class ExSaEntityDrive extends EntityDriveAdd {
         if (!this.world.isRemote) {
             double dAmbit = 1.5;
             AxisAlignedBB bb = new AxisAlignedBB(this.posX - dAmbit, this.posY - dAmbit, this.posZ - dAmbit, this.posX + dAmbit, this.posY + dAmbit, this.posZ + dAmbit);
-            Iterator var6;
+            Iterator<Entity> var6;
             Entity curEntity;
             if (this.getThrower() instanceof EntityLivingBase) {
                 EntityLivingBase entityLiving = (EntityLivingBase)this.getThrower();
@@ -114,7 +114,7 @@ public class ExSaEntityDrive extends EntityDriveAdd {
                             break label115;
                         }
 
-                        curEntity = (Entity)var6.next();
+                        curEntity = var6.next();
                         if (this.blade.isEmpty()) {
                             break label115;
                         }

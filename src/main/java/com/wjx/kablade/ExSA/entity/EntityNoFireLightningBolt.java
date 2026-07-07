@@ -89,7 +89,7 @@ public class EntityNoFireLightningBolt extends EntityLightningBolt {
                 float magicDamage = 1.0f + ItemSlashBlade.AttackAmplifier.get(tag).floatValue() * (0.3f + (float)level / 10.0f + 0.06f * (float)rank);
                 for (int l = 0; l < list.size(); ++l) {
                     Entity entity;
-                    if (this.world.isRemote || (entity = (Entity)list.get(l)) == null || entity.isDead) continue;
+                    if (this.world.isRemote || (entity = list.get(l)) == null || entity.isDead) continue;
                     if (entity.hurtResistantTime != 3) {
                         entity.hurtResistantTime = 3;
                     }

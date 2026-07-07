@@ -57,7 +57,7 @@ public class SaAuroraShining extends SpecialAttackBase {
                         ee.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),8 + extraDamage2);
                         ee.hurtResistantTime = 0;
                         if (ee instanceof EntityLivingBase)
-                            itemStack.hitEntity((EntityLivingBase) ee,entityPlayer);
+                            itemStack.hitEntity(ee,entityPlayer);
                         ee.setFire(5);
                     }
 

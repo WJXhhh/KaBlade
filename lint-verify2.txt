@@ -1,0 +1,345 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. See https://docs.gradle.org/7.5.1/userguide/gradle_daemon.html#sec:disabling_the_daemon.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+MixinGradle did not locate the diffplug APT plugin, skipping eclipse task configuration
+Java: 1.8.0_202, JVM: 25.202-b08 (Oracle Corporation), Arch: amd64
+
+> Task :clean
+> Task :downloadMcpConfig
+> Task :extractSrg
+> Task :createMcpToSrg
+
+> Task :updateMainClassVersion
+Updated version in Main.java to 1.8.9
+
+> Task :compileJava
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\EntityRaikiriBlade.java:13: 警告: [deprecation] net.minecraft.util.text.translation中的net.minecraft.util.text.translation.I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:9: 警告: [deprecation] net.minecraft.util.text.translation中的net.minecraft.util.text.translation.I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:65: 警告: [deprecation] net.minecraft.util.text.translation中的net.minecraft.util.text.translation.I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityAquaEdge.java:11: 警告: [deprecation] net.minecraftforge.fml.relauncher中的net.minecraftforge.fml.relauncher.ReflectionHelper已过时
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+                                        ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:17: 警告: [deprecation] net.minecraft.util.text.translation中的net.minecraft.util.text.translation.I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\SlashBlade\blades\bladeitem\Item_Caijue.java:17: 警告: [deprecation] net.minecraft.util.text.translation中的net.minecraft.util.text.translation.I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\SlashBlade\blades\bladeitem\MagicBlade.java:17: 警告: [deprecation] net.minecraft.util.text.translation中的net.minecraft.util.text.translation.I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+警告: 未知的枚举常量 cpw.mods.fml.relauncher.Side.CLIENT
+  原因: 找不到cpw.mods.fml.relauncher.Side的类文件
+警告: 未知的枚举常量 cpw.mods.fml.relauncher.Side.CLIENT
+警告: 未知的枚举常量 cpw.mods.fml.relauncher.Side.CLIENT
+警告: 未知的枚举常量 cpw.mods.fml.relauncher.Side.CLIENT
+警告: 未知的枚举常量 cpw.mods.fml.relauncher.Side.CLIENT
+警告: 未知的枚举常量 cpw.mods.fml.relauncher.Side.CLIENT
+注: SpongePowered MIXIN Annotation Processor Version=0.8.5 (MixinGradle Version=0.7.38)
+注: Supported obfuscation types: ObfuscationServiceMCP supports [notch] ObfuscationServiceFG3 supports [searge]
+注: Loading searge mappings from D:\forge-dev\KaBlade\build\createMcpToSrg\output.tsrg
+注: Writing refmap to D:\forge-dev\KaBlade\build\tmp\compileJava\compileJava-refmap.json
+注: Writing refmap to D:\forge-dev\KaBlade\build\tmp\compileJava\compileJava-refmap.json
+注: Writing searge composite mappings to D:\forge-dev\KaBlade\build\tmp\compileJava\compileJava-mappings.tsrg
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\EntityRaikiriBlade.java:13: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:9: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:65: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityAquaEdge.java:11: 警告: [deprecation] net.minecraftforge.fml.relauncher中的ReflectionHelper已过时
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+                                        ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:17: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\SlashBlade\blades\bladeitem\Item_Caijue.java:17: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\SlashBlade\blades\bladeitem\MagicBlade.java:17: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+警告: 未知的枚举常量 Side.CLIENT
+  原因: 找不到cpw.mods.fml.relauncher.Side的类文件
+警告: 未知的枚举常量 Side.CLIENT
+警告: 未知的枚举常量 Side.CLIENT
+警告: 未知的枚举常量 Side.CLIENT
+警告: 未知的枚举常量 Side.CLIENT
+警告: 未知的枚举常量 Side.CLIENT
+注: Writing refmap to D:\forge-dev\KaBlade\build\tmp\compileJava\compileJava-refmap.json
+注: Writing refmap to D:\forge-dev\KaBlade\build\tmp\compileJava\compileJava-refmap.json
+注: Writing searge composite mappings to D:\forge-dev\KaBlade\build\tmp\compileJava\compileJava-mappings.tsrg
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\EntityRaikiriBlade.java:13: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:9: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:65: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityAquaEdge.java:11: 警告: [deprecation] net.minecraftforge.fml.relauncher中的ReflectionHelper已过时
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+                                        ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:17: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\SlashBlade\blades\bladeitem\Item_Caijue.java:17: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\SlashBlade\blades\bladeitem\MagicBlade.java:17: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+import net.minecraft.util.text.translation.I18n;
+                                          ^
+警告: 未知的枚举常量 Side.CLIENT
+  原因: 找不到cpw.mods.fml.relauncher.Side的类文件
+警告: 未知的枚举常量 Side.CLIENT
+警告: 未知的枚举常量 Side.CLIENT
+警告: 未知的枚举常量 Side.CLIENT
+警告: 未知的枚举常量 Side.CLIENT
+警告: 未知的枚举常量 Side.CLIENT
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\AllWeapon\awlib\ArrayLib.java:4: 警告: [rawtypes] 找到原始类型: Class
+    public static Class<?>[][] RotateClockwise(Class<?>[][] arry1, int m, int n) {  Class<?>[][] arry2 = new Class[n][m]; int dst; dst = m - 1; for (int x = 0; x < m; x++, dst--) { for (int y = 0; y < n; y++) { arry2[y][dst] = arry1[x][y]; } } return arry2; }
+                                                                                                             ^
+  缺少泛型类Class<T>的类型参数
+  其中, T是类型变量:
+    T扩展已在类 Class中声明的Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\capability\CapabilityLoader.java:15: 警告: [deprecation] CapabilityManager中的<T>register(Class<T>,IStorage<T>,Class<? extends T>)已过时
+        CapabilityManager.INSTANCE.register(IPotionInSlash.class, new CapabilitySlashPotion.Storage(), CapabilitySlashPotion.Implementation.class);
+                                  ^
+  其中, T是类型变量:
+    T扩展已在方法 <T>register(Class<T>,IStorage<T>,Class<? extends T>)中声明的Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\EntityDriveAdd.java:162: 警告: [cast] 出现冗余的到Integer的转换
+        return (Integer)this.getDataManager().get(LIFETIME);
+               ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\EntityDriveAdd.java:310: 警告: [cast] 出现冗余的到Entity的转换
+                    curEntity = (Entity)var6.next();
+                                ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\EntityRaikiriBlade.java:137: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+                            ((EntityPlayer) this.thrower).sendStatusMessage(new TextComponentString("§b" + I18n.translateToLocal("msg.raikiri_shield_crash")),true);
+                                                                                                           ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\EntityRaikiriBlade.java:137: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+                            ((EntityPlayer) this.thrower).sendStatusMessage(new TextComponentString("§b" + I18n.translateToLocal("msg.raikiri_shield_crash")),true);
+                                                                                                               ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\EntityRaikiriBlade.java:142: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+                        ((EntityPlayer) this.thrower).sendStatusMessage(new TextComponentString("§b" + I18n.translateToLocal("msg.raikiri_shield_blood") + blood),true);
+                                                                                                       ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\EntityRaikiriBlade.java:142: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+                        ((EntityPlayer) this.thrower).sendStatusMessage(new TextComponentString("§b" + I18n.translateToLocal("msg.raikiri_shield_blood") + blood),true);
+                                                                                                           ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\EntitySummonSwordFree.java:619: 警告: [rawtypes] 找到原始类型: Iterator
+        Iterator var3 = list.iterator();
+        ^
+  缺少泛型类Iterator<E>的类型参数
+  其中, E是类型变量:
+    E扩展已在接口 Iterator中声明的Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\Render\RenderEntityDriveAdd.java:24: 警告: [cast] 出现冗余的到EntityDriveAdd的转换
+            this.doDriveRender((EntityDriveAdd)entity, d0, d1, d2, f, f1);
+                               ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\Render\RenderEntityRainUmbrella.java:90: 警告: [cast] 出现冗余的到float的转换
+            float progress = Math.min(1.0F, (float)effectTicks / DURATION);
+                                            ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\Render\RenderSlashDimensionAdd.java:31: 警告: [rawtypes] 找到原始类型: Render
+public class RenderSlashDimensionAdd extends Render {
+                                             ^
+  缺少泛型类Render<T>的类型参数
+  其中, T是类型变量:
+    T扩展已在类 Render中声明的Entity
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\Render\RenderSlashDimensionAdd.java:91: 警告: [unchecked] 对作为原始类型Render的成员的bindEntityTexture(T)的调用未经过检查
+        this.bindEntityTexture(entity);
+                              ^
+  其中, T是类型变量:
+    T扩展已在类 Render中声明的Entity
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\Render\RenderTest.java:13: 警告: [rawtypes] 找到原始类型: Render
+public class RenderTest extends Render {
+                                ^
+  缺少泛型类Render<T>的类型参数
+  其中, T是类型变量:
+    T扩展已在类 Render中声明的Entity
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\Entity\Render\RenderTest.java:30: 警告: [unchecked] 对作为原始类型Render的成员的doRender(T,double,double,double,float,float)的调用未经过检查
+        super.doRender(entity, x, y, z, entityYaw, partialTicks);
+                      ^
+  其中, T是类型变量:
+    T扩展已在类 Render中声明的Entity
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:31: 警告: [cast] 出现冗余的到EntityLivingBase的转换
+            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
+             ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:37: 警告: [cast] 出现冗余的到EntityLivingBase的转换
+            Class<? extends EntityLivingBase> clazz = ((EntityLivingBase) target).getClass();
+                                                       ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:55: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+                            ((EntityPlayer) hitter).sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18n.translateToLocal("msg.yunluo"))), false);
+                                                                                                                                               ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:55: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+                            ((EntityPlayer) hitter).sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18n.translateToLocal("msg.yunluo"))), false);
+                                                                                                                                                   ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:92: 警告: [cast] 出现冗余的到EntityLivingBase的转换
+            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
+             ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:106: 警告: [cast] 出现冗余的到EntityPlayer的转换
+                EntityPlayer player = (EntityPlayer) hitter;
+                                      ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:107: 警告: [cast] 出现冗余的到EntityPlayer的转换
+                if(((EntityPlayer) hitter).getHeldItemMainhand().getItem() instanceof MagicBlade)
+                    ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:110: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+                        ((EntityPlayer) hitter).sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18n.translateToLocal("msg.yunluo"))), false);
+                                                                                                                                           ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:110: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+                        ((EntityPlayer) hitter).sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18n.translateToLocal("msg.yunluo"))), false);
+                                                                                                                                               ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\KillEvent.java:110: 警告: [cast] 出现冗余的到EntityPlayer的转换
+                        ((EntityPlayer) hitter).sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18n.translateToLocal("msg.yunluo"))), false);
+                         ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:235: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+                if (event.getToolTip().get(x).contains(I18n.translateToLocal("attribute.name.generic.attackDamage")) || event.getToolTip().get(x).contains(I18n.translateToLocal("Attack Damage"))) {
+                                                       ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:235: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+                if (event.getToolTip().get(x).contains(I18n.translateToLocal("attribute.name.generic.attackDamage")) || event.getToolTip().get(x).contains(I18n.translateToLocal("Attack Damage"))) {
+                                                           ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:235: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+                if (event.getToolTip().get(x).contains(I18n.translateToLocal("attribute.name.generic.attackDamage")) || event.getToolTip().get(x).contains(I18n.translateToLocal("Attack Damage"))) {
+                                                                                                                                                           ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:235: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+                if (event.getToolTip().get(x).contains(I18n.translateToLocal("attribute.name.generic.attackDamage")) || event.getToolTip().get(x).contains(I18n.translateToLocal("Attack Damage"))) {
+                                                                                                                                                               ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:236: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+                    event.getToolTip().set(x, TextFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.damageguer1111.name")) + " " + TextFormatting.BLUE + I18n.translateToLocal("attribute.name.generic.attackDamage"));
+                                                                                                         ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:236: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+                    event.getToolTip().set(x, TextFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.damageguer1111.name")) + " " + TextFormatting.BLUE + I18n.translateToLocal("attribute.name.generic.attackDamage"));
+                                                                                                             ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:236: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+                    event.getToolTip().set(x, TextFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.damageguer1111.name")) + " " + TextFormatting.BLUE + I18n.translateToLocal("attribute.name.generic.attackDamage"));
+                                                                                                                                                                                          ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:236: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+                    event.getToolTip().set(x, TextFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.damageguer1111.name")) + " " + TextFormatting.BLUE + I18n.translateToLocal("attribute.name.generic.attackDamage"));
+                                                                                                                                                                                              ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\event\WorldEvent.java:352: 警告: [cast] 出现冗余的到float的转换
+                        extraDamage = (float)MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(((EntityLivingBase) attacker).getHeldItemMainhand().getTagCompound()),4f);
+                                      ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\ExSaEntityDrive.java:99: 警告: [rawtypes] 找到原始类型: Iterator
+            Iterator var6;
+            ^
+  缺少泛型类Iterator<E>的类型参数
+  其中, E是类型变量:
+    E扩展已在接口 Iterator中声明的Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityAquaEdge.java:67: 警告: [unchecked] 未经检查的转换
+                    curEntity.getDataManager().set((DataParameter<Boolean>)field.get(null),false);
+                                                                                    ^
+  需要: DataParameter<Boolean>
+  找到:    Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityAquaEdge.java:72: 警告: [unchecked] 未经检查的转换
+                    curEntity.getDataManager().set((DataParameter<Boolean>)field.get(null),false);
+                                                                                    ^
+  需要: DataParameter<Boolean>
+  找到:    Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityFlareEdge.java:51: 警告: [unchecked] 未经检查的转换
+                    curEntity.getDataManager().set((DataParameter<Boolean>)field.get(null),false);
+                                                                                    ^
+  需要: DataParameter<Boolean>
+  找到:    Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityFlareEdge.java:56: 警告: [unchecked] 未经检查的转换
+                    curEntity.getDataManager().set((DataParameter<Boolean>)field.get(null),false);
+                                                                                    ^
+  需要: DataParameter<Boolean>
+  找到:    Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityPhantomSwordEx.java:155: 警告: [rawtypes] 找到原始类型: Iterator
+                Iterator i$ = list.iterator();
+                ^
+  缺少泛型类Iterator<E>的类型参数
+  其中, E是类型变量:
+    E扩展已在接口 Iterator中声明的Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityPhantomSwordEx.java:214: 警告: [rawtypes] 找到原始类型: Iterator
+            Iterator i$ = list.iterator();
+            ^
+  缺少泛型类Iterator<E>的类型参数
+  其中, E是类型变量:
+    E扩展已在接口 Iterator中声明的Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityLightningSword.java:67: 警告: [rawtypes] 找到原始类型: Iterator
+                Iterator i$ = list.iterator();
+                ^
+  缺少泛型类Iterator<E>的类型参数
+  其中, E是类型变量:
+    E扩展已在接口 Iterator中声明的Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityLightningSword.java:127: 警告: [rawtypes] 找到原始类型: Iterator
+            Iterator i$ = list.iterator();
+            ^
+  缺少泛型类Iterator<E>的类型参数
+  其中, E是类型变量:
+    E扩展已在接口 Iterator中声明的Object
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityLightningSword.java:148: 警告: [deprecation] Block中的getCollisionBoundingBox(IBlockState,IBlockAccess,BlockPos)已过时
+                                if (!(nBlock == Blocks.AIR) && nBlock.getCollisionBoundingBox(this.world.getBlockState(new BlockPos(nPosX, nPosY, nPosZ)),this.world,new BlockPos(nPosX, nPosY, nPosZ)) != null) {
+                                                                     ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\EntityNoFireLightningBolt.java:92: 警告: [cast] 出现冗余的到Entity的转换
+                    if (this.world.isRemote || (entity = (Entity)list.get(l)) == null || entity.isDead) continue;
+                                                         ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\entity\render\RenderDriveEx.java:28: 警告: [cast] 出现冗余的到ExSaEntityDrive的转换
+            this.doDriveRender((ExSaEntityDrive)entity, d0, d1, d2, f, f1);
+                               ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\ExSA\special_attack\OverSlash.java:57: 警告: [cast] 出现冗余的到ItemStack的转换
+            int level = Math.max(1, EnchantmentHelper.getEnchantmentLevel( Enchantments.POWER, (ItemStack)itemStack));
+                                                                                               ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:40: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+            tooltip.add(I18n.translateToLocal("info.item.gravity_nugget"));
+                        ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:40: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+            tooltip.add(I18n.translateToLocal("info.item.gravity_nugget"));
+                            ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:47: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+            tooltip.add(I18n.translateToLocal("info.item.gravity_crystal"));
+                        ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:47: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+            tooltip.add(I18n.translateToLocal("info.item.gravity_crystal"));
+                            ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:54: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+            tooltip.add(I18n.translateToLocal("info.item.aurora_fragment"));
+                        ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:54: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+            tooltip.add(I18n.translateToLocal("info.item.aurora_fragment"));
+                            ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:62: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+            tooltip.add(I18n.translateToLocal("info.item.thunder_crystal"));
+                        ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:62: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+            tooltip.add(I18n.translateToLocal("info.item.thunder_crystal"));
+                            ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:95: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+            tooltip.add(I18n.translateToLocal("info.item.electro_signet"));
+                        ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:95: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+            tooltip.add(I18n.translateToLocal("info.item.electro_signet"));
+                            ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:104: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+            tooltip.add(I18n.translateToLocal("info.item.petal"));
+                        ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:104: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+            tooltip.add(I18n.translateToLocal("info.item.petal"));
+                            ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:119: 警告: [deprecation] net.minecraft.util.text.translation中的I18n已过时
+            tooltip.add(I18n.translateToLocal("info.item.chromoly_ingot"));
+                        ^
+D:\forge-dev\KaBlade\src\main\java\com\wjx\kablade\init\ItemInit.java:119: 警告: [deprecation] I18n中的translateToLocal(String)已过时
+            tooltip.add(I18n.translateToLocal("info.item.chromoly_ingot"));
+                            ^
+注: 某些输入文件还使用或覆盖了已过时的 API。
+注: 某些输入文件还使用了未经检查或不安全的操作。
+100 个警告
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.5.1/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 29s
+6 actionable tasks: 6 executed

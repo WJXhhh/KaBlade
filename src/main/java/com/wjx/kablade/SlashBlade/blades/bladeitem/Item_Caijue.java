@@ -3,6 +3,7 @@ package com.wjx.kablade.SlashBlade.blades.bladeitem;
 import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.event.UpdateColor;
+import com.wjx.kablade.util.I18nUtil;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.client.util.ITooltipFlag;
@@ -14,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
@@ -34,11 +34,12 @@ public class Item_Caijue extends ItemSlashBladeNamed {
     }
 
     @SideOnly(Side.CLIENT)
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void addInformationSwordClass(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         EnumSet<SwordType> swordType = this.getSwordType(par1ItemStack);
         NBTTagCompound tag = getItemTagCompound(par1ItemStack);
 
-        par3List.add(UpdateColor.makeColour2(I18n.translateToLocal("info.slashblade.godkey.3")));
+        par3List.add(UpdateColor.makeColour2(I18nUtil.translate("info.slashblade.godkey.3")));
 
 
     }
@@ -71,31 +72,33 @@ public class Item_Caijue extends ItemSlashBladeNamed {
     }
 
     @SideOnly(Side.CLIENT)
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void addInformation(ItemStack stack, World worldIn, List tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         //tooltip.add(String.format("SBCOLOR: %s",stack.getTagCompound().getInteger("SummonedSwordColor")));
         //tooltip.add("");
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.dizui.1")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.dizui.1")));
         tooltip.add("");
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.dizui.2")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.dizui.2")));
         tooltip.add("");
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.dizui.3")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.dizui.3")));
         tooltip.add("");
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.dizui.4")));
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.dizui.5")));
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.dizui.6")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.dizui.4")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.dizui.5")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.dizui.6")));
 
     }
 
 
 
     @SideOnly(Side.CLIENT)
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void addInformationSpecialAttack(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         EnumSet<SwordType> swordType = this.getSwordType(par1ItemStack);
         if (swordType.contains(SwordType.Bewitched)) {
             Object tag = getItemTagCompound(par1ItemStack);
             String key = "flammpfeil.slashblade.specialattack." + this.getSpecialAttack(par1ItemStack).toString();
-            par3List.add(String.format("SA:" + UpdateColor.makeColourPur(I18n.translateToLocal(key))));
+            par3List.add(String.format("SA:" + UpdateColor.makeColourPur(I18nUtil.translate(key))));
         }
 
     }

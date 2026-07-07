@@ -1,0 +1,9 @@
+// Temporary init script to enable all javac lint warnings for the KaBlade project.
+allprojects {
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs << '-Xlint:all'
+        options.compilerArgs << '-Xlint:-processing'
+        options.compilerArgs << '-Xlint:-classfile'
+        options.compilerArgs << '-Xlint:-path'
+    }
+}

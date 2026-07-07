@@ -77,7 +77,7 @@ public class CommonProxy{
                 @Override
                 public void run(EntityBladeStand curEntity, DamageSource damageSource) {
                     if (damageSource.isFireDamage()) {
-                        EntityBladeStand stand = (EntityBladeStand) curEntity;
+                        EntityBladeStand stand = curEntity;
                         int type = stand.getStandType();//耀魂碎片:0 耀魂铁锭:1 耀魂宝珠:2 破碎的耀魂:3
                         int dimension = stand.dimension;
                         ItemStack blade = stand.getBlade();
@@ -125,7 +125,7 @@ public class CommonProxy{
                         NBTTagCompound tag = blade.getTagCompound();
                         if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
                         {
-                            Class[][] rec = new Class[][]{
+                            Class<?>[][] rec = new Class<?>[][]{
                                     {BlockJukebox.class, BlockAir.class, BlockLilyPad.class},
                                     {BlockAir.class, BlockGlowstone.class, BlockAir.class},
                                     {BlockCactus.class, BlockAir.class, BlockIce.class}
@@ -143,17 +143,17 @@ public class CommonProxy{
                                 flag=true;
                             }
 
-                            Class[][] rec1 = ArrayLib.RotateClockwise(rec,3,3);
+                            Class<?>[][] rec1 = ArrayLib.RotateClockwise(rec,3,3);
                             if(ur.getClass()==rec1[0][2]&&ul.getClass()==rec1[0][0]&&dr.getClass()==rec1[2][2]&&dl.getClass()==rec1[2][0]&&ud.getClass()==rec[1][1]){
                                 flag=true;
                             }
 
-                            Class[][] rec2 = ArrayLib.RotateClockwise(rec1,3,3);
+                            Class<?>[][] rec2 = ArrayLib.RotateClockwise(rec1,3,3);
                             if(ur.getClass()==rec2[0][2]&&ul.getClass()==rec2[0][0]&&dr.getClass()==rec2[2][2]&&dl.getClass()==rec2[2][0]&&ud.getClass()==rec[1][1]){
                                 flag=true;
                             }
 
-                            Class[][] rec3 = ArrayLib.RotateClockwise(rec2,3,3);
+                            Class<?>[][] rec3 = ArrayLib.RotateClockwise(rec2,3,3);
                             if(ur.getClass()==rec3[0][2]&&ul.getClass()==rec3[0][0]&&dr.getClass()==rec3[2][2]&&dl.getClass()==rec3[2][0]&&ud.getClass()==rec[1][1]){
                                 flag=true;
                             }
@@ -186,7 +186,7 @@ public class CommonProxy{
                         NBTTagCompound tag = blade.getTagCompound();
                         if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
                         {
-                            Class[][] rec = new Class[][]{
+                            Class<?>[][] rec = new Class<?>[][]{
                                     {BlockObsidian.class, BlockAir.class, BlockObsidian.class},
                                     {BlockAir.class, BlockObsidian.class, BlockAir.class},
                                     {BlockObsidian.class, BlockAir.class, BlockObsidian.class}
@@ -235,7 +235,7 @@ public class CommonProxy{
                         NBTTagCompound tag = blade.getTagCompound();
                         if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
                         {
-                            Class[][] rec = new Class[][]{
+                            Class<?>[][] rec = new Class<?>[][]{
                                     { BlockAir.class, BlockObsidian.class,  BlockAir.class},
                                     {BlockObsidian.class, BlockSnowBlock.class, BlockObsidian.class},
                                     { BlockAir.class, BlockObsidian.class,  BlockAir.class}
@@ -287,7 +287,7 @@ public class CommonProxy{
                         NBTTagCompound tag = blade.getTagCompound();
                         if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
                         {
-                            Class[][] rec = new Class[][]{
+                            Class<?>[][] rec = new Class<?>[][]{
                                     { BlockAir.class, BlockTNT.class,  BlockAir.class},
                                     {BlockTNT.class, BlockObsidian.class, BlockTNT.class},
                                     { BlockAir.class, BlockTNT.class,  BlockAir.class}
@@ -452,7 +452,7 @@ public class CommonProxy{
                         NBTTagCompound tag = blade.getTagCompound();
                         if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
                         {
-                            Class[][] rec = new Class[][]{
+                            Class<?>[][] rec = new Class<?>[][]{
                                     {BlockFire.class, BlockAir.class, BlockIce.class},
                                     {BlockAir.class, BlockSoulSand.class, BlockAir.class},
                                     {BlockIce.class, BlockAir.class, BlockFire.class}
@@ -470,7 +470,7 @@ public class CommonProxy{
                                 flag=true;
                             }
 
-                            Class[][] rec1 = ArrayLib.RotateClockwise(rec,3,3);
+                            Class<?>[][] rec1 = ArrayLib.RotateClockwise(rec,3,3);
                             if(ur.getClass()==rec1[0][2]&&ul.getClass()==rec1[0][0]&&dr.getClass()==rec1[2][2]&&dl.getClass()==rec1[2][0]&&ud.getClass()==rec[1][1]){
                                 flag=true;
                             }
@@ -505,7 +505,7 @@ public class CommonProxy{
                         NBTTagCompound tag = blade.getTagCompound();
                         if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
                         {
-                            Class[][] rec = new Class[][]{
+                            Class<?>[][] rec = new Class<?>[][]{
                                     {BlockSnowBlock.class, BlockAir.class, BlockSnowBlock.class},
                                     {BlockAir.class, BlockIce.class, BlockAir.class},
                                     {BlockSnowBlock.class, BlockAir.class, BlockSnowBlock.class}
@@ -641,19 +641,19 @@ public class CommonProxy{
                         NBTTagCompound tag = blade.getTagCompound();
                         if(blade.getTranslationKey().equals(targetBlade.getTranslationKey())&&curEntity.getStandType()==1)
                         {
-                            Class[][] rec = new Class[][]{
+                            Class<?>[][] rec = new Class<?>[][]{
                                     {BlockObsidian.class, BlockAir.class, BlockObsidian.class},
                                     {BlockAir.class, BlockBeacon.class, BlockAir.class},
                                     {BlockObsidian.class, BlockAir.class, BlockObsidian.class}
 
                             };
-                            Class[][] rec1 = new Class[][]{
+                            Class<?>[][] rec1 = new Class<?>[][]{
                                     {BlockQuartz.class, BlockAir.class, BlockQuartz.class},
                                     {BlockAir.class, BlockAir.class, BlockAir.class},
                                     {BlockQuartz.class, BlockAir.class, BlockQuartz.class}
 
                             };
-                            Class[][] rec2 = new Class[][]{
+                            Class<?>[][] rec2 = new Class<?>[][]{
                                     {BlockObsidian.class, BlockAir.class, BlockObsidian.class},
                                     {BlockAir.class, BlockAir.class, BlockAir.class},
                                     {BlockObsidian.class, BlockAir.class, BlockObsidian.class}
@@ -666,7 +666,7 @@ public class CommonProxy{
                                 return;
                             boolean flag = true;
                             for(int i=-1;i<=1;i++){
-                                Class[][] tmp=null;
+                                Class<?>[][] tmp=null;
                                 if(i==-1){
                                     tmp=rec;
                                 }else if(i==0){

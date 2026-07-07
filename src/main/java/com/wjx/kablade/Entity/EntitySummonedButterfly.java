@@ -29,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -514,7 +515,7 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
         AxisAlignedBB bb = this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).grow(1.0D, 1.0D, 1.0D);
         AxisAlignedBB bb2 = this.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D);
 
-        Predicate<Entity>[] selectors = new Predicate[]{EntitySelectorDestructable.getInstance(), EntitySelectorAttackable.getInstance()};
+        List<Predicate<Entity>> selectors = Arrays.asList(EntitySelectorDestructable.getInstance(), EntitySelectorAttackable.getInstance());
         for(Predicate<Entity> selector : selectors){
             List<Entity> list = this.world.getEntitiesInAABBexcluding(this, bb, selector);
             list.removeAll(alreadyHitEntity);

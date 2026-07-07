@@ -28,11 +28,14 @@ import java.awt.*;
 import java.util.EnumSet;
 import java.util.Map;
 
-public class RenderSlashDimensionAdd extends Render {
+public class RenderSlashDimensionAdd extends Render<Entity> {
     static public WavefrontObject model = null;
 
     static public ResourceLocationRaw modelLocation = new ResourceLocationRaw("flammpfeil.slashblade","model/util/slashdim.obj");
     static public ResourceLocationRaw textureLocation = new ResourceLocationRaw("flammpfeil.slashblade","model/util/slashdim.png");
+
+    private String lastModelStr;
+    private String lastTextureStr;
 
     public RenderSlashDimensionAdd(RenderManager renderManager) {
         super(renderManager);
@@ -44,8 +47,17 @@ public class RenderSlashDimensionAdd extends Render {
 
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialRenderTick) {
-        modelLocation = new ResourceLocationRaw("flammpfeil.slashblade", ((EntitySlashDimensionAdd)entity).getModel());
-        textureLocation = new ResourceLocationRaw("flammpfeil.slashblade", ((EntitySlashDimensionAdd)entity).getTexture());
+        EntitySlashDimensionAdd dim = (EntitySlashDimensionAdd) entity;
+        String modelStr = dim.getModel();
+        String textureStr = dim.getTexture();
+        if (!modelStr.equals(lastModelStr)) {
+            modelLocation = new ResourceLocationRaw("flammpfeil.slashblade", modelStr);
+            lastModelStr = modelStr;
+        }
+        if (!textureStr.equals(lastTextureStr)) {
+            textureLocation = new ResourceLocationRaw("flammpfeil.slashblade", textureStr);
+            lastTextureStr = textureStr;
+        }
         if(renderOutlines){
             GlStateManager.disableLighting();
             GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
@@ -79,7 +91,7 @@ public class RenderSlashDimensionAdd extends Render {
         this.bindEntityTexture(entity);
 
         GL11.glPushMatrix();
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glPushAttrib(GL11.GL_TEXTURE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_COLOR_BUFFER_BIT);
         GL11.glShadeModel(GL11.GL_SMOOTH);
 
         //GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -100,13 +112,32 @@ public class RenderSlashDimensionAdd extends Render {
 
         double deathTime = lifetime;
         double baseAlpha = Math.sin(Math.PI * 0.5 * (Math.min(deathTime, (lifetime - (entity.ticksExisted) - partialRenderTick)) / deathTime));
-        int seed = entity.getEntityData().getInteger("seed");
+        int seed = ((EntitySlashDimensionAdd) entity).particleSeed;
 
         int baseColor = color;
-        Color col = new Color(baseColor);
-        float[] hsb = Color.RGBtoHSB(col.getRed(),col.getGreen(),col.getBlue(), null);
-        baseColor = Color.getHSBColor(0.5f + hsb[0],hsb[1], 0.2f/*hsb[2]*/).getRGB() & 0xFFFFFF;
-        baseColor = baseColor | (int)(0x66 * baseAlpha) << 24;
+        // 纯算术替换 AWT Color: RGB → HSB 色相加0.5，饱和不变，亮度0.2 → RGB
+        float r = ((baseColor >> 16) & 0xFF) / 255f;
+        float g = ((baseColor >> 8) & 0xFF) / 255f;
+        float b = (baseColor & 0xFF) / 255f;
+        float max = Math.max(r, Math.max(g, b));
+        float min = Math.min(r, Math.min(g, b));
+        float delta = max - min;
+        float h;
+        if (delta == 0f) {
+            h = 0f;
+        } else if (max == r) {
+            h = ((g - b) / delta) % 6f;
+        } else if (max == g) {
+            h = (b - r) / delta + 2f;
+        } else {
+            h = (r - g) / delta + 4f;
+        }
+        h /= 6f;
+        if (h < 0) h += 1f;
+        // 色相加0.5，饱和度保持，亮度固定0.2
+        float newH = (0.5f + h) % 1f;
+        int baseColorRGB = java.awt.Color.HSBtoRGB(newH, delta / max, 0.2f) & 0xFFFFFF;
+        baseColor = baseColorRGB | (int)(0x66 * baseAlpha) << 24;
 
         GL11.glTranslatef((float) x, (float) y, (float) z);
 
@@ -130,14 +161,13 @@ public class RenderSlashDimensionAdd extends Render {
         //GlStateManager.glBlendEquation(GL14.GL_FUNC_SUBTRACT);
 
         GL11.glPushMatrix();
-        for(int i=0; i<5; i++){
-            GL11.glScaled(0.95, 0.95, 0.95);
-            model.renderPart("base");
-        }
+        model.renderPart("base");
+        GL11.glScaled(0.9, 0.9, 0.9);
+        model.renderPart("base");
         GL11.glPopMatrix();
 
 
-        int loop = 3;
+        int loop = 2;
         for(int i=0; i<loop; i++) {
             GL11.glPushMatrix();
             float ticks = 15;

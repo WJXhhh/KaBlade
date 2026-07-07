@@ -8,7 +8,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.lang.reflect.Field;
 
@@ -36,6 +35,7 @@ public class EntityAquaEdge extends ExSaEntityDrive{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onImpact(Entity curEntity, float damage) throws NoSuchFieldException, IllegalAccessException {
         EnderTeleportCanceller.setTeleportCancel(curEntity, 100);
         this.spawnParticle(curEntity);

@@ -7,8 +7,6 @@ import com.wjx.kablade.particle.manager.ParticleIDManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 public class ParticleManager {
@@ -22,7 +20,7 @@ public class ParticleManager {
             DUST_PARTICLE = EnumHelper.addEnum(
                     EnumParticleTypes.class,
                     "DUST_PARTICLE",
-                    new Class[] { String.class, int.class, boolean.class, int.class },
+                    new Class<?>[] { String.class, int.class, boolean.class, int.class },
                     "cdust",
                     ParticleIDManager.getNextAvailableID(),
                     false,
@@ -50,7 +48,7 @@ public class ParticleManager {
             PETAL_PARTICLE = EnumHelper.addEnum(
                     EnumParticleTypes.class,
                     "PETAL_PARTICLE",
-                    new Class[] { String.class, int.class, boolean.class, int.class },
+                    new Class<?>[] { String.class, int.class, boolean.class, int.class },
                     "petal",
                     ParticleIDManager.getNextAvailableID(),
                     false,
@@ -78,7 +76,7 @@ public class ParticleManager {
             SMALLLIGH_PARTICLE = EnumHelper.addEnum(
                     EnumParticleTypes.class,
                     "SMALLLIGH_PARTICLE",
-                    new Class[] { String.class, int.class, boolean.class, int.class },
+                    new Class<?>[] { String.class, int.class, boolean.class, int.class },
                     "sligh",
                     ParticleIDManager.getNextAvailableID(),
                     false,

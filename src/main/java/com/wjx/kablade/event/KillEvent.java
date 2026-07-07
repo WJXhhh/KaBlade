@@ -1,16 +1,13 @@
 package com.wjx.kablade.event;
 
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
+import com.wjx.kablade.util.I18nUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class KillEvent {
     public static void killutil(EntityLivingBase target,Entity hitter){
@@ -28,13 +25,13 @@ public class KillEvent {
 
 
             //((EntityLivingBase) target).setHealth(0);
-            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
+            target.setLastAttackedEntity(hitter);
 
 
             target.getCombatTracker().trackDamage(ds,Float.MAX_VALUE,Float.MAX_VALUE);
             target.setHealth(0f);
 
-            Class<? extends EntityLivingBase> clazz = ((EntityLivingBase) target).getClass();
+            Class<? extends EntityLivingBase> clazz = target.getClass();
             WorldEvent.antiEntity.add(clazz);
             target.onDeath(ds);
             if(!target.isDead){
@@ -52,7 +49,7 @@ public class KillEvent {
                     if(((EntityPlayer) hitter).getHeldItemMainhand().getItem() instanceof MagicBlade)
                     {
                         if (target.isDead) {
-                            ((EntityPlayer) hitter).sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18n.translateToLocal("msg.yunluo"))), false);
+                            ((EntityPlayer) hitter).sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18nUtil.translate("msg.yunluo"))), false);
                         }
                     }
                 }
@@ -89,7 +86,7 @@ public class KillEvent {
 
 
             //((EntityLivingBase) target).setHealth(0);
-            ((EntityLivingBase) target).setLastAttackedEntity(hitter);
+            target.setLastAttackedEntity(hitter);
             target.getCombatTracker().trackDamage(ds, Float.MAX_VALUE, Float.MAX_VALUE);
             target.setHealth(0.0F);
             target.onDeath(ds);
@@ -103,11 +100,11 @@ public class KillEvent {
 
 
             if (hitter instanceof EntityPlayer) {
-                EntityPlayer player = (EntityPlayer) hitter;
-                if(((EntityPlayer) hitter).getHeldItemMainhand().getItem() instanceof MagicBlade)
+                EntityPlayer player = hitter;
+                if(player.getHeldItemMainhand().getItem() instanceof MagicBlade)
                 {
                     if (target.isDead) {
-                        ((EntityPlayer) hitter).sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18n.translateToLocal("msg.yunluo"))), false);
+                        player.sendStatusMessage(new TextComponentString(target.getName() + UpdateColor.makeColourRainbow(I18nUtil.translate("msg.yunluo"))), false);
                     }
                 }
             }

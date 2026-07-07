@@ -4,6 +4,7 @@ import com.wjx.kablade.SlashBlade.BladeLoader;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.event.KillEvent;
 import com.wjx.kablade.event.UpdateColor;
+import com.wjx.kablade.util.I18nUtil;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.client.util.ITooltipFlag;
@@ -14,7 +15,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,6 +25,7 @@ import java.util.List;
 
 import static com.wjx.kablade.Main.bladestr;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class MagicBlade extends ItemSlashBladeNamed {
     public MagicBlade(ToolMaterial par2EnumToolMaterial, float baseAttackModifiers, String name) {
         super(par2EnumToolMaterial, baseAttackModifiers);
@@ -34,7 +35,7 @@ public class MagicBlade extends ItemSlashBladeNamed {
     }
 
     public String getItemStackDisplayName(ItemStack stack) {
-        return UpdateColor.makeColourRainbow(I18n.translateToLocal("name.slashblade.magic"));
+        return UpdateColor.makeColourRainbow(I18nUtil.translate("name.slashblade.magic"));
     }
 
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
@@ -55,19 +56,20 @@ public class MagicBlade extends ItemSlashBladeNamed {
     }
 
     @SideOnly(Side.CLIENT)
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void addInformation(ItemStack stack, World worldIn, List tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         //tooltip.add(String.format("SBCOLOR: %s",stack.getTagCompound().getInteger("SummonedSwordColor")));
         //tooltip.add("");
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.magic.1")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.magic.1")));
         tooltip.add("");
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.magic.2")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.magic.2")));
         tooltip.add("");
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.magic.3")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.magic.3")));
         tooltip.add("");
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.magic.4")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.magic.4")));
         tooltip.add("");
-        tooltip.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.magic.5")));
+        tooltip.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.magic.5")));
 
     }
 
@@ -77,7 +79,7 @@ public class MagicBlade extends ItemSlashBladeNamed {
         if (swordType.contains(SwordType.Bewitched)) {
             Object tag = getItemTagCompound(par1ItemStack);
             String key = "flammpfeil.slashblade.specialattack." + this.getSpecialAttack(par1ItemStack).toString();
-            par3List.add(String.format("SA:" + UpdateColor.makeColourRainbow(I18n.translateToLocal(key))));
+            par3List.add(String.format("SA:" + UpdateColor.makeColourRainbow(I18nUtil.translate(key))));
         }
 
     }
@@ -86,20 +88,20 @@ public class MagicBlade extends ItemSlashBladeNamed {
     public void addInformationKillCount(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         this.getSwordType(par1ItemStack);
         Object tag = getItemTagCompound(par1ItemStack);
-        par3List.add("KillCount : " + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.infinity")));
+        par3List.add("KillCount : " + UpdateColor.makeColourRainbow(I18nUtil.translate("info.infinity")));
     }
 
     @SideOnly(Side.CLIENT)
     public void addInformationProudSoul(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         this.getSwordType(par1ItemStack);
         Object tag = getItemTagCompound(par1ItemStack);
-        par3List.add("ProudSoul : " + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.infinity")));
+        par3List.add("ProudSoul : " + UpdateColor.makeColourRainbow(I18nUtil.translate("info.infinity")));
     }
 
     @SideOnly(Side.CLIENT)
     public void addInformationRepairCount(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         Object tag = getItemTagCompound(par1ItemStack);
-        par3List.add("Refine : " + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.infinity")));
+        par3List.add("Refine : " + UpdateColor.makeColourRainbow(I18nUtil.translate("info.infinity")));
     }
 
     /*@SideOnly(Side.CLIENT)
@@ -131,7 +133,7 @@ public class MagicBlade extends ItemSlashBladeNamed {
         EnumSet<SwordType> swordType = this.getSwordType(par1ItemStack);
         NBTTagCompound tag = getItemTagCompound(par1ItemStack);
 
-        par3List.add(UpdateColor.makeColourPur(I18n.translateToLocal("info.slashblade.deamon")));
+        par3List.add(UpdateColor.makeColourPur(I18nUtil.translate("info.slashblade.deamon")));
 
 
     }
