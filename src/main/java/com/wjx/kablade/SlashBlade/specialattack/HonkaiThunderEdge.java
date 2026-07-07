@@ -54,8 +54,9 @@ public class HonkaiThunderEdge extends SpecialAttackBase {
                 for (Entity e : list){
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
                         entityPlayer.onCriticalHit(e);
-
+                        ((EntityLivingBase) e).hurtResistantTime = 0;
                         e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),(50f + extraDamage)*1.4f);
+                        ((EntityLivingBase) e).hurtResistantTime = 0;
                         if (e instanceof EntityLivingBase)
                             itemStack.hitEntity((EntityLivingBase) e,entityPlayer);
                         ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,5));

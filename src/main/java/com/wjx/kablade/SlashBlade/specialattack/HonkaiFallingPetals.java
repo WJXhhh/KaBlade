@@ -54,7 +54,13 @@ public class HonkaiFallingPetals extends SpecialAttackBase {
             RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(vec3d, vec3d2);
 
             entityPlayer.onCriticalHit(entity1);
+            if (entity1 instanceof EntityLivingBase) {
+                ((EntityLivingBase) entity1).hurtResistantTime = 0;
+            }
             entity1.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),15f + extraDamage);
+            if (entity1 instanceof EntityLivingBase) {
+                ((EntityLivingBase) entity1).hurtResistantTime = 0;
+            }
             if (pointedEntity instanceof EntityLivingBase)
                 itemStack.hitEntity((EntityLivingBase) pointedEntity,entityPlayer);
 

@@ -46,7 +46,9 @@ public class HonKaiFrostComet extends SpecialAttackBase {
                     if (entity instanceof EntityLivingBase) {
 
                         entityPlayer.onCriticalHit(entity);
+                        ((EntityLivingBase) entity).hurtResistantTime = 0;
                         entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer), extraDamage);
+                        ((EntityLivingBase) entity).hurtResistantTime = 0;
                         if (entity instanceof EntityLivingBase)
                             itemStack.hitEntity((EntityLivingBase) entity,entityPlayer);
                         Block ice = Blocks.PACKED_ICE;

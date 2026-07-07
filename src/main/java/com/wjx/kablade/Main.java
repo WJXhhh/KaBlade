@@ -1,8 +1,14 @@
 package com.wjx.kablade;
 
 import com.google.common.collect.Lists;
+import com.wjx.kablade.SlashBlade.blades.recipe.RecipeKaBladeRepair;
 import com.wjx.kablade.config.ModConfig;
 import com.wjx.kablade.creativeTab.*;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.event.RegistryEvent;
+
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.item.crafting.IRecipe;
 import com.wjx.kablade.event.OreGen;
 import com.wjx.kablade.event.WorldEvent;
 import com.wjx.kablade.init.*;
@@ -47,7 +53,7 @@ public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "1.8.8";
+    public static final String VERSION = "1.8.9";
 
     public static boolean EnableAllWeapon =true;
 
@@ -263,5 +269,16 @@ public class Main
         }
 
         public static Biome[] COLD_BIOMES = {Biomes.COLD_BEACH,Biomes.COLD_TAIGA,Biomes.COLD_TAIGA_HILLS,Biomes.MUTATED_TAIGA_COLD,Biomes.ICE_MOUNTAINS,Biomes.ICE_PLAINS,Biomes.MUTATED_ICE_FLATS,Biomes.FROZEN_RIVER,Biomes.FROZEN_OCEAN};
+    }
+
+
+
+    @Mod.EventBusSubscriber(modid = Main.MODID)
+    public static class RecipeRegistration {
+        @SubscribeEvent
+        public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+            // 始终注册，配置检查放�? matches() 里，确保配置变更即时生效
+            event.getRegistry().register(new RecipeKaBladeRepair());
+        }
     }
 }

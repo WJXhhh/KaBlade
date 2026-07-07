@@ -56,7 +56,13 @@ public class RockHit_I extends SpecialAttackBase {
         List<Entity> entities = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input != entityPlayer && input instanceof EntityLivingBase);
         for (Entity e : entities){
             entityPlayer.onCriticalHit(e);
+            if (e instanceof EntityLivingBase) {
+                ((EntityLivingBase) e).hurtResistantTime = 0;
+            }
             e.attackEntityFrom(DamageSource.causeExplosionDamage(entityPlayer),6f + extraDamage);
+            if (e instanceof EntityLivingBase) {
+                ((EntityLivingBase) e).hurtResistantTime = 0;
+            }
             if (e instanceof EntityLivingBase)
                 itemStack.hitEntity((EntityLivingBase) e,entityPlayer);
             if (e instanceof EntityLivingBase){

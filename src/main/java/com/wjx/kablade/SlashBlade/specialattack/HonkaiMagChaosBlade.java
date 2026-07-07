@@ -57,7 +57,9 @@ public class HonkaiMagChaosBlade extends SpecialAttackBase {
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
                         ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, e, entityPlayer, true);
                         entityPlayer.onCriticalHit(e);
+                        ((EntityLivingBase) e).hurtResistantTime = 0;
                         e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),40f + extraDamage);
+                        ((EntityLivingBase) e).hurtResistantTime = 0;
                         if (e instanceof EntityLivingBase)
                             itemStack.hitEntity((EntityLivingBase) e,entityPlayer);
                         ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,3));

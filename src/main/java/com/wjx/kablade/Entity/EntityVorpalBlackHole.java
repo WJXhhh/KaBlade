@@ -114,11 +114,17 @@ public class EntityVorpalBlackHole extends Entity implements IThrowableEntity {
             }
             if (e instanceof IThrowableEntity || e instanceof EntityLivingBase){
                 ReflectionAccessHelper.setVelocity(e,0,0,0);
+                if (e instanceof EntityLivingBase) {
+                    ((EntityLivingBase) e).hurtResistantTime = 0;
+                }
                 if (this.thrower !=null){
                     e.attackEntityFrom(DamageSource.causeMobDamage(thrower),3);
                 }
                 else {
                     e.attackEntityFrom(DamageSource.GENERIC,3);
+                }
+                if (e instanceof EntityLivingBase) {
+                    ((EntityLivingBase) e).hurtResistantTime = 0;
                 }
             }
         }

@@ -34,7 +34,9 @@ public class HonkaiShockImpact extends SpecialAttackBase {
             if (entity != null){
                 if (!entityPlayer.world.isRemote && !(entity instanceof EntityPlayer)){
                     entityPlayer.onCriticalHit(entity);
+                    ((EntityLivingBase) entity).hurtResistantTime = 0;
                     entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),22 + extraDamage);
+                    ((EntityLivingBase) entity).hurtResistantTime = 0;
                     if (entity instanceof EntityLivingBase)
                         itemStack.hitEntity((EntityLivingBase) entity,entityPlayer);
                     entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,5));

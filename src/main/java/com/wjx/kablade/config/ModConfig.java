@@ -26,6 +26,9 @@ public class ModConfig {
         public static boolean Enable_New_SA_Id;
         public static String[] TLS_forbidden;
         public static boolean Ultra_Effect;
+        /** When true: KaBlade blades can be repaired with cobblestone WITHOUT consuming ProudSoul.
+         *  When false: only the original SlashBlade repair (which costs ProudSoul) is available. */
+        public static boolean KaBladeFreeRepair;
     }
 
 
@@ -87,6 +90,12 @@ public class ModConfig {
         GeneralConf.Ultra_Effect = config.getBoolean(
                 "Ultra_Effect", category, true,
                 "Enable Ultra Effect of Render(Some SA Render Effect,such as 'Love is War!'),If you feel the screen is too laggy when using these effects, you can turn off this option to sacrifice aesthetics for smoothness [Recommend:CPU-12400f/5600X,GPU-RTX 1660{MAYBE}]"
+        );
+
+        GeneralConf.KaBladeFreeRepair = config.getBoolean(
+                "KaBladeFreeRepair", category, true,
+                "When enabled, KaBlade blades can be repaired with cobblestone in a crafting table WITHOUT consuming ProudSoul. " +
+                "When disabled, only the original SlashBlade repair recipe (which costs ProudSoul) is available for KaBlade blades."
         );
         if (config.hasChanged()) {
             config.save();

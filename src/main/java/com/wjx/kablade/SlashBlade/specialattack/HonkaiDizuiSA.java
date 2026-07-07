@@ -122,7 +122,9 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
             for (Entity entity: list){
                 if (entity instanceof EntityLivingBase){
                    world.spawnEntity(new EntityLightningBolt(world,entity.posX,entity.posY,entity.posZ,true));
+                   ((EntityLivingBase) entity).hurtResistantTime = 0;
                    entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),5 + extraDamage);
+                   ((EntityLivingBase) entity).hurtResistantTime = 0;
                    if (entity instanceof EntityLivingBase)
                        itemStack.hitEntity((EntityLivingBase) entity,entityPlayer);
                    double x = entity.posX;

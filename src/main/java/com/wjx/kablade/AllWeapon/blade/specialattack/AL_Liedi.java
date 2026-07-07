@@ -53,6 +53,7 @@ public class AL_Liedi extends SpecialAttackBase {
                     entity.motionX = 0.0;
                     entity.motionY = 2.0;
                     entity.motionZ = 0.0;
+                    ((EntityLivingBase) entity).hurtResistantTime = 0;
                     entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),10);
                     if (entity instanceof EntityLivingBase) {
                         blade.setDaunting((EntityLivingBase)entity);

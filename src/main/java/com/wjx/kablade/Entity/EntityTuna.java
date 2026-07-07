@@ -110,7 +110,9 @@ public class EntityTuna extends Entity implements IThrowableEntity {
 
                                 StylishRankManager.doAttack(this.owner);
                                 ((EntityPlayer) owner).onCriticalHit( living);
+                                living.hurtResistantTime = 0;
                                 living.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner), 10.0F + extraDamage);
+                                living.hurtResistantTime = 0;
                                 if (blade != null) {
                                     blade.getItem().hitEntity(blade, living, (EntityPlayer) owner);
 
@@ -119,7 +121,9 @@ public class EntityTuna extends Entity implements IThrowableEntity {
 
 
                             } else {
+                                living.hurtResistantTime = 0;
                                 living.attackEntityFrom(DamageSource.causeMobDamage(owner), 10.0F);
+                                living.hurtResistantTime = 0;
                             }
 
 
@@ -151,7 +155,9 @@ public class EntityTuna extends Entity implements IThrowableEntity {
                                 blade.hitEntity(living, (EntityPlayer) owner);
                                 extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(blade.getTagCompound()), 5f);
                             }
+                            living.hurtResistantTime = 0;
                             living.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner), 14.0F + extraDamage);
+                            living.hurtResistantTime = 0;
                             if (blade != null) {
                                 blade.getItem().hitEntity(blade, living, (EntityPlayer) owner);
 
@@ -159,7 +165,9 @@ public class EntityTuna extends Entity implements IThrowableEntity {
                             }
                             StylishRankManager.doAttack(this.owner);
                         } else {
+                            living.hurtResistantTime = 0;
                             living.attackEntityFrom(DamageSource.causeMobDamage(owner), 10.0F);
+                            living.hurtResistantTime = 0;
                         }
                     }
                 }

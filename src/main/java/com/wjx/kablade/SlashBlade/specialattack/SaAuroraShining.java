@@ -53,7 +53,9 @@ public class SaAuroraShining extends SpecialAttackBase {
                     EntityLivingBase ee = (EntityLivingBase) e;
                     ee.addPotionEffect(new PotionEffect(MobEffects.GLOWING,120,2));
                     if (!world.isRemote){
+                        ee.hurtResistantTime = 0;
                         ee.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),8 + extraDamage2);
+                        ee.hurtResistantTime = 0;
                         if (ee instanceof EntityLivingBase)
                             itemStack.hitEntity((EntityLivingBase) ee,entityPlayer);
                         ee.setFire(5);

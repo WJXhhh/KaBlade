@@ -38,7 +38,9 @@ public class HonKaiZaizan extends SpecialAttackBase {
                 if (entity != null){
                     if(!(entity instanceof EntityPlayer)){
                         entityPlayer.onCriticalHit(entity);
+                        ((EntityLivingBase) entity).hurtResistantTime = 0;
                         entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20 + extraDamage);
+                        ((EntityLivingBase) entity).hurtResistantTime = 0;
                         if (entity instanceof EntityLivingBase)
                             itemStack.hitEntity((EntityLivingBase) entity,entityPlayer);
                     }
