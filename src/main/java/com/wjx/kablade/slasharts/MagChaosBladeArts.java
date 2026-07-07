@@ -166,7 +166,7 @@ public final class MagChaosBladeArts extends SlashArts {
             player.crit(target);
         }
         target.invulnerableTime = 0;
-        target.hurt(source, damage);
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, damage);
         target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                 PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
         level.sendParticles(ParticleTypes.ELECTRIC_SPARK,

@@ -80,7 +80,7 @@ public final class LightsOnStageArts extends SlashArts {
 
         DamageSource source = level.damageSources().mobAttack(user);
         for (LivingEntity target : targets) {
-            target.hurt(source, damage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, damage);
             target.knockback(0.55,
                     origin.x - target.getX(), origin.z - target.getZ());
             level.sendParticles(ParticleTypes.END_ROD,

@@ -188,7 +188,7 @@ public final class RockStrikeArts extends SlashArts {
                 continue;
                 }
             damaged.add(target);
-            target.hurt(source, (float) damage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, (float) damage);
             launchUp(target, origin, launchUp);
         }
     }

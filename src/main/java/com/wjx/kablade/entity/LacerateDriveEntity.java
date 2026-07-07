@@ -79,7 +79,8 @@ public class LacerateDriveEntity extends ExSlashDriveEntity {
     protected void onImpact(LivingEntity target) {
         target.invulnerableTime = 0;
         // indirectMagic 在 1.20.1 已是魔法伤害（不计算护甲），等价 1.12.2 防具穿透
-        target.hurt(damageSource(), Math.max(attackDamage, 1.0F));
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                damageSource(), Math.max(attackDamage, 1.0F));
         hitBlade(target);
     }
 }

@@ -134,7 +134,7 @@ public final class FallingPetalsArts extends SlashArts {
                 player.crit(target);
             }
             target.invulnerableTime = 0;
-            target.hurt(source, damage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, damage);
             hitAny = true;
 
             if (distance < closestDistance) {

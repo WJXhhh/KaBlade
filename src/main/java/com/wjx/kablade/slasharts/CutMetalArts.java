@@ -73,13 +73,13 @@ public final class CutMetalArts extends SlashArts {
             // 鏆村嚮鐗规晥
             target.level().playSound(null, target.getX(), target.getY(), target.getZ(),
                     SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, 1.0F, 1.0F);
-            target.hurt(src, BASE_DAMAGE + extraDamage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, src, BASE_DAMAGE + extraDamage);
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
 
             // 鎶ょ敳杩藉姞浼ゅ
             double armor = target.getAttribute(Attributes.ARMOR).getValue();
             if (armor > 0) {
-                target.hurt(src, (float) (armor * ARMOR_RATIO));
+                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, src, (float) (armor * ARMOR_RATIO));
                 blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
             }
 

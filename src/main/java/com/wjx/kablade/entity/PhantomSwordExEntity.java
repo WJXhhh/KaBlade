@@ -199,7 +199,7 @@ public class PhantomSwordExEntity extends Entity {
      */
     protected void onHitEntity(LivingEntity target) {
         target.invulnerableTime = 0;
-        target.hurt(damageSource(), attackDamage);
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(), attackDamage);
         target.setDeltaMovement(0.0, 0.1, 0.0);
         target.hurtMarked = true;
         hitBlade(target);
@@ -362,7 +362,8 @@ public class PhantomSwordExEntity extends Entity {
             return;
         }
         target.invulnerableTime = 0;
-        target.hurt(damageSource(), Math.max(attackDamage / 2.0F, 1.0F));
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                damageSource(), Math.max(attackDamage / 2.0F, 1.0F));
         hitBlade(target);
     }
 

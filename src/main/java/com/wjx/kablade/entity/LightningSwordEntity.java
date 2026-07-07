@@ -60,7 +60,8 @@ public class LightningSwordEntity extends PhantomSwordExEntity {
                 level().addFreshEntity(bolt);
             }
             target.invulnerableTime = 0;
-            target.hurt(damageSource(), Math.max(attackDamage, 1.0F));
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                    damageSource(), Math.max(attackDamage, 1.0F));
             target.setRemainingFireTicks(100);
         }
         discard();

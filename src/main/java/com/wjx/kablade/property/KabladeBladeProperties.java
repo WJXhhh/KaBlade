@@ -70,5 +70,12 @@ public final class KabladeBladeProperties {
                 .capabilityKey("kami_of_war_count")
                 .maxValue(6)
                 .build());
+
+        // 真我（TrueSelf SE — 澄凝之钥）：预知叠层（上限 3），每层 +10% 伤害
+        PlayerPropertyRegistry.register(PlayerProperty.builder("foresight")
+                .displayName(Component.translatable("prop.kablade.foresight").withStyle(ChatFormatting.LIGHT_PURPLE))
+                .capabilityKey("foresight")
+                .maxValue(3)
+                .build());
     }
 }

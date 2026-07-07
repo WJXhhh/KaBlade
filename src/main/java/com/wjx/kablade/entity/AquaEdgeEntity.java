@@ -41,7 +41,7 @@ public class AquaEdgeEntity extends ExSlashDriveEntity {
     @Override
     protected void onImpact(LivingEntity target) {
         target.invulnerableTime = 0;
-        target.hurt(damageSource(), attackDamage);
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(), attackDamage);
         if (target.isOnFire()) {
             target.clearFire();
         }

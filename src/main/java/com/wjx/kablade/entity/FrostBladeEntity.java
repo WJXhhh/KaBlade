@@ -171,7 +171,7 @@ public class FrostBladeEntity extends PhantomSwordExEntity {
 
         alreadyHit.add(target.getUUID());
         target.invulnerableTime = 0;
-        target.hurt(damageSource(), attackDamage);
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(), attackDamage);
         target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
                 FROST_SLOW_DURATION, FROST_SLOW_AMPLIFIER));
         target.setDeltaMovement(target.getDeltaMovement().scale(0.35D));

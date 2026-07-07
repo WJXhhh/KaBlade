@@ -82,7 +82,8 @@ public final class OverSlashArts extends SlashArts {
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
                 e -> SaTargeting.canDamageAttackable(user, e));
         for (LivingEntity target : targets) {
-            target.hurt(level.damageSources().mobAttack(user), magicDamage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                    level.damageSources().mobAttack(user), magicDamage);
         }
         // 鏆村嚮鏁堟灉锛堢矑瀛愮敱瀹㈡埛绔鐞嗭級
 

@@ -148,7 +148,8 @@ public final class KamiOfWarArts extends SlashArts {
         ItemStack blade = user.getMainHandItem();
         for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area,
                 target -> SaTargeting.canDamage(user, target))) {
-            target.hurt(level.damageSources().explosion(user, user), BASE_DAMAGE + extraDamage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                    level.damageSources().explosion(user, user), BASE_DAMAGE + extraDamage);
             if (blade.getItem() instanceof ItemSlashBlade && user instanceof Player player) {
                 blade.hurtEnemy(target, player);
             }

@@ -146,7 +146,7 @@ public class StarSwordEntity extends PhantomSwordExEntity {
     protected void onHitEntity(LivingEntity target) {
         alreadyHit.add(target.getUUID());
         target.invulnerableTime = 0;
-        target.hurt(damageSource(), attackDamage);
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(), attackDamage);
         target.hurtMarked = true;
         hitBlade(target);
 

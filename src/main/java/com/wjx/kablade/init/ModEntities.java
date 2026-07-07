@@ -135,6 +135,18 @@ public final class ModEntities {
                     .noSave()
                     .build("freeze_domain"));
 
+    /** Visual and hit timing anchor for Frozen Naraka's Utpala Aura. */
+    public static final RegistryObject<EntityType<UtpalaAuraEntity>> UTPALA_AURA = REGISTRY.register(
+            "utpala_aura",
+            () -> EntityType.Builder.<UtpalaAuraEntity>of(UtpalaAuraEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(16)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("utpala_aura"));
+
     /** Visual anchor for the Shock Impact SA. */
     public static final RegistryObject<EntityType<ShockImpactEntity>> SHOCK_IMPACT = REGISTRY.register(
             "shock_impact",

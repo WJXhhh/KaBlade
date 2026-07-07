@@ -184,7 +184,8 @@ public class OriginFreeSwordEntity extends Entity {
         this.alreadyHit.add(target.getUUID());
         target.invulnerableTime = 0;
         Entity source = this.owner == null ? this : this.owner;
-        target.hurt(this.level().damageSources().indirectMagic(this, source), this.damage);
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                this.level().damageSources().indirectMagic(this, source), this.damage);
         target.setDeltaMovement(0.0, 0.1, 0.0);
         target.hurtMarked = true;
         burst();
@@ -207,7 +208,8 @@ public class OriginFreeSwordEntity extends Entity {
             Entity source = this.owner == null ? this : this.owner;
             for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box, this::canHit)) {
                 target.invulnerableTime = 0;
-                target.hurt(this.level().damageSources().indirectMagic(this, source), 1.0F);
+                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                        this.level().damageSources().indirectMagic(this, source), 1.0F);
             }
         }
         this.discard();

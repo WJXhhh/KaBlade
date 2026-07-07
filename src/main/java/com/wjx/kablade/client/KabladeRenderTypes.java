@@ -20,6 +20,8 @@ public final class KabladeRenderTypes extends RenderType {
             new RenderStateShard.ShaderStateShard(KabladeShaders::shockImpact);
     private static final RenderStateShard.ShaderStateShard ZAIZAN_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::zaizan);
+    private static final RenderStateShard.ShaderStateShard UTPALA_AURA_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::utpalaAura);
 
     private static final RenderType INDUCTION_COLLAPSE = create(
             "kablade_induction_collapse",
@@ -35,6 +37,48 @@ public final class KabladeRenderTypes extends RenderType {
                     .setCullState(NO_CULL)
                     .setWriteMaskState(COLOR_WRITE)
                     .createCompositeState(false));
+
+    private static final RenderType UTPALA_AURA = create(
+            "kablade_utpala_aura",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            131072,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(UTPALA_AURA_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType UTPALA_AURA_VEIL = create(
+            "kablade_utpala_aura_veil",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            32768,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(UTPALA_AURA_SHADER)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType UTPALA_AURA_FALLBACK = shaderFallback(
+            "kablade_utpala_aura_fallback",
+            FALLBACK_TEXTURE,
+            131072,
+            LIGHTNING_TRANSPARENCY);
+
+    private static final RenderType UTPALA_AURA_VEIL_FALLBACK = shaderFallback(
+            "kablade_utpala_aura_veil_fallback",
+            FALLBACK_TEXTURE,
+            32768,
+            TRANSLUCENT_TRANSPARENCY);
 
     private static final RenderType STAGE_LIGHT = create(
             "kablade_stage_light",
@@ -192,6 +236,14 @@ public final class KabladeRenderTypes extends RenderType {
 
     public static RenderType inductionCollapse() {
         return INDUCTION_COLLAPSE;
+    }
+
+    public static RenderType utpalaAura() {
+        return useShaderFallbackTextures() ? UTPALA_AURA_FALLBACK : UTPALA_AURA;
+    }
+
+    public static RenderType utpalaAuraVeil() {
+        return useShaderFallbackTextures() ? UTPALA_AURA_VEIL_FALLBACK : UTPALA_AURA_VEIL;
     }
 
     public static boolean useShaderFallbackTextures() {

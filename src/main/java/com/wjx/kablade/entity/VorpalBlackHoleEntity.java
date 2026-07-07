@@ -193,7 +193,7 @@ public class VorpalBlackHoleEntity extends Entity {
                 continue;
             }
             target.invulnerableTime = 0;
-            if (target.hurt(source, this.getOpeningDamage())) {
+            if (com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, this.getOpeningDamage())) {
                 Vec3 pull = this.position().subtract(target.position())
                         .multiply(0.08, 0.0, 0.08);
                 target.setDeltaMovement(pull.x, 0.28, pull.z);
@@ -211,7 +211,7 @@ public class VorpalBlackHoleEntity extends Entity {
         DamageSource source = damageSource(level);
         for (LivingEntity target : targets(level, DAMAGE_RADIUS * (0.88 + pulseIndex * 0.025))) {
             target.invulnerableTime = 0;
-            target.hurt(source, this.getPulseDamage());
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, this.getPulseDamage());
             Vec3 toCenter = this.position().subtract(target.position());
             if (toCenter.lengthSqr() > 1.0E-5) {
                 Vec3 pull = toCenter.normalize().scale(0.16 + pulseIndex * 0.018);

@@ -212,7 +212,7 @@ public final class BreakTheDawnArts extends SlashArts {
         }
         for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
             if (!SaTargeting.canDamageAttackable(user, t)) continue;
-            t.hurt(level.damageSources().magic(), damage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(t, level.damageSources().magic(), damage);
             t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));
         }
 

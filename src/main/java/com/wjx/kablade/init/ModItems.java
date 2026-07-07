@@ -67,6 +67,9 @@ public final class ModItems {
     public static final RegistryObject<Item> CHROMIUM_ORE = registerBlockItem(ModBlocks.CHROMIUM_ORE, Main.TAB_KABLADE);
     public static final RegistryObject<Item> CHROMIUM_INGOT = registerItemBase("chromium_ingot", Main.TAB_KABLADE);
 
+    // ─── Superconducting Metal ─────────────────────────────────────
+    public static final RegistryObject<Item> SUPERCONDUCTING_METAL = registerItemBase("superconducting_metal", Main.TAB_KABLADE);
+
     // ─── Aurora Ore ────────────────────────────────────────────────
     public static final RegistryObject<Item> AURORA_ORE = registerBlockItem(ModBlocks.AURORA_ORE, Main.TAB_KABLADE);
 

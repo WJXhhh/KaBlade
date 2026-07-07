@@ -14,6 +14,7 @@ import com.wjx.kablade.blades.honkai.FuheZhuque;
 import com.wjx.kablade.blades.honkai.GalacticNova;
 import com.wjx.kablade.blades.honkai.IceEpiphyllum;
 import com.wjx.kablade.blades.honkai.KeyOfCastigation;
+import com.wjx.kablade.blades.honkai.KeyOfLimpidity;
 import com.wjx.kablade.blades.honkai.MagStorm;
 import com.wjx.kablade.blades.honkai.MuraHori;
 import com.wjx.kablade.blades.honkai.MuraSeshu;
@@ -140,6 +141,7 @@ public final class BladeLoader {
     public static BladeDefineBase VIBRO_CUTTER;
     public static BladeDefineBase MAG_STORM;
     public static BladeDefineBase KEY_OF_CASTIGATION;
+    public static BladeDefineBase KEY_OF_LIMPIDITY;
     public static BladeDefineBase ICE_EPIPHYLLUM;
     public static BladeDefineBase FROZEN_NARAKA;
     // 崩坏线·妖精剑
@@ -241,6 +243,7 @@ public final class BladeLoader {
             "vibro_cutter",
             "mag_storm",
             "key_of_castigation",
+            "key_of_limpidity",
             "ice_epiphyllum",
             "frozen_naraka",
             // 龙一文字线
@@ -326,6 +329,7 @@ public final class BladeLoader {
         VIBRO_CUTTER = new VibroCutter(context);
         MAG_STORM = new MagStorm(context);
         KEY_OF_CASTIGATION = new KeyOfCastigation(context);
+        KEY_OF_LIMPIDITY = new KeyOfLimpidity(context);
         ICE_EPIPHYLLUM = new IceEpiphyllum(context);
         FROZEN_NARAKA = new FrozenNaraka(context);
         // 崩坏线·妖精剑

@@ -63,7 +63,7 @@ public final class FrostCometArts extends SlashArts {
                 e -> SaTargeting.canDamageAttackable(user, e));
 
         for (LivingEntity target : targets) {
-            target.hurt(src, damage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, src, damage);
             // 鑴氫笅鏀炬诞鍐帮紙鐢?blockPosition 鍚戜笅鍙栨暣锛岃礋鍧愭爣涔熸纭級
             BlockPos feet = target.blockPosition();
             level.setBlock(feet, Blocks.PACKED_ICE.defaultBlockState(), 3);

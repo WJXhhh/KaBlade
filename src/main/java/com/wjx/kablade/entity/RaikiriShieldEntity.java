@@ -130,7 +130,9 @@ public class RaikiriShieldEntity extends Entity {
         for (Entity e : this.level().getEntities(this, box,
                 e -> e != this && e instanceof LivingEntity living
                         && SaTargeting.canDamageAttackable(this.thrower, living))) {
-            e.hurt(src, contactDamage);
+            if (e instanceof LivingEntity target) {
+                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, src, contactDamage);
+            }
         }
     }
 

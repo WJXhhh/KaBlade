@@ -41,7 +41,8 @@ public class FlareEdgeEntity extends ExSlashDriveEntity {
     @Override
     protected void onImpact(LivingEntity target) {
         target.invulnerableTime = 0;
-        target.hurt(damageSource(), Math.max(attackDamage / 2.0F, 1.0F));
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                damageSource(), Math.max(attackDamage / 2.0F, 1.0F));
         target.setRemainingFireTicks(100); // 5秒
         hitBlade(target);
     }

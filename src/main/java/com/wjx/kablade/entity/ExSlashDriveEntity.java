@@ -349,7 +349,7 @@ public class ExSlashDriveEntity extends Entity {
     protected void onImpact(LivingEntity target) {
         if (!level().isClientSide()) {
             target.invulnerableTime = 0;
-            target.hurt(damageSource(), attackDamage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(), attackDamage);
             hitBlade(target);
         }
     }

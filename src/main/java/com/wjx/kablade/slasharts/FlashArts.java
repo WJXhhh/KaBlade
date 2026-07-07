@@ -94,7 +94,7 @@ public final class FlashArts extends SlashArts {
         target.hurtMarked = true;
         target.hurtTime = 0;
         target.invulnerableTime = 0;
-        target.hurt(damageSource(level, user), damage);
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(level, user), damage);
         target.invulnerableTime = 0;
 
         spawnSlashLine(level, target, hitIndex);

@@ -107,7 +107,7 @@ public class TunaEntity extends Entity {
             if (this.owner instanceof Player player) {
                 player.crit(target);
             }
-            target.hurt(damageSource(level), damage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(level), damage);
             hurtBladeOnce();
         }
     }

@@ -219,7 +219,7 @@ public final class AuroraShiningArts extends SlashArts {
         }
         for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
             if (!SaTargeting.canDamageAttackable(user, t)) continue;
-            t.hurt(level.damageSources().magic(), bypassDamage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(t, level.damageSources().magic(), bypassDamage);
             t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SLOW_DURATION, 1));
             t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));
         }

@@ -1,0 +1,32 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:frozen_naraka",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:ice_epiphyllum"
+      }
+    },
+    "B": {
+      "item": "kablade:superconducting_metal"
+    },
+    "C": {
+      "item": "minecraft:soul_sand"
+    },
+    "D": {
+      "item": "minecraft:blue_orchid"
+    }
+  },
+  "pattern": [
+    "DBD",
+    "CAC",
+    "DCD"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

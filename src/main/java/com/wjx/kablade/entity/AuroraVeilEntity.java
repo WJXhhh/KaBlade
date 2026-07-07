@@ -123,7 +123,7 @@ public class AuroraVeilEntity extends Entity {
         for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box,
                 e -> SaTargeting.canDamage(this.owner, e))) {
             if (this.alreadyHit.add(target.getUUID())) {
-                target.hurt(src, this.damage);
+                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, src, this.damage);
             }
         }
     }

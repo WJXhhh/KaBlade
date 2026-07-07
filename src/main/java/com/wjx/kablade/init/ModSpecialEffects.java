@@ -14,6 +14,7 @@ import com.wjx.kablade.specialeffect.SPLighting;
 import com.wjx.kablade.specialeffect.ThunderBlitz;
 import com.wjx.kablade.specialeffect.Turbulence;
 import com.wjx.kablade.specialeffect.UndyingSaltiness;
+import com.wjx.kablade.specialeffect.TrueSelf;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -64,6 +65,9 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> THUNDER_BLITZ = REGISTRY.register(
             "thunder_blitz", ThunderBlitz::new);
+
+    public static final RegistryObject<SpecialEffect> TRUE_SELF = REGISTRY.register(
+            "true_self", TrueSelf::new);
 
     private ModSpecialEffects() {
     }

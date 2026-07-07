@@ -87,7 +87,7 @@ public final class SnowDanceArts extends SlashArts {
                 player.crit(target);
             }
             target.invulnerableTime = 0;
-            target.hurt(source, damage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, damage);
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
         }
     }

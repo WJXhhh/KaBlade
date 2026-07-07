@@ -135,7 +135,7 @@ public final class MoltenBladeArts extends SlashArts {
 
         for (LivingEntity target : targets) {
             state.hitTargets.add(target.getUUID());
-            target.hurt(src, state.damage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, src, state.damage);
             target.setSecondsOnFire(FIRE_SECONDS);
             if (!state.bladeDamaged) {
                 user.getMainHandItem().hurtAndBreak(1, user,

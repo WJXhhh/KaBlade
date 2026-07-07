@@ -91,7 +91,8 @@ public final class WindEnchantmentArts extends SlashArts {
             blade.getItem().hurtEnemy(blade, target, player);
             player.crit(target);
             // 绗簩娈碉細棰濆浼ゅ
-            target.hurt(level.damageSources().playerAttack(player), EXTRA_DAMAGE);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                    level.damageSources().playerAttack(player), EXTRA_DAMAGE);
         }
 
         for (int i = 0; i < SMOKE_PARTICLES; i++) {

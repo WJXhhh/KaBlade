@@ -128,11 +128,14 @@ public class ConfinementForceFieldEntity extends Entity {
                     5, 3, false, true));
 
             if (this.owner instanceof Player player) {
-                target.hurt(serverLevel.damageSources().playerAttack(player), FIELD_DAMAGE);
+                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                        serverLevel.damageSources().playerAttack(player), FIELD_DAMAGE);
             } else if (this.owner != null) {
-                target.hurt(serverLevel.damageSources().mobAttack(this.owner), FIELD_DAMAGE);
+                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                        serverLevel.damageSources().mobAttack(this.owner), FIELD_DAMAGE);
             } else {
-                target.hurt(serverLevel.damageSources().magic(), FIELD_DAMAGE);
+                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+                        serverLevel.damageSources().magic(), FIELD_DAMAGE);
             }
         }
     }

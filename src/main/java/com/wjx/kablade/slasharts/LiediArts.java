@@ -58,7 +58,7 @@ public final class LiediArts extends SlashArts {
             target.hasImpulse = true;
             target.hurtMarked = true;
             target.invulnerableTime = 0;
-            target.hurt(source, EXTRA_DAMAGE);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, EXTRA_DAMAGE);
             target.invulnerableTime = 0;
         }
 

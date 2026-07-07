@@ -191,7 +191,7 @@ public final class FengxuanDimensionEntity extends Entity {
                 target -> isValidTarget(source, target) && isInsideDamageRange(target))) {
             target.invulnerableTime = 0;
             target.hurtTime = 0;
-            target.hurt(damageSource, damage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource, damage);
             if (++processed >= MAX_DAMAGE_TARGETS) {
                 break;
             }

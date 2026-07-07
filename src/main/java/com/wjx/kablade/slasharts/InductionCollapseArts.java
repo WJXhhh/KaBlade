@@ -126,7 +126,7 @@ public final class InductionCollapseArts extends SlashArts {
         target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
                 EFFECT_DURATION, SLOW_AMPLIFIER, false, true));
         long now = level.getServer().getTickCount();
-        target.hurt(damageSource(level, user), IMPACT_DAMAGE);
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(level, user), IMPACT_DAMAGE);
         ACTIVE_COLLAPSES.put(target.getUUID(), new CollapseState(
                 level.dimension(), target.getUUID(), user.getUUID(), now + EFFECT_DURATION, now + DAMAGE_INTERVAL));
 
@@ -176,7 +176,7 @@ public final class InductionCollapseArts extends SlashArts {
 
             int age = (int) (EFFECT_DURATION - (state.expiresAt - now));
             if (now >= state.nextDamageAt) {
-                target.hurt(damageSource(level, owner), PULSE_DAMAGE);
+                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(level, owner), PULSE_DAMAGE);
                 state.nextDamageAt = now + DAMAGE_INTERVAL;
             }
             if (age % 6 == 0) {

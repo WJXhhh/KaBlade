@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "kablade",
+  "pattern": ["ABA", "BCB", "ABA"],
+  "key": {
+    "A": { "item": "minecraft:iron_block" },
+    "B": { "item": "minecraft:packed_ice" },
+    "C": { "item": "kablade:aurora_metal_ingot" }
+  },
+  "result": { "item": "kablade:superconducting_metal", "count": 1 }
+}
