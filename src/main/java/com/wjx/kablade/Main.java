@@ -151,42 +151,7 @@ public class Main
     public void init(FMLInitializationEvent event)
     {
         proxy.init(event);
-        if (!Loader.isModLoaded("networkmod")) //Check Netease
-        {
-            try{
 
-                Thread t = new Thread(){
-                    @Override
-                    public void run() {
-                        GetUrlVersion = Objects.requireNonNull(getUpdateInfo.gettextfromurl("https://gitee.com/wjx4r/FML_GERB_NetData/raw/master/OtherMODUpdate/KaBlade.txt")).get(2);
-                        if(GetUrlVersion!=null){
-                            String[] s = VERSION.split("\\.");
-                            String[] s1 = GetUrlVersion.split("\\.");
-
-                            if (Integer.parseInt(s1[0]) > Integer.parseInt(s[0])){
-                                YesUpdate = true;
-                            }
-                            else if(Integer.parseInt(s1[0]) == Integer.parseInt(s[0])){
-                                if (Integer.parseInt(s1[1]) > Integer.parseInt(s[1])){
-                                    YesUpdate = true;
-                                }
-                                else if(Integer.parseInt(s1[1]) == Integer.parseInt(s[1])){
-                                    if (Integer.parseInt(s1[2]) > Integer.parseInt(s[2])){
-                                        YesUpdate = true;
-                                    }
-                                }
-                            }
-                        }
-                        super.run();
-                    }
-                };
-                t.start();
-            //GetUrlVersion = Objects.requireNonNull(getUpdateInfo.gettextfromurl("https://pastebin.com/raw/We9S3fmB")).get(2);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }}
         OreDicHandler.registerOreDic();
 
         //Register Smelting
@@ -277,7 +242,7 @@ public class Main
     public static class RecipeRegistration {
         @SubscribeEvent
         public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
-            // 始终注册，配置检查放�? matches() 里，确保配置变更即时生效
+            // 始终注册，配置检查放 matches() 里，确保配置变更即时生效
             event.getRegistry().register(new RecipeKaBladeRepair());
         }
     }
