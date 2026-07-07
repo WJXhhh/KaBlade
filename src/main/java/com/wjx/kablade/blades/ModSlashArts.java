@@ -42,6 +42,7 @@ import com.wjx.kablade.slasharts.ShockImpactArts;
 import com.wjx.kablade.slasharts.SnowDanceArts;
 import com.wjx.kablade.slasharts.SoulOfFrostArts;
 import com.wjx.kablade.slasharts.ThunderEdgeArts;
+import com.wjx.kablade.slasharts.SwordEnlightenmentArts;
 import com.wjx.kablade.slasharts.UtpalaAuraArts;
 import com.wjx.kablade.slasharts.VorpalHoleArts;
 import com.wjx.kablade.slasharts.WindEnchantmentArts;
@@ -217,6 +218,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> UTPALA_AURA = REGISTRY.register(
             "utpala_aura",
             () -> new UtpalaAuraArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> SWORD_ENLIGHTENMENT = REGISTRY.register(
+            "sword_enlightenment",
+            () -> new SwordEnlightenmentArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> SOUL_OF_FROST = REGISTRY.register(
             "soul_of_frost",

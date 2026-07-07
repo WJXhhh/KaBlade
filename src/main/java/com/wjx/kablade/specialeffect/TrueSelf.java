@@ -3,6 +3,7 @@ package com.wjx.kablade.specialeffect;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModSpecialEffects;
+import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraft.world.entity.Entity;
@@ -32,10 +33,11 @@ public class TrueSelf extends SpecialEffect {
     public static final String PROP_KEY = "foresight";
 
     private static final int MAX_STACKS = 3;
+    private static final float STACK_CHANCE = 0.30F;
     private static final int DECAY_INTERVAL = 100; // ticks（5 秒）
 
     public TrueSelf() {
-        super(-1, false, true);
+        super(-1, true, true);
     }
 
     // ── 命中叠加 ───────────────────────────────────────────────────
@@ -48,6 +50,8 @@ public class TrueSelf extends SpecialEffect {
 
         ItemStack blade = event.getBlade();
         if (!hasTrueSelf(blade)) return;
+        if (!SaTargeting.canDamage(player, event.getTarget())) return;
+        if (player.getRandom().nextFloat() >= STACK_CHANCE) return;
 
         player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
                 .ifPresent(cap -> {
@@ -62,9 +66,9 @@ public class TrueSelf extends SpecialEffect {
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
         if (event.side.isClient()) return;
         Player player = event.player;
-        if (!hasTrueSelfOnHand(player)) return;
 
         if (player.level().getGameTime() % DECAY_INTERVAL != 0) return;
 
@@ -86,6 +90,7 @@ public class TrueSelf extends SpecialEffect {
         if (player.level().isClientSide()) return;
 
         if (!hasTrueSelfOnHand(player)) return;
+        if (!SaTargeting.canDamage(player, event.getEntity())) return;
 
         player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
                 .ifPresent(cap -> {

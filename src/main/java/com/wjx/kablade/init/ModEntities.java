@@ -147,6 +147,18 @@ public final class ModEntities {
                     .noSave()
                     .build("utpala_aura"));
 
+    /** Visual and hit timing anchor for Key of Limpidity's Sword Enlightenment. */
+    public static final RegistryObject<EntityType<SwordEnlightenmentEntity>> SWORD_ENLIGHTENMENT = REGISTRY.register(
+            "sword_enlightenment",
+            () -> EntityType.Builder.<SwordEnlightenmentEntity>of(SwordEnlightenmentEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(16)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("sword_enlightenment"));
+
     /** Visual anchor for the Shock Impact SA. */
     public static final RegistryObject<EntityType<ShockImpactEntity>> SHOCK_IMPACT = REGISTRY.register(
             "shock_impact",

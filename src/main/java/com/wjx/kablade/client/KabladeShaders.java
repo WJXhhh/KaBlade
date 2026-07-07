@@ -20,6 +20,7 @@ public final class KabladeShaders {
     private static ShaderInstance shockImpact;
     private static ShaderInstance zaizan;
     private static ShaderInstance utpalaAura;
+    private static ShaderInstance swordEnlightenment;
 
     private KabladeShaders() {
     }
@@ -51,6 +52,11 @@ public final class KabladeShaders {
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "utpala_aura"),
                         DefaultVertexFormat.POSITION_COLOR_TEX),
                 shader -> utpalaAura = shader);
+        event.registerShader(new ShaderInstance(
+                        event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "sword_enlightenment"),
+                        DefaultVertexFormat.POSITION_COLOR_TEX),
+                shader -> swordEnlightenment = shader);
     }
 
     public static ShaderInstance stageLight() {
@@ -71,5 +77,9 @@ public final class KabladeShaders {
 
     public static ShaderInstance utpalaAura() {
         return utpalaAura;
+    }
+
+    public static ShaderInstance swordEnlightenment() {
+        return swordEnlightenment;
     }
 }

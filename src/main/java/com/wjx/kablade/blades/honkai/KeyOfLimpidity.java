@@ -38,6 +38,7 @@ public class KeyOfLimpidity extends BladeDefineBase {
                         .baseAttackModifier(29.0F)
                         .maxDamage(1200)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
+                        .slashArtsType(ModSlashArts.SWORD_ENLIGHTENMENT.getId())
                         .addSpecialEffect(ModSpecialEffects.TRUE_SELF.getId())
                         .build(),
                 List.of(

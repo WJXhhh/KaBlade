@@ -23,6 +23,9 @@ public final class KabladeConfig {
     /** When true, Kablade SA target selectors ignore players entirely. */
     public static final ForgeConfigSpec.BooleanValue FILTER_PLAYERS_IN_SA_TARGETING;
 
+    /** When true, Kablade SA/SE damage skips protected tamed pets. */
+    public static final ForgeConfigSpec.BooleanValue PROTECT_TAMED_PETS_IN_SA_TARGETING;
+
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment(
@@ -45,6 +48,10 @@ public final class KabladeConfig {
         FILTER_PLAYERS_IN_SA_TARGETING = builder
                 .comment("When true, Kablade slash art target selectors filter out players regardless of team.")
                 .define("filter_players", true);
+
+        PROTECT_TAMED_PETS_IN_SA_TARGETING = builder
+                .comment("When true, Kablade slash art and special effect damage will not hit the user's own tamed pets; allied owners' pets also follow scoreboard friendly-fire rules.")
+                .define("protect_tamed_pets", true);
 
         builder.pop();
         SPEC = builder.build();

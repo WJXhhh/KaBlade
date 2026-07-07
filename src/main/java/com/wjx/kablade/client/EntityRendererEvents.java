@@ -34,6 +34,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.FROST_BLADE_EDGE.get(), FrostBladeRenderer::new);
         event.registerEntityRenderer(ModEntities.FREEZE_DOMAIN.get(), FreezeDomainRenderer::new);
         event.registerEntityRenderer(ModEntities.UTPALA_AURA.get(), UtpalaAuraRenderer::new);
+        event.registerEntityRenderer(ModEntities.SWORD_ENLIGHTENMENT.get(), SwordEnlightenmentRenderer::new);
         event.registerEntityRenderer(ModEntities.SHOCK_IMPACT.get(), ShockImpactRenderer::new);
         event.registerEntityRenderer(ModEntities.THUNDER_EDGE_ATTACK.get(), ThunderEdgeAttackRenderer::new);
         event.registerEntityRenderer(ModEntities.FENGXUAN_DIMENSION.get(), FengxuanDimensionRenderer::new);

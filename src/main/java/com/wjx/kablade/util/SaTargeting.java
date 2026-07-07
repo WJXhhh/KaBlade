@@ -5,6 +5,7 @@ import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.Team;
 
@@ -32,6 +33,9 @@ public final class SaTargeting {
         if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
             return false;
         }
+        if (protectsTamedPets() && isProtectedTamedPet(owner, target)) {
+            return false;
+        }
         return scoreboardAllowsDamage(owner, target);
     }
 
@@ -44,6 +48,36 @@ public final class SaTargeting {
 
     private static boolean filtersPlayers() {
         return !KabladeConfig.SPEC.isLoaded() || KabladeConfig.FILTER_PLAYERS_IN_SA_TARGETING.get();
+    }
+
+    private static boolean protectsTamedPets() {
+        return !KabladeConfig.SPEC.isLoaded() || KabladeConfig.PROTECT_TAMED_PETS_IN_SA_TARGETING.get();
+    }
+
+    private static boolean isProtectedTamedPet(Entity owner, LivingEntity target) {
+        if (owner == null || !(target instanceof TamableAnimal pet) || !pet.isTame()) {
+            return false;
+        }
+
+        LivingEntity petOwner = pet.getOwner();
+        if (petOwner == null) {
+            return false;
+        }
+        if (petOwner == owner) {
+            return true;
+        }
+
+        if (owner instanceof Player attacker && petOwner instanceof Player playerOwner
+                && !attacker.canHarmPlayer(playerOwner)) {
+            return true;
+        }
+
+        Team ownerTeam = owner.getTeam();
+        Team petOwnerTeam = petOwner.getTeam();
+        return ownerTeam != null
+                && petOwnerTeam != null
+                && ownerTeam.isAlliedTo(petOwnerTeam)
+                && !ownerTeam.isAllowFriendlyFire();
     }
 
     private static boolean scoreboardAllowsDamage(Entity owner, LivingEntity target) {

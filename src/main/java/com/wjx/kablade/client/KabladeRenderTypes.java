@@ -22,6 +22,8 @@ public final class KabladeRenderTypes extends RenderType {
             new RenderStateShard.ShaderStateShard(KabladeShaders::zaizan);
     private static final RenderStateShard.ShaderStateShard UTPALA_AURA_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::utpalaAura);
+    private static final RenderStateShard.ShaderStateShard SWORD_ENLIGHTENMENT_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::swordEnlightenment);
 
     private static final RenderType INDUCTION_COLLAPSE = create(
             "kablade_induction_collapse",
@@ -70,15 +72,33 @@ public final class KabladeRenderTypes extends RenderType {
 
     private static final RenderType UTPALA_AURA_FALLBACK = shaderFallback(
             "kablade_utpala_aura_fallback",
-            FALLBACK_TEXTURE,
             131072,
             LIGHTNING_TRANSPARENCY);
 
     private static final RenderType UTPALA_AURA_VEIL_FALLBACK = shaderFallback(
             "kablade_utpala_aura_veil_fallback",
-            FALLBACK_TEXTURE,
             32768,
             TRANSLUCENT_TRANSPARENCY);
+
+    private static final RenderType SWORD_ENLIGHTENMENT = create(
+            "kablade_sword_enlightenment",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            131072,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(SWORD_ENLIGHTENMENT_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType SWORD_ENLIGHTENMENT_FALLBACK = shaderFallback(
+            "kablade_sword_enlightenment_fallback",
+            131072,
+            LIGHTNING_TRANSPARENCY);
 
     private static final RenderType STAGE_LIGHT = create(
             "kablade_stage_light",
@@ -246,6 +266,10 @@ public final class KabladeRenderTypes extends RenderType {
         return useShaderFallbackTextures() ? UTPALA_AURA_VEIL_FALLBACK : UTPALA_AURA_VEIL;
     }
 
+    public static RenderType swordEnlightenment() {
+        return useShaderFallbackTextures() ? SWORD_ENLIGHTENMENT_FALLBACK : SWORD_ENLIGHTENMENT;
+    }
+
     public static boolean useShaderFallbackTextures() {
         return ShaderCompat.shouldUseOculusPostPath();
     }
@@ -263,6 +287,10 @@ public final class KabladeRenderTypes extends RenderType {
     }
 
     public static float zaizanU(float u) {
+        return u;
+    }
+
+    public static float swordEnlightenmentU(float u) {
         return u;
     }
 

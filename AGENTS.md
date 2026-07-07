@@ -73,6 +73,7 @@ KBlade2 (`kablade`) — a Forge 1.20.1 addon for **SlashBlade Resharped (拔刀�
 - Summoned/delayed SA entities must preserve an owner. If the owner cannot be resolved for delayed/pulse damage, cancel that damage rather than falling back to ownerless `magic()` damage.
 - Real lightning spawned by SA/SE should be visual-only (`setVisualOnly(true)`) unless there is a deliberate, reviewed reason to allow vanilla lightning damage. Apply controlled damage separately through `SaTargeting`.
 - Respect `KabladeConfig.FILTER_PLAYERS_IN_SA_TARGETING`: when enabled (default), Kablade SA/SE harmful selectors filter out players regardless of team.
+- Respect `KabladeConfig.PROTECT_TAMED_PETS_IN_SA_TARGETING`: when enabled (default), Kablade SA/SE damage must not hit the user's own tamed pets; allied owners' pets follow scoreboard friendly-fire rules.
 
 ### Creative Tabs
 - Two tabs: `tab_kablade` (main) and `tab_kablade_noted`.

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.wjx.kablade.client.KabladeRenderTypes;
+import com.wjx.kablade.client.shader.OculusSkillRenderer;
 import com.wjx.kablade.entity.UtpalaAuraEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -34,6 +35,14 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
     @Override
     public void render(UtpalaAuraEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        if (KabladeRenderTypes.useShaderFallbackTextures()
+                && !OculusSkillRenderer.isRenderingPass()
+                && OculusSkillRenderer.runPostIfNeeded(immediate ->
+                render(entity, entityYaw, partialTick, poseStack, immediate, packedLight))) {
+            super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+            return;
+        }
+
         float age = entity.tickCount + partialTick;
         VertexConsumer veil = buffer.getBuffer(KabladeRenderTypes.utpalaAuraVeil());
         VertexConsumer vc = buffer.getBuffer(KabladeRenderTypes.utpalaAura());
@@ -50,6 +59,9 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
         renderIceBurst(age, poseStack, vc);
         renderPhantomBlade(age, poseStack, vc);
         renderResidualStream(age, poseStack, vc);
+        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+            renderOculusBloomOverlay(age, poseStack, vc);
+        }
 
         poseStack.popPose();
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
@@ -165,8 +177,7 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
         float grow = smootherStep(stage(age, 7.0F, 3.0F));
         float fade = 1.0F - smootherStep(stage(age, 37.0F, 7.0F));
         float intensity = grow * fade;
-        float burst = smootherStep(stage(age, 38.4F, 1.0F))
-                * (1.0F - smootherStep(stage(age, 48.0F, 3.5F)));
+        float burst = exitBurstEnvelope(age);
         if (intensity <= 0.01F && burst <= 0.01F) {
             return;
         }
@@ -297,9 +308,10 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
                     0.92F, 1.0F, 1.0F, charge * 0.58F);
         }
 
-        float spread = fastOut(stage(age, 40.0F, 3.4F));
+        float spreadStart = 40.0F;
+        float spread = fastOut(stage(age, spreadStart, 3.4F));
         float scatter = fastOut(stage(age, 40.8F, 3.0F));
-        float shockFade = 1.0F - smootherStep(stage(age, 44.2F, 4.6F));
+        float shockFade = fadeDuringExpansion(age, spreadStart, 3.4F, 1.1F, 3.2F);
         float shock = burst * shockFade;
         if (shock > 0.01F) {
             float shockRadius = Mth.lerp(spread, 5.15F, 23.0F);
@@ -312,8 +324,9 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
 
         for (int i = 0; i < 18; i++) {
             float seed = i * 2.39996F;
-            float lane = fastOut(stage(age, 39.6F + (i % 5) * 0.08F, 3.2F));
-            float laneFade = 1.0F - smootherStep(stage(age, 43.4F + (i % 4) * 0.22F, 4.0F));
+            float laneStart = 39.6F + (i % 5) * 0.08F;
+            float lane = fastOut(stage(age, laneStart, 3.2F));
+            float laneFade = fadeDuringExpansion(age, laneStart, 3.2F, 0.9F, 2.9F);
             float local = burst * laneFade;
             if (local <= 0.01F) {
                 continue;
@@ -332,8 +345,9 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
 
         for (int i = 0; i < 9; i++) {
             float offset = i * 0.16F;
-            float localSpread = fastOut(stage(age, 40.1F + offset, 3.8F));
-            float localFade = 1.0F - smootherStep(stage(age, 44.4F + offset, 4.2F));
+            float ringStart = 40.1F + offset;
+            float localSpread = fastOut(stage(age, ringStart, 3.8F));
+            float localFade = fadeDuringExpansion(age, ringStart, 3.8F, 1.1F, 3.0F);
             float local = burst * localFade;
             if (local <= 0.01F) {
                 continue;
@@ -493,6 +507,58 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
         }
     }
 
+    private static void renderOculusBloomOverlay(float age, PoseStack poseStack, VertexConsumer vc) {
+        Matrix4f mat = poseStack.last().pose();
+
+        float vortex = smootherStep(stage(age, 7.0F, 3.0F))
+                * (1.0F - smootherStep(stage(age, 37.0F, 7.0F)));
+        if (vortex > 0.01F) {
+            float snap = dampedSnap(stage(age, 8.0F, 8.0F));
+            drawRing(mat, vc, 0.115F, Mth.lerp(snap, 0.80F, 5.45F), 1.10F,
+                    0.58F, 0.98F, 1.0F, vortex * 0.34F);
+            drawRing(mat, vc, 0.135F, Mth.lerp(snap, 1.05F, 6.65F), 0.92F,
+                    0.16F, 0.70F, 1.0F, vortex * 0.22F);
+            for (int i = 0; i < 4; i++) {
+                drawLiftedLoop(mat, vc, age * (0.085F + i * 0.012F) + i * 1.4F,
+                        (0.82F + i * 0.08F) * Mth.TWO_PI,
+                        4.2F + i * 0.55F, 2.9F + i * 0.30F,
+                        0.34F + i * 0.06F, 0.34F + i * 0.12F,
+                        0.86F + i * 0.20F, vortex * (0.12F + i * 0.026F),
+                        0.36F, 0.92F, 1.0F);
+            }
+        }
+
+        float ice = fastOut(stage(age, 27.0F, 2.6F))
+                * (1.0F - smootherStep(stage(age, 48.0F, 10.0F)));
+        if (ice > 0.01F) {
+            drawIceFissure(mat, vc, age, ice * 0.28F);
+            drawForwardRibbon(mat, vc, 1.0F, 8.2F, 0.55F, 1.95F, 0.22F,
+                    age * 0.10F, ice * 0.25F, 0.56F, 0.98F, 1.0F);
+        }
+
+        float bladeOpen = fastOut(stage(age, 35.0F, 2.4F));
+        float blade = bladeOpen * (1.0F - smootherStep(stage(age, 43.0F, 7.0F)));
+        if (blade > 0.01F) {
+            float travel = Math.max(0.0F, age - 36.8F) * 1.85F;
+            float head = Mth.lerp(bladeOpen, 1.35F, 9.6F) + travel;
+            float tail = Math.max(0.18F, head - Mth.lerp(bladeOpen, 2.0F, 5.8F));
+            drawForwardRibbon(mat, vc, Math.max(0.12F, tail - 0.60F), head + 0.65F,
+                    0.46F, 4.90F, 1.00F, age * 0.12F,
+                    blade * 0.46F, 0.74F, 0.98F, 1.0F);
+            drawBladeArc(mat, vc, head + 0.26F, 1.02F, 4.90F,
+                    0.86F, blade * 0.34F, 0.88F, 1.0F, 1.0F);
+        }
+
+        float burst = exitBurstEnvelope(age);
+        if (burst > 0.01F) {
+            float spread = fastOut(stage(age, 40.0F, 3.4F));
+            float fade = fadeDuringExpansion(age, 40.0F, 3.4F, 1.1F, 3.2F);
+            drawRing(mat, vc, 0.16F, Mth.lerp(spread, 5.0F, 23.5F),
+                    Mth.lerp(spread, 0.90F, 3.20F),
+                    0.64F, 0.98F, 1.0F, burst * fade * 0.25F);
+        }
+    }
+
     private static void drawGroundFlame(Matrix4f mat, VertexConsumer vc, float age, float alpha) {
         int points = 14;
         float inner = 0.26F;
@@ -639,6 +705,12 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
                                          float tailRadius, float headRadius, float halfWidth,
                                          float y0, float y1, float alpha,
                                          float red, float green, float blue) {
+        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+            drawRadialStreakFallback(mat, vc, angle, tailRadius, headRadius, halfWidth,
+                    y0, y1, alpha, red, green, blue);
+            return;
+        }
+
         float sin = Mth.sin(angle);
         float cos = Mth.cos(angle);
         float tangentX = -sin * halfWidth;
@@ -652,6 +724,42 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
                 headX - tangentX, y1, headZ - tangentZ, red, green, blue, alpha,
                 headX + tangentX, y1, headZ + tangentZ, 0.92F, 1.0F, 1.0F, alpha * 0.74F,
                 tailX + tangentX * 0.52F, y0, tailZ + tangentZ * 0.52F, 0.92F, 1.0F, 1.0F, alpha * 0.0F);
+    }
+
+    private static void drawRadialStreakFallback(Matrix4f mat, VertexConsumer vc, float angle,
+                                                 float tailRadius, float headRadius, float halfWidth,
+                                                 float y0, float y1, float alpha,
+                                                 float red, float green, float blue) {
+        float sin = Mth.sin(angle);
+        float cos = Mth.cos(angle);
+        int segments = 7;
+        for (int i = 0; i < segments; i++) {
+            float t0 = i / (float) segments;
+            float t1 = (i + 1) / (float) segments;
+            float tm = (t0 + t1) * 0.5F;
+            float r0 = Mth.lerp(t0, tailRadius, headRadius);
+            float r1 = Mth.lerp(t1, tailRadius, headRadius);
+            float width0 = halfWidth * Mth.lerp(t0, 0.52F, 1.0F);
+            float width1 = halfWidth * Mth.lerp(t1, 0.52F, 1.0F);
+            float tangentX0 = -sin * width0;
+            float tangentZ0 = cos * width0;
+            float tangentX1 = -sin * width1;
+            float tangentZ1 = cos * width1;
+            float x0 = cos * r0;
+            float z0 = sin * r0;
+            float x1 = cos * r1;
+            float z1 = sin * r1;
+            float yStart = Mth.lerp(t0, y0, y1);
+            float yEnd = Mth.lerp(t1, y0, y1);
+            float localAlpha = alpha * smootherStep(tm) * (1.0F - tm * 0.10F);
+            float localRed = Mth.lerp(tm, red, 0.92F);
+            float localGreen = Mth.lerp(tm, green, 1.0F);
+            quadWithUvRange(vc, mat, 1.5F, t0, t1,
+                    x0 - tangentX0, yStart, z0 - tangentZ0, localRed, localGreen, blue, localAlpha,
+                    x1 - tangentX1, yEnd, z1 - tangentZ1, localRed, localGreen, blue, localAlpha,
+                    x1 + tangentX1, yEnd, z1 + tangentZ1, localRed, localGreen, blue, localAlpha * 0.92F,
+                    x0 + tangentX0, yStart, z0 + tangentZ0, localRed, localGreen, blue, localAlpha * 0.92F);
+        }
     }
 
     private static void drawBladeArc(Matrix4f mat, VertexConsumer vc, float z, float y,
@@ -681,6 +789,11 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
 
     private static void drawBrokenRing(Matrix4f mat, VertexConsumer vc, float y, float radius, float width,
                                        float scatter, float red, float green, float blue, float alpha) {
+        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+            drawBrokenRingBands(mat, vc, y, radius, width, scatter, red, green, blue, alpha);
+            return;
+        }
+
         int segments = 72;
         float outer = radius + width * 0.5F;
         float inner = Math.max(0.01F, radius - width * 0.5F);
@@ -706,6 +819,11 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
 
     private static void drawRing(Matrix4f mat, VertexConsumer vc, float y, float radius, float width,
                                  float red, float green, float blue, float alpha) {
+        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+            drawRingBands(mat, vc, y, radius, width, red, green, blue, alpha);
+            return;
+        }
+
         int segments = 80;
         float outer = radius + width * 0.5F;
         float inner = Math.max(0.01F, radius - width * 0.5F);
@@ -719,6 +837,72 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
                     Mth.cos(a1) * outer, y, Mth.sin(a1) * outer, red, green, blue, alpha,
                     Mth.cos(a1) * inner, y, Mth.sin(a1) * inner, 0.92F, 1.0F, 1.0F, alpha * 0.46F,
                     Mth.cos(a0) * inner, y, Mth.sin(a0) * inner, 0.92F, 1.0F, 1.0F, alpha * 0.46F);
+        }
+    }
+
+    private static void drawRingBands(Matrix4f mat, VertexConsumer vc, float y, float radius, float width,
+                                      float red, float green, float blue, float alpha) {
+        int segments = Mth.clamp(Mth.ceil(radius * 10.0F), 64, 112);
+        int bands = Mth.clamp(Mth.ceil(width / 0.22F), 3, 10);
+        float inner = Math.max(0.01F, radius - width * 0.5F);
+        for (int band = 0; band < bands; band++) {
+            float p0 = band / (float) bands;
+            float p1 = (band + 1) / (float) bands;
+            float pm = (p0 + p1) * 0.5F;
+            float r0 = inner + width * p0;
+            float r1 = inner + width * p1;
+            float edge = Mth.sin(pm * Mth.PI);
+            float bandAlpha = alpha * (0.16F + edge * 0.84F);
+            float bandRed = Mth.lerp(pm, 0.88F, red);
+            float bandGreen = Mth.lerp(pm, 0.96F, green);
+
+            for (int i = 0; i < segments; i++) {
+                float a0 = Mth.TWO_PI * i / segments;
+                float a1 = Mth.TWO_PI * (i + 1) / segments;
+                float t0 = i / (float) segments;
+                float t1 = (i + 1) / (float) segments;
+                quadWithUvRange(vc, mat, 0.0F, t0, t1,
+                        Mth.cos(a0) * r1, y, Mth.sin(a0) * r1, bandRed, bandGreen, blue, bandAlpha,
+                        Mth.cos(a1) * r1, y, Mth.sin(a1) * r1, bandRed, bandGreen, blue, bandAlpha,
+                        Mth.cos(a1) * r0, y, Mth.sin(a1) * r0, bandRed, bandGreen, blue, bandAlpha,
+                        Mth.cos(a0) * r0, y, Mth.sin(a0) * r0, bandRed, bandGreen, blue, bandAlpha);
+            }
+        }
+    }
+
+    private static void drawBrokenRingBands(Matrix4f mat, VertexConsumer vc, float y, float radius, float width,
+                                            float scatter, float red, float green, float blue, float alpha) {
+        int segments = Mth.clamp(Mth.ceil(radius * 9.0F), 64, 112);
+        int bands = Mth.clamp(Mth.ceil(width / 0.24F), 3, 9);
+        float inner = Math.max(0.01F, radius - width * 0.5F);
+        int gapRate = 7 - Mth.floor(scatter * 4.0F);
+        for (int i = 0; i < segments; i++) {
+            float noise = 0.5F + 0.5F * Mth.sin(i * 1.73F + scatter * 8.0F);
+            if (scatter > 0.28F && ((i + Mth.floor(scatter * 9.0F)) % Math.max(2, gapRate) == 0 || noise < scatter * 0.24F)) {
+                continue;
+            }
+
+            float t0 = i / (float) segments;
+            float t1 = (i + 1) / (float) segments;
+            float a0 = Mth.TWO_PI * t0;
+            float a1 = Mth.TWO_PI * t1;
+            float localAlpha = alpha * (1.0F - scatter * 0.46F) * (0.72F + noise * 0.28F);
+            for (int band = 0; band < bands; band++) {
+                float p0 = band / (float) bands;
+                float p1 = (band + 1) / (float) bands;
+                float pm = (p0 + p1) * 0.5F;
+                float r0 = inner + width * p0;
+                float r1 = inner + width * p1;
+                float edge = Mth.sin(pm * Mth.PI);
+                float bandAlpha = localAlpha * (0.18F + edge * 0.82F);
+                float bandRed = Mth.lerp(pm, 0.88F, red);
+                float bandGreen = Mth.lerp(pm, 0.96F, green);
+                quadWithUvRange(vc, mat, 0.0F, t0, t1,
+                        Mth.cos(a0) * r1, y, Mth.sin(a0) * r1, bandRed, bandGreen, blue, bandAlpha,
+                        Mth.cos(a1) * r1, y, Mth.sin(a1) * r1, bandRed, bandGreen, blue, bandAlpha,
+                        Mth.cos(a1) * r0, y, Mth.sin(a1) * r0, bandRed, bandGreen, blue, bandAlpha,
+                        Mth.cos(a0) * r0, y, Mth.sin(a0) * r0, bandRed, bandGreen, blue, bandAlpha);
+            }
         }
     }
 
@@ -741,6 +925,16 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
         t = Mth.clamp(t, 0.0F, 1.0F);
         float inv = 1.0F - t;
         return 1.0F - inv * inv * inv * inv;
+    }
+
+    private static float exitBurstEnvelope(float age) {
+        return smootherStep(stage(age, 38.4F, 1.0F))
+                * (1.0F - smootherStep(stage(age, 42.8F, 3.4F)));
+    }
+
+    private static float fadeDuringExpansion(float age, float start, float expandDuration,
+                                             float leadTicks, float fadeDuration) {
+        return 1.0F - smootherStep(stage(age, start + expandDuration - leadTicks, fadeDuration));
     }
 
     private static float edgeFade(float t) {
@@ -766,6 +960,15 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
                                    float x1, float y1, float z1, float r1, float g1, float b1, float a1,
                                    float x2, float y2, float z2, float r2, float g2, float b2, float a2,
                                    float x3, float y3, float z3, float r3, float g3, float b3, float a3) {
+        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+            fallbackQuad(vc, mat,
+                    x0, y0, z0, r0, g0, b0, a0,
+                    x1, y1, z1, r1, g1, b1, a1,
+                    x2, y2, z2, r2, g2, b2, a2,
+                    x3, y3, z3, r3, g3, b3, a3);
+            return;
+        }
+
         vertex(vc, mat, x0, y0, z0, r0, g0, b0, a0, uvBase, 0.0F);
         vertex(vc, mat, x1, y1, z1, r1, g1, b1, a1, uvBase + 1.0F, 0.0F);
         vertex(vc, mat, x2, y2, z2, r2, g2, b2, a2, uvBase + 1.0F, 1.0F);
@@ -777,18 +980,63 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
                                         float x1, float y1, float z1, float r1, float g1, float b1, float a1,
                                         float x2, float y2, float z2, float r2, float g2, float b2, float a2,
                                         float x3, float y3, float z3, float r3, float g3, float b3, float a3) {
+        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+            fallbackQuad(vc, mat,
+                    x0, y0, z0, r0, g0, b0, a0,
+                    x1, y1, z1, r1, g1, b1, a1,
+                    x2, y2, z2, r2, g2, b2, a2,
+                    x3, y3, z3, r3, g3, b3, a3);
+            return;
+        }
+
         vertex(vc, mat, x0, y0, z0, r0, g0, b0, a0, uvBase + u0, 0.0F);
         vertex(vc, mat, x1, y1, z1, r1, g1, b1, a1, uvBase + u1, 0.0F);
         vertex(vc, mat, x2, y2, z2, r2, g2, b2, a2, uvBase + u1, 1.0F);
         vertex(vc, mat, x3, y3, z3, r3, g3, b3, a3, uvBase + u0, 1.0F);
     }
 
+    private static void fallbackQuad(VertexConsumer vc, Matrix4f mat,
+                                     float x0, float y0, float z0, float r0, float g0, float b0, float a0,
+                                     float x1, float y1, float z1, float r1, float g1, float b1, float a1,
+                                     float x2, float y2, float z2, float r2, float g2, float b2, float a2,
+                                     float x3, float y3, float z3, float r3, float g3, float b3, float a3) {
+        float alpha = (a0 + a1 + a2 + a3) * 0.25F;
+        if (alpha <= 0.001F) {
+            return;
+        }
+
+        float weight = Math.max(0.001F, a0 + a1 + a2 + a3);
+        float red = (r0 * a0 + r1 * a1 + r2 * a2 + r3 * a3) / weight;
+        float green = (g0 * a0 + g1 * a1 + g2 * a2 + g3 * a3) / weight;
+        float blue = (b0 * a0 + b1 * a1 + b2 * a2 + b3 * a3) / weight;
+        fallbackVertex(vc, mat, x0, y0, z0, red, green, blue, alpha);
+        fallbackVertex(vc, mat, x1, y1, z1, red, green, blue, alpha);
+        fallbackVertex(vc, mat, x2, y2, z2, red, green, blue, alpha);
+        fallbackVertex(vc, mat, x3, y3, z3, red, green, blue, alpha);
+    }
+
+    private static void fallbackVertex(VertexConsumer vc, Matrix4f mat,
+                                       float x, float y, float z,
+                                       float red, float green, float blue, float alpha) {
+        vc.vertex(mat, x, y, z)
+                .color(red, green, blue, Mth.clamp(alpha * 1.32F, 0.0F, 1.0F))
+                .endVertex();
+    }
+
     private static void vertex(VertexConsumer vc, Matrix4f mat,
                                float x, float y, float z,
                                float red, float green, float blue, float alpha,
                                float u, float v) {
+        float safeAlpha = KabladeRenderTypes.useShaderFallbackTextures()
+                ? Mth.clamp(alpha * 1.32F, 0.0F, 1.0F)
+                : alpha;
+        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+            fallbackVertex(vc, mat, x, y, z, red, green, blue, alpha);
+            return;
+        }
+
         vc.vertex(mat, x, y, z)
-                .color(red, green, blue, alpha)
+                .color(red, green, blue, safeAlpha)
                 .uv(u, v)
                 .endVertex();
     }
