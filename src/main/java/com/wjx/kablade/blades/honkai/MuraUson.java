@@ -26,8 +26,8 @@ public class MuraUson extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/muramasa/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/muramasa/tex_uson.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/muramasa/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/muramasa/tex_uson.png"))
                         .effectColor(0x6B8E9E)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

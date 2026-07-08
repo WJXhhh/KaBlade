@@ -27,8 +27,8 @@ public class CrystalCutter extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/rhomphaia/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/rhomphaia/tex_cry.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/rhomphaia/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/rhomphaia/tex_cry.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

@@ -29,8 +29,8 @@ public class PlasmaKagehide extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/raikiri_plas/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/raikiri_plas/tex_plasma_kagehide.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/raikiri_plas/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/raikiri_plas/tex_plasma_kagehide.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

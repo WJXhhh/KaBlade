@@ -29,8 +29,8 @@ public class AwLiuRRHuo extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/liurrh/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/liurrh/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/liurrh/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/liurrh/tex.png"))
                         .effectColor(0xFF0000)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

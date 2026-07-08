@@ -27,8 +27,8 @@ public class SkyBreaker extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/sky_breaker/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/sky_breaker/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/sky_breaker/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/sky_breaker/tex.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

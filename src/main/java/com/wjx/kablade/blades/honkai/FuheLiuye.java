@@ -27,8 +27,8 @@ public class FuheLiuye extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/fuhe/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/fuhe/tex_liuye.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/fuhe/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/fuhe/tex_liuye.png"))
                         .effectColor(0x6B8E23)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

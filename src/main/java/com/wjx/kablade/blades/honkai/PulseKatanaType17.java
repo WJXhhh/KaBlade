@@ -28,8 +28,8 @@ public class PulseKatanaType17 extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/pulse_katanas/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/pulse_katanas/tex_t17.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/pulse_katanas/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/pulse_katanas/tex_t17.png"))
                         .effectColor(0x00FFEE)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

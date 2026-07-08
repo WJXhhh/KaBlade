@@ -36,6 +36,10 @@ CLAUDE.md
 
 # Build error logs
 err*.txt
+build_output.txt
+
+# Item icons
+icons/
 
 # Model work files
 model_work/

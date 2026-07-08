@@ -26,8 +26,8 @@ public class ByoDen extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/byoto/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/byoto/tex_den.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/byoto/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/byoto/tex_den.png"))
                         .effectColor(0x8B7355)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

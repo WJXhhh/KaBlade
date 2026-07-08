@@ -20,8 +20,8 @@ public class AwYouming extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/youming/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/youming/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/youming/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/youming/tex.png"))
                         .effectColor(0x222222)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

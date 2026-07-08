@@ -28,8 +28,8 @@ public class AwGuangJian extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/guangjian/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/guangjian/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/guangjian/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/guangjian/tex.png"))
                         .effectColor(0xBBBBEE)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

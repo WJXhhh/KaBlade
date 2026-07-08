@@ -23,8 +23,8 @@ public class MagStorm extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/mag_storm/mdlMagStorm.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/mag_storm/texMagStorm.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/mag_storm/mdlMagStorm.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/mag_storm/texMagStorm.png"))
                         .effectColor(0x00FFFF)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

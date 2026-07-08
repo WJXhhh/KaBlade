@@ -23,8 +23,8 @@ public class MuraHori extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/muramasa/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/muramasa/tex_hori.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/muramasa/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/muramasa/tex_hori.png"))
                         .effectColor(0xB97A6B)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

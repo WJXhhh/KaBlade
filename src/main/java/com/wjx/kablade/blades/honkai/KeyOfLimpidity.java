@@ -29,8 +29,8 @@ public class KeyOfLimpidity extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/key_of_limpidity/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/key_of_limpidity/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/key_of_limpidity/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/key_of_limpidity/tex.png"))
                         .effectColor(0xFFAAFF)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

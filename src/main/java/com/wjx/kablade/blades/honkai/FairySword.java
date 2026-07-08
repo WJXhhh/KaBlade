@@ -30,8 +30,8 @@ public class FairySword extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/fairy_sword/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/fairy_sword/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/fairy_sword/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/fairy_sword/tex.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .effectColor(16642509)  // 召唤剑颜色，1.12.2 原值
                         .build(),

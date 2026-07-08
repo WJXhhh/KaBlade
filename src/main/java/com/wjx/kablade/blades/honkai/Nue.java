@@ -27,8 +27,8 @@ public class Nue extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/nue/mdlnue.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/nue/texnue.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/nue/mdlnue.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/nue/texnue.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

@@ -21,8 +21,8 @@ public class AwJiyi extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/jiyi/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/jiyi/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/jiyi/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/jiyi/tex.png"))
                         .effectColor(0x2200ef)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

@@ -30,14 +30,14 @@ public class FrozenNaraka extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/frozen_naraka/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/frozen_naraka/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/frozen_naraka/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/frozen_naraka/tex.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .effectColor(0x00FFFF)  // 刀光与仿灵刀同为青色
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(26.0F)
-                        .maxDamage(1200)
+                        .baseAttackModifier(32.0F)
+                        .maxDamage(1400)
                         .slashArtsType(ModSlashArts.UTPALA_AURA.getId())
                         .defaultSwordType(java.util.List.of(SwordType.BEWITCHED))
                         .addSpecialEffect(ModSpecialEffects.GLACIAL_BANE.getId())

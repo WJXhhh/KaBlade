@@ -23,8 +23,8 @@ public class IceEpiphyllum extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/ice_epiphyllum/mdlIceEpiphyllum.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/ice_epiphyllum/texIceEpiphyllum.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/ice_epiphyllum/mdlIceEpiphyllum.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/ice_epiphyllum/texIceEpiphyllum.png"))
                         .effectColor(0x00FFFF)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

@@ -20,8 +20,8 @@ public class AwShangguYizhi extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/shangguyizhi/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/shangguyizhi/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/shangguyizhi/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/shangguyizhi/tex.png"))
                         .effectColor(0xaaaaaa)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

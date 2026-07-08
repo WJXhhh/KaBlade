@@ -25,8 +25,8 @@ public class AwXuezou extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/xuezou/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/xuezou/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/xuezou/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/xuezou/tex.png"))
                         .effectColor(0x2222ff)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

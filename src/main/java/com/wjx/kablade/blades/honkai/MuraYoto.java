@@ -27,8 +27,8 @@ public class MuraYoto extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/muramasa/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/muramasa/tex_yoto.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/muramasa/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/muramasa/tex_yoto.png"))
                         .effectColor(0x8B0000)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

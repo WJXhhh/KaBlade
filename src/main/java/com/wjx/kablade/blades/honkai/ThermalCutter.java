@@ -27,8 +27,8 @@ public class ThermalCutter extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/rhomphaia/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/rhomphaia/tex_the.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/rhomphaia/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/rhomphaia/tex_the.png"))
                         .effectColor(0xDAA520)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

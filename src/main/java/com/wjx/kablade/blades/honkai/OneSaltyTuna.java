@@ -23,8 +23,8 @@ public class OneSaltyTuna extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/tuna/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/tuna/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/tuna/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/tuna/tex.png"))
                         .effectColor(0x5A7C2A)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

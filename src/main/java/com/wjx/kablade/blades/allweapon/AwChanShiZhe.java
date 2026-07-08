@@ -29,8 +29,8 @@ public class AwChanShiZhe extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/chanshizhe/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/chanshizhe/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/chanshizhe/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/chanshizhe/tex.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

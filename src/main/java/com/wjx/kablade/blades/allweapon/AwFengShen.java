@@ -28,8 +28,8 @@ public class AwFengShen extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/fengshen/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/fengshen/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/fengshen/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/fengshen/tex.png"))
                         .effectColor(0xBBBB1E)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

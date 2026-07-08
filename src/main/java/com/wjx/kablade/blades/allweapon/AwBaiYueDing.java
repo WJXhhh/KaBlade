@@ -21,8 +21,8 @@ public class AwBaiYueDing extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/baiyueding/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/baiyueding/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/baiyueding/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/baiyueding/tex.png"))
                         .effectColor(0xeeeeee)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

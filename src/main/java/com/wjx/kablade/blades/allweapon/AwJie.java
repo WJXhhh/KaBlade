@@ -25,8 +25,8 @@ public class AwJie extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/jie/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/jie/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/jie/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/jie/tex.png"))
                         .effectColor(0x888899)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

@@ -24,7 +24,7 @@ public class AwBailan extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .textureName(ResourceUtil.getLocation("model/named/bailan/tex.png"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/bailan/tex.png"))
                         .effectColor(0x33ee33)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

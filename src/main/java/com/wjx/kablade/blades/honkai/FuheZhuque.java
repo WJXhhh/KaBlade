@@ -27,8 +27,8 @@ public class FuheZhuque extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/fuhe/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/fuhe/tex_zhuque.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/fuhe/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/fuhe/tex_zhuque.png"))
                         .effectColor(0xFF4500)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

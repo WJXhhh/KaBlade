@@ -21,12 +21,8 @@ public final class SaTargeting {
     }
 
     public static boolean canDamage(Entity owner, LivingEntity target) {
-        if (target == null || !target.isAlive()) {
+        if (!testBasicAttackable(owner, target))
             return false;
-        }
-        if (owner != null && target == owner) {
-            return false;
-        }
         if (target instanceof Player && filtersPlayers()) {
             return false;
         }
@@ -39,11 +35,26 @@ public final class SaTargeting {
         return scoreboardAllowsDamage(owner, target);
     }
 
-    public static boolean canDamageAttackable(Entity owner, LivingEntity target) {
-        if (!canDamage(owner, target)) {
+    private static boolean testBasicAttackable(Entity owner,LivingEntity target) {
+        if (target == null || !target.isAlive()) {
             return false;
         }
-        return target instanceof Mob || target instanceof Player || SLASHBLADE_ATTACKABLE.test(target);
+        return owner == null || target != owner;
+    }
+
+    public static boolean canDamageAttackable(Entity owner, LivingEntity target) {
+        if(!isAllUseTargetSelector()){
+            if (!canDamage(owner, target)) {
+                return false;
+            }
+            return target instanceof Mob || target instanceof Player || SLASHBLADE_ATTACKABLE.test(target);
+        }else {
+            if(testBasicAttackable(owner, target)){
+                return SLASHBLADE_ATTACKABLE.test(target);
+            }
+        }
+        return false;
+
     }
 
     private static boolean filtersPlayers() {
@@ -52,6 +63,10 @@ public final class SaTargeting {
 
     private static boolean protectsTamedPets() {
         return !KabladeConfig.SPEC.isLoaded() || KabladeConfig.PROTECT_TAMED_PETS_IN_SA_TARGETING.get();
+    }
+
+    private static boolean isAllUseTargetSelector(){
+        return !KabladeConfig.SPEC.isLoaded() || KabladeConfig.SA_ALL_USE_TARGET_SELECTOR.get();
     }
 
     private static boolean isProtectedTamedPet(Entity owner, LivingEntity target) {

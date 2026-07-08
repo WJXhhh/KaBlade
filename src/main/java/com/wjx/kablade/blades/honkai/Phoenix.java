@@ -28,8 +28,8 @@ public class Phoenix extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/phoenix/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/phoenix/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/phoenix/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/phoenix/tex.png"))
                         .effectColor(0xDAA520)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

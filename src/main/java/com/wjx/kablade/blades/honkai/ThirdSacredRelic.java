@@ -27,8 +27,8 @@ public class ThirdSacredRelic extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/third_sacred/mdl3rdsacredrelic.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/third_sacred/tex3rdsacredrelic.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/third_sacred/mdl3rdsacredrelic.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/third_sacred/tex3rdsacredrelic.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

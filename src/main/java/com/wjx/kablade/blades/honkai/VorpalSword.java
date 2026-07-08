@@ -27,8 +27,8 @@ public class VorpalSword extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/vorpal/mdlvorpalsword.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/vorpal/texvorpalsword.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/vorpal/mdlvorpalsword.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/vorpal/texvorpalsword.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

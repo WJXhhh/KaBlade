@@ -27,8 +27,8 @@ public class XuanYuanKatana extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/xuanyuan_katana/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/xuanyuan_katana/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/xuanyuan_katana/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/xuanyuan_katana/tex.png"))
                         .effectColor(0x00FFEE)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

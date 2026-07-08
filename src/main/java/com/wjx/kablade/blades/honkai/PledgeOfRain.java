@@ -22,8 +22,8 @@ public class PledgeOfRain extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/pledge_of_rain/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/pledge_of_rain/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/pledge_of_rain/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/pledge_of_rain/tex.png"))
                         .effectColor(0x88C9FF)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

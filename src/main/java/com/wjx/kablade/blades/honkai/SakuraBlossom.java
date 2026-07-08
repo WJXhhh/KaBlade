@@ -21,8 +21,8 @@ public class SakuraBlossom extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/sakura_blossom/mdlSakuraBlossom.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/sakura_blossom/texSakuraBlossom.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/sakura_blossom/mdlSakuraBlossom.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/sakura_blossom/texSakuraBlossom.png"))
                         .effectColor(0xFF83D2)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

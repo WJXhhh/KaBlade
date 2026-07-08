@@ -28,8 +28,8 @@ public class AwYingyue extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/yingyue/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/yingyue/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/yingyue/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/yingyue/tex.png"))
                         .effectColor(0x000000)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

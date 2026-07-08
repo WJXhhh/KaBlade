@@ -21,8 +21,8 @@ public class FloridSakura extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/florid_sakura/mdlFloridSakura.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/florid_sakura/texFloridSakura.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/florid_sakura/mdlFloridSakura.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/florid_sakura/texFloridSakura.png"))
                         .effectColor(0xF3002C)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

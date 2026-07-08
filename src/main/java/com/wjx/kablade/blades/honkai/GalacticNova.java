@@ -27,8 +27,8 @@ public class GalacticNova extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/galactic/mdlgalactic.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/galactic/texgalactic.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/galactic/mdlgalactic.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/galactic/texgalactic.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

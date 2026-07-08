@@ -23,8 +23,8 @@ public class MuraSeshu extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/muramasa/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/muramasa/tex_seshu.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/muramasa/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/muramasa/tex_seshu.png"))
                         .effectColor(0x9E9E9E)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

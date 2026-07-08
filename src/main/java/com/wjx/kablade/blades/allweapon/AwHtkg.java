@@ -25,8 +25,8 @@ public class AwHtkg extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/htkg/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/htkg/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/htkg/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/htkg/tex.png"))
                         .effectColor(0x999f99)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

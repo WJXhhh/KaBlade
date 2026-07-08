@@ -28,8 +28,8 @@ public class SL_Senta extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.SP_LIGHT),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/splight/splight/senta/model.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/splight/splight/senta/texture.png"))
+                        .modelName(ResourceUtil.getLocation("model/splight/splight/splight/senta/model.obj"))
+                        .textureName(ResourceUtil.getLocation("model/splight/splight/splight/senta/texture.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

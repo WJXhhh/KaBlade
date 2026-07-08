@@ -23,8 +23,8 @@ public class KeyOfCastigation extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/key_of_castigation/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/key_of_castigation/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/key_of_castigation/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/key_of_castigation/tex.png"))
                         .effectColor(0x9B00FF)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

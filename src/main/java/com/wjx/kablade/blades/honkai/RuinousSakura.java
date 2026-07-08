@@ -15,39 +15,40 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 /**
- * 破晓者：塔尔瓦 —— 崩坏线银河新星线延续，由银河追光 + 钻石 + 极光金属锭合成。
- * 从 1.12.2 移植而来，专属 SA「震击」（1.12.2 SA 294）。
- * <p>
- * 属性：攻击 17.0、耐久 710、默认妖化、自带击退 II、锋利 IV。
+ * 魂妖刀「血樱寂灭」——崩坏线高阶武器。
+ * 赤染樱的升级形态，属性全面强化。
+ *
+ * <p>对比 赤染樱：attack 24→28, durability 800→1000, 附魔全面+1
  */
-public class DawnBreaker extends BladeDefineBase {
-    public DawnBreaker(BootstapContext<SlashBladeDefinition> context) {
+public class RuinousSakura extends BladeDefineBase {
+    public RuinousSakura(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/honkai/dawn_breaker/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/honkai/dawn_breaker/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/ruinous_sakura/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/ruinous_sakura/mdl.png"))
+                        .effectColor(0xF3002C)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(17.0F)
-                        .maxDamage(710)
+                        .baseAttackModifier(34.0F)
+                        .maxDamage(1200)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .slashArtsType(ModSlashArts.SHOCK_IMPACT.getId())
+                        .slashArtsType(ModSlashArts.CRIMSON_SAKURA.getId())
                         .build(),
                 List.of(
-                        new EnchantmentDefinition(
-                                ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
-                        new EnchantmentDefinition(
-                                ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 4)
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "fire_aspect"), 5),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 6),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 4),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 5)
                 )
         ));
     }
 
     @Override
     public String getKey() {
-        return "dawn_breaker";
+        return "ruinous_sakura";
     }
 }

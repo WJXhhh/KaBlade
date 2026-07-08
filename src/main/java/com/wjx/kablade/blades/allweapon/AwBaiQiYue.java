@@ -21,8 +21,8 @@ public class AwBaiQiYue extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/baiqiyue/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/baiqiyue/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/baiqiyue/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/baiqiyue/tex.png"))
                         .effectColor(0xeeeeee)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

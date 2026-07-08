@@ -22,8 +22,8 @@ public class AwLvluo extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/lvluo/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/lvluo/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/lvluo/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/lvluo/tex.png"))
                         .effectColor(0x33ee33)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

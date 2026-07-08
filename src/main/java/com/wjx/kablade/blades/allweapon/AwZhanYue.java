@@ -28,8 +28,8 @@ public class AwZhanYue extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/zhanyue/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/zhanyue/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/zhanyue/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/zhanyue/tex.png"))
                         .effectColor(0xEEEEEF)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

@@ -27,8 +27,8 @@ public class Osahoko extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/osahoko/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/osahoko/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/osahoko/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/osahoko/tex.png"))
                         .effectColor(0x536474)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

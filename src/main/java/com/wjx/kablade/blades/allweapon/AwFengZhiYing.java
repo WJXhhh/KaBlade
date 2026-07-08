@@ -21,8 +21,8 @@ public class AwFengZhiYing extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/fengzhiying/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/fengzhiying/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/fengzhiying/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/fengzhiying/tex.png"))
                         .effectColor(0xbbbbee)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

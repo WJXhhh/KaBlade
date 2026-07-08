@@ -26,8 +26,8 @@ public class ByoRai extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/byoto/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/byoto/tex_rai.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/byoto/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/byoto/tex_rai.png"))
                         .effectColor(0x4A6FA5)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

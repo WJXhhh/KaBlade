@@ -28,8 +28,8 @@ public class SL_Origin extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.SP_LIGHT),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/splight/splight/origin/model.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/splight/splight/origin/texture.png"))
+                        .modelName(ResourceUtil.getLocation("model/splight/splight/splight/origin/model.obj"))
+                        .textureName(ResourceUtil.getLocation("model/splight/splight/splight/origin/texture.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

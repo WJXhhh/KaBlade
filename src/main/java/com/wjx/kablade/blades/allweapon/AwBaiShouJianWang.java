@@ -21,8 +21,8 @@ public class AwBaiShouJianWang extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.ALL_WEAPON),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/baishoujianwang/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/baishoujianwang/tex.png"))
+                        .modelName(ResourceUtil.getLocation("model/allweapon/baishoujianwang/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/allweapon/baishoujianwang/tex.png"))
                         .effectColor(0xaaaaaa)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

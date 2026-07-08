@@ -27,8 +27,8 @@ public class SL_Young2 extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.SP_LIGHT),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/splight/splight/young/model.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/splight/splight/young/texture_g.png"))
+                        .modelName(ResourceUtil.getLocation("model/splight/splight/splight/young/model.obj"))
+                        .textureName(ResourceUtil.getLocation("model/splight/splight/splight/young/texture_g.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

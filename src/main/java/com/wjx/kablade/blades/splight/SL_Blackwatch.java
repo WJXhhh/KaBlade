@@ -28,8 +28,8 @@ public class SL_Blackwatch extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.SP_LIGHT),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/named/splight/splight/blackwatch/model.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/splight/splight/blackwatch/texture.png"))
+                        .modelName(ResourceUtil.getLocation("model/splight/splight/splight/blackwatch/model.obj"))
+                        .textureName(ResourceUtil.getLocation("model/splight/splight/splight/blackwatch/texture.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

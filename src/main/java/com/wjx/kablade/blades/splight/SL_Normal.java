@@ -29,7 +29,7 @@ public class SL_Normal extends BladeDefineBase {
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
                         .modelName(ResourceLocation.fromNamespaceAndPath("slashblade", "model/named/sange/sange.obj"))
-                        .textureName(ResourceUtil.getLocation("model/named/splight/splight/normal/texture.png"))
+                        .textureName(ResourceUtil.getLocation("model/splight/splight/splight/normal/texture.png"))
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
