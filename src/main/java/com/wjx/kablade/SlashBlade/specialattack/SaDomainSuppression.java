@@ -4,7 +4,7 @@ import com.google.common.base.Predicates;
 import com.wjx.kablade.Entity.EntitySummonSwordFree;
 import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
 import com.wjx.kablade.Main;
-import com.wjx.kablade.network.MessageSpawnParticle;
+import com.wjx.kablade.network.MessageSpawnParticleRing;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -187,67 +187,18 @@ public class SaDomainSuppression extends SpecialAttackBase {
                     world.spawnEntity(p);
                     a+=36;
                 }
-                radius = 1f;
-                for (int i = 0;i < 20;i++){
-                    double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
-                    double py = centerY + 0.1d;
-                    double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
-                    Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.5,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.5));
-                    a+=18;
-                }
-                for (int i = 0;i < 20;i++){
-                    double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
-                    double py = centerY + 0.1d;
-                    double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
-                    Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.3,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.3));
-                    a+=18;
-                }
-                for (int i = 0;i < 20;i++){
-                    double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
-                    double py = centerY + 0.1d;
-                    double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
-                    Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.2,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.2));
-                    a+=18;
-                }
-                for (int i = 0;i < 20;i++){
-                    double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
-                    double py = centerY + 0.1d;
-                    double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
-                    Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
-                    a+=18;
-                }
-                for (int i = 0;i < 20;i++){
-                    double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
-                    double py = centerY + 2d;
-                    double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
-                    Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.5,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.5));
-                    a+=18;
-                }
-                for (int i = 0;i < 20;i++){
-                    double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
-                    double py = centerY + 2d;
-                    double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
-                    Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.3,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.3));
-                    a+=18;
-                }
-                for (int i = 0;i < 20;i++){
-                    double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
-                    double py = centerY + 2d;
-                    double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
-                    Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.2,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.2));
-                    a+=18;
-                }
-                for (int i = 0;i < 20;i++){
-                    double px = centerX + (Math.cos(Math.toRadians(a)))*radius;
-                    double py = centerY + 2d;
-                    double pz = centerZ + ((Math.sin(Math.toRadians(a)))*radius);
-                    Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
-                    a+=18;
-                }
+                MessageSpawnParticleRing ring = new MessageSpawnParticleRing(centerX, centerY, centerZ, a);
+                ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 0.1, 0.5, 20, 18);
+                ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 0.1, 0.3, 20, 18);
+                ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 0.1, 0.2, 20, 18);
+                ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 0.1, 0.1, 20, 18);
+                ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 2.0, 0.5, 20, 18);
+                ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 2.0, 0.3, 20, 18);
+                ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 2.0, 0.2, 20, 18);
+                ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 2.0, 0.1, 20, 18);
+                ring.addGroup(EnumParticleTypes.EXPLOSION_LARGE.getParticleID(), 0.0, 1.0, 0.0, 0.1, 36, 0);
+                Main.PACKET_HANDLER.sendToAll(ring);
                 for (int i = 0;i<6;i++){
-                    for (int l = 0;l<6;l++){
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_LARGE,centerX,centerY,centerZ,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
-                    }
                     world.addWeatherEffect(new EntityLightningBolt(world,centerX,centerY,centerZ,true));
                 }
             } else {
@@ -334,68 +285,18 @@ public class SaDomainSuppression extends SpecialAttackBase {
                         a+=36;
                     }
                     // 当前目标的粒子与闪电
-                    a = 0f;
-                    radius = 1f;
-                    for (int i = 0;i < 20;i++){
-                        double px = cx + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = cy + 0.1d;
-                        double pz = cz + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.5,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.5));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = cx + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = cy + 0.1d;
-                        double pz = cz + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.3,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.3));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = cx + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = cy + 0.1d;
-                        double pz = cz + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.2,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.2));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = cx + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = cy + 0.1d;
-                        double pz = cz + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = cx + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = cy + 2d;
-                        double pz = cz + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.5,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.5));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = cx + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = cy + 2d;
-                        double pz = cz + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.3,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.3));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = cx + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = cy + 2d;
-                        double pz = cz + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.2,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.2));
-                        a+=18;
-                    }
-                    for (int i = 0;i < 20;i++){
-                        double px = cx + (Math.cos(Math.toRadians(a)))*radius;
-                        double py = cy + 2d;
-                        double pz = cz + ((Math.sin(Math.toRadians(a)))*radius);
-                        Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,px,py,pz,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
-                        a+=18;
-                    }
+                    MessageSpawnParticleRing ring = new MessageSpawnParticleRing(cx, cy, cz, 0);
+                    ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 0.1, 0.5, 20, 18);
+                    ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 0.1, 0.3, 20, 18);
+                    ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 0.1, 0.2, 20, 18);
+                    ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 0.1, 0.1, 20, 18);
+                    ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 2.0, 0.5, 20, 18);
+                    ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 2.0, 0.3, 20, 18);
+                    ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 2.0, 0.2, 20, 18);
+                    ring.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 1.0, 1.0, 2.0, 0.1, 20, 18);
+                    ring.addGroup(EnumParticleTypes.EXPLOSION_LARGE.getParticleID(), 0.0, 1.0, 0.0, 0.1, 36, 0);
+                    Main.PACKET_HANDLER.sendToAll(ring);
                     for (int i = 0;i<6;i++){
-                        for (int l = 0;l<6;l++){
-                            Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_LARGE,cx,cy,cz,(Math.cos(Math.toRadians(a))) *0.1,0d,((Math.sin(Math.toRadians(a)))*radius) * 0.1));
-                        }
                         world.addWeatherEffect(new EntityLightningBolt(world,cx,cy,cz,true));
                     }
                 }

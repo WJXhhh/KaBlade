@@ -17,12 +17,14 @@ import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.List;
+import java.util.Set;
 
 public class SEOripursuit implements ISpecialEffect, IRemovable {
     @Override
@@ -62,37 +64,14 @@ public class SEOripursuit implements ISpecialEffect, IRemovable {
                     Vec3d vec3d = par3EntityPlayer.getPositionEyes(1.0F);
                     Vec3d vec3d1 = par3EntityPlayer.getLook(1.0F);
                     Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
-                    Entity pointedEntity = null;
-                    List<Entity> list = world.getEntitiesInAABBexcluding(par3EntityPlayer, par3EntityPlayer.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
-                    double d2 = dist;
-                    for (Entity entity1 : list) {
-                        AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
-                        RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(vec3d, vec3d2);
-
-                        if (axisalignedbb.contains(vec3d)) {
-                            if (d2 >= 0.0D) {
-                                pointedEntity = entity1;
-                                d2 = 0.0D;
-                            }
-                        } else if (raytraceresult != null) {
-                            double d3 = vec3d.distanceTo(raytraceresult.hitVec);
-
-                            if (d3 < d2 || d2 == 0.0D) {
-                                if (entity1.getLowestRidingEntity() == par3EntityPlayer.getLowestRidingEntity() && !par3EntityPlayer.canRiderInteract()) {
-                                    if (d2 == 0.0D) {
-                                        pointedEntity = entity1;
-                                    }
-                                } else {
-                                    pointedEntity = entity1;
-                                    d2 = d3;
-                                }
-                            }
-                        }
-                    }
-                    if (pointedEntity != null) {
-                        if (pointedEntity instanceof EntityLivingBase) {
-                            if (!world.isRemote) {
-                                addPursuitTargetToPlayer(par3EntityPlayer, pointedEntity);
+                    AxisAlignedBB searchBox = par3EntityPlayer.getEntityBoundingBox()
+                            .grow(1.0D, 1.0D, 1.0D)
+                            .union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D));
+                    List<Entity> list = world.getEntitiesInAABBexcluding(par3EntityPlayer, searchBox, Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+                    if (!world.isRemote) {
+                        for (Entity e : list) {
+                            if (e instanceof EntityLivingBase) {
+                                addPursuitTargetToPlayer(par3EntityPlayer, e);
                             }
                         }
                     }
@@ -107,8 +86,7 @@ public class SEOripursuit implements ISpecialEffect, IRemovable {
                 if (!EntityUUIDManager.hasUUID(e)) {
                     EntityUUIDManager.addRandomUUIDTOEntity(e);
                 }
-                KaBladePlayerProp.getPropCompound(p).setString(KaBladePlayerProp.LOCKING_ENTITY_UUID, EntityUUIDManager.getEntityUUID(e));
-                KaBladePlayerProp.getPropCompound(p).setInteger(KaBladePlayerProp.LOCKING_ENTITY_LEFT_TIME, 600);
+                KaBladePlayerProp.addLockedTarget(KaBladePlayerProp.getPropCompound(p), EntityUUIDManager.getEntityUUID(e));
                 if (!p.world.isRemote) {
                     KaBladePlayerProp.updateNBTForClient(p);
                     KaBladeEntityProperties.updateNBTForClient(e);
@@ -122,16 +100,11 @@ public class SEOripursuit implements ISpecialEffect, IRemovable {
         if (event.phase == TickEvent.Phase.END) {
             EntityPlayer p = event.player;
             if (!p.world.isRemote) {
-                if (KaBladePlayerProp.getPropCompound(p).getInteger(KaBladePlayerProp.LOCKING_ENTITY_LEFT_TIME) > 0) {
-                    KaBladeEntityProperties.doIntegerLower(KaBladePlayerProp.getPropCompound(p), KaBladePlayerProp.LOCKING_ENTITY_LEFT_TIME);
+                NBTTagCompound prop = KaBladePlayerProp.getPropCompound(p);
+                if (KaBladePlayerProp.hasAnyLockedTarget(prop)) {
+                    KaBladePlayerProp.tickAllLockedTimers(prop);
+                    KaBladePlayerProp.removeStaleTargets(prop, p.world);
                     KaBladePlayerProp.updateNBTForClient(p);
-                }
-                if (KaBladePlayerProp.getPropCompound(p).hasKey(KaBladePlayerProp.LOCKING_ENTITY_UUID)) {
-                    if (EntityUUIDManager.getEntitiesFromUUID(KaBladePlayerProp.getPropCompound(p).getString(KaBladePlayerProp.LOCKING_ENTITY_UUID), p.world).isEmpty() || KaBladePlayerProp.getPropCompound(p).getInteger(KaBladePlayerProp.LOCKING_ENTITY_LEFT_TIME) <= 0) {
-                        KaBladePlayerProp.getPropCompound(p).removeTag(KaBladePlayerProp.LOCKING_ENTITY_UUID);
-                        KaBladePlayerProp.getPropCompound(p).setInteger(KaBladePlayerProp.LOCKING_ENTITY_LEFT_TIME, 0);
-                        KaBladePlayerProp.updateNBTForClient(p);
-                    }
                 }
             }
         }
@@ -143,10 +116,9 @@ public class SEOripursuit implements ISpecialEffect, IRemovable {
             if (entity != null && player != null) {
                 if (entity instanceof EntityLivingBase) {
                     EntityLivingBase target = (EntityLivingBase) entity;
-                    if (!target.world.isRemote) {
-                        List<Entity> l = EntityUUIDManager.getEntitiesFromUUID(KaBladePlayerProp.getPropCompound(player).getString(KaBladePlayerProp.LOCKING_ENTITY_UUID), player.world);
-                        if (l.contains(target)) {
-                            //target.attackEntityFrom(DamageSource.causePlayerDamage(p),2f);
+                    if (!target.world.isRemote && EntityUUIDManager.hasUUID(target)) {
+                        Set<String> locked = KaBladePlayerProp.getLockedUUIDs(KaBladePlayerProp.getPropCompound(player));
+                        if (locked.contains(EntityUUIDManager.getEntityUUID(target))) {
                             float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(stack.getTagCompound()),3);
                             EntitySummonedSwordBase sword = new EntitySummonedSwordBase(target.world, player, 4);
                             sword.setColor(65535);
