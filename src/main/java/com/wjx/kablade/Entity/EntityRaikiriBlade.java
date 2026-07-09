@@ -10,9 +10,10 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+
+import com.wjx.kablade.util.I18nUtil;
 
 import java.util.List;
 
@@ -134,12 +135,12 @@ public class EntityRaikiriBlade extends AbsEntityShield {
                 if (this.thrower instanceof EntityPlayer){
                     if (blood <= 0){
                         if (!world.isRemote){
-                            ((EntityPlayer) this.thrower).sendStatusMessage(new TextComponentString("§b" + I18n.translateToLocal("msg.raikiri_shield_crash")),true);
+                            ((EntityPlayer) this.thrower).sendStatusMessage(new TextComponentString("§b" + I18nUtil.translate("msg.raikiri_shield_crash")),true);
                         }
                     }
                     else {
                         if(!world.isRemote)
-                        ((EntityPlayer) this.thrower).sendStatusMessage(new TextComponentString("§b" + I18n.translateToLocal("msg.raikiri_shield_blood") + blood),true);
+                        ((EntityPlayer) this.thrower).sendStatusMessage(new TextComponentString("§b" + I18nUtil.translate("msg.raikiri_shield_blood") + blood),true);
                     }
                 }
             }

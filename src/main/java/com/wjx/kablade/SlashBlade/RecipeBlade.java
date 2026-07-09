@@ -145,20 +145,20 @@ public class RecipeBlade extends ShapedOreRecipe {
 
                     Map<Enchantment, Integer> newItemEnchants = EnchantmentHelper.getEnchantments(result);
                     Map<Enchantment, Integer> oldItemEnchants = EnchantmentHelper.getEnchantments(curIs);
-                    Iterator var9 = oldItemEnchants.keySet().iterator();
+                    Iterator<Enchantment> var9 = oldItemEnchants.keySet().iterator();
 
                     while(var9.hasNext()) {
-                        Enchantment enchantIndex = (Enchantment)var9.next();
+                        Enchantment enchantIndex = var9.next();
                         Enchantment enchantment = enchantIndex;
-                        int destLevel = newItemEnchants.containsKey(enchantIndex) ? (Integer)newItemEnchants.get(enchantIndex) : 0;
-                        int srcLevel = (Integer)oldItemEnchants.get(enchantIndex);
+                        int destLevel = newItemEnchants.containsKey(enchantIndex) ? newItemEnchants.get(enchantIndex) : 0;
+                        int srcLevel = oldItemEnchants.get(enchantIndex);
                         srcLevel = Math.max(srcLevel, destLevel);
                         boolean canApplyFlag = enchantIndex.canApply(result);
                         if (canApplyFlag) {
-                            Iterator var15 = newItemEnchants.keySet().iterator();
+                            Iterator<Enchantment> var15 = newItemEnchants.keySet().iterator();
 
                             while(var15.hasNext()) {
-                                Enchantment curEnchantIndex = (Enchantment)var15.next();
+                                Enchantment curEnchantIndex = var15.next();
                                 if (curEnchantIndex != enchantIndex && !enchantment.isCompatibleWith(curEnchantIndex)) {
                                     canApplyFlag = false;
                                     break;

@@ -21,7 +21,7 @@ public class RenderEntityDriveAdd extends Render<EntityDriveAdd> {
 
     public void doRender(EntityDriveAdd entity, double d0, double d1, double d2, float f, float f1) {
         if (entity instanceof EntityDriveAdd) {
-            this.doDriveRender((EntityDriveAdd)entity, d0, d1, d2, f, f1);
+            this.doDriveRender(entity, d0, d1, d2, f, f1);
         }
 
     }

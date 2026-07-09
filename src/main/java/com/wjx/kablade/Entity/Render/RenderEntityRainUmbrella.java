@@ -87,7 +87,7 @@ public class RenderEntityRainUmbrella extends Render<EntityRainUmbrella> {
         if (entity.ticksExisted > START_TICK) {
             // 计算特效进度
             float effectTicks = entity.ticksExisted+partialTicks - START_TICK;
-            float progress = Math.min(1.0F, (float)effectTicks / DURATION);
+            float progress = Math.min(1.0F, effectTicks / DURATION);
 
             // 如果特效已结束，不再渲染
             if (progress >= 1.0F) {

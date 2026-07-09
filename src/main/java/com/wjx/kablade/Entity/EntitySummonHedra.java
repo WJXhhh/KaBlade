@@ -29,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -180,7 +181,7 @@ public class EntitySummonHedra extends Entity implements IThrowableEntity {
         list.removeAll(this.alreadyHitEntity);
         double tmpDistance = reachMin;
         EntityLivingBase viewer = owner instanceof EntityLivingBase ? (EntityLivingBase)owner : null;
-        Iterator var18 = list.iterator();
+        Iterator<Entity> var18 = list.iterator();
 
         while(true) {
             Entity entity;
@@ -194,7 +195,7 @@ public class EntitySummonHedra extends Entity implements IThrowableEntity {
                                         return pointedEntity;
                                     }
 
-                                    entity = (Entity)var18.next();
+                                    entity = var18.next();
                                 } while(entity == null);
                             } while(!entity.canBeCollidedWith());
                         } while(!EntitySelectorAttackable.getInstance().apply(entity));
@@ -386,13 +387,10 @@ public class EntitySummonHedra extends Entity implements IThrowableEntity {
         Entity entity = null;
         AxisAlignedBB bb = this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).grow(1.0D, 1.0D, 1.0D);
         AxisAlignedBB bb2 = this.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D);
-        Predicate<Entity>[] selectors = new Predicate[]{EntitySelectorDestructable.getInstance(), EntitySelectorAttackable.getInstance()};
-        Predicate[] var8 = selectors;
-        int var9 = selectors.length;
+        List<Predicate<Entity>> selectors = Arrays.asList(EntitySelectorDestructable.getInstance(), EntitySelectorAttackable.getInstance());
 
-        for(int var10 = 0; var10 < var9; ++var10) {
-            Predicate<Entity> selector = var8[var10];
-            List list = this.world.getEntitiesInAABBexcluding(this, bb, selector);
+        for (Predicate<Entity> selector : selectors) {
+            List<Entity> list = this.world.getEntitiesInAABBexcluding(this, bb, selector);
             list.removeAll(this.alreadyHitEntity);
             if (selector.equals(EntitySelectorAttackable.getInstance()) && this.getTargetEntityId() != 0) {
                 Entity target = this.world.getEntityByID(this.getTargetEntityId());
@@ -624,10 +622,10 @@ public class EntitySummonHedra extends Entity implements IThrowableEntity {
         AxisAlignedBB bb = this.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D);
         List<Entity> list = this.world.getEntitiesInAABBexcluding(this, bb, EntitySelectorAttackable.getInstance());
         list.removeAll(this.alreadyHitEntity);
-        Iterator var3 = list.iterator();
+        Iterator<Entity> var3 = list.iterator();
 
         while(var3.hasNext()) {
-            Entity target = (Entity)var3.next();
+            Entity target = var3.next();
             if (this.blade.isEmpty()) {
                 break;
             }

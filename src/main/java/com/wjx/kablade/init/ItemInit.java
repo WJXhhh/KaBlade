@@ -2,6 +2,7 @@ package com.wjx.kablade.init;
 
 import com.wjx.kablade.objects.items.ItemBase;
 import com.wjx.kablade.objects.items.NormalTools;
+import com.wjx.kablade.util.I18nUtil;
 import com.wjx.kablade.util.KaBladeEntityProperties;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -14,7 +15,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 
@@ -37,21 +37,21 @@ public class ItemInit {
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.translateToLocal("info.item.gravity_nugget"));
+            tooltip.add(I18nUtil.translate("info.item.gravity_nugget"));
         }
     };
     public static Item GRAVITY_CRYSTAL = new ItemBase("gravity_crystal",TABKABLADE){
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.translateToLocal("info.item.gravity_crystal"));
+            tooltip.add(I18nUtil.translate("info.item.gravity_crystal"));
         }
     };
     public static Item AURORA_FRAGMENT =new ItemBase("aurora_fragment",TABKABLADE){
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.translateToLocal("info.item.aurora_fragment"));
+            tooltip.add(I18nUtil.translate("info.item.aurora_fragment"));
         }
     };
 
@@ -59,7 +59,7 @@ public class ItemInit {
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.translateToLocal("info.item.thunder_crystal"));
+            tooltip.add(I18nUtil.translate("info.item.thunder_crystal"));
         }
 
         @Nonnull
@@ -92,7 +92,7 @@ public class ItemInit {
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.translateToLocal("info.item.electro_signet"));
+            tooltip.add(I18nUtil.translate("info.item.electro_signet"));
         }
     };
 
@@ -101,7 +101,7 @@ public class ItemInit {
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.translateToLocal("info.item.petal"));
+            tooltip.add(I18nUtil.translate("info.item.petal"));
         }
 
         @Override
@@ -116,14 +116,14 @@ public class ItemInit {
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.translateToLocal("info.item.chromoly_ingot"));
+            tooltip.add(I18nUtil.translate("info.item.chromoly_ingot"));
         }
     };;
     public static Item AURORA_METAL_INGOT = new ItemBase("aurora_metal_ingot",TABKABLADE){
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
             super.addInformation(stack, worldIn, tooltip, flagIn);
-            tooltip.add(I18n.translateToLocal("info.item.aurora_metal_ingot"));
+            tooltip.add(I18nUtil.translate("info.item.aurora_metal_ingot"));
         }
     };
 

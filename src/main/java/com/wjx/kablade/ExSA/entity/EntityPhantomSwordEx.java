@@ -152,10 +152,10 @@ public class EntityPhantomSwordEx extends EntitySummonedSword {
                 StylishRankManager.setNextAttackType(this.thrower, StylishRankManager.AttackTypes.DestructObject);
                 list.removeAll(this.alreadyHitEntity);
                 this.alreadyHitEntity.addAll(list);
-                Iterator i$ = list.iterator();
+                Iterator<Entity> i$ = list.iterator();
 
                 while(i$.hasNext()) {
-                    Entity curEntity = (Entity)i$.next();
+                    Entity curEntity = i$.next();
                     boolean isDestruction = true;
                     if (curEntity instanceof EntityFireball) {
                         if (((EntityFireball)curEntity).shootingEntity != null && ((EntityFireball)curEntity).shootingEntity.getEntityId() == entityLiving.getEntityId()) {
@@ -211,7 +211,7 @@ public class EntityPhantomSwordEx extends EntitySummonedSword {
             Vec3d vec3 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
             double d0 = 10.0D;
             Entity hitEntity = null;
-            Iterator i$ = list.iterator();
+            Iterator<Entity> i$ = list.iterator();
 
             while(true) {
                 Entity curEntity;
@@ -263,7 +263,7 @@ public class EntityPhantomSwordEx extends EntitySummonedSword {
                             return;
                         }
 
-                        curEntity = (Entity)i$.next();
+                        curEntity = i$.next();
                     } while(!curEntity.canBeCollidedWith());
 
                     var4 = curEntity.getDistance(this);

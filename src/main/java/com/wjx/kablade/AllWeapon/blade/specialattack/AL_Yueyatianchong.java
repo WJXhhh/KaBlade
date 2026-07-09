@@ -25,7 +25,7 @@ public class AL_Yueyatianchong extends SpecialAttackBase {
 
             ItemSlashBlade blade = (ItemSlashBlade)((Object)itemStack.getItem());
             float baseModif = blade.getBaseAttackModifiers(tag);
-            int level = EnchantmentHelper.getEnchantmentLevel( Enchantments.POWER, (ItemStack)itemStack);
+            int level = EnchantmentHelper.getEnchantmentLevel( Enchantments.POWER, itemStack);
             float magicDamage ;
             magicDamage = (baseModif+ MathFunc.amplifierCalc(baseModif,4f));
             float[] speeds = new float[]{0.25f, 0.3f, 0.35f, 0.4f, 0.45f};

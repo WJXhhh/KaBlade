@@ -30,6 +30,7 @@ public class Item_AwNamed extends ItemSlashBladeNamed {
     }
 
     @Override
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void addInformationSwordClass(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         if (par1ItemStack.getTagCompound() != null && par1ItemStack.hasTagCompound() && par1ItemStack.getTagCompound().hasKey("allweapon") && par1ItemStack.getTagCompound().getCompoundTag("allweapon").getInteger("OverLimi") > 0) {
             NBTTagCompound alTag = par1ItemStack.getTagCompound().getCompoundTag("allweapon");

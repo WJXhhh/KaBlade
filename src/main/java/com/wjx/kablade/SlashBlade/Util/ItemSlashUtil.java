@@ -28,6 +28,11 @@ public class ItemSlashUtil {
 
     public void registerBlade(Item blade){
         ModelLoader.setCustomModelResourceLocation(blade, 0, modelLoc);
+        registerTESRForBlade(blade);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void registerTESRForBlade(Item blade) {
         ForgeHooksClient.registerTESRItemStack(blade, 0, DummyTileEntity.class);
     }
 

@@ -23,6 +23,7 @@ import static org.spongepowered.asm.mixin.injection.callback.LocalCapture.CAPTUR
 @Mixin(value = ItemSlashBlade.class,remap = false)
 public abstract class MixinItemSlashBladeDoAttack1 {
     @Inject(method = "doAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;attackEntityFrom(Lnet/minecraft/util/DamageSource;F)Z", ordinal = 0, shift = At.Shift.AFTER), locals = CAPTURE_FAILSOFT,remap = false)
+    @SuppressWarnings("rawtypes")
     public void doAttack(ItemStack stack, ItemSlashBlade.ComboSequence comboSeq, EntityPlayer player, CallbackInfo ci, World world, NBTTagCompound tag, EnumSet<ItemSlashBlade.SwordType> swordType, long currentTime, AxisAlignedBB bb, int rank, List<Entity> list, Iterator var12, Entity curEntity) {
         if (curEntity != null){
             for (BladeAttackEvent event : BladeAttackEventManager.events){

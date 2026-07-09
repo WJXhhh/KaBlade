@@ -4,6 +4,7 @@ import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorDestructable;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -64,10 +65,10 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
                 StylishRankManager.setNextAttackType(this.thrower, StylishRankManager.AttackTypes.DestructObject);
                 list.removeAll(this.alreadyHitEntity);
                 this.alreadyHitEntity.addAll(list);
-                Iterator i$ = list.iterator();
+                Iterator<Entity> i$ = list.iterator();
 
                 while(i$.hasNext()) {
-                    Entity curEntity = (Entity)i$.next();
+                    Entity curEntity = i$.next();
                     boolean isDestruction = true;
                     if (curEntity instanceof EntityFireball) {
                         if (((EntityFireball)curEntity).shootingEntity != null && ((EntityFireball)curEntity).shootingEntity.getEntityId() == entityLiving.getEntityId()) {
@@ -124,7 +125,7 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
             Vec3d vec3 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
             double d0 = 10.0D;
             Entity hitEntity = null;
-            Iterator i$ = list.iterator();
+            Iterator<Entity> i$ = list.iterator();
 
             while(true) {
                 Entity curEntity;
@@ -144,8 +145,10 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
                             int nPosY = MathHelper.floor(this.posY);
                             int nPosZ = MathHelper.floor(this.posZ);
                             if (this.ridingEntity2 == null) {
-                                Block nBlock = this.world.getBlockState(new BlockPos(nPosX, nPosY, nPosZ)).getBlock();
-                                if (!(nBlock == Blocks.AIR) && nBlock.getCollisionBoundingBox(this.world.getBlockState(new BlockPos(nPosX, nPosY, nPosZ)),this.world,new BlockPos(nPosX, nPosY, nPosZ)) != null) {
+                                BlockPos pos = new BlockPos(nPosX, nPosY, nPosZ);
+                                IBlockState state = this.world.getBlockState(pos);
+                                Block nBlock = state.getBlock();
+                                if (!(nBlock == Blocks.AIR) && state.getCollisionBoundingBox(this.world, pos) != null) {
                                     this.setDead();
                                     return;
                                 }
@@ -167,7 +170,7 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
                             return;
                         }
 
-                        curEntity = (Entity)i$.next();
+                        curEntity = i$.next();
                     } while(!curEntity.canBeCollidedWith());
 
                     var4 = (double)curEntity.getDistance(this);
