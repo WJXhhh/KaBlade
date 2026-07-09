@@ -27,3 +27,5 @@ forge*changelog.txt
 .vscode/settings.json
 /gg.ps1
 /opencode.json
+/AGENTS.md
+.opencode
