@@ -21,18 +21,26 @@ public final class SaTargeting {
     }
 
     public static boolean canDamage(Entity owner, LivingEntity target) {
-        if (!testBasicAttackable(owner, target))
-            return false;
-        if (target instanceof Player && filtersPlayers()) {
+        if(!isAllUseTargetSelector()){
+            if (!testBasicAttackable(owner, target))
+                return false;
+            if (target instanceof Player && filtersPlayers()) {
+                return false;
+            }
+            if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
+                return false;
+            }
+            if (protectsTamedPets() && isProtectedTamedPet(owner, target)) {
+                return false;
+            }
+            return scoreboardAllowsDamage(owner, target);
+        }
+        else {
+            if(testBasicAttackable(owner, target)){
+                return SLASHBLADE_ATTACKABLE.test(target);
+            }
             return false;
         }
-        if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
-            return false;
-        }
-        if (protectsTamedPets() && isProtectedTamedPet(owner, target)) {
-            return false;
-        }
-        return scoreboardAllowsDamage(owner, target);
     }
 
     private static boolean testBasicAttackable(Entity owner,LivingEntity target) {
@@ -43,18 +51,10 @@ public final class SaTargeting {
     }
 
     public static boolean canDamageAttackable(Entity owner, LivingEntity target) {
-        if(!isAllUseTargetSelector()){
-            if (!canDamage(owner, target)) {
-                return false;
-            }
-            return target instanceof Mob || target instanceof Player || SLASHBLADE_ATTACKABLE.test(target);
-        }else {
-            if(testBasicAttackable(owner, target)){
-                return SLASHBLADE_ATTACKABLE.test(target);
-            }
+        if (!canDamage(owner, target)) {
+            return false;
         }
-        return false;
-
+        return target instanceof Mob || target instanceof Player || SLASHBLADE_ATTACKABLE.test(target);
     }
 
     private static boolean filtersPlayers() {

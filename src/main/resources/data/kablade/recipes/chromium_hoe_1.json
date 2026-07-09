@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "group": "kablade",
-  "pattern": [" 11", " 2 ", " 2 "],
+  "pattern": ["11 ", " 2 ", " 2 "],
   "key": {
-    "1": { "item": "kablade:chromoly_ingot" },
+    "1": { "item": "kablade:chromium_ingot" },
     "2": { "item": "minecraft:stick" }
   },
-  "result": { "item": "kablade:chromoly_hoe" }
+  "result": { "item": "kablade:chromium_hoe" }
 }
