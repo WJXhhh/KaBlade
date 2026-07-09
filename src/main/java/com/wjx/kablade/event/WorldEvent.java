@@ -563,7 +563,7 @@ public class WorldEvent {
                         Vec3d vec3d1 = player.getLook(1.0F);
                         Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
                         List<Entity> pointedEntity = Lists.newArrayList();
-                        List<Entity> list = world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+                        List<Entity> list = world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D).union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D)), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
                         double d2 = dist;
                         for (Entity entity1 : list) {
                             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
@@ -1054,8 +1054,8 @@ public class WorldEvent {
         if (entity.posX == 0 && entity.posY == 0 && entity.posZ == 0)
             return;
         Minecraft mc = Minecraft.getMinecraft();
-        if (KaBladePlayerProp.getPropCompound(mc.player).hasKey(KaBladePlayerProp.LOCKING_ENTITY_UUID)) {
-            if (EntityUUIDManager.getEntitiesFromUUID(KaBladePlayerProp.getPropCompound(mc.player).getString(KaBladePlayerProp.LOCKING_ENTITY_UUID), mc.player.world).contains(entity)) {
+        Set<String> lockedUuids = KaBladePlayerProp.getLockedUUIDs(KaBladePlayerProp.getPropCompound(mc.player));
+        if (!lockedUuids.isEmpty() && EntityUUIDManager.hasUUID(entity) && lockedUuids.contains(EntityUUIDManager.getEntityUUID(entity))) {
                 GlStateManager.disableLighting();
                 GlStateManager.enableBlend();
                 GlStateManager.pushMatrix();
@@ -1086,7 +1086,6 @@ public class WorldEvent {
                 GlStateManager.disableBlend();
                 GlStateManager.enableLighting();
 
-            }
         }
         if (KaBladeEntityProperties.getPropCompound(entity).getInteger(KaBladeEntityProperties.FALLING_PETALS) > 0) {
             GlStateManager.disableLighting();
