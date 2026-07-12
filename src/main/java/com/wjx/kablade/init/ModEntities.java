@@ -218,6 +218,18 @@ public final class ModEntities {
                     .noSave()
                     .build("crimson_sakura"));
 
+    /** Visual and multi-hit timeline anchor for Ruinous Sakura's Bloodfyre Frenzy. */
+    public static final RegistryObject<EntityType<BloodfyreFrenzyEntity>> BLOODFYRE_FRENZY = REGISTRY.register(
+            "bloodfyre_frenzy",
+            () -> EntityType.Builder.<BloodfyreFrenzyEntity>of(BloodfyreFrenzyEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(16)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("bloodfyre_frenzy"));
+
     /** 「风之结界」光环实体。 */
     public static final RegistryObject<EntityType<TunaEntity>> TUNA = REGISTRY.register(
             "tuna",

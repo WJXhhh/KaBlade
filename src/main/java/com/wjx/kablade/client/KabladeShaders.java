@@ -21,6 +21,11 @@ public final class KabladeShaders {
     private static ShaderInstance zaizan;
     private static ShaderInstance utpalaAura;
     private static ShaderInstance swordEnlightenment;
+    private static ShaderInstance bloodfyreFrenzy;
+    private static ShaderInstance bloodfyreRupture;
+    private static ShaderInstance bloodfyreSmoke;
+    private static ShaderInstance bloodfyreScar;
+    private static ShaderInstance bloodfyreParticle;
 
     private KabladeShaders() {
     }
@@ -57,6 +62,31 @@ public final class KabladeShaders {
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "sword_enlightenment"),
                         DefaultVertexFormat.POSITION_COLOR_TEX),
                 shader -> swordEnlightenment = shader);
+        event.registerShader(new ShaderInstance(
+                        event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "bloodfyre_frenzy"),
+                        DefaultVertexFormat.POSITION_COLOR_TEX),
+                shader -> bloodfyreFrenzy = shader);
+        event.registerShader(new ShaderInstance(
+                        event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "bloodfyre_rupture"),
+                        DefaultVertexFormat.POSITION_COLOR_TEX),
+                shader -> bloodfyreRupture = shader);
+        event.registerShader(new ShaderInstance(
+                        event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "bloodfyre_smoke"),
+                        DefaultVertexFormat.POSITION_COLOR_TEX),
+                shader -> bloodfyreSmoke = shader);
+        event.registerShader(new ShaderInstance(
+                        event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "bloodfyre_scar"),
+                        DefaultVertexFormat.POSITION_COLOR_TEX),
+                shader -> bloodfyreScar = shader);
+        event.registerShader(new ShaderInstance(
+                        event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "bloodfyre_particle"),
+                        DefaultVertexFormat.POSITION_COLOR_TEX),
+                shader -> bloodfyreParticle = shader);
     }
 
     public static ShaderInstance stageLight() {
@@ -81,5 +111,25 @@ public final class KabladeShaders {
 
     public static ShaderInstance swordEnlightenment() {
         return swordEnlightenment;
+    }
+
+    public static ShaderInstance bloodfyreFrenzy() {
+        return bloodfyreFrenzy;
+    }
+
+    public static ShaderInstance bloodfyreRupture() {
+        return bloodfyreRupture;
+    }
+
+    public static ShaderInstance bloodfyreSmoke() {
+        return bloodfyreSmoke;
+    }
+
+    public static ShaderInstance bloodfyreScar() {
+        return bloodfyreScar;
+    }
+
+    public static ShaderInstance bloodfyreParticle() {
+        return bloodfyreParticle;
     }
 }

@@ -68,7 +68,9 @@ public final class ThunderEdgeAttackRenderer extends EntityRenderer<ThunderEdgeA
         float life = Math.max(1.0F, entity.getLifetime());
         float progress = Mth.clamp(age / life, 0.0F, 1.0F);
         float open = smootherStep(Mth.clamp(age / 7.0F, 0.0F, 1.0F));
-        float fade = 1.0F - smootherStep(Mth.clamp((progress - 0.45F) / 0.55F, 0.0F, 1.0F));
+        // Leave enough time for the crescent and flashes to dissolve instead of
+        // disappearing on the same tick that the server removes the anchor.
+        float fade = 1.0F - smootherStep(Mth.clamp((progress - 0.52F) / 0.48F, 0.0F, 1.0F));
         float alpha = open * fade;
         if (alpha <= 0.01F) {
             return;

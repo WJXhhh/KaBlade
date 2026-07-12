@@ -24,6 +24,16 @@ public final class KabladeRenderTypes extends RenderType {
             new RenderStateShard.ShaderStateShard(KabladeShaders::utpalaAura);
     private static final RenderStateShard.ShaderStateShard SWORD_ENLIGHTENMENT_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::swordEnlightenment);
+    private static final RenderStateShard.ShaderStateShard BLOODFYRE_FRENZY_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::bloodfyreFrenzy);
+    private static final RenderStateShard.ShaderStateShard BLOODFYRE_RUPTURE_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::bloodfyreRupture);
+    private static final RenderStateShard.ShaderStateShard BLOODFYRE_SMOKE_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::bloodfyreSmoke);
+    private static final RenderStateShard.ShaderStateShard BLOODFYRE_SCAR_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::bloodfyreScar);
+    private static final RenderStateShard.ShaderStateShard BLOODFYRE_PARTICLE_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::bloodfyreParticle);
 
     private static final RenderType INDUCTION_COLLAPSE = create(
             "kablade_induction_collapse",
@@ -99,6 +109,160 @@ public final class KabladeRenderTypes extends RenderType {
             "kablade_sword_enlightenment_fallback",
             131072,
             LIGHTNING_TRANSPARENCY);
+
+    private static final RenderType BLOODFYRE_FRENZY = create(
+            "kablade_bloodfyre_frenzy",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            262144,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(BLOODFYRE_FRENZY_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType BLOODFYRE_BLADE_DARK = create(
+            "kablade_bloodfyre_blade_dark",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            262144,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(BLOODFYRE_FRENZY_SHADER)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType BLOODFYRE_SMOKE = create(
+            "kablade_bloodfyre_smoke",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            131072,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(BLOODFYRE_SMOKE_SHADER)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType BLOODFYRE_VOLUME = create(
+            "kablade_bloodfyre_volume",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            262144,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(BLOODFYRE_RUPTURE_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType BLOODFYRE_SMOKE_VOLUME = create(
+            "kablade_bloodfyre_smoke_volume",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            131072,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(BLOODFYRE_SCAR_SHADER)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType BLOODFYRE_SCAR_GLOW = create(
+            "kablade_bloodfyre_scar_glow",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            131072,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(BLOODFYRE_SCAR_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType BLOODFYRE_PARTICLE = create(
+            "kablade_bloodfyre_particle",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            131072,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(BLOODFYRE_PARTICLE_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType BLOODFYRE_FRENZY_FALLBACK = shaderFallback(
+            "kablade_bloodfyre_frenzy_fallback",
+            FALLBACK_TEXTURE,
+            262144,
+            LIGHTNING_TRANSPARENCY);
+
+    private static final RenderType BLOODFYRE_BLADE_DARK_FALLBACK = shaderFallback(
+            "kablade_bloodfyre_blade_dark_fallback", FALLBACK_TEXTURE, 262144, TRANSLUCENT_TRANSPARENCY);
+
+    private static final RenderType BLOODFYRE_SMOKE_FALLBACK = shaderFallback(
+            "kablade_bloodfyre_smoke_fallback",
+            FALLBACK_TEXTURE,
+            131072,
+            TRANSLUCENT_TRANSPARENCY);
+
+    private static final RenderType BLOODFYRE_VOLUME_FALLBACK = bloodfyreVolumeFallback(
+            "kablade_bloodfyre_volume_fallback", 262144, TRANSLUCENT_TRANSPARENCY);
+
+    private static final RenderType BLOODFYRE_SMOKE_VOLUME_FALLBACK = bloodfyreVolumeFallback(
+            "kablade_bloodfyre_smoke_volume_fallback", 131072, TRANSLUCENT_TRANSPARENCY);
+
+    private static final RenderType BLOODFYRE_SCAR_GLOW_FALLBACK = shaderFallback(
+            "kablade_bloodfyre_scar_glow_fallback", FALLBACK_TEXTURE, 131072, TRANSLUCENT_TRANSPARENCY);
+
+    private static final RenderType BLOODFYRE_PARTICLE_FALLBACK = shaderFallback(
+            "kablade_bloodfyre_particle_fallback", FALLBACK_TEXTURE, 131072, TRANSLUCENT_TRANSPARENCY);
+
+    // A second, low-alpha pass through Minecraft's stock textured/additive shader.
+    // Shader packs recognize this path more reliably than KBlade's analytic shaders.
+    private static final RenderType BLOODFYRE_VANILLA_GLOW = shaderFallback(
+            "kablade_bloodfyre_vanilla_glow", FALLBACK_TEXTURE, 262144, LIGHTNING_TRANSPARENCY);
+
+    // Shader-pack-safe path: no texture sampling and no QUADS conversion. Explicit
+    // triangles avoid the per-quad diagonal seams produced by some Oculus pipelines.
+    private static final RenderType BLOODFYRE_SHADER_PACK_FALLBACK = create(
+            "kablade_bloodfyre_shader_pack_fallback",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.TRIANGLES,
+            262144,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
 
     private static final RenderType STAGE_LIGHT = create(
             "kablade_stage_light",
@@ -270,6 +434,54 @@ public final class KabladeRenderTypes extends RenderType {
         return useShaderFallbackTextures() ? SWORD_ENLIGHTENMENT_FALLBACK : SWORD_ENLIGHTENMENT;
     }
 
+    public static RenderType bloodfyreFrenzy() {
+        return useShaderFallbackTextures() ? BLOODFYRE_FRENZY_FALLBACK : BLOODFYRE_FRENZY;
+    }
+
+    public static RenderType bloodfyreBlade() {
+        return bloodfyreFrenzy();
+    }
+
+    public static RenderType bloodfyreBladeDark() {
+        return useShaderFallbackTextures() ? BLOODFYRE_BLADE_DARK_FALLBACK : BLOODFYRE_BLADE_DARK;
+    }
+
+    public static RenderType bloodfyreRupture() {
+        return useShaderFallbackTextures() ? BLOODFYRE_VOLUME_FALLBACK : BLOODFYRE_VOLUME;
+    }
+
+    public static RenderType bloodfyreSmoke() {
+        return useShaderFallbackTextures() ? BLOODFYRE_SMOKE_FALLBACK : BLOODFYRE_SMOKE;
+    }
+
+    public static RenderType bloodfyreVolume() {
+        return useShaderFallbackTextures() ? BLOODFYRE_VOLUME_FALLBACK : BLOODFYRE_VOLUME;
+    }
+
+    public static RenderType bloodfyreSmokeVolume() {
+        return useShaderFallbackTextures() ? BLOODFYRE_SMOKE_VOLUME_FALLBACK : BLOODFYRE_SMOKE_VOLUME;
+    }
+
+    public static RenderType bloodfyreScar() {
+        return bloodfyreSmokeVolume();
+    }
+
+    public static RenderType bloodfyreScarGlow() {
+        return useShaderFallbackTextures() ? BLOODFYRE_SCAR_GLOW_FALLBACK : BLOODFYRE_SCAR_GLOW;
+    }
+
+    public static RenderType bloodfyreParticle() {
+        return useShaderFallbackTextures() ? BLOODFYRE_PARTICLE_FALLBACK : BLOODFYRE_PARTICLE;
+    }
+
+    public static RenderType bloodfyreVanillaGlow() {
+        return BLOODFYRE_VANILLA_GLOW;
+    }
+
+    public static RenderType bloodfyreShaderPackFallback() {
+        return BLOODFYRE_SHADER_PACK_FALLBACK;
+    }
+
     public static boolean useShaderFallbackTextures() {
         return ShaderCompat.shouldUseOculusPostPath();
     }
@@ -316,6 +528,20 @@ public final class KabladeRenderTypes extends RenderType {
         CompositeState state = CompositeState.builder()
                 .setShaderState(POSITION_COLOR_TEX_SHADER)
                 .setTextureState(new TextureStateShard(texture, false, false))
+                .setTransparencyState(transparency)
+                .setDepthTestState(LEQUAL_DEPTH_TEST)
+                .setCullState(NO_CULL)
+                .setWriteMaskState(COLOR_WRITE)
+                .createCompositeState(false);
+        return create(name, DefaultVertexFormat.POSITION_COLOR_TEX,
+                VertexFormat.Mode.QUADS, bufferSize, false, true, state);
+    }
+
+    private static RenderType bloodfyreVolumeFallback(String name, int bufferSize,
+                                                       RenderStateShard.TransparencyStateShard transparency) {
+        CompositeState state = CompositeState.builder()
+                .setShaderState(POSITION_COLOR_TEX_SHADER)
+                .setTextureState(new TextureStateShard(FALLBACK_TEXTURE, false, false))
                 .setTransparencyState(transparency)
                 .setDepthTestState(LEQUAL_DEPTH_TEST)
                 .setCullState(NO_CULL)

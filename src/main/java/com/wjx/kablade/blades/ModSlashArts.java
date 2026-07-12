@@ -5,6 +5,7 @@ import com.wjx.kablade.init.ModComboStates;
 import com.wjx.kablade.slasharts.AbsoluteZeroArts;
 import com.wjx.kablade.slasharts.AuroraShiningArts;
 import com.wjx.kablade.slasharts.BladeWardArts;
+import com.wjx.kablade.slasharts.BloodfyreFrenzyArts;
 import com.wjx.kablade.slasharts.BreakTheDawnArts;
 import com.wjx.kablade.slasharts.ChopWillowArts;
 import com.wjx.kablade.slasharts.CrimsonSakuraArts;
@@ -129,6 +130,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> CRIMSON_SAKURA = REGISTRY.register(
             "crimson_sakura",
             () -> new CrimsonSakuraArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> BLOODFYRE_FRENZY = REGISTRY.register(
+            "bloodfyre_frenzy",
+            () -> new BloodfyreFrenzyArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> LETHAL_THRUST = REGISTRY.register(
             "lethal_thrust",

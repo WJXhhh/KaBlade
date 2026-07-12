@@ -56,12 +56,17 @@ public class SwordEnlightenmentEntity extends Entity {
     }
 
     public static SwordEnlightenmentEntity spawn(ServerLevel level, LivingEntity owner, float baseDamage) {
+        return spawn(level, owner, baseDamage, owner.position());
+    }
+
+    public static SwordEnlightenmentEntity spawn(ServerLevel level, LivingEntity owner,
+                                                 float baseDamage, Vec3 attackPosition) {
         SwordEnlightenmentEntity entity = new SwordEnlightenmentEntity(ModEntities.SWORD_ENLIGHTENMENT.get(), level);
         entity.owner = owner;
         entity.baseDamage = baseDamage;
         entity.setOwnerId(owner.getId());
         entity.setLifetime(LIFETIME);
-        entity.setPos(owner.getX(), owner.getY(), owner.getZ());
+        entity.setPos(attackPosition.x, attackPosition.y, attackPosition.z);
         entity.setYRot(owner.getYRot());
         entity.yRotO = owner.yRotO;
         level.addFreshEntity(entity);
@@ -104,10 +109,6 @@ public class SwordEnlightenmentEntity extends Entity {
             return;
         }
 
-        if (this.tickCount <= 7) {
-            followOwner(source);
-        }
-
         ServerLevel level = (ServerLevel) this.level();
         playTimelineSounds(level);
         spawnTimelineParticles(level);
@@ -129,12 +130,6 @@ public class SwordEnlightenmentEntity extends Entity {
             return living;
         }
         return null;
-    }
-
-    private void followOwner(LivingEntity source) {
-        this.setPos(source.getX(), source.getY(), source.getZ());
-        this.yRotO = this.getYRot();
-        this.setYRot(source.getYRot());
     }
 
     private void playTimelineSounds(ServerLevel level) {

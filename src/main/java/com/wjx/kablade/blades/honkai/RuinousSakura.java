@@ -36,7 +36,7 @@ public class RuinousSakura extends BladeDefineBase {
                         .baseAttackModifier(34.0F)
                         .maxDamage(1200)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .slashArtsType(ModSlashArts.CRIMSON_SAKURA.getId())
+                        .slashArtsType(ModSlashArts.BLOODFYRE_FRENZY.getId())
                         .build(),
                 List.of(
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "fire_aspect"), 5),

@@ -12,13 +12,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import com.wjx.kablade.util.SATool;
 
-import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -45,7 +42,7 @@ public final class AbsoluteZeroArts extends SlashArts {
 
         ServerLevel level = (ServerLevel) user.level();
         ItemStack blade = user.getMainHandItem();
-        LivingEntity target = raycastTarget(level, user);
+        LivingEntity target = SATool.getEntityInSight(user, RAY_DISTANCE);
 
         if (target != null) {
             if (user instanceof Player player) {
@@ -85,51 +82,4 @@ public final class AbsoluteZeroArts extends SlashArts {
         }
     }
 
-    private static LivingEntity raycastTarget(ServerLevel level, LivingEntity user) {
-        Vec3 eye = user.getEyePosition();
-        Vec3 look = user.getLookAngle();
-        Vec3 end = eye.add(look.scale(RAY_DISTANCE));
-        AABB scanBox = user.getBoundingBox()
-                .expandTowards(look.scale(RAY_DISTANCE))
-                .inflate(1.0D, 1.0D, 1.0D);
-
-        List<LivingEntity> candidates = level.getEntitiesOfClass(
-                LivingEntity.class, scanBox, e -> canBeFrozenTarget(user, e));
-
-        LivingEntity pointed = null;
-        double closestDistance = RAY_DISTANCE;
-
-        for (LivingEntity candidate : candidates) {
-            AABB box = candidate.getBoundingBox().inflate(candidate.getPickRadius());
-            var hit = box.clip(eye, end);
-
-            if (box.contains(eye)) {
-                if (closestDistance >= 0.0D) {
-                    pointed = candidate;
-                    closestDistance = 0.0D;
-                }
-            } else if (hit.isPresent()) {
-                double distance = eye.distanceTo(hit.get());
-                if (distance < closestDistance || closestDistance == 0.0D) {
-                    if (candidate.getRootVehicle() == user.getRootVehicle() && !user.canRiderInteract()) {
-                        if (closestDistance == 0.0D) {
-                            pointed = candidate;
-                        }
-                    } else {
-                        pointed = candidate;
-                        closestDistance = distance;
-                    }
-                }
-            }
-        }
-
-        return pointed;
-    }
-
-    private static boolean canBeFrozenTarget(LivingEntity user, LivingEntity entity) {
-        if (!entity.isPickable() || !SaTargeting.canDamage(user, entity)) {
-            return false;
-        }
-        return entity instanceof Mob || entity instanceof Player;
-    }
 }

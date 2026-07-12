@@ -40,6 +40,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.FENGXUAN_DIMENSION.get(), FengxuanDimensionRenderer::new);
         event.registerEntityRenderer(ModEntities.ZAIZAN.get(), ZaizanRenderer::new);
         event.registerEntityRenderer(ModEntities.CRIMSON_SAKURA.get(), CrimsonSakuraRenderer::new);
+        event.registerEntityRenderer(ModEntities.BLOODFYRE_FRENZY.get(), BloodfyreFrenzyRenderer::new);
         event.registerEntityRenderer(ModEntities.TUNA.get(), TunaRenderer::new);
         event.registerEntityRenderer(ModEntities.RAIN_UMBRELLA.get(), RainUmbrellaRenderer::new);
         event.registerEntityRenderer(ModEntities.SUMMONED_HEDRA.get(), SummonedHedraRenderer::new);

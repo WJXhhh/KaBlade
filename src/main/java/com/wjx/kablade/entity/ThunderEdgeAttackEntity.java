@@ -22,6 +22,8 @@ public class ThunderEdgeAttackEntity extends Entity {
     public ThunderEdgeAttackEntity(EntityType<? extends ThunderEdgeAttackEntity> type, Level level) {
         super(type, level);
         this.noPhysics = true;
+        // The rendered crescent is much larger than the registry hitbox.
+        this.noCulling = true;
         this.setNoGravity(true);
     }
 

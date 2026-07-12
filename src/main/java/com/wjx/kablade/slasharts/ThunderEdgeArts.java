@@ -25,7 +25,7 @@ import java.util.function.Function;
 /** Thunder Edge, ported from 1.12.2 {@code HonkaiThunderEdge}. */
 public final class ThunderEdgeArts extends SlashArts {
 
-    private static final int VISUAL_LIFETIME = 24;
+    private static final int VISUAL_LIFETIME = 30;
     private static final double RANGE = 6.5D;
     private static final double HORIZONTAL_PADDING = 3.0D;
     private static final double VERTICAL_PADDING = 1.3D;
