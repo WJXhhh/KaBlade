@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.BloodfyreFrenzyEntity;
+import com.wjx.kablade.specialeffect.FuelTheRuin;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -40,6 +41,9 @@ public final class BloodfyreFrenzyArts extends SlashArts {
                 * DAMAGE_MULTIPLIER;
 
         BloodfyreFrenzyEntity.spawn(level, user, damage);
+        if (user instanceof net.minecraft.world.entity.player.Player player) {
+            FuelTheRuin.trigger(player);
+        }
         blade.hurtAndBreak(3, user, entity -> entity.broadcastBreakEvent(user.getUsedItemHand()));
 
         level.playSound(null, user.getX(), user.getY() + 1.0D, user.getZ(),

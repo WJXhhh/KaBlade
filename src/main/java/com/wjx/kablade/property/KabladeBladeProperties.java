@@ -1,6 +1,8 @@
 package com.wjx.kablade.property;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.init.KabladeCapabilities;
+import com.wjx.kablade.specialeffect.FuelTheRuin;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -76,6 +78,15 @@ public final class KabladeBladeProperties {
                 .displayName(Component.translatable("prop.kablade.foresight").withStyle(ChatFormatting.LIGHT_PURPLE))
                 .capabilityKey("foresight")
                 .maxValue(3)
+                .build());
+
+        PlayerPropertyRegistry.register(PlayerProperty.builder("fuel_the_ruin")
+                .displayName(Component.translatable("prop.kablade.fuel_the_ruin"))
+                .intValue(player -> player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                        .map(data -> data.get(FuelTheRuin.HUD_BLEEDING_KEY) > 0
+                                ? 100 : data.get(FuelTheRuin.HUD_BUFF_KEY))
+                        .orElse(0))
+                .maxValue(100)
                 .build());
     }
 }

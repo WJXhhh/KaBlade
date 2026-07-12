@@ -2,6 +2,7 @@ package com.wjx.kablade.blades.honkai;
 
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
+import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.item.SwordType;
@@ -37,6 +38,7 @@ public class RuinousSakura extends BladeDefineBase {
                         .maxDamage(1200)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ModSlashArts.BLOODFYRE_FRENZY.getId())
+                        .addSpecialEffect(ModSpecialEffects.FUEL_THE_RUIN.getId())
                         .build(),
                 List.of(
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "fire_aspect"), 5),

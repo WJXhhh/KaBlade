@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.api.CustomBladeModel;
 import com.wjx.kablade.object.item.ElectroSignetItem;
+import com.wjx.kablade.object.item.PetalItem;
 import com.wjx.kablade.object.item.ordinary.ItemBase;
 import com.wjx.kablade.object.item.KbladeBladeItem;
 import com.wjx.kablade.util.creative_tab.CreativeTabBuilder;
@@ -83,6 +84,8 @@ public final class ModItems {
             "thunder_crystal", () -> new com.wjx.kablade.object.item.ThunderCrystalItem(new Item.Properties()), Main.TAB_KABLADE);
     public static final RegistryObject<Item> ELECTRO_SIGNET = registerItem(
             "electro_signet", () -> new ElectroSignetItem(new Item.Properties()), Main.TAB_KABLADE);
+    public static final RegistryObject<Item> PETAL = registerItem(
+            "petal", () -> new PetalItem(new Item.Properties()), Main.TAB_KABLADE);
     public static final RegistryObject<Item> IRON_COIL = registerItemBase("iron_coil", Main.TAB_KABLADE);
 
     // ─── Aurora Metal ──────────────────────────────────────────────

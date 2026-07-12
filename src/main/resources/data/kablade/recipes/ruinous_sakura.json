@@ -1,0 +1,35 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:ruinous_sakura",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:cherry_leaves"
+    },
+    "B": {
+      "item": "kablade:superconducting_metal"
+    },
+    "C": {
+      "item": "kablade:petal"
+    },
+    "D": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:florid_sakura"
+      }
+    },
+    "E": {
+      "item": "minecraft:magma_block"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EEE"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

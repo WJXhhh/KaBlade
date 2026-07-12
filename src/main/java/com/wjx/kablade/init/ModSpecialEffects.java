@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.specialeffect.BurstDrive;
 import com.wjx.kablade.specialeffect.DivinePenalty;
 import com.wjx.kablade.specialeffect.EMInduction;
+import com.wjx.kablade.specialeffect.FuelTheRuin;
 import com.wjx.kablade.specialeffect.GlacialBane;
 import com.wjx.kablade.specialeffect.HolyEnergyImpact;
 import com.wjx.kablade.specialeffect.Oripursuit;
@@ -68,6 +69,9 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> TRUE_SELF = REGISTRY.register(
             "true_self", TrueSelf::new);
+
+    public static final RegistryObject<SpecialEffect> FUEL_THE_RUIN = REGISTRY.register(
+            "fuel_the_ruin", FuelTheRuin::new);
 
     private ModSpecialEffects() {
     }

@@ -1,6 +1,8 @@
 package com.wjx.kablade.property;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.init.KabladeCapabilities;
+import com.wjx.kablade.specialeffect.FuelTheRuin;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -78,6 +80,12 @@ public final class PlayerPropertyOverlay {
                 text = Component.literal("")
                         .append(prop.displayName())
                         .append(Component.literal(": " + val).withStyle(ChatFormatting.AQUA));
+            } else if (prop.id().equals("fuel_the_ruin")) {
+                boolean bleeding = player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
+                        .map(data -> data.get(FuelTheRuin.HUD_BLEEDING_KEY) > 0)
+                        .orElse(false);
+                text = buildCdText(prop.displayName().copy().withStyle(
+                        bleeding ? ChatFormatting.DARK_RED : ChatFormatting.RED), val, prop.maxValue());
             } else {
                 text = buildCdText(prop.displayName(), val, prop.maxValue());
             }
