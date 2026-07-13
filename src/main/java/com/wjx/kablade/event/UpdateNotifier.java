@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 public final class UpdateNotifier {
 
     /** 下载/介绍页地址；附一行可点击链接。留空则不显示链接行。 */
-    private static final String DOWNLOAD_URL = "https://www.mcmod.cn/download/8128.html";
+    private static final String DOWNLOAD_URL = "https://www.mcmod.cn/class/28013.html";
 
     private static boolean shown = false;
 
