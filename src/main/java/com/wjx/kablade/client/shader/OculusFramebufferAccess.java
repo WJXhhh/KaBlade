@@ -3,6 +3,9 @@ package com.wjx.kablade.client.shader;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -12,13 +15,13 @@ import java.util.Optional;
 import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
-final class OculusFramebufferAccess {
+public final class OculusFramebufferAccess {
     private static final int MAX_SCAN_DEPTH = 4;
 
     private OculusFramebufferAccess() {
     }
 
-    static Optional<SkillShaderTarget> findTranslucentTarget() {
+    public static Optional<SkillShaderTarget> findTranslucentTarget() {
         Optional<Object> pipeline = findPipeline();
         if (pipeline.isEmpty()) {
             return Optional.empty();
@@ -53,7 +56,72 @@ final class OculusFramebufferAccess {
             return Optional.empty();
         }
 
-        return extractTarget(framebuffer.get(), findRenderTargets(pipeline), true);
+        Optional<Object> renderTargets = findRenderTargets(pipeline);
+        Optional<SkillShaderTarget> attached = extractAttachedTarget(framebuffer.get(), renderTargets);
+        return attached.isPresent() ? attached : extractTarget(framebuffer.get(), renderTargets, true);
+    }
+
+    /**
+     * Oculus' GlFramebuffer exposes its id and color attachments but deliberately hides the
+     * depth attachment. Querying the live FBO is both narrower and more reliable than walking
+     * arbitrary private pipeline fields, especially across Iris/Oculus minor releases.
+     */
+    private static Optional<SkillShaderTarget> extractAttachedTarget(Object framebuffer,
+                                                                      Optional<Object> renderTargets) {
+        Optional<Integer> framebufferId = readInt(framebuffer,
+                "getId", "getGlId", "getGlFramebuffer", "getFramebufferId", "frameBufferId", "id");
+        Optional<Integer> colorTextureId = readIntWithIntArg(framebuffer, 0, "getColorAttachment")
+                .or(() -> readInt(framebuffer,
+                        "getColorTextureId", "getColorTexture", "colorTexture", "colorTextureId"));
+        if (framebufferId.isEmpty() || colorTextureId.isEmpty()) {
+            return Optional.empty();
+        }
+
+        int previousDrawFramebuffer = GL11.glGetInteger(GL30.GL_DRAW_FRAMEBUFFER_BINDING);
+        int previousReadFramebuffer = GL11.glGetInteger(GL30.GL_READ_FRAMEBUFFER_BINDING);
+        int depthTextureId;
+        try {
+            GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferId.get());
+            int objectType = GL30.glGetFramebufferAttachmentParameteri(
+                    GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT,
+                    GL30.GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
+            if (objectType != GL11.GL_TEXTURE) {
+                return Optional.empty();
+            }
+            depthTextureId = GL30.glGetFramebufferAttachmentParameteri(
+                    GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT,
+                    GL30.GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME);
+        } finally {
+            GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, previousDrawFramebuffer);
+            GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, previousReadFramebuffer);
+        }
+        if (depthTextureId <= 0) {
+            return Optional.empty();
+        }
+
+        int width = renderTargets.flatMap(targets -> readInt(targets, "getCurrentWidth", "cachedWidth"))
+                .orElseGet(() -> textureSize(colorTextureId.get(), GL11.GL_TEXTURE_WIDTH));
+        int height = renderTargets.flatMap(targets -> readInt(targets, "getCurrentHeight", "cachedHeight"))
+                .orElseGet(() -> textureSize(colorTextureId.get(), GL11.GL_TEXTURE_HEIGHT));
+        if (width <= 0 || height <= 0) {
+            width = Minecraft.getInstance().getWindow().getWidth();
+            height = Minecraft.getInstance().getWindow().getHeight();
+        }
+        return Optional.of(new SkillShaderTarget(
+                framebufferId.get(), colorTextureId.get(), depthTextureId, width, height, true));
+    }
+
+    private static int textureSize(int textureId, int parameter) {
+        int previousActiveTexture = GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE);
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        int previousTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+        try {
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
+            return GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, parameter);
+        } finally {
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, previousTexture);
+            GL13.glActiveTexture(previousActiveTexture);
+        }
     }
 
     private static Optional<Object> findRenderTargets(Object pipeline) {

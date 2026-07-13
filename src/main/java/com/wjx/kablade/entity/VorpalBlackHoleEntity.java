@@ -42,6 +42,9 @@ public class VorpalBlackHoleEntity extends Entity {
             SynchedEntityData.defineId(VorpalBlackHoleEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_PULSE_DAMAGE =
             SynchedEntityData.defineId(VorpalBlackHoleEntity.class, EntityDataSerializers.FLOAT);
+    /** Client-visible owner reference used only to anchor deterministic blade trails. */
+    private static final EntityDataAccessor<Integer> DATA_OWNER_ID =
+            SynchedEntityData.defineId(VorpalBlackHoleEntity.class, EntityDataSerializers.INT);
 
     private static final int OPENING_TICK = 16;
     private static final int FIRST_PULSE_TICK = 24;
@@ -69,6 +72,7 @@ public class VorpalBlackHoleEntity extends Entity {
         this(ModEntities.VORPAL_BLACK_HOLE.get(), level);
         this.owner = owner;
         this.ownerUUID = owner.getUUID();
+        this.entityData.set(DATA_OWNER_ID, owner.getId());
         this.setPos(pos.x, pos.y, pos.z);
         this.setYRot(owner.getYRot());
         this.setLifetime(lifetime);
@@ -89,6 +93,7 @@ public class VorpalBlackHoleEntity extends Entity {
         this.entityData.define(DATA_LIFETIME, 56);
         this.entityData.define(DATA_OPENING_DAMAGE, 0.0F);
         this.entityData.define(DATA_PULSE_DAMAGE, 0.0F);
+        this.entityData.define(DATA_OWNER_ID, -1);
     }
 
     public int getLifetime() {
@@ -117,6 +122,18 @@ public class VorpalBlackHoleEntity extends Entity {
 
     public void setPulseDamage(float damage) {
         this.entityData.set(DATA_PULSE_DAMAGE, Math.max(0.0F, damage));
+    }
+
+    public LivingEntity getOwnerEntity() {
+        if (this.owner != null && !this.owner.isRemoved()) {
+            return this.owner;
+        }
+        Entity entity = this.level().getEntity(this.entityData.get(DATA_OWNER_ID));
+        if (entity instanceof LivingEntity living) {
+            this.owner = living;
+            return living;
+        }
+        return null;
     }
 
     @Override
@@ -158,6 +175,7 @@ public class VorpalBlackHoleEntity extends Entity {
             Entity entity = level.getEntity(this.ownerUUID);
             if (entity instanceof LivingEntity living) {
                 this.owner = living;
+                this.entityData.set(DATA_OWNER_ID, living.getId());
             }
         }
     }
@@ -193,7 +211,7 @@ public class VorpalBlackHoleEntity extends Entity {
                 continue;
             }
             target.invulnerableTime = 0;
-            if (com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, this.getOpeningDamage())) {
+            if (com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, this, this.owner, this.getOpeningDamage())) {
                 Vec3 pull = this.position().subtract(target.position())
                         .multiply(0.08, 0.0, 0.08);
                 target.setDeltaMovement(pull.x, 0.28, pull.z);
@@ -211,7 +229,7 @@ public class VorpalBlackHoleEntity extends Entity {
         DamageSource source = damageSource(level);
         for (LivingEntity target : targets(level, DAMAGE_RADIUS * (0.88 + pulseIndex * 0.025))) {
             target.invulnerableTime = 0;
-            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, this.getPulseDamage());
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, this, this.owner, this.getPulseDamage());
             Vec3 toCenter = this.position().subtract(target.position());
             if (toCenter.lengthSqr() > 1.0E-5) {
                 Vec3 pull = toCenter.normalize().scale(0.16 + pulseIndex * 0.018);

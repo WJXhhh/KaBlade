@@ -11,6 +11,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -131,7 +132,7 @@ public class RaikiriShieldEntity extends Entity {
                 e -> e != this && e instanceof LivingEntity living
                         && SaTargeting.canDamageAttackable(this.thrower, living))) {
             if (e instanceof LivingEntity target) {
-                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, src, contactDamage);
+                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, (ServerLevel) this.level(), this, this.thrower, contactDamage);
             }
         }
     }

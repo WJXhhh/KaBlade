@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.wjx.kablade.client.KabladeRenderTypes;
-import com.wjx.kablade.client.shader.OculusSkillRenderer;
 import com.wjx.kablade.entity.ShockImpactEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -57,9 +56,8 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
     @Override
     public void render(ShockImpactEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if (!KabladeRenderTypes.useShaderFallbackTextures()
-                && OculusSkillRenderer.runIfNeeded(immediate ->
-                render(entity, entityYaw, partialTick, poseStack, immediate, packedLight))) {
+        if (KabladeRenderTypes.useShaderFallbackTextures()
+                && ShockImpactOculusPipeline.enqueue(entity, partialTick)) {
             return;
         }
 
@@ -163,6 +161,115 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
         fallbackSpeedLines(vc, mat, age, sweep, alpha, spark);
         fallbackFragments(vc, mat, age, sweep, alpha, spark);
         fallbackEnergyShards(vc, mat, age, sweep, alpha, spark);
+    }
+
+    /** Safe stock-shader fallback used if the dedicated Oculus target is unavailable. */
+    static void renderOculusFallback(MultiBufferSource buffer, Matrix4f mat,
+                                     float age, float lifetime) {
+        VisualState state = visualState(age, lifetime);
+        if (state == null) {
+            return;
+        }
+        renderShaderFallback(buffer.getBuffer(KabladeRenderTypes.shockImpactLines()),
+                mat, age, state.sweep(), state.alpha(), state.spark());
+    }
+
+    /** Full-detail Oculus color pass: vanilla parity first, then shader-pack-only accents. */
+    static void renderOculusColor(ShockImpactOculusPipeline.DrawContext context, Matrix4f mat,
+                                  float age, float lifetime) {
+        VisualState state = visualState(age, lifetime);
+        if (state == null) {
+            return;
+        }
+        float alpha = state.alpha();
+        float sweep = state.sweep();
+        float spark = state.spark();
+        float progress = state.progress();
+        context.draw(vc -> {
+            for (int i = AFTERIMAGE_COUNT - 1; i >= 0; i--) {
+                float imageAlpha = alpha * (0.075F + i * 0.026F) * (1.0F - progress * 0.50F);
+                bladeTrail(vc, mat, sweep, 0.88F + i * 0.08F, imageAlpha, 1.0F,
+                        MAIN_THICKNESS * 0.50F, -0.06F - i * 0.045F, -0.035F - i * 0.024F);
+            }
+            bladeTrail(vc, mat, sweep, 0.98F, alpha * 0.18F, 1.0F,
+                    MAIN_THICKNESS * 0.58F, -0.12F, -0.035F);
+            bladeTrail(vc, mat, sweep, 0.74F, alpha * 0.72F, 1.0F,
+                    MAIN_THICKNESS, 0.0F, 0.0F);
+            bladeTrail(vc, mat, sweep, 0.30F, alpha, 2.2F,
+                    MAIN_THICKNESS * 0.54F, -0.045F, 0.0F);
+            bladeTrail(vc, mat, sweep, 0.17F, alpha * 0.60F, 2.2F,
+                    MAIN_THICKNESS * 0.32F, 0.075F, 0.0F);
+            bladeTrail(vc, mat, sweep, 0.076F, alpha, 3.4F,
+                    MAIN_THICKNESS * 0.18F, -0.085F, 0.0F);
+            bladeTrail(vc, mat, sweep, 0.042F, alpha * 0.78F, 3.4F,
+                    MAIN_THICKNESS * 0.14F, 0.105F, 0.0F);
+            edgeFlare(vc, mat, sweep, alpha * (0.72F + spark * 0.35F));
+            speedLines(vc, mat, age, sweep, alpha, spark);
+            fragments(vc, mat, age, sweep, alpha, spark);
+            energyShards(vc, mat, age, sweep, alpha, spark);
+
+            // Shader-pack-only reinforcement: broad echoes keep the original crescent silhouette.
+            bladeTrail(vc, mat, sweep, 1.22F, alpha * 0.11F, 1.0F,
+                    MAIN_THICKNESS * 0.42F, -0.24F, -0.080F);
+            bladeTrail(vc, mat, sweep, 1.38F, alpha * 0.075F, 1.0F,
+                    MAIN_THICKNESS * 0.34F, -0.36F, -0.135F);
+            enhancedSpeedLines(vc, mat, age, sweep, alpha, spark);
+            enhancedFragments(vc, mat, age, sweep, alpha, spark);
+            enhancedShards(vc, mat, age, sweep, alpha, spark);
+            enhancedTipBurst(vc, mat, sweep, alpha, spark);
+        });
+    }
+
+    /** Bright subsets only; the pipeline blurs this pass at two different radii. */
+    static void renderOculusGlow(ShockImpactOculusPipeline.DrawContext context, Matrix4f mat,
+                                 float age, float lifetime) {
+        VisualState state = visualState(age, lifetime);
+        if (state == null) {
+            return;
+        }
+        float alpha = state.alpha();
+        float sweep = state.sweep();
+        float spark = state.spark();
+        context.draw(vc -> {
+            bladeTrail(vc, mat, sweep, 0.32F, alpha * 0.56F, 2.2F,
+                    MAIN_THICKNESS * 0.46F, -0.045F, 0.0F);
+            bladeTrail(vc, mat, sweep, 0.082F, alpha * 0.82F, 3.4F,
+                    MAIN_THICKNESS * 0.18F, -0.085F, 0.0F);
+            edgeFlare(vc, mat, sweep, alpha * (0.68F + spark * 0.30F));
+            speedLines(vc, mat, age, sweep, alpha * 0.25F, spark);
+            energyShards(vc, mat, age, sweep, alpha * 0.32F, spark);
+            enhancedSpeedLines(vc, mat, age, sweep, alpha * 0.46F, spark);
+            enhancedFragments(vc, mat, age, sweep, alpha * 0.34F, spark);
+            enhancedShards(vc, mat, age, sweep, alpha * 0.52F, spark);
+            enhancedTipBurst(vc, mat, sweep, alpha * 0.90F, spark);
+        });
+    }
+
+    static float oculusScale(float age, float lifetime, float entityScale) {
+        VisualState state = visualState(age, lifetime);
+        return state == null ? entityScale : entityScale * (0.94F + state.sweep() * 0.14F);
+    }
+
+    static float oculusVerticalOffset(float age, float lifetime) {
+        VisualState state = visualState(age, lifetime);
+        return -0.18F + (state == null ? 0.0F : state.spark() * 0.08F);
+    }
+
+    private static VisualState visualState(float age, float lifetime) {
+        float life = Math.max(1.0F, lifetime);
+        float progress = Mth.clamp(age / life, 0.0F, 1.0F);
+        float open = smootherStep(Mth.clamp(age / 2.6F, 0.0F, 1.0F));
+        float fade = 1.0F - smootherStep(Mth.clamp((progress - 0.50F) / 0.50F, 0.0F, 1.0F));
+        float alpha = open * fade;
+        if (alpha <= 0.004F) {
+            return null;
+        }
+        float sweep = smootherStep(Mth.clamp((age - 0.35F) / 6.4F, 0.0F, 1.0F));
+        float spark = Mth.sin(Mth.clamp((age - 1.0F) / 9.0F, 0.0F, 1.0F) * Mth.PI);
+        return new VisualState(progress, sweep, spark, alpha);
+    }
+
+    private record VisualState(float progress, float sweep, float spark, float alpha) {
     }
 
     private static void fallbackTrail(VertexConsumer vc, Matrix4f mat, float sweep, float width,
@@ -532,6 +639,109 @@ public final class ShockImpactRenderer extends EntityRenderer<ShockImpactEntity>
             float a = alpha * (1.0F - smootherStep(life)) * (0.30F + deterministic(i, 29.8F) * 0.42F);
             diamond(vc, mat, px, py, pz, size, age * 0.18F + i * 0.91F, a);
         }
+    }
+
+    private static void enhancedSpeedLines(VertexConsumer vc, Matrix4f mat, float age, float sweep,
+                                           float alpha, float spark) {
+        float visibleEnd = visibleEnd(sweep);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
+        for (int n = 0; n < 8; n++) {
+            int i = SPEED_LINE_COUNT + n;
+            float t = Mth.clamp(0.24F + deterministic(i, 31.7F) * 0.72F, 0.0F, visibleEnd);
+            frame(t, w, b);
+            Vector3f c = center(t);
+            Vector3f tan = sweepTangent(t);
+            float sideSign = (n & 1) == 0 ? -1.0F : 1.0F;
+            float side = sideSign * RIBBON_HALFWIDTH
+                    * (0.90F + deterministic(i, 32.9F) * 0.62F);
+            float drift = Mth.frac(age * 0.112F + deterministic(i, 34.2F));
+            float length = 0.92F + deterministic(i, 35.6F) * 1.34F + spark * 0.72F;
+            float width = 0.012F + deterministic(i, 36.8F) * 0.016F;
+            float px = c.x + w.x * side + tan.x * drift * 0.58F;
+            float py = c.y + w.y * side + tan.y * drift * 0.58F;
+            float pz = c.z + w.z * side + tan.z * drift * 0.58F;
+            float a = alpha * (0.34F + spark * 0.30F);
+            quad(vc, mat,
+                    px - tan.x * length + b.x * width, py - tan.y * length + b.y * width,
+                    pz - tan.z * length + b.z * width, 6.0F, 0.0F, a * 0.16F,
+                    px + tan.x * length * 0.26F + b.x * width, py + tan.y * length * 0.26F + b.y * width,
+                    pz + tan.z * length * 0.26F + b.z * width, 7.0F, 0.0F, a,
+                    px + tan.x * length * 0.26F - b.x * width, py + tan.y * length * 0.26F - b.y * width,
+                    pz + tan.z * length * 0.26F - b.z * width, 7.0F, 1.0F, a,
+                    px - tan.x * length - b.x * width, py - tan.y * length - b.y * width,
+                    pz - tan.z * length - b.z * width, 6.0F, 1.0F, a * 0.16F);
+        }
+    }
+
+    private static void enhancedFragments(VertexConsumer vc, Matrix4f mat, float age, float sweep,
+                                          float alpha, float spark) {
+        float visibleEnd = visibleEnd(sweep);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
+        for (int n = 0; n < 10; n++) {
+            int i = FRAGMENT_COUNT + n;
+            float t = Mth.clamp(0.30F + deterministic(i, 38.1F) * 0.67F, 0.0F, visibleEnd);
+            float life = Mth.frac(age * 0.068F + deterministic(i, 39.4F));
+            frame(t, w, b);
+            Vector3f c = center(t);
+            float sideSign = (n & 1) == 0 ? -1.0F : 1.0F;
+            float side = sideSign * RIBBON_HALFWIDTH
+                    * (0.74F + deterministic(i, 40.8F) * 0.88F + life * 0.28F);
+            float depth = (deterministic(i, 42.0F) - 0.5F) * 0.48F;
+            float px = c.x + w.x * side + b.x * depth;
+            float py = c.y + w.y * side + b.y * depth + life * 0.10F;
+            float pz = c.z + w.z * side + b.z * depth;
+            float size = 0.028F + deterministic(i, 43.5F) * 0.070F;
+            float a = alpha * (1.0F - smootherStep(life)) * (0.42F + spark * 0.18F);
+            square(vc, mat, px, py, pz, size, age * 0.13F + i * 0.83F, a);
+        }
+    }
+
+    private static void enhancedShards(VertexConsumer vc, Matrix4f mat, float age, float sweep,
+                                       float alpha, float spark) {
+        float visibleEnd = visibleEnd(sweep);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
+        for (int n = 0; n < 8; n++) {
+            int i = SHARD_COUNT + n;
+            float t = Mth.clamp(0.54F + deterministic(i, 45.1F) * 0.44F, 0.0F, visibleEnd);
+            float life = Mth.frac(age * 0.094F + deterministic(i, 46.6F));
+            frame(t, w, b);
+            Vector3f c = center(t);
+            Vector3f tan = sweepTangent(t);
+            float sideSign = (n & 1) == 0 ? -1.0F : 1.0F;
+            float side = sideSign * RIBBON_HALFWIDTH
+                    * (0.88F + deterministic(i, 48.0F) * 0.72F);
+            float lead = life * (1.05F + deterministic(i, 49.3F) * 1.22F);
+            float depth = (deterministic(i, 50.7F) - 0.5F) * 0.56F;
+            float px = c.x + w.x * side + b.x * depth + tan.x * lead;
+            float py = c.y + w.y * side + b.y * depth + tan.y * lead + 0.12F + life * 0.18F;
+            float pz = c.z + w.z * side + b.z * depth + tan.z * lead;
+            float size = 0.058F + deterministic(i, 52.2F) * 0.092F;
+            float a = alpha * (1.0F - smootherStep(life)) * (0.48F + spark * 0.22F);
+            diamond(vc, mat, px, py, pz, size, age * 0.23F + i * 1.07F, a);
+        }
+    }
+
+    private static void enhancedTipBurst(VertexConsumer vc, Matrix4f mat, float sweep,
+                                         float alpha, float spark) {
+        float t = Mth.clamp(visibleEnd(sweep) - 0.015F, 0.0F, 1.0F);
+        Vector3f w = new Vector3f();
+        Vector3f b = new Vector3f();
+        frame(t, w, b);
+        Vector3f c = center(t);
+        Vector3f tan = sweepTangent(t);
+        float side = RIBBON_HALFWIDTH * trailWidth(t);
+        float px = c.x + w.x * side;
+        float py = c.y + w.y * side;
+        float pz = c.z + w.z * side;
+        float pulse = alpha * (0.54F + spark * 0.70F);
+        float longSize = 0.42F + spark * 0.34F;
+        colorDiamond(vc, mat, px, py, pz, tan, b, longSize, 0.045F,
+                0.72F, 0.98F, 1.0F, pulse);
+        colorDiamond(vc, mat, px, py, pz, w, b, 0.28F + spark * 0.20F, 0.060F,
+                0.92F, 1.0F, 1.0F, pulse * 0.82F);
     }
 
     private static void square(VertexConsumer vc, Matrix4f mat, float x, float y, float z, float size, float rotation,

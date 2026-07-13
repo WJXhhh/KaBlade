@@ -81,7 +81,7 @@ public final class CrimsonSakuraArts extends SlashArts {
                 player.crit(target);
             }
             target.invulnerableTime = 0;
-            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
             target.setSecondsOnFire(4);
             if (!damagedBlade) {
                 blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));

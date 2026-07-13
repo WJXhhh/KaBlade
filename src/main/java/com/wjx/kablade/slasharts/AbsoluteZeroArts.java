@@ -60,7 +60,7 @@ public final class AbsoluteZeroArts extends SlashArts {
             target.invulnerableTime = 0;
             target.addEffect(new MobEffectInstance(ModMobEffects.FREEZE.get(),
                     FREEZE_DURATION, FREEZE_AMPLIFIER));
-            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, source, damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
             target.setTicksFrozen(Math.max(target.getTicksFrozen(),
                     target.getTicksRequiredToFreeze() + FREEZE_DURATION));
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));

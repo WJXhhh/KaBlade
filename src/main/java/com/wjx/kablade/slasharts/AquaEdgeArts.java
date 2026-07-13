@@ -76,8 +76,7 @@ public final class AquaEdgeArts extends SlashArts {
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
                 e -> SaTargeting.canDamageAttackable(user, e));
         for (LivingEntity target : targets) {
-            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
-                    level.damageSources().mobAttack(user), baseAttack);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, baseAttack);
         }
 
         // 鎵囧舰灏勫嚭姘存祦椋炲垉

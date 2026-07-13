@@ -8,6 +8,7 @@ import com.wjx.kablade.client.KabladeRenderTypes;
 import com.wjx.kablade.entity.BloodfyreFrenzyEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
@@ -39,6 +40,11 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
     private static final int PETAL_COUNT = 42;
     private static final int EMBER_COUNT = 34;
     private static final float SCAR_RADIUS = 4.34F;
+    // Deliberately aggressive tuning baseline. Start over-bright, then trim these three
+    // primary emitters in-game without lifting the smoke, charred body or ground scar.
+    private static final float OCULUS_MAIN_BLOOM_ALPHA = 0.56F;
+    private static final float OCULUS_RUPTURE_BLOOM_ALPHA = 0.54F;
+    private static final float OCULUS_ATTACHED_FLAME_BLOOM_ALPHA = 0.38F;
     private static final float[] RUPTURE_ANCHORS = {
             0.05F, 0.13F, 0.22F, 0.31F, 0.41F, 0.52F, 0.63F, 0.73F,
             0.81F, 0.87F, 0.91F, 0.945F, 0.972F
@@ -60,6 +66,14 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
     }
 
     @Override
+    public boolean shouldRender(BloodfyreFrenzyEntity entity, Frustum frustum,
+                                double cameraX, double cameraY, double cameraZ) {
+        // The timeline anchor is tiny, while the visible slash reaches roughly five blocks
+        // from it and rises through the smoke/rupture layer. Cull against the presentation.
+        return frustum.isVisible(entity.getBoundingBox().inflate(6.25D, 4.5D, 6.25D));
+    }
+
+    @Override
     public void render(BloodfyreFrenzyEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         float age = entity.getRenderAge(partialTick);
@@ -76,6 +90,11 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
         boolean shaderFallback = KabladeRenderTypes.useShaderFallbackTextures();
 
         if (shaderFallback) {
+            if (BloodfyreOculusPipeline.enqueue(entity, partialTick)) {
+                poseStack.popPose();
+                super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+                return;
+            }
             renderShaderPackFallback(entity, buffer, matrix, age, seed);
             poseStack.popPose();
             super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
@@ -118,14 +137,83 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
      * buffer and only planar, non-overlapping quads. None of the analytic flame/smoke
      * sheets are submitted because shader packs cannot reproduce their fragment discard.
      */
-    private static void renderShaderPackFallback(BloodfyreFrenzyEntity entity,
-                                                 MultiBufferSource buffer, Matrix4f matrix,
-                                                 float age, int seed) {
+    static void renderShaderPackFallback(BloodfyreFrenzyEntity entity,
+                                         MultiBufferSource buffer, Matrix4f matrix,
+                                         float age, int seed) {
         VertexConsumer vc = buffer.getBuffer(KabladeRenderTypes.bloodfyreShaderPackFallback());
         renderShaderFallbackGuide(vc, matrix, age);
         renderShaderFallbackBlade(vc, matrix, age, seed);
         renderShaderFallbackBurst(vc, matrix, age, seed);
         renderShaderFallbackScar(entity, vc, matrix, age, seed);
+    }
+
+    /** Full-detail color pass used by the frame-level Oculus renderer. */
+    static void renderOculusColor(BloodfyreFrenzyEntity entity, PoseStack poseStack,
+                                  BloodfyreOculusPipeline.DrawContext context,
+                                  float age, int seed) {
+        Matrix4f matrix = poseStack.last().pose();
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.FRENZY,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderGuide(vc, matrix, age, seed));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.FRENZY,
+                BloodfyreOculusPipeline.BlendMode.ALPHA,
+                vc -> renderMainSlash(vc, matrix, age, seed, false));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.RUPTURE,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderRupture(vc, matrix, age, seed, true, false));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.SMOKE,
+                BloodfyreOculusPipeline.BlendMode.ALPHA,
+                vc -> renderSmoke(vc, matrix, age, seed));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.PARTICLE,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderFragments(vc, matrix, age, seed));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.SCAR,
+                BloodfyreOculusPipeline.BlendMode.ALPHA,
+                vc -> renderGroundScarBase(entity, vc, matrix, age, seed));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.SCAR,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderGroundScarHeat(entity, vc, matrix, age, seed));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.RUPTURE,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderAttachedBloodfire(vc, matrix, age, seed, false));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.PARTICLE,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderEmbers(vc, matrix, age, seed));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.PARTICLE,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderPetals(poseStack, vc, age, seed));
+    }
+
+    /** Selected emissive layers; rendered into a separate HDR mask for controlled bloom. */
+    static void renderOculusGlow(BloodfyreFrenzyEntity entity, PoseStack poseStack,
+                                 BloodfyreOculusPipeline.DrawContext context,
+                                 float age, int seed) {
+        Matrix4f matrix = poseStack.last().pose();
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.FRENZY,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderGuide(scaled(vc, 0.20F), matrix, age, seed));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.FRENZY,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderMainSlash(scaled(vc, OCULUS_MAIN_BLOOM_ALPHA), matrix, age, seed, false));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.RUPTURE,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderRupture(scaled(vc, OCULUS_RUPTURE_BLOOM_ALPHA), matrix, age, seed, true, false));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.PARTICLE,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderFragments(scaled(vc, 0.25F), matrix, age, seed));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.SCAR,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderGroundScarHeat(entity, scaled(vc, 0.26F), matrix, age, seed));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.RUPTURE,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderAttachedBloodfire(scaled(vc, OCULUS_ATTACHED_FLAME_BLOOM_ALPHA),
+                        matrix, age, seed, false));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.PARTICLE,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderEmbers(scaled(vc, 0.30F), matrix, age, seed));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.PARTICLE,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderPetals(poseStack, scaled(vc, 0.12F), age, seed));
     }
 
     private static void renderShaderFallbackGuide(VertexConsumer vc, Matrix4f matrix, float age) {
@@ -717,6 +805,61 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
         }
     }
 
+    /** The non-emissive scar layers, split out so the Oculus path can preserve alpha blending. */
+    private static void renderGroundScarBase(BloodfyreFrenzyEntity entity, VertexConsumer scar,
+                                             Matrix4f matrix, float age, int seed) {
+        float alpha = BloodfyreTimeline.scarAlpha(age);
+        if (alpha <= 0.002F) {
+            return;
+        }
+        GroundTrace trace = groundTrace(entity);
+        float head = BloodfyreTimeline.slashProgress(age - 0.10F);
+        float decay = BloodfyreTimeline.smooth((age - 43.0F) / 9.0F);
+        drawGroundArc(scar, matrix, trace, head, 0.205F, alpha * 0.86F,
+                0.08F, 0.004F, 0.012F, 0, seed + 601, decay * 0.72F, 0.004F);
+        drawGroundArc(scar, matrix, trace, head, 0.092F, alpha * 0.94F,
+                0.56F, 0.018F, 0.028F, 1, seed + 607, decay * 0.86F, 0.008F);
+        for (int i = 0; i < BRANCHES.length; i++) {
+            BranchSpec branch = BRANCHES[i];
+            if (head < branch.u + 0.006F) {
+                continue;
+            }
+            float birth = BloodfyreTimeline.slashBirth(branch.u) + 0.20F;
+            float grow = BloodfyreTimeline.smooth((age - birth) / 0.60F);
+            float branchFade = 1.0F - BloodfyreTimeline.smooth((age - 34.0F - i % 3) / 12.0F);
+            drawGroundBranch(scar, matrix, entity, branch, grow,
+                    0.068F, alpha * branchFade,
+                    0.48F, 0.012F, 0.022F, 1, seed + 701 + i * 17);
+        }
+    }
+
+    /** White-hot scar core, kept separate from its black/red base to avoid additive washout. */
+    private static void renderGroundScarHeat(BloodfyreFrenzyEntity entity, VertexConsumer glow,
+                                             Matrix4f matrix, float age, int seed) {
+        float alpha = BloodfyreTimeline.scarAlpha(age);
+        float heat = 1.0F - BloodfyreTimeline.smooth((age - 24.0F) / 9.0F);
+        if (alpha <= 0.002F || heat <= 0.002F) {
+            return;
+        }
+        GroundTrace trace = groundTrace(entity);
+        float head = BloodfyreTimeline.slashProgress(age - 0.10F);
+        float decay = BloodfyreTimeline.smooth((age - 43.0F) / 9.0F);
+        drawGroundArc(glow, matrix, trace, head, 0.026F, alpha * heat,
+                1.0F, 0.36F, 0.065F, 2, seed + 613, decay, 0.012F);
+        for (int i = 5; i < BRANCHES.length; i++) {
+            BranchSpec branch = BRANCHES[i];
+            if (head < branch.u + 0.006F) {
+                continue;
+            }
+            float birth = BloodfyreTimeline.slashBirth(branch.u) + 0.20F;
+            float grow = BloodfyreTimeline.smooth((age - birth) / 0.60F);
+            float branchFade = 1.0F - BloodfyreTimeline.smooth((age - 34.0F - i % 3) / 12.0F);
+            drawGroundBranch(glow, matrix, entity, branch, grow,
+                    0.015F, alpha * heat * branchFade,
+                    1.0F, 0.32F, 0.045F, 2, seed + 811 + i * 19);
+        }
+    }
+
     private static void renderGroundScarVanillaGlow(BloodfyreFrenzyEntity entity, VertexConsumer glow,
                                                      Matrix4f matrix, float age, int seed) {
         float alpha = BloodfyreTimeline.scarAlpha(age);
@@ -847,7 +990,7 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
         int start = Mth.clamp(Mth.floor(fromU * ARC_SEGMENTS), 0, ARC_SEGMENTS - 1);
         int end = Mth.clamp(Mth.ceil(toU * ARC_SEGMENTS), 1, ARC_SEGMENTS);
         boolean layeredBlade = kind <= 2 && outerRadius - innerRadius > 0.30F;
-        int radialSlices = layeredBlade ? (kind == 2 ? 32 : 16) : 1;
+        int radialSlices = layeredBlade ? 32 : 1;
         for (int i = start; i < end; i++) {
             float u0 = Math.max(fromU, i / (float) ARC_SEGMENTS);
             float u1 = Math.min(toU, (i + 1) / (float) ARC_SEGMENTS);
@@ -862,6 +1005,7 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
                 float v0 = slice / (float) radialSlices;
                 float v1 = (slice + 1) / (float) radialSlices;
                 float vCenter = (v0 + v1) * 0.5F;
+                float clippedV0 = v0;
                 float cellGrain = BloodfyreGeometry.deterministic(
                         seed + i * 97 + slice * 29, 9.4F);
                 if (layeredBlade && erosion > 0.08F) {
@@ -887,7 +1031,7 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
                     if (eatenFromInside || perforated) {
                         continue;
                     }
-                } else if (layeredBlade && erosion > 0.03F && vCenter < 0.98F) {
+                } else if (layeredBlade && erosion > 0.03F) {
                     float dissolve = BloodfyreTimeline.smooth((erosion - 0.03F) / 0.95F);
                     float boundaryWave = Mth.sin(i * 0.21F + seed * 0.004F) * 0.055F
                             + Mth.sin(i * 0.47F - seed * 0.002F) * 0.025F;
@@ -895,17 +1039,21 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
                             + boundaryWave * dissolve;
                     float threshold = dissolve * (kind == 1 ? 0.70F : 0.58F)
                             * (0.70F + (1.0F - vCenter) * 0.50F);
-                    if (vCenter < innerBite || cellGrain < threshold) {
+                    // Clip the currently intersected radial cell at the live erosion boundary.
+                    // Deleting only complete cells made 16-frame-sized visual plateaus followed
+                    // by jumps. The boundary now advances inside a cell every rendered frame.
+                    if (v1 <= innerBite || cellGrain < threshold) {
                         continue;
                     }
+                    clippedV0 = Math.max(v0, Mth.clamp(innerBite, 0.0F, v1));
                 }
 
-                float radius00 = Mth.lerp(v0, innerRadius, outerRadius)
-                        + Mth.lerp(v0, -edgeNoise0 * 0.22F, edgeNoise0);
+                float radius00 = Mth.lerp(clippedV0, innerRadius, outerRadius)
+                        + Mth.lerp(clippedV0, -edgeNoise0 * 0.22F, edgeNoise0);
                 float radius01 = Mth.lerp(v1, innerRadius, outerRadius)
                         + Mth.lerp(v1, -edgeNoise0 * 0.22F, edgeNoise0);
-                float radius10 = Mth.lerp(v0, innerRadius, outerRadius)
-                        + Mth.lerp(v0, -edgeNoise1 * 0.22F, edgeNoise1);
+                float radius10 = Mth.lerp(clippedV0, innerRadius, outerRadius)
+                        + Mth.lerp(clippedV0, -edgeNoise1 * 0.22F, edgeNoise1);
                 float radius11 = Mth.lerp(v1, innerRadius, outerRadius)
                         + Mth.lerp(v1, -edgeNoise1 * 0.22F, edgeNoise1);
                 BloodfyreGeometry.Point p00 = BloodfyreGeometry.arc(u0, radius00, yOffset);
@@ -913,7 +1061,7 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
                 BloodfyreGeometry.Point p10 = BloodfyreGeometry.arc(u1, radius10, yOffset);
                 BloodfyreGeometry.Point p11 = BloodfyreGeometry.arc(u1, radius11, yOffset);
                 quad(vc, matrix, p01, u0, v1, p11, u1, v1,
-                        p10, u1, v0, p00, u0, v0,
+                        p10, u1, clippedV0, p00, u0, clippedV0,
                         red, green, blue, alpha, kind);
             }
         }

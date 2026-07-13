@@ -14,6 +14,8 @@ final class BloodfyreTimeline {
     static final float SMOKE_END = 35.0F;
     static final float SCAR_START = 8.7F;
     static final float SCAR_END = 52.0F;
+    static final float MAIN_FADE_START = 29.5F;
+    static final float MAIN_FADE_END = 34.0F;
 
     private BloodfyreTimeline() {
     }
@@ -43,14 +45,17 @@ final class BloodfyreTimeline {
 
     static float mainAlpha(float age) {
         return age < SLASH_START ? 0.0F
-                : age <= 29.5F ? 1.0F
-                : 1.0F - smooth((age - 29.5F) / 4.5F);
+                : age <= MAIN_FADE_START ? 1.0F
+                : 1.0F - smooth((age - MAIN_FADE_START) / (MAIN_FADE_END - MAIN_FADE_START));
     }
 
     static float bodyErosion(float age) {
-        // The dark carrier starts breaking shortly after the white-hot sweep lands.
-        // Geometry erosion does the visible removal; mainAlpha only cleans up the end.
-        return 0.98F * smooth((age - 14.6F) / 10.6F);
+        // A true ease-in over the entire remaining lifetime: slow corrosion just after impact,
+        // then continuously increasing speed until the exact frame mainAlpha reaches zero.
+        // Unlike smoothstep/piecewise curves, pow(t, 1.65) never eases out near the end, so it
+        // cannot visually park on a half-eroded silhouette before the alpha cleanup begins.
+        float progress = Mth.clamp((age - 14.6F) / (MAIN_FADE_END - 14.6F), 0.0F, 1.0F);
+        return (float) Math.pow(progress, 1.65D);
     }
 
     static float scarAlpha(float age) {

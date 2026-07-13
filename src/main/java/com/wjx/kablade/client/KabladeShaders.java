@@ -2,6 +2,8 @@ package com.wjx.kablade.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.wjx.kablade.Main;
+import com.wjx.kablade.client.renderer.BloodfyreOculusPipeline;
+import com.wjx.kablade.client.renderer.ShockImpactOculusPipeline;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,7 +18,6 @@ import java.io.IOException;
 public final class KabladeShaders {
 
     private static ShaderInstance stageLight;
-    private static ShaderInstance vorpalBlackHole;
     private static ShaderInstance shockImpact;
     private static ShaderInstance zaizan;
     private static ShaderInstance utpalaAura;
@@ -32,16 +33,13 @@ public final class KabladeShaders {
 
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
+        BloodfyreOculusPipeline.invalidateResources();
+        ShockImpactOculusPipeline.invalidateResources();
         event.registerShader(new ShaderInstance(
                         event.getResourceProvider(),
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "stage_light"),
                         DefaultVertexFormat.POSITION_COLOR_TEX),
                 shader -> stageLight = shader);
-        event.registerShader(new ShaderInstance(
-                        event.getResourceProvider(),
-                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "vorpal_black_hole"),
-                        DefaultVertexFormat.POSITION_COLOR_TEX),
-                shader -> vorpalBlackHole = shader);
         event.registerShader(new ShaderInstance(
                         event.getResourceProvider(),
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "shock_impact"),
@@ -91,10 +89,6 @@ public final class KabladeShaders {
 
     public static ShaderInstance stageLight() {
         return stageLight;
-    }
-
-    public static ShaderInstance vorpalBlackHole() {
-        return vorpalBlackHole;
     }
 
     public static ShaderInstance shockImpact() {

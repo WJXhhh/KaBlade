@@ -63,8 +63,7 @@ public final class ThunderEdgeArts extends SlashArts {
         float damage = (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR)) * DAMAGE_MULTIPLIER;
 
         for (LivingEntity target : targets) {
-            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
-                    level.damageSources().mobAttack(user), damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
             target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                     PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
             target.getPersistentData().putInt(ThunderBlitz.THUNDER_MARK_TAG, THUNDER_MARK_DURATION);

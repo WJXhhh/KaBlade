@@ -100,8 +100,7 @@ public final class ZaizanArts extends SlashArts {
                 target.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,
                         100, STRENGTH_AMPLIFIER, false, true));
             } else {
-                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
-                        level.damageSources().mobAttack(user), BASE_DAMAGE + extraDamage);
+                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, BASE_DAMAGE + extraDamage);
             }
         }
     }

@@ -8,6 +8,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -123,7 +124,7 @@ public class AuroraVeilEntity extends Entity {
         for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box,
                 e -> SaTargeting.canDamage(this.owner, e))) {
             if (this.alreadyHit.add(target.getUUID())) {
-                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, src, this.damage);
+                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, (ServerLevel) this.level(), this, this.owner, this.damage);
             }
         }
     }

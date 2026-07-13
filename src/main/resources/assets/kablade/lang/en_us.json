@@ -235,5 +235,7 @@
   "info.item.petal": "All plants in the mortal world can be tainted.",
   "prop.kablade.glacial_bane_extra_tick": "§bGlacial Bane",
   "prop.kablade.fuel_the_ruin": "Fuel the Ruin",
-  "prop.kablade.title": "§6§lKablade:Effects"
+  "prop.kablade.title": "§6§lKablade:Effects",
+  "death.attack.slash_art": "%1$s was cut down by a slash art",
+  "death.attack.slash_art.player": "%1$s was cut down by %2$s's slash art"
 }

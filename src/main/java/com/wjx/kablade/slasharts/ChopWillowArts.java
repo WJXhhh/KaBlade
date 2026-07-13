@@ -108,7 +108,7 @@ public final class ChopWillowArts extends SlashArts {
 
         // 缁撶畻浼ゅ
         for (LivingEntity target : targets) {
-            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, src, damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
         }
         if (!targets.isEmpty()) {
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));

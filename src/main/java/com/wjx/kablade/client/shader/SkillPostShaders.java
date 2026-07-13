@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 @OnlyIn(Dist.CLIENT)
-final class SkillPostShaders {
+public final class SkillPostShaders {
     private static final String FULLSCREEN_VERTEX = """
             #version 150
 
@@ -80,8 +80,64 @@ final class SkillPostShaders {
             }
             """;
 
+    private static final String BLOODFYRE_COMPOSITE_FRAGMENT = """
+            #version 150
+
+            uniform sampler2D Scene;
+            uniform sampler2D Effect;
+            uniform sampler2D Mask;
+            uniform vec2 TexelSize;
+            uniform float GlowStrength;
+            uniform float DistortionStrength;
+
+            in vec2 vUv;
+            out vec4 fragColor;
+
+            float maskPower(vec4 c) {
+                return max(c.a, max(max(c.r, c.g), c.b));
+            }
+
+            void main() {
+                vec4 mask = texture(Mask, vUv);
+                vec3 maskRgb = max(mask.rgb, vec3(0.0));
+                float m = clamp(maskPower(mask), 0.0, 4.0);
+                float left = maskPower(texture(Mask, vUv - vec2(TexelSize.x, 0.0)));
+                float right = maskPower(texture(Mask, vUv + vec2(TexelSize.x, 0.0)));
+                float down = maskPower(texture(Mask, vUv - vec2(0.0, TexelSize.y)));
+                float up = maskPower(texture(Mask, vUv + vec2(0.0, TexelSize.y)));
+                vec2 warp = vec2(right - left, up - down)
+                        * DistortionStrength * TexelSize * 18.0;
+
+                vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
+                vec4 effect = texture(Effect, vUv);
+
+                // Saturate only where the emissive mask is present. Dark smoke and the
+                // charred blade body therefore retain their contrast instead of turning red.
+                float energy = 1.0 - exp(-m * 1.55);
+                float effectLuma = dot(effect.rgb, vec3(0.2126, 0.7152, 0.0722));
+                vec3 saturatedEffect = max(vec3(0.0), mix(vec3(effectLuma), effect.rgb,
+                        1.0 + energy * 0.34));
+                vec3 base = scene.rgb * (1.0 - clamp(effect.a, 0.0, 1.0)) + saturatedEffect;
+
+                // Preserve the mask hue instead of raising every channel to its maximum.
+                // A nearly white source gets a warm-gold halo while its geometric core
+                // remains white-hot in Effect; colored sources keep and strengthen hue.
+                float peak = max(max(maskRgb.r, maskRgb.g), maskRgb.b);
+                vec3 normalizedHue = peak > 0.0001 ? maskRgb / peak : vec3(1.0, 0.42, 0.06);
+                float hueFloor = min(min(normalizedHue.r, normalizedHue.g), normalizedHue.b);
+                float chroma = 1.0 - hueFloor;
+                vec3 pureHue = chroma > 0.001
+                        ? (normalizedHue - vec3(hueFloor)) / chroma
+                        : vec3(1.0, 0.42, 0.06);
+                vec3 bloomHue = mix(normalizedHue, pureHue, 0.68);
+                vec3 bloom = bloomHue * GlowStrength * energy * (0.55 + energy * 0.90);
+                fragColor = vec4(base + bloom, scene.a);
+            }
+            """;
+
     private static int blurProgram;
     private static int compositeProgram;
+    private static int bloodfyreCompositeProgram;
     private static int vertexArray;
 
     private SkillPostShaders() {
@@ -116,6 +172,31 @@ final class SkillPostShaders {
         });
     }
 
+    public static void compositeBloodfyre(int sceneTextureId, int effectTextureId,
+                                          int maskTextureId, int width, int height) {
+        ensurePrograms();
+        withFullscreenState(() -> {
+            GL20.glUseProgram(bloodfyreCompositeProgram);
+            bindTexture(0, sceneTextureId);
+            bindTexture(1, effectTextureId);
+            bindTexture(2, maskTextureId);
+            GL20.glUniform1i(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "Scene"), 0);
+            GL20.glUniform1i(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "Effect"), 1);
+            GL20.glUniform1i(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "Mask"), 2);
+            GL20.glUniform2f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "TexelSize"),
+                    1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
+            // Broad colored bloom: brightness comes from halo area and chroma instead of
+            // clipping all three channels to white at the geometric core.
+            GL20.glUniform1f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "GlowStrength"), 0.90F);
+            GL20.glUniform1f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "DistortionStrength"), 0.12F);
+            drawFullscreenTriangle();
+        });
+    }
+
+    public static void blurBloodfyre(int sourceTextureId, int width, int height, boolean horizontal) {
+        blur(sourceTextureId, width, height, horizontal);
+    }
+
     private static void ensurePrograms() {
         if (vertexArray == 0) {
             vertexArray = GL30.glGenVertexArrays();
@@ -125,6 +206,9 @@ final class SkillPostShaders {
         }
         if (compositeProgram == 0) {
             compositeProgram = createProgram(COMPOSITE_FRAGMENT);
+        }
+        if (bloodfyreCompositeProgram == 0) {
+            bloodfyreCompositeProgram = createProgram(BLOODFYRE_COMPOSITE_FRAGMENT);
         }
     }
 
@@ -164,6 +248,9 @@ final class SkillPostShaders {
         int previousProgram = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
         int previousVertexArray = GL11.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
         int previousActiveTexture = GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE);
+        int previousTexture0 = textureBinding2D(0);
+        int previousTexture1 = textureBinding2D(1);
+        int previousTexture2 = textureBinding2D(2);
         boolean depthEnabled = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
         boolean depthWriteEnabled = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK);
         boolean blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
@@ -179,12 +266,25 @@ final class SkillPostShaders {
         } finally {
             GL20.glUseProgram(previousProgram);
             GL30.glBindVertexArray(previousVertexArray);
+            restoreTextureBinding2D(0, previousTexture0);
+            restoreTextureBinding2D(1, previousTexture1);
+            restoreTextureBinding2D(2, previousTexture2);
             GL13.glActiveTexture(previousActiveTexture);
             GL11.glDepthMask(depthWriteEnabled);
             setEnabled(GL11.GL_DEPTH_TEST, depthEnabled);
             setEnabled(GL11.GL_BLEND, blendEnabled);
             setEnabled(GL11.GL_CULL_FACE, cullEnabled);
         }
+    }
+
+    private static int textureBinding2D(int unit) {
+        GL13.glActiveTexture(GL13.GL_TEXTURE0 + unit);
+        return GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+    }
+
+    private static void restoreTextureBinding2D(int unit, int textureId) {
+        GL13.glActiveTexture(GL13.GL_TEXTURE0 + unit);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
     }
 
     private static void bindTexture(int unit, int textureId) {

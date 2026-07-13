@@ -14,8 +14,6 @@ public final class KabladeRenderTypes extends RenderType {
 
     private static final RenderStateShard.ShaderStateShard STAGE_LIGHT_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::stageLight);
-    private static final RenderStateShard.ShaderStateShard VORPAL_BLACK_HOLE_SHADER =
-            new RenderStateShard.ShaderStateShard(KabladeShaders::vorpalBlackHole);
     private static final RenderStateShard.ShaderStateShard SHOCK_IMPACT_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::shockImpact);
     private static final RenderStateShard.ShaderStateShard ZAIZAN_SHADER =
@@ -284,25 +282,52 @@ public final class KabladeRenderTypes extends RenderType {
             4096,
             LIGHTNING_TRANSPARENCY);
 
-    private static final RenderType VORPAL_BLACK_HOLE = create(
-            "kablade_vorpal_black_hole",
-            DefaultVertexFormat.POSITION_COLOR_TEX,
-            VertexFormat.Mode.QUADS,
-            65536,
+    /** Opaque singularity surface; writes depth so rear accretion geometry is occluded. */
+    private static final RenderType VORPAL_BLACK_HOLE_CORE = create(
+            "kablade_vorpal_black_hole_core",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.TRIANGLES,
+            131072,
+            false,
+            false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_DEPTH_WRITE)
+                    .createCompositeState(false));
+
+    /** Alpha-blended smoke, dark funnel, black rupture wedges, and blue-black streaks. */
+    private static final RenderType VORPAL_BLACK_HOLE_DARK = create(
+            "kablade_vorpal_black_hole_dark",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.TRIANGLES,
+            262144,
             false,
             true,
             RenderType.CompositeState.builder()
-                    .setShaderState(VORPAL_BLACK_HOLE_SHADER)
+                    .setShaderState(POSITION_COLOR_SHADER)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
                     .setCullState(NO_CULL)
                     .setWriteMaskState(COLOR_WRITE)
                     .createCompositeState(false));
 
-    private static final RenderType VORPAL_BLACK_HOLE_FALLBACK = shaderFallback(
-            "kablade_vorpal_black_hole_fallback",
-            65536,
-            TRANSLUCENT_TRANSPARENCY);
+    /** Additive hot funnel, lensing, spikes, slash ribbons, sparks, and impact core. */
+    private static final RenderType VORPAL_BLACK_HOLE_GLOW = create(
+            "kablade_vorpal_black_hole_glow",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.TRIANGLES,
+            524288,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
 
     private static final RenderType SHOCK_IMPACT = create(
             "kablade_shock_impact",
@@ -402,8 +427,16 @@ public final class KabladeRenderTypes extends RenderType {
         return useShaderFallbackTextures() ? STAGE_LIGHT_FALLBACK : STAGE_LIGHT;
     }
 
-    public static RenderType vorpalBlackHole() {
-        return useShaderFallbackTextures() ? VORPAL_BLACK_HOLE_FALLBACK : VORPAL_BLACK_HOLE;
+    public static RenderType vorpalBlackHoleCore() {
+        return VORPAL_BLACK_HOLE_CORE;
+    }
+
+    public static RenderType vorpalBlackHoleDark() {
+        return VORPAL_BLACK_HOLE_DARK;
+    }
+
+    public static RenderType vorpalBlackHoleGlow() {
+        return VORPAL_BLACK_HOLE_GLOW;
     }
 
     public static RenderType shockImpact() {
@@ -487,10 +520,6 @@ public final class KabladeRenderTypes extends RenderType {
     }
 
     public static float stageLightU(float u) {
-        return u;
-    }
-
-    public static float vorpalBlackHoleU(float u) {
         return u;
     }
 

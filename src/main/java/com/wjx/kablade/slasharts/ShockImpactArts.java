@@ -64,8 +64,7 @@ public final class ShockImpactArts extends SlashArts {
         List<LivingEntity> enemies = level.getEntitiesOfClass(LivingEntity.class, box,
                 e -> SaTargeting.canDamageAttackable(user, e));
         for (LivingEntity target : enemies) {
-            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
-                    level.damageSources().mobAttack(user), BASE_DAMAGE + extraDamage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, BASE_DAMAGE + extraDamage);
         }
 
         user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,

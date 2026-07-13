@@ -234,5 +234,7 @@
   "info.item.petal": "凡间之草木皆可沾染",
   "prop.kablade.glacial_bane_extra_tick": "§b苦寒地狱",
   "prop.kablade.fuel_the_ruin": "绯刃残樱",
-  "prop.kablade.title": "§6§l斩无不断:效果"
+  "prop.kablade.title": "§6§l斩无不断:效果",
+  "death.attack.slash_art": "%1$s被斩术击杀了",
+  "death.attack.slash_art.player": "%1$s被%2$s的斩术击杀了"
 }

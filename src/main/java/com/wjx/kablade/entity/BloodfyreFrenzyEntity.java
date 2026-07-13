@@ -162,7 +162,7 @@ public final class BloodfyreFrenzyEntity extends Entity {
             if (Math.abs(offset.y) > 2.7D || offset.horizontalDistanceSqr() > radius * radius) {
                 continue;
             }
-            if (SaDamage.hurtNoIFrame(target, damageSource, damage)) {
+            if (SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage)) {
                 Vec3 pull = origin.subtract(center);
                 pull = pull.horizontalDistanceSqr() > 1.0E-5D
                         ? new Vec3(pull.x, 0.0D, pull.z).normalize().scale(0.10D)
@@ -195,7 +195,7 @@ public final class BloodfyreFrenzyEntity extends Entity {
 
             float falloff = (float) Mth.clamp(1.0D - Math.max(0.0D, ahead - 2.0D) / 22.0D,
                     0.62D, 1.0D);
-            if (!SaDamage.hurtNoIFrame(target, damageSource, damage * falloff)) {
+            if (!SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage * falloff)) {
                 continue;
             }
 
@@ -218,7 +218,7 @@ public final class BloodfyreFrenzyEntity extends Entity {
                     || target.distanceToSqr(this) > SCAN_RADIUS * SCAN_RADIUS * 2.0D) {
                 return true;
             }
-            SaDamage.hurtNoIFrame(target, damageSource, damage);
+            SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage);
             return false;
         });
     }

@@ -257,7 +257,7 @@ public class UtpalaAuraEntity extends Entity {
                 continue;
             }
 
-            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource, this.baseDamage * 0.16F);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, this, source, this.baseDamage * 0.16F);
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 45, 2));
             Vec3 pull = new Vec3(this.getX() - target.getX(), 0.0D, this.getZ() - target.getZ());
             if (pull.lengthSqr() > 1.0E-6D) {
@@ -291,7 +291,7 @@ public class UtpalaAuraEntity extends Entity {
                 continue;
             }
 
-            boolean hurt = com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource, damage);
+            boolean hurt = com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage);
             if (hurt) {
                 spawnForwardHitFeedback(level, target, damage >= this.baseDamage);
             }

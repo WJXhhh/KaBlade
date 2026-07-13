@@ -234,7 +234,7 @@ public class SwordEnlightenmentEntity extends Entity {
             }
 
             float falloff = (float) Mth.clamp(1.0D - horizontal / (HIT_RADIUS * 1.35D), 0.62D, 1.0D);
-            if (SaDamage.hurtNoIFrame(target, damageSource, damage * falloff)) {
+            if (SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage * falloff)) {
                 spawnHitFeedback(level, target, finisher);
             }
 
