@@ -2,7 +2,7 @@ package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeProxy;
-import com.wjx.kablade.network.MessageSpawnParticle;
+import com.wjx.kablade.network.MessageSpawnParticleBurst;
 import com.wjx.kablade.util.BladeAttackEvent;
 import com.wjx.kablade.util.BladeAttackEventManager;
 import com.wjx.kablade.util.KaBladePlayerProp;
@@ -24,7 +24,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.List;
-import java.util.Random;
 
 public class SEGlacialBane implements ISpecialEffect, IRemovable {
     @Override
@@ -78,12 +77,9 @@ public class SEGlacialBane implements ISpecialEffect, IRemovable {
                             if (c.getInteger(KaBladePlayerProp.GLACIAL_BANE_EXTRA_TICK) > 100){
                                 c.setInteger(KaBladePlayerProp.GLACIAL_BANE_EXTRA_TICK,0);
                                 World world = player.world;
-                                for (int i = 0;i<60;i++){
-                                    double x1,z1;
-                                    x1 = r(world.rand);
-                                    z1 = r(world.rand);
-                                    Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,player.posX + (world.rand.nextDouble() * 3 * x1),player.posY + world.rand.nextDouble(),player.posZ + (world.rand.nextDouble() * 3 * z1)));
-                                }
+                                MessageSpawnParticleBurst burst = new MessageSpawnParticleBurst(player.posX, player.posY, player.posZ);
+                                burst.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 60, 3.0, 1.0, 3.0);
+                                Main.PACKET_HANDLER.sendToAll(burst);
                                 AxisAlignedBB bb = player.getEntityBoundingBox().grow(4,4,4).offset(player.motionX,player.motionY,player.motionZ);
                                 List<Entity> l = world.getEntitiesInAABBexcluding(player,bb, input -> input != player&&input instanceof EntityLivingBase);
                                 for (Entity e : l){
@@ -98,11 +94,5 @@ public class SEGlacialBane implements ISpecialEffect, IRemovable {
             }
         }
     };
-
-    static double r(Random rand){
-        if (rand.nextBoolean()){
-            return 1d;
-        }else return -1d;
-    }
 
 }

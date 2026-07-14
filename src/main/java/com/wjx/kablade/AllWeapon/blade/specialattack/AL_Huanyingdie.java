@@ -2,7 +2,7 @@ package com.wjx.kablade.AllWeapon.blade.specialattack;
 
 import com.wjx.kablade.Entity.EntitySummonedButterfly;
 import com.wjx.kablade.util.MathFunc;
-import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -25,7 +25,7 @@ public class AL_Huanyingdie extends SpecialAttackBase {
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.world;
         NBTTagCompound tag = ItemSlashBlade.getItemTagCompound(itemStack);
-        Entity target = null;
+        Entity target;
         EntitySummonedButterfly entityDrive;
         float magicDamage;
         int level;
@@ -37,13 +37,7 @@ public class AL_Huanyingdie extends SpecialAttackBase {
         float a;
         int i;
         Random rand;
-        Entity tmp;
-        int entityId = ItemSlashBlade.TargetEntityId.get(tag);
-
-        if(entityId == 0)
-            target = SATool.getEntityToWatch(entityPlayer);
-        else
-            target = world.getEntityByID(entityId);
+        target = TargetingUtil.resolveTarget(entityPlayer, itemStack, 30.0D, 8.0D, 8.0D);
 
         if(target==null){
             rand = new Random();
@@ -82,6 +76,7 @@ public class AL_Huanyingdie extends SpecialAttackBase {
 
                 magicDamage = (baseModif+ MathFunc.amplifierCalc(baseModif,2f))/ 50.0f;
                 entityDrive = new EntitySummonedButterfly(world, entityPlayer, magicDamage += ItemSlashBlade.AttackAmplifier.get(tag).floatValue() * ((float)level / 50.0f), 0.0f);
+                entityDrive.setTargetEntityId(target.getEntityId());
                 entityDrive.setLocationAndAngles(target.posX + (double)((50.0f - a) / 3.0f), target.posY + (double)((20.0f - b) / 10.0f) + 1.0 + (double)entityPlayer.getEyeHeight() / 2.0, target.posZ + (double)((50.0f - e) / 3.0f), target.rotationYaw + (float)(i * 7), 0.0f);
                 entityDrive.setDriveVector((float)(1.0E-4 * (double)a * (double)i + 1.0E-4));
                 entityDrive.setInterval((i + 1) * 1);

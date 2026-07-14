@@ -143,7 +143,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     }
 
     public boolean getIsMultiHit() {
-        return (Boolean)this.getDataManager().get(IS_MULTI_HIT);
+        return this.getDataManager().get(IS_MULTI_HIT);
     }
 
     public void setIsMultiHit(boolean isMultiHit) {
@@ -151,7 +151,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     }
 
     public float getRoll() {
-        return (Float)this.getDataManager().get(ROLL);
+        return this.getDataManager().get(ROLL);
     }
 
     public void setRoll(float roll) {
@@ -159,7 +159,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     }
 
     public int getLifeTime() {
-        return (Integer)this.getDataManager().get(LIFETIME);
+        return this.getDataManager().get(LIFETIME);
     }
 
     public void setLifeTime(int lifetime) {
@@ -167,7 +167,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
     }
 
     public boolean getIsSlashDimension() {
-        return (Boolean)this.getDataManager().get(IS_SLASH_DIMENSION);
+        return this.getDataManager().get(IS_SLASH_DIMENSION);
     }
 
     public int getChangeTime(){
@@ -231,7 +231,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
         if (!this.world.isRemote) {
             double dAmbit = 1.5;
             AxisAlignedBB bb = new AxisAlignedBB(this.posX - dAmbit, this.posY - dAmbit, this.posZ - dAmbit, this.posX + dAmbit, this.posY + dAmbit, this.posZ + dAmbit);
-            Iterator var6;
+            Iterator<Entity> var6;
             Entity curEntity;
             if (this.getThrower() instanceof EntityLivingBase) {
                 EntityLivingBase entityLiving = (EntityLivingBase)this.getThrower();
@@ -249,7 +249,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
                             break label115;
                         }
 
-                        curEntity = (Entity)var6.next();
+                        curEntity = var6.next();
                         if (this.blade.isEmpty()) {
                             break label115;
                         }
@@ -307,7 +307,7 @@ public class EntityDriveAdd extends Entity implements IThrowableEntity {
                 var6 = list.iterator();
 
                 while(var6.hasNext()) {
-                    curEntity = (Entity)var6.next();
+                    curEntity = var6.next();
                     if (this.blade.isEmpty()) {
                         break;
                     }

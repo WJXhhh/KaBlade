@@ -54,7 +54,7 @@ public class OverSlash extends SpecialAttackBase {
                 entityPlayer.onCriticalHit(curEntity);
             }
             float baseModif = blade.getBaseAttackModifiers(tag);
-            int level = Math.max(1, EnchantmentHelper.getEnchantmentLevel( Enchantments.POWER, (ItemStack)itemStack));
+            int level = Math.max(1, EnchantmentHelper.getEnchantmentLevel( Enchantments.POWER, itemStack));
             float magicDamage = baseModif / 2.0f;
             int rank = StylishRankManager.getStylishRank(entityPlayer);
             if (5 <= rank) {

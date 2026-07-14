@@ -2,7 +2,7 @@ package com.wjx.kablade.ExSA.special_attack;
 
 import com.wjx.kablade.ExSA.entity.EntityLightningSword;
 import com.wjx.kablade.ExSA.entity.EntityPhantomSwordEx;
-import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -27,16 +27,8 @@ public class LightningSwordsEx extends SpecialAttackBase {
         World world = entityPlayer.world;
         NBTTagCompound tag = ItemSlashBlade.getItemTagCompound(itemStack);
         if (!world.isRemote){
-            Entity tmp;
             ItemSlashBlade blade = (ItemSlashBlade) itemStack.getItem();
-            Entity target = null;
-            int entityId = ItemSlashBlade.TargetEntityId.get(tag);
-            if (entityId != 0 && (tmp = world.getEntityByID(entityId))!= null && tmp.getDistance(entityPlayer) < 30f) {
-                target = tmp;
-            }
-            if(target == null){
-                target = SATool.getEntityToWatch(entityPlayer);
-            }
+            Entity target = TargetingUtil.resolveTarget(entityPlayer, itemStack, 30.0D, 8.0D, 8.0D);
             if(target != null) {
                 EntityLightningSword entityDrive;
                 int dir;

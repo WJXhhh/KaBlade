@@ -130,7 +130,7 @@ public class SlashBladeTwoRecipeModdingT extends ShapedOreRecipe {
                     && curIs.hasTagCompound()){
 
                 NBTTagCompound oldTag = curIs.getTagCompound();
-                oldTag = (NBTTagCompound)oldTag.copy();
+                oldTag = oldTag.copy();
 
                 {
                     NBTTagCompound newTag;

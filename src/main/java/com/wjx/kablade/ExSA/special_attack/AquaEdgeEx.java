@@ -96,7 +96,8 @@ public class AquaEdgeEx extends SpecialAttackBase {
                     entityDrive.setLifeTime(30 + 5 * j + i);
                     entityDrive.setRoll(90.0F + ItemSlashBlade.ComboSequence.Iai.swingDirection);
                     entityDrive.getDataManager().set(EntityAquaEdge.PARTICLE_STYLE, "WATER_SPLASH");
-                    entityDrive.getDataManager().set(EntityAquaEdge.SOUND, SoundEvents.ENTITY_PLAYER_SWIM.getSoundName().toString());
+                    // 网络同步的是声音注册名，避免调用 SoundEvent.getSoundName() 产生服务端映射兼容问题
+                    entityDrive.getDataManager().set(EntityAquaEdge.SOUND, "minecraft:entity.player.swim");
                     world.spawnEntity(entityDrive);
                 }
             }

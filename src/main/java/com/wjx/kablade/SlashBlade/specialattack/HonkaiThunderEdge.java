@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -37,7 +38,7 @@ public class HonkaiThunderEdge extends SpecialAttackBase {
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
         if (!world.isRemote){
-            float extraDamage = (float) MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(itemStack.getTagCompound()),12f);
+            float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(itemStack.getTagCompound()),12f);
             EntityThunderEdgeAttack t = new EntityThunderEdgeAttack(world,entityPlayer);
             world.spawnEntity(t);
             double dist = 6;
@@ -48,7 +49,7 @@ public class HonkaiThunderEdge extends SpecialAttackBase {
             if (entityPlayer.getHeldItemMainhand().getItem() instanceof ItemSlashBlade && entityPlayer.getHeldItemMainhand().hasTagCompound()){
                 ItemSlashBlade.setComboSequence(Objects.requireNonNull(entityPlayer.getHeldItemMainhand().getTagCompound()), ItemSlashBlade.ComboSequence.SlashDim);
             }
-            List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(3.0D, 1.0D, 3.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+            List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().grow(3.0D, 1.0D, 3.0D).union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D)), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
             double d2 = dist;
             if (!list.isEmpty()){
                 for (Entity e : list){

@@ -29,7 +29,7 @@ public class HonkaiLacerateBlade extends SpecialAttackBase {
             World world = entityPlayer.world;
             if(!world.isRemote)
         {
-            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),3f);
+            float extraDamage = MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),3f);
             Random rand = entityPlayer.getRNG();
             float a = rand.nextInt(360);
             EntityDriveAdd entityDrive = new EntityDriveAdd(world, entityPlayer, 10f+extraDamage, false, a - ItemSlashBlade.ComboSequence.Battou.swingDirection);

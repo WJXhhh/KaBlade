@@ -1,27 +1,58 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
+# Eclipse
+bin/
+eclipse/
+.settings/
+.metadata/
 .classpath
 .project
+.factorypath
+*.launch
 
-# idea
-out
+# IntelliJ IDEA
+.idea/
 *.ipr
 *.iws
 *.iml
-.idea
+out/
 
-# gradle
-build
-.gradle
+# VS Code (the launch configuration contains machine-specific paths)
+.vscode/
 
-# other
-eclipse
-run
+# Gradle / ForgeGradle generated files
+.gradle/
+build/
+run/
+
+# Local tools and assistant configuration
+.opencode/
+.trae/
+/gg.ps1
+/opencode.json
+/AGENTS.md
+/newtech/
+
+# Logs, crash reports and runtime dumps
+*.log
+*.hprof
+*.jfr
+hs_err_pid*.log
+replay_pid*.log
+
+# Editor backups and temporary files
+*.bak
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Operating system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Obsolete local backup of the build script
+/build - 副本.gradle
 
 # Files from Forge MDK
 forge*changelog.txt
-.vscode/settings.json
-/gg.ps1

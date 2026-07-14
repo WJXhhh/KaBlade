@@ -3,7 +3,7 @@ package com.wjx.kablade.AllWeapon.blade.specialattack;
 import com.wjx.kablade.Entity.EntityDriveAdd;
 import com.wjx.kablade.Entity.EntitySummonedSwordPotionEffectAdd;
 import com.wjx.kablade.util.MathFunc;
-import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -36,18 +36,7 @@ public class AL_Zhuixing extends SpecialAttackBase {
             int level = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, itemStack);
             float magicDamage = baseModif;
             magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),4f);
-            Entity target = null;
-            int entityId = ItemSlashBlade.TargetEntityId.get(tag);
-            if (entityId != 0) {
-                Entity tmp = world.getEntityByID(entityId);
-                if (tmp != null && tmp.getDistance(entityPlayer) < 30.0F && tmp instanceof EntityLivingBase) {
-                    target = tmp;
-                }
-            }
-            if (target==null){
-                target= SATool.getEntityToWatch(entityPlayer);
-
-            }
+            Entity target = TargetingUtil.resolveTarget(entityPlayer, itemStack, 30.0D, 8.0D, 8.0D);
 
 
             if (target != null) {

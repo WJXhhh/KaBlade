@@ -10,6 +10,7 @@ public class CapabilityLoader {
     @CapabilityInject(IPotionInSlash.class)
     public static Capability<IPotionInSlash> SlashPotion;
 
+    @SuppressWarnings("deprecation")
     public CapabilityLoader(FMLPreInitializationEvent event)
     {
         CapabilityManager.INSTANCE.register(IPotionInSlash.class, new CapabilitySlashPotion.Storage(), CapabilitySlashPotion.Implementation.class);

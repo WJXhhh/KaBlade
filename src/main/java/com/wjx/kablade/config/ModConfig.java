@@ -29,6 +29,16 @@ public class ModConfig {
         /** When true: KaBlade blades can be repaired with cobblestone WITHOUT consuming ProudSoul.
          *  When false: only the original SlashBlade repair (which costs ProudSoul) is available. */
         public static boolean KaBladeFreeRepair;
+        /** 当启用时，ExtraBotany 的 Gaia III 与空之律者允许携带拔刀剑。 */
+        public static boolean ExtraBotanyGaiaAllowSlashBlade;
+        /** 当启用时，ExtraBotany 的 Gaia III 与空之律者不再限制玩家装备。 */
+        public static boolean ExtraBotanyGaiaDisableEquipmentRestrictions;
+        /** 当启用时，在标题界面预热全部拔刀剑模型、纹理及静态 VBO。 */
+        public static boolean EnableSlashBladeModelWarmup = true;
+        /** 当启用时，使用 KaBlade 的 Shift 锁敌边沿触发与限频替换逻辑。 */
+        public static boolean EnableShiftLockTargeting = true;
+        /** 锁敌诊断日志与计数，生产环境默认关闭。 */
+        public static boolean DebugTargeting;
     }
 
 
@@ -96,6 +106,34 @@ public class ModConfig {
                 "KaBladeFreeRepair", category, true,
                 "When enabled, KaBlade blades can be repaired with cobblestone in a crafting table WITHOUT consuming ProudSoul. " +
                 "When disabled, only the original SlashBlade repair recipe (which costs ProudSoul) is available for KaBlade blades."
+        );
+
+        GeneralConf.ExtraBotanyGaiaAllowSlashBlade = config.getBoolean(
+                "ExtraBotanyGaiaAllowSlashBlade", category, true,
+                "When enabled, ItemSlashBlade items are allowed in ExtraBotany Gaia III and Herrscher of the Void challenges. " +
+                "Other non-Botania items remain restricted unless ExtraBotanyGaiaDisableEquipmentRestrictions is enabled."
+        );
+
+        GeneralConf.ExtraBotanyGaiaDisableEquipmentRestrictions = config.getBoolean(
+                "ExtraBotanyGaiaDisableEquipmentRestrictions", category, false,
+                "When enabled, remove all inventory and equipment restrictions for ExtraBotany Gaia III and Herrscher of the Void. " +
+                "This option takes priority over ExtraBotanyGaiaAllowSlashBlade."
+        );
+
+        GeneralConf.EnableSlashBladeModelWarmup = config.getBoolean(
+                "EnableSlashBladeModelWarmup", category, true,
+                "Prewarm all registered SlashBlade models and textures at the title screen and enable the static VBO cache. " +
+                "Disable this option to use SlashBlade's original rendering path."
+        );
+
+        GeneralConf.EnableShiftLockTargeting = config.getBoolean(
+                "EnableShiftLockTargeting", category, true,
+                "Use KaBlade's edge-triggered Shift lock-on handling and suppress repeated no-target scans."
+        );
+
+        GeneralConf.DebugTargeting = config.getBoolean(
+                "DebugTargeting", category, false,
+                "Log rate-limited lock-on resolver diagnostics. Keep disabled on production servers unless investigating targeting."
         );
         if (config.hasChanged()) {
             config.save();

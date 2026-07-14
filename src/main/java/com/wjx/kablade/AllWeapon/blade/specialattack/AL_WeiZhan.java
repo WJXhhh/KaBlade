@@ -2,7 +2,7 @@ package com.wjx.kablade.AllWeapon.blade.specialattack;
 
 import com.wjx.kablade.Entity.EntityDriveAdd;
 import com.wjx.kablade.util.MathFunc;
-import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.client.particle.Particle;
@@ -33,18 +33,7 @@ public class AL_WeiZhan extends SpecialAttackBase {
             int level = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, itemStack);
             float magicDamage = baseModif*2;
             magicDamage+= MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(tag),1f);
-            Entity target = null;
-            int entityId = ItemSlashBlade.TargetEntityId.get(tag);
-            if (entityId != 0) {
-                Entity tmp = world.getEntityByID(entityId);
-                if (tmp != null && tmp.getDistance(entityPlayer) < 100.0F && tmp instanceof EntityLivingBase) {
-                    target = tmp;
-                }
-            }
-            if (target==null){
-                target= SATool.getEntityToWatch(entityPlayer);
-
-            }
+            Entity target = TargetingUtil.resolveTarget(entityPlayer, itemStack, 30.0D, 8.0D, 8.0D);
 
             if(target!=null){
                 entityPlayer.onCriticalHit(target);

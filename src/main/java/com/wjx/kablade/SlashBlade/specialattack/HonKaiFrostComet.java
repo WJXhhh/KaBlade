@@ -40,7 +40,7 @@ public class HonKaiFrostComet extends SpecialAttackBase {
             bb = bb.grow(5.0D, 1.0D, 5.0D);
             bb = bb.offset(entityPlayer.motionX, entityPlayer.motionY, entityPlayer.motionZ);
             List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb, input -> input != entityPlayer && input.isEntityAlive());
-            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),1f) * 1.5f;
+            float extraDamage = MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),1f) * 1.5f;
             if (list.size() != 0) {
                 for (Entity entity : list) {
                     if (entity instanceof EntityLivingBase) {

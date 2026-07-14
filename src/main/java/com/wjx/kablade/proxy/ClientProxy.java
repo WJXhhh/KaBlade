@@ -4,6 +4,7 @@ import com.wjx.kablade.Entity.Render.Layer.LayerFreeze;
 import com.wjx.kablade.Entity.Render.RenderConfinementForceField;
 import com.wjx.kablade.Entity.Render.RenderWindEnchantment;
 import com.wjx.kablade.SlashBlade.BladeProxy;
+import com.wjx.kablade.client.model.SlashBladeModelWarmup;
 import com.wjx.kablade.util.ParticleManager;
 import com.wjx.kablade.util.handlers.RenderHandler;
 import net.minecraft.client.Minecraft;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -47,6 +49,7 @@ public class ClientProxy extends CommonProxy{
     @Override
     public void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
+        MinecraftForge.EVENT_BUS.register(new SlashBladeModelWarmup());
         Minecraft.getMinecraft().getRenderManager().entityRenderMap.values().forEach(r -> {
             if (r instanceof RenderLivingBase) {
                 attachRenderLayers((RenderLivingBase<?>) r);

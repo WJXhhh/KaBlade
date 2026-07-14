@@ -2,7 +2,7 @@ package com.wjx.kablade.SlashBlade.specialattack.p2;
 
 import com.wjx.kablade.Entity.EntityRainUmbrella;
 import com.wjx.kablade.Entity.EntityTuna;
-import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -22,15 +22,7 @@ public class HonkaiLoveIsWar extends SpecialAttackBase {
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         if(!entityPlayer.world.isRemote)
         {
-            Entity target = null;
-            int entityId = ItemSlashBlade.TargetEntityId.get(itemStack.getTagCompound());
-            if (entityId != 0) {
-                Entity tmp = entityPlayer.world.getEntityByID(entityId);
-                if (tmp != null && tmp.getDistance(entityPlayer) < 100.0F && tmp instanceof EntityLivingBase) {
-                    target = tmp;
-                }
-            }
-            Entity entity = (target==null?SATool.getEntityToWatch(entityPlayer):target);
+            Entity entity = TargetingUtil.resolveTarget(entityPlayer, itemStack, 30.0D, 8.0D, 8.0D);
             if (entityPlayer.getHeldItemMainhand().getItem() instanceof ItemSlashBlade && entityPlayer.getHeldItemMainhand().hasTagCompound()){
                 ItemSlashBlade.setComboSequence(Objects.requireNonNull(entityPlayer.getHeldItemMainhand().getTagCompound()), ItemSlashBlade.ComboSequence.SlashDim);
             }

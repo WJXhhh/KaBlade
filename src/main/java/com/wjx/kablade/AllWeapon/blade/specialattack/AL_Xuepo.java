@@ -3,7 +3,7 @@ package com.wjx.kablade.AllWeapon.blade.specialattack;
 import com.wjx.kablade.Entity.EntityDriveAdd;
 import com.wjx.kablade.Entity.EntitySummonedSwordPotionEffectAdd;
 import com.wjx.kablade.util.MathFunc;
-import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -46,13 +46,7 @@ public class AL_Xuepo extends SpecialAttackBase {
                 if (entityDrive == null) continue;
                 world.spawnEntity(entityDrive);
             }
-            Entity target;
-            int entityId = ItemSlashBlade.TargetEntityId.get(tag);
-
-            if(entityId == 0)
-                target = SATool.getEntityToWatch(entityPlayer);
-            else
-                target = world.getEntityByID(entityId);
+            Entity target = TargetingUtil.resolveTarget(entityPlayer, itemStack, 30.0D, 8.0D, 8.0D);
 
             if(target!=null){
                 ItemSlashBlade.setComboSequence(tag, ItemSlashBlade.ComboSequence.SlashDim);

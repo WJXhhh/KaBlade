@@ -29,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -200,44 +201,24 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
         if(this.ticksExisted > getInterval()) return false;
 
         int targetid = this.getTargetEntityId();
+        // 目标由 SA 入口统一解析；无目标时保持原始飞行，不做逐 Tick 大范围扫描。
+        if(targetid == 0) return false;
 
-        Entity owner = this.thrower;
-        if(this.thrower == null)
-            owner = this;
+        Entity target = world.getEntityByID(targetid);
 
-        if(targetid == 0){
+        if(target != null && target.isEntityAlive()){
 
-            Entity rayEntity = getRayTrace(owner, 30.0f); //最長３０
-            if(rayEntity != null){
-                targetid = rayEntity.getEntityId();
-                this.setTargetEntityId( rayEntity.getEntityId());
+            if(Float.isNaN(iniPitch) && thrower != null){
+                iniYaw = thrower.rotationYaw;
+                iniPitch = thrower.rotationPitch;
             }
+            faceEntity(this,target,ticksExisted * 1.0f,ticksExisted * 1.0f);
+            setDriveVector(1.75F, false);
+            return true;
         }
 
-        //視線中に無かった場合近傍Entityに拡張検索
-        if(targetid == 0){
-            Entity rayEntity = getRayTrace(owner, 30.0f,5.0f,5.0f); //最長３０、視線外10幅まで探索拡張
-            if(rayEntity != null){
-                targetid = rayEntity.getEntityId();
-                this.setTargetEntityId( rayEntity.getEntityId());
-            }
-        }
-
-        if(targetid != 0){
-            Entity target = world.getEntityByID(targetid);
-
-            if(target != null){
-
-                if(Float.isNaN(iniPitch) && thrower != null){
-                    iniYaw = thrower.rotationYaw;
-                    iniPitch = thrower.rotationPitch;
-                }
-                faceEntity(this,target,ticksExisted * 1.0f,ticksExisted * 1.0f);
-                setDriveVector(1.75F, false);
-            }
-        }
-
-        return true;
+        this.setTargetEntityId(0);
+        return false;
     }
 
     public Entity getRayTrace(Entity owner, double reachMax){
@@ -259,10 +240,10 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
         Vec3d lookVec = getLook(owner, par1);
         Vec3d reachVec = entityPos.add(lookVec.x * reachMax, lookVec.y * reachMax, lookVec.z * reachMax);
         pointedEntity = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this
-                , this.getEntityBoundingBox()
-                        .offset(lookVec.x * reachMax, lookVec.y * reachMax, lookVec.z * reachMax)
-                        .grow((double) expandFactor + reachMax, (double) expandFactor + reachMax, (double) expandFactor + reachMax));
+        AxisAlignedBB searchBox = this.getEntityBoundingBox()
+                .grow(expandFactor, expandFactor, expandFactor)
+                .union(new AxisAlignedBB(entityPos, reachVec).grow(expandFactor + expandBorder));
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, searchBox);
         list.removeAll(alreadyHitEntity);
 
         double tmpDistance = reachMin;
@@ -514,7 +495,7 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
         AxisAlignedBB bb = this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).grow(1.0D, 1.0D, 1.0D);
         AxisAlignedBB bb2 = this.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D);
 
-        Predicate<Entity>[] selectors = new Predicate[]{EntitySelectorDestructable.getInstance(), EntitySelectorAttackable.getInstance()};
+        List<Predicate<Entity>> selectors = Arrays.asList(EntitySelectorDestructable.getInstance(), EntitySelectorAttackable.getInstance());
         for(Predicate<Entity> selector : selectors){
             List<Entity> list = this.world.getEntitiesInAABBexcluding(this, bb, selector);
             list.removeAll(alreadyHitEntity);

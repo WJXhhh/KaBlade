@@ -33,7 +33,7 @@ public class HonKaiZaizan extends SpecialAttackBase {
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         if(!entityPlayer.world.isRemote){
             List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input instanceof EntityLivingBase);
-            float extraDamage = (float) MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),20f);
+            float extraDamage = MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),20f);
             for (Entity entity : entities){
                 if (entity != null){
                     if(!(entity instanceof EntityPlayer)){

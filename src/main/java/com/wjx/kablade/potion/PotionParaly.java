@@ -4,8 +4,6 @@ import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -23,6 +21,7 @@ public class PotionParaly extends Potion {
 
     @SideOnly(Side.CLIENT)
     @Override
+    @SuppressWarnings("deprecation")
     public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
         if (mc.currentScreen != null) {
             mc.getTextureManager().bindTexture(new ResourceLocation(Reference.MODID + ":textures/potion/paraly.png"));
@@ -32,6 +31,7 @@ public class PotionParaly extends Potion {
 
     @SideOnly(Side.CLIENT)
     @Override
+    @SuppressWarnings("deprecation")
     public void renderHUDEffect(int x, int y, PotionEffect effect, Minecraft mc, float alpha) {
         mc.getTextureManager().bindTexture(new ResourceLocation(Reference.MODID + ":textures/potion/paraly.png"));
         Gui.drawModalRectWithCustomSizedTexture(x + 3, y + 3, 0, 0, 18, 18, 18, 18);

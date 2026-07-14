@@ -9,7 +9,7 @@ import com.wjx.kablade.Entity.Render.RenderRaikiriBlade;
 import com.wjx.kablade.Entity.Render.RenderWindEnchantment;
 import com.wjx.kablade.Lib;
 import com.wjx.kablade.Main;
-import com.wjx.kablade.SlashBlade.BladeProxy;
+
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
 import com.wjx.kablade.capability.CapabilityLoader;
 import com.wjx.kablade.capability.CapabilitySlashPotion;
@@ -24,7 +24,7 @@ import com.wjx.kablade.util.interfaces.IKabladeOre;
 import com.wjx.kablade.util.special_render.MagChaosBladeEffectRenderer;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import mods.flammpfeil.slashblade.specialeffect.SpecialEffects;
+
 import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -62,7 +62,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -232,8 +231,8 @@ public class WorldEvent {
     public void onTooltip(ItemTooltipEvent event) {
         if (event.getItemStack().getItem() instanceof MagicBlade) {
             for (int x = 0; x < event.getToolTip().size(); ++x) {
-                if (event.getToolTip().get(x).contains(I18n.translateToLocal("attribute.name.generic.attackDamage")) || event.getToolTip().get(x).contains(I18n.translateToLocal("Attack Damage"))) {
-                    event.getToolTip().set(x, TextFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18n.translateToLocal("info.damageguer1111.name")) + " " + TextFormatting.BLUE + I18n.translateToLocal("attribute.name.generic.attackDamage"));
+                if (event.getToolTip().get(x).contains(I18nUtil.translate("attribute.name.generic.attackDamage")) || event.getToolTip().get(x).contains(I18nUtil.translate("Attack Damage"))) {
+                    event.getToolTip().set(x, TextFormatting.BLUE + " +" + UpdateColor.makeColourRainbow(I18nUtil.translate("info.damageguer1111.name")) + " " + TextFormatting.BLUE + I18nUtil.translate("attribute.name.generic.attackDamage"));
                     return;
                 }
             }
@@ -349,13 +348,15 @@ public class WorldEvent {
                     Entity attacker = world.getEntityByID(KaBladeCompound.getInteger(KaBladeEntityProperties.PROP_WINE_BIND_ATTACKER));
                     float extraDamage = 0f;
                     if (attacker instanceof EntityLivingBase && ((EntityLivingBase) attacker).getHeldItemMainhand().getItem() instanceof ItemSlashBlade) {
-                        extraDamage = (float)MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(((EntityLivingBase) attacker).getHeldItemMainhand().getTagCompound()),4f);
+                        extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(((EntityLivingBase) attacker).getHeldItemMainhand().getTagCompound()),4f);
                     }
                     if (world.getTotalWorldTime() % 20 == 0 && attacker != null && !attacker.isDead) {
                         if (attacker instanceof EntityLivingBase) {
                             entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) attacker), 3 + extraDamage);
                             EntitySummonedSwordBasePlus sword = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker, 4 + extraDamage, entity.posX + 1, entity.posY + entity.getEyeHeight() + 1, entity.posZ, 0f, 0f);
                             EntitySummonedSwordBasePlus sword2 = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker, 4 + extraDamage, entity.posX - 1, entity.posY + entity.getEyeHeight() + 1, entity.posZ, 0f, 0f);
+                            sword.setTargetEntityId(entity.getEntityId());
+                            sword2.setTargetEntityId(entity.getEntityId());
                             sword.setColor(3388211);
                             sword2.setColor(3388211);
                             world.spawnEntity(sword);
@@ -564,7 +565,7 @@ public class WorldEvent {
                         Vec3d vec3d1 = player.getLook(1.0F);
                         Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
                         List<Entity> pointedEntity = Lists.newArrayList();
-                        List<Entity> list = world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().expand(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist).grow(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+                        List<Entity> list = world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D).union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D)), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
                         double d2 = dist;
                         for (Entity entity1 : list) {
                             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
@@ -616,20 +617,10 @@ public class WorldEvent {
                             world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
                             world.addWeatherEffect(new EntityLightningBolt(world, player.posX, player.posY, player.posZ, true));
 
-                            for (int i = 0; i < 40; ++i) {
-                                Random r1 = new Random();
-                                Random r2 = new Random(r1.nextLong());
-                                int state1;
-                                int state2;
-                                if (r1.nextBoolean()) {
-                                    state1 = 1;
-                                } else state1 = -1;
-                                if (r2.nextBoolean()) {
-                                    state2 = 1;
-                                } else state2 = -1;
-                                PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, player.posX + (world.rand.nextDouble() * 2 * state1), player.posY + world.rand.nextDouble() * (double) player.height, player.posZ + (world.rand.nextDouble() * 2 * state2), 0.0D, 0.0D, 0.0D));
-                                PACKET_HANDLER.sendToAll(new MessageSpawnColorfulSmoke(player.posX + (world.rand.nextDouble() * 2 * state1), player.posY + world.rand.nextDouble() * (double) player.height, player.posZ + (world.rand.nextDouble() * 2 * state2), new Vec3f(1f, 0.945f, 0.333f), 2));
-                            }
+                            MessageSpawnParticleBurst burst = new MessageSpawnParticleBurst(player.posX, player.posY, player.posZ);
+                            burst.addGroup(EnumParticleTypes.EXPLOSION_NORMAL.getParticleID(), 40, 2.0, (double) player.height, 2.0);
+                            burst.addColorfulGroup(40, 2.0, (double) player.height, 2.0, 1f, 0.945f, 0.333f, 2);
+                            PACKET_HANDLER.sendToAll(burst);
                             AxisAlignedBB bb = player.getEntityBoundingBox();
                             bb = bb.grow(5, 4, 5);
                             bb = bb.offset(player.motionX, player.motionY, player.motionZ);
@@ -1055,8 +1046,8 @@ public class WorldEvent {
         if (entity.posX == 0 && entity.posY == 0 && entity.posZ == 0)
             return;
         Minecraft mc = Minecraft.getMinecraft();
-        if (KaBladePlayerProp.getPropCompound(mc.player).hasKey(KaBladePlayerProp.LOCKING_ENTITY_UUID)) {
-            if (EntityUUIDManager.getEntitiesFromUUID(KaBladePlayerProp.getPropCompound(mc.player).getString(KaBladePlayerProp.LOCKING_ENTITY_UUID), mc.player.world).contains(entity)) {
+        Set<String> lockedUuids = KaBladePlayerProp.getLockedUUIDs(KaBladePlayerProp.getPropCompound(mc.player));
+        if (!lockedUuids.isEmpty() && EntityUUIDManager.hasUUID(entity) && lockedUuids.contains(EntityUUIDManager.getEntityUUID(entity))) {
                 GlStateManager.disableLighting();
                 GlStateManager.enableBlend();
                 GlStateManager.pushMatrix();
@@ -1087,7 +1078,6 @@ public class WorldEvent {
                 GlStateManager.disableBlend();
                 GlStateManager.enableLighting();
 
-            }
         }
         if (KaBladeEntityProperties.getPropCompound(entity).getInteger(KaBladeEntityProperties.FALLING_PETALS) > 0) {
             GlStateManager.disableLighting();
