@@ -5,6 +5,7 @@ import com.wjx.kablade.Entity.Render.RenderConfinementForceField;
 import com.wjx.kablade.Entity.Render.RenderWindEnchantment;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.client.model.SlashBladeModelWarmup;
+import com.wjx.kablade.client.TestFeatureClientAuth;
 import com.wjx.kablade.util.ParticleManager;
 import com.wjx.kablade.util.handlers.RenderHandler;
 import net.minecraft.client.Minecraft;
@@ -69,6 +70,7 @@ public class ClientProxy extends CommonProxy{
     public void init(FMLInitializationEvent event) {
         super.init(event);
         ParticleManager.registerParticles();
+        MinecraftForge.EVENT_BUS.register(new TestFeatureClientAuth());
     }
 
     @SideOnly(Side.CLIENT)

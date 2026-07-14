@@ -14,6 +14,7 @@ import com.wjx.kablade.event.WorldEvent;
 import com.wjx.kablade.init.*;
 import com.wjx.kablade.proxy.CommonProxy;
 import com.wjx.kablade.util.Reference;
+import com.wjx.kablade.util.TestFeatureTokenAuth;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
@@ -53,7 +54,7 @@ public class Main
 {
     public static final String MODID = "kablade";
     public static final String NAME = "Ka Blades";
-    public static final String VERSION = "1.8.10";
+    public static final String VERSION = "1.8.11";
 
     public static boolean EnableAllWeapon =true;
 
@@ -130,6 +131,7 @@ public class Main
         ModConfig.init(event);
         sseee();
         logger = event.getModLog();
+        TestFeatureTokenAuth.init(event.getModConfigurationDirectory());
         //int i;
         proxy.preInit(event);
 

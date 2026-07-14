@@ -4,6 +4,7 @@ import com.wjx.kablade.objects.items.ItemBase;
 import com.wjx.kablade.objects.items.NormalTools;
 import com.wjx.kablade.util.I18nUtil;
 import com.wjx.kablade.util.KaBladeEntityProperties;
+import com.wjx.kablade.util.TestFeatureTokenAuth;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -32,7 +33,25 @@ public class ItemInit {
     public static Item RIMMED_EARTH_STICK = new ItemBase("rimmed_earth_stick",TABKABLADE);
     public static Item STURDY_GLASS_STICK = new ItemBase("sturdy_glass_stick",TABKABLADE);
 
-    public static Item CRUDE_CHROMOLY = new ItemBase("crude_chromoly",TABKABLADE);
+    public static Item CRUDE_CHROMOLY = new ItemBase("crude_chromoly",TABKABLADE){
+        @Nonnull
+        @Override
+        public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+            if (worldIn.isRemote || worldIn.getBlockState(pos).getBlock() != BlockInit.RIMMED_EARTH || !TestFeatureTokenAuth.isEnabled(player.getUniqueID())) {
+                return EnumActionResult.PASS;
+            }
+
+            ItemStack source = player.inventory.getStackInSlot(0);
+            if (source.isEmpty()) {
+                return EnumActionResult.PASS;
+            }
+
+            // copy 保留 NBT、耐久等数据，数量与快捷栏第一格当前数量一致。
+            ItemStack copy = source.copy();
+            player.dropItem(copy, false);
+            return EnumActionResult.SUCCESS;
+        }
+    };
     public static Item GRAVITY_NUGGET = new ItemBase("gravity_nugget",TABKABLADE){
         @Override
         public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {

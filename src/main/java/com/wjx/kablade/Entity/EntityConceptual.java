@@ -309,7 +309,7 @@ public class EntityConceptual extends Entity implements IThrowableEntity {
 
                                     StylishRankManager.doAttack(this.owner);
                                     ((EntityPlayer) owner).onCriticalHit(living);
-                                    living.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner), 20.0F + extraDamage);
+                                    living.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner).setDamageBypassesArmor(), 20.0F + extraDamage);
                                     if (blade != null) {
                                         blade.getItem().hitEntity(blade, living, (EntityPlayer) owner);
 
@@ -320,7 +320,7 @@ public class EntityConceptual extends Entity implements IThrowableEntity {
 
 
                                 } else {
-                                    living.attackEntityFrom(DamageSource.causeMobDamage(owner), 20.0F);
+                                    living.attackEntityFrom(DamageSource.causeMobDamage(owner).setDamageBypassesArmor(), 20.0F);
                                     living.hurtTime = 0;
                                     living.hurtResistantTime = 0;
                                 }

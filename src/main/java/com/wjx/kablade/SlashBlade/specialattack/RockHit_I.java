@@ -59,7 +59,7 @@ public class RockHit_I extends SpecialAttackBase {
             if (e instanceof EntityLivingBase) {
                 ((EntityLivingBase) e).hurtResistantTime = 0;
             }
-            e.attackEntityFrom(DamageSource.causeExplosionDamage(entityPlayer),6f + extraDamage);
+            e.attackEntityFrom(DamageSource.causeExplosionDamage(entityPlayer).setDamageBypassesArmor(),6f + extraDamage);
             if (e instanceof EntityLivingBase) {
                 ((EntityLivingBase) e).hurtResistantTime = 0;
             }

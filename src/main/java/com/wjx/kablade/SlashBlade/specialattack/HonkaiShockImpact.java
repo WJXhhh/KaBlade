@@ -35,7 +35,7 @@ public class HonkaiShockImpact extends SpecialAttackBase {
                 if (!entityPlayer.world.isRemote && !(entity instanceof EntityPlayer)){
                     entityPlayer.onCriticalHit(entity);
                     ((EntityLivingBase) entity).hurtResistantTime = 0;
-                    entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),22 + extraDamage);
+                    entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),22 + extraDamage);
                     ((EntityLivingBase) entity).hurtResistantTime = 0;
                     if (entity instanceof EntityLivingBase)
                         itemStack.hitEntity((EntityLivingBase) entity,entityPlayer);
