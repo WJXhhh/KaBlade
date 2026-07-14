@@ -10,7 +10,15 @@
     "MixinItemSlashBladeDoAttack2",
     "MixinItemSlashBladeLeftAttack1",
     "MixinItemSlashBladeSA",
+    "MixinItemSlashBladeTargeting",
+    "MixinMessageMoveCommandStateHandler",
     "MixinSlashBladeLeftAttack2",
-    "MixinBladeStand"
+    "MixinBladeStand",
+    "MixinEntityGaiaIII",
+    "MixinEntityVoidHerrscher"
+  ],
+  "client": [
+    "MixinSlashBladeGroupObject",
+    "MixinSlashBladeWavefrontObject"
   ]
 }
