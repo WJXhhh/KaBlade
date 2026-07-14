@@ -355,6 +355,8 @@ public class WorldEvent {
                             entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) attacker), 3 + extraDamage);
                             EntitySummonedSwordBasePlus sword = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker, 4 + extraDamage, entity.posX + 1, entity.posY + entity.getEyeHeight() + 1, entity.posZ, 0f, 0f);
                             EntitySummonedSwordBasePlus sword2 = new EntitySummonedSwordBasePlus(world, (EntityLivingBase) attacker, 4 + extraDamage, entity.posX - 1, entity.posY + entity.getEyeHeight() + 1, entity.posZ, 0f, 0f);
+                            sword.setTargetEntityId(entity.getEntityId());
+                            sword2.setTargetEntityId(entity.getEntityId());
                             sword.setColor(3388211);
                             sword2.setColor(3388211);
                             world.spawnEntity(sword);
@@ -615,20 +617,10 @@ public class WorldEvent {
                             world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
                             world.addWeatherEffect(new EntityLightningBolt(world, player.posX, player.posY, player.posZ, true));
 
-                            for (int i = 0; i < 40; ++i) {
-                                Random r1 = new Random();
-                                Random r2 = new Random(r1.nextLong());
-                                int state1;
-                                int state2;
-                                if (r1.nextBoolean()) {
-                                    state1 = 1;
-                                } else state1 = -1;
-                                if (r2.nextBoolean()) {
-                                    state2 = 1;
-                                } else state2 = -1;
-                                PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, player.posX + (world.rand.nextDouble() * 2 * state1), player.posY + world.rand.nextDouble() * (double) player.height, player.posZ + (world.rand.nextDouble() * 2 * state2), 0.0D, 0.0D, 0.0D));
-                                PACKET_HANDLER.sendToAll(new MessageSpawnColorfulSmoke(player.posX + (world.rand.nextDouble() * 2 * state1), player.posY + world.rand.nextDouble() * (double) player.height, player.posZ + (world.rand.nextDouble() * 2 * state2), new Vec3f(1f, 0.945f, 0.333f), 2));
-                            }
+                            MessageSpawnParticleBurst burst = new MessageSpawnParticleBurst(player.posX, player.posY, player.posZ);
+                            burst.addGroup(EnumParticleTypes.EXPLOSION_NORMAL.getParticleID(), 40, 2.0, (double) player.height, 2.0);
+                            burst.addColorfulGroup(40, 2.0, (double) player.height, 2.0, 1f, 0.945f, 0.333f, 2);
+                            PACKET_HANDLER.sendToAll(burst);
                             AxisAlignedBB bb = player.getEntityBoundingBox();
                             bb = bb.grow(5, 4, 5);
                             bb = bb.offset(player.motionX, player.motionY, player.motionZ);

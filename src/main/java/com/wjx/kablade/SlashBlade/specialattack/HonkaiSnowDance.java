@@ -4,7 +4,7 @@ import com.google.common.base.Predicates;
 import com.wjx.kablade.Entity.EntityFreezeDomain;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.PotionInit;
-import com.wjx.kablade.network.MessageSpawnParticle;
+import com.wjx.kablade.network.MessageSpawnParticleBurst;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -23,7 +23,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.Random;
 
 public class HonkaiSnowDance extends SpecialAttackBase {
     @Override
@@ -88,17 +87,9 @@ public class HonkaiSnowDance extends SpecialAttackBase {
                         itemStack.hitEntity((EntityLivingBase) e,entityPlayer);
                 }
             }
-            for (int i = 0;i<60;i++){
-                double x1,z1;
-                x1 = r(world.rand);
-                z1 = r(world.rand);
-                Main.PACKET_HANDLER.sendToAll(new MessageSpawnParticle(EnumParticleTypes.CLOUD,entityPlayer.posX + (world.rand.nextDouble() * 3 * x1),entityPlayer.posY + world.rand.nextDouble(),entityPlayer.posZ + (world.rand.nextDouble() * 3 * z1)));
-            }
+            MessageSpawnParticleBurst burst = new MessageSpawnParticleBurst(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ);
+            burst.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 60, 3.0, 1.0, 3.0);
+            Main.PACKET_HANDLER.sendToAll(burst);
         }
-    }
-    double r(Random rand){
-        if (rand.nextBoolean()){
-            return 1d;
-        }else return -1d;
     }
 }
