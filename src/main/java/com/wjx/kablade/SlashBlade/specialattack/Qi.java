@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.event.KillEvent;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -44,14 +45,7 @@ public class Qi extends SpecialAttackBase {
                 }
             }
         }else {
-            Entity target = null;
-            int entityId = ItemSlashBlade.TargetEntityId.get(tag);
-            if (entityId != 0) {
-                Entity tmp = world.getEntityByID(entityId);
-                if (tmp != null && tmp.getDistance(player) < 100.0F && tmp instanceof EntityLivingBase) {
-                    target = tmp;
-                }
-            }
+            Entity target = TargetingUtil.getValidLockedTarget(player, stack, 100.0D);
             if(target != null)
             {
                 if(target instanceof EntityPlayer){

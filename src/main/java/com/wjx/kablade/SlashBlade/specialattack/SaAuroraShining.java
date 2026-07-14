@@ -5,6 +5,7 @@ import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.event.WorldEvent;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -34,8 +35,11 @@ public class SaAuroraShining extends SpecialAttackBase {
     public void doSpacialAttack(ItemStack itemStack, EntityPlayer entityPlayer) {
         World world = entityPlayer.getEntityWorld();
         float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),2f);
+        Entity target = world.isRemote ? null : TargetingUtil.resolveTarget(entityPlayer, itemStack, 30.0D, 8.0D, 8.0D);
+        int targetId = target == null ? 0 : target.getEntityId();
         for (int i=0;i<10;i++){
             EntitySummonedSwordBasePlus s = new EntitySummonedSwordBasePlus(world,entityPlayer,4 + extraDamage);
+            s.setTargetEntityId(targetId);
             s.getDataManager().set(EntitySummonedSwordBasePlus.BRIGHT,15728880);
             s.getDataManager().set(EntitySummonedSwordBasePlus.BRIGHTNESS,15f);
             int color = WorldEvent.auroraBladeColor.get(new Random().nextInt(60));

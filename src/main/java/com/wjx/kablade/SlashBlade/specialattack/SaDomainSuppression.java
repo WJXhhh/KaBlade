@@ -238,6 +238,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
                             }
                         }
                         EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,10f + extraDamage,px,py,pz,(float) ap1,(float)ay);
+                        p.setTargetEntityId(target.getEntityId());
                         p.setColor(65535);
                         world.spawnEntity(p);
                         a += 60;
@@ -271,6 +272,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
                             }
                         }
                         EntitySummonedSwordBasePlus p = new EntitySummonedSwordBasePlus(world,entityPlayer,4f + extraDamage2,px,py,pz,(float) ap1,(float)ay);
+                        p.setTargetEntityId(target.getEntityId());
                         p.setColor(65535);
                         world.spawnEntity(p);
                         a += 60;
@@ -280,6 +282,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
                         double py = cy + 1.0d;
                         double pz = cz + ((Math.sin(Math.toRadians(a)))*radius);
                         EntitySummonSwordFree p = new EntitySummonSwordFree(world,entityPlayer,3f + extraDamage3,px,py,pz,-90f,0f);
+                        p.setTargetEntityId(target.getEntityId());
                         p.setColor(65535);
                         world.spawnEntity(p);
                         a+=36;

@@ -1,29 +1,11 @@
 package com.wjx.kablade.util;
 
-import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.Vec3d;
-import java.util.List;
 
 public class SATool {
     public static Entity getEntityToWatch(EntityPlayer player) {
-        Entity target = null;
-        for (int dist = 2; dist < 20; dist += 2) {
-            Vec3d vec3 = player.getLook(1.0F);
-            double dx = vec3.x * 3.0D;
-            double dy = (double)player.getEyeHeight() + vec3.y * 3.0D;
-            double dz = vec3.z * 3.0D;
-            List<Entity> list = player.world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().grow(8.0D, 8.0D, 8.0D).offset(dx, dy, dz), EntitySelectorAttackable.getInstance());
-            float distance = 30.0f;
-            for (Entity curEntity : list) {
-                float curDist = curEntity.getDistance(player);
-                if (!(curDist < distance)) continue;
-                target = curEntity;
-                distance = curDist;
-            }
-            if (target != null) break;
-        }
-        return target;
+        // 兼容旧 SA 调用点：不再把同一个 AABB 重复查询 9 次。
+        return TargetingUtil.resolveTarget(player, player.getHeldItemMainhand(), 30.0D, 8.0D, 8.0D);
     }
 }

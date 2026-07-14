@@ -177,7 +177,10 @@ public class EntitySummonHedra extends Entity implements IThrowableEntity {
         Vec3d lookVec = getLook(owner, par1);
         Vec3d reachVec = entityPos.add(lookVec.x * reachMax, lookVec.y * reachMax, lookVec.z * reachMax);
         Entity pointedEntity = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().offset(lookVec.x * reachMax, lookVec.y * reachMax, lookVec.z * reachMax).grow((double)expandFactor + reachMax, (double)expandFactor + reachMax, (double)expandFactor + reachMax));
+        AxisAlignedBB searchBox = this.getEntityBoundingBox()
+                .grow(expandFactor, expandFactor, expandFactor)
+                .union(new AxisAlignedBB(entityPos, reachVec).grow(expandFactor + expandBorder));
+        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, searchBox);
         list.removeAll(this.alreadyHitEntity);
         double tmpDistance = reachMin;
         EntityLivingBase viewer = owner instanceof EntityLivingBase ? (EntityLivingBase)owner : null;

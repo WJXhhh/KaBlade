@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.SpeacialEffects.SPLight;
 
 import com.wjx.kablade.ExSA.entity.EntityLightningSword;
 import com.wjx.kablade.ExSA.entity.EntityPhantomSwordEx;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -103,7 +104,6 @@ public class SPLighting implements ISpecialEffect {
     }
 
     public void doAddAttack(ItemStack stack, EntityPlayer player, ItemSlashBlade.ComboSequence setCombo) {
-        Entity tmp;
         NBTTagCompound tag = ItemSlashBlade.getItemTagCompound(stack);
         World world = player.world;
         int cost = -2;
@@ -111,14 +111,7 @@ public class SPLighting implements ISpecialEffect {
             ItemSlashBlade.damageItem(stack, 5, player);
             return;
         }
-        Entity target = null;
-        int entityId = ItemSlashBlade.TargetEntityId.get(tag);
-        if (entityId != 0 && (tmp = world.getEntityByID(entityId)) != null && tmp.getDistance(player) < 30.0f) {
-            target = tmp;
-        }
-        if (target == null) {
-            target = this.getEntityToWatch(player);
-        }
+        Entity target = TargetingUtil.resolveTarget(player, stack, 30.0D, 8.0D, 8.0D);
         if (target != null && !target.isDead && !world.isRemote) {
             EntityLightningSword entityDrive;
             float baseModif = ((ItemSlashBlade)stack.getItem()).getBaseAttackModifiers(tag);
@@ -138,28 +131,5 @@ public class SPLighting implements ISpecialEffect {
             }
         }
     }
-
-    private Entity getEntityToWatch(EntityPlayer player) {
-        World world = player.world;
-        Entity target = null;
-        for (int dist = 2; dist < 20; dist += 2) {
-
-            AxisAlignedBB bb = player.getEntityBoundingBox();
-            bb = bb.grow(4.0D, 0.0D, 4.0D);
-            bb = bb.offset(player.motionX, player.motionY, player.motionZ);
-
-            List<Entity> list = world.getEntitiesInAABBexcluding(player, bb, EntitySelectorAttackable.getInstance());
-            float distance = 30.0f;
-            for (Entity curEntity : list) {
-                float curDist = curEntity.getDistance(player);
-                if (!(curDist < distance)) continue;
-                target = curEntity;
-                distance = curDist;
-            }
-            if (target != null) break;
-        }
-        return target;
-    }
-
 
 }
