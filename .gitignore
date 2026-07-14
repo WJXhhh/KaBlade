@@ -29,6 +29,7 @@ run/
 /gg.ps1
 /opencode.json
 /AGENTS.md
+/newtech/
 
 # Logs, crash reports and runtime dumps
 *.log
