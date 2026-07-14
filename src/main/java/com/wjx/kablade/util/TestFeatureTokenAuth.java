@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraftforge.fml.relauncher.FMLInjectionData;
 
 /**
  * 测试功能的令牌校验。服务端按玩家 UUID 保存授权状态，客户端不能仅靠伪造交互包开启功能。
@@ -25,10 +26,11 @@ public final class TestFeatureTokenAuth {
     }
 
     /**
-     * config 目录的父目录就是当前启动的游戏目录，能自然适配启动器的版本隔离。
+     * Forge 注入的游戏目录，能自然适配启动器的版本隔离。
      */
-    public static void init(File configDirectory) {
-        tokenFile = new File(configDirectory.getParentFile(), "token.txt");
+    public static void init() {
+        File gameDirectory = (File) FMLInjectionData.data()[6];
+        tokenFile = new File(gameDirectory, "token.txt");
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {

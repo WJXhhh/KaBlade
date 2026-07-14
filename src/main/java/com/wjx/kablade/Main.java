@@ -131,7 +131,7 @@ public class Main
         ModConfig.init(event);
         sseee();
         logger = event.getModLog();
-        TestFeatureTokenAuth.init(event.getModConfigurationDirectory());
+        TestFeatureTokenAuth.init();
         //int i;
         proxy.preInit(event);
 
