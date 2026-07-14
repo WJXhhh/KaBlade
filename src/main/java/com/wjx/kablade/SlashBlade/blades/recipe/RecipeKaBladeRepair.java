@@ -6,7 +6,6 @@ import com.wjx.kablade.config.ModConfig;
 import mods.flammpfeil.slashblade.RecipeInstantRepair;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -59,7 +58,7 @@ public class RecipeKaBladeRepair extends ShapedOreRecipe {
             return false;
 
         List<ItemStack> ores = OreDictionary.getOres("cobblestone");
-        if (!containsMatch(false, ores, new ItemStack(Blocks.COBBLESTONE)))
+        if (!containsMatch(false, ores, stone))
             return false;
 
         ItemStack target = cInv.getStackInRowAndColumn(0, 1);
