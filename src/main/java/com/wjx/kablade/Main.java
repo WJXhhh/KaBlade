@@ -153,7 +153,7 @@ public class Main
     public void init(FMLInitializationEvent event)
     {
         proxy.init(event);
-        if (!Loader.isModLoaded("networkmod")) //Check Netease
+        if (false) //Check Netease
         {
             try{
 
