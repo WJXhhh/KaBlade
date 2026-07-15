@@ -57,7 +57,7 @@ public class HonkaiFallingPetals extends SpecialAttackBase {
             if (entity1 instanceof EntityLivingBase) {
                 ((EntityLivingBase) entity1).hurtResistantTime = 0;
             }
-            entity1.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),15f + extraDamage);
+            entity1.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),15f + extraDamage);
             if (entity1 instanceof EntityLivingBase) {
                 ((EntityLivingBase) entity1).hurtResistantTime = 0;
             }

@@ -85,7 +85,7 @@ public class EntityRaikiriBlade extends AbsEntityShield {
             for(Entity e : entitieee){
                 if(e instanceof EntityLivingBase){
                     if (!world.isRemote)
-                    e.attackEntityFrom(DamageSource.causeMobDamage(thrower),2f);
+                    e.attackEntityFrom(DamageSource.causeMobDamage(thrower).setDamageBypassesArmor(),2f);
                 }
             }
         }

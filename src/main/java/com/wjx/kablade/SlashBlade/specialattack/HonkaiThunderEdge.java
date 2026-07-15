@@ -56,7 +56,7 @@ public class HonkaiThunderEdge extends SpecialAttackBase {
                     if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
                         entityPlayer.onCriticalHit(e);
                         ((EntityLivingBase) e).hurtResistantTime = 0;
-                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),(50f + extraDamage)*1.4f);
+                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),(50f + extraDamage)*1.4f);
                         ((EntityLivingBase) e).hurtResistantTime = 0;
                         if (e instanceof EntityLivingBase)
                             itemStack.hitEntity((EntityLivingBase) e,entityPlayer);

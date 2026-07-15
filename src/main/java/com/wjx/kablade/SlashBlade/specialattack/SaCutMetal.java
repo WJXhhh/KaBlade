@@ -37,14 +37,14 @@ public class SaCutMetal extends SpecialAttackBase {
                 EntityLivingBase en = (EntityLivingBase) e;
                 entityPlayer.onCriticalHit(en);
                 en.hurtResistantTime = 0;
-                en.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),8 + extraDamage);
+                en.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),8 + extraDamage);
                 en.hurtResistantTime = 0;
                 if (en instanceof EntityLivingBase)
                     itemStack.hitEntity(en,entityPlayer);
                 double armor;
                 armor =en.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue();
                 en.hurtResistantTime = 0;
-                en.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer), (float) (armor*0.5d));
+                en.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(), (float) (armor*0.5d));
                 en.hurtResistantTime = 0;
                 if (en instanceof EntityLivingBase)
                     itemStack.hitEntity(en,entityPlayer);

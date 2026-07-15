@@ -69,7 +69,7 @@ public class HonkaiWindEnchantment extends SpecialAttackBase {
                         ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, pointedEntity, entityPlayer, true);
                         entityPlayer.onCriticalHit(pointedEntity);
                         ((EntityLivingBase) pointedEntity).hurtResistantTime = 0;
-                        pointedEntity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20);
+                        pointedEntity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),20);
                         ((EntityLivingBase) pointedEntity).hurtResistantTime = 0;
                     }
                 }

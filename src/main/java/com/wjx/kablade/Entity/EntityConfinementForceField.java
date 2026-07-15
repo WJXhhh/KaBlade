@@ -98,7 +98,7 @@ public class EntityConfinementForceField extends Entity implements IThrowableEnt
                 if (e instanceof EntityLivingBase) {
                     if (e != owner && owner instanceof EntityPlayer) {
                         ((EntityLivingBase) e).hurtResistantTime = 0;
-                        ((EntityLivingBase) e).attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner), 4.0F);
+                        ((EntityLivingBase) e).attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner).setDamageBypassesArmor(), 4.0F);
                         ((EntityLivingBase) e).hurtResistantTime = 0;
                         if (blade != null && owner instanceof EntityPlayer) {
                             blade.hitEntity((EntityLivingBase) e, (EntityPlayer) owner);
@@ -119,7 +119,7 @@ public class EntityConfinementForceField extends Entity implements IThrowableEnt
 
                     } else if(e!=owner){
                         ((EntityLivingBase) e).hurtResistantTime = 0;
-                        ((EntityLivingBase) e).attackEntityFrom(DamageSource.causeMobDamage(owner), 4.0F);
+                        ((EntityLivingBase) e).attackEntityFrom(DamageSource.causeMobDamage(owner).setDamageBypassesArmor(), 4.0F);
                         ((EntityLivingBase) e).hurtResistantTime = 0;
                         NBTTagCompound entityProperties = KaBladeEntityProperties.getPropCompound(e);
                         entityProperties.setInteger(KaBladeEntityProperties.CONFINEMENT,2);

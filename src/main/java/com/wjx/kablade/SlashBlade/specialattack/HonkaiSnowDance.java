@@ -81,7 +81,7 @@ public class HonkaiSnowDance extends SpecialAttackBase {
                 if (e instanceof EntityLivingBase){
                     entityPlayer.onCriticalHit(e);
                     ((EntityLivingBase) e).hurtResistantTime = 0;
-                    e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),20f + extraDamage);
+                    e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),20f + extraDamage);
                     ((EntityLivingBase) e).hurtResistantTime = 0;
                     if (e instanceof EntityLivingBase)
                         itemStack.hitEntity((EntityLivingBase) e,entityPlayer);

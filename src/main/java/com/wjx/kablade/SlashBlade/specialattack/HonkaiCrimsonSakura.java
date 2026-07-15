@@ -51,7 +51,7 @@ public class HonkaiCrimsonSakura extends SpecialAttackBase {
 
                         entityPlayer.onCriticalHit(e);
                         ((EntityLivingBase) e).hurtResistantTime = 0;
-                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer),(50f + extraDamage)*1.2f);
+                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),(50f + extraDamage)*1.2f);
                         ((EntityLivingBase) e).hurtResistantTime = 0;
                         if (pointedEntity instanceof EntityLivingBase)
                             itemStack.hitEntity((EntityLivingBase) pointedEntity,entityPlayer);
