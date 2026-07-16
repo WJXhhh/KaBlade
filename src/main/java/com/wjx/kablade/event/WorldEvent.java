@@ -309,12 +309,6 @@ public class WorldEvent {
         World world = entity.world;
         NBTTagCompound KaBladeCompound = KaBladeEntityProperties.getPropCompound(entity);
         if (!entity.world.isRemote) {
-            if (entity.getEntityData().getInteger("frost_blade_1") > 0) {
-                if (!entity.world.isRemote) {
-                    entity.getEntityData().setInteger("frost_blade_1", entity.getEntityData().getInteger("frost_blade_1") - 1);
-                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 60, 2));
-                }
-            }
             if (entity.hasCapability(CapabilityLoader.SlashPotion, null)) {
                 IPotionInSlash slash = entity.getCapability(CapabilityLoader.SlashPotion, null);
                 Capability.IStorage<IPotionInSlash> storage = CapabilityLoader.SlashPotion.getStorage();

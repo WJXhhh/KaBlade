@@ -6,6 +6,7 @@ import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -103,6 +104,30 @@ public final class TargetingUtil {
         return rayTraceEntityWithCount(owner, reach, extraBorder).target;
     }
 
+    /** Final harmful-target check for server-side SA damage. */
+    public static boolean canDamage(EntityLivingBase owner, Entity entity) {
+        if (!(entity instanceof EntityLivingBase) || entity == owner || !entity.isEntityAlive()) {
+            return false;
+        }
+        if (!EntitySelectorAttackable.getInstance().apply(entity)) {
+            return false;
+        }
+        if (entity instanceof EntityPlayer) {
+            EntityPlayer targetPlayer = (EntityPlayer) entity;
+            if (targetPlayer.isCreative() || targetPlayer.isSpectator()) {
+                return false;
+            }
+            if (owner instanceof EntityPlayer && !((EntityPlayer) owner).canAttackPlayer(targetPlayer)) {
+                return false;
+            }
+        }
+        if (owner.isOnSameTeam(entity) && owner.getTeam() != null
+                && !owner.getTeam().getAllowFriendlyFire()) {
+            return false;
+        }
+        return !(entity instanceof EntityTameable) || !((EntityTameable) entity).isOwner(owner);
+    }
+
     private static RaySearchResult rayTraceEntityWithCount(EntityLivingBase owner, double reach, float extraBorder) {
         World world = owner.world;
         Vec3d start = owner.getPositionEyes(1.0F);
@@ -155,14 +180,7 @@ public final class TargetingUtil {
     }
 
     private static boolean isAttackableCandidate(EntityLivingBase owner, Entity entity, boolean requireVisible) {
-        if (entity == null || entity == owner || !entity.isEntityAlive() || !entity.canBeCollidedWith()) {
-            return false;
-        }
-        if (!EntitySelectorAttackable.getInstance().apply(entity)) {
-            return false;
-        }
-        if (owner instanceof EntityPlayer && entity instanceof EntityPlayer
-                && !((EntityPlayer) owner).canAttackPlayer((EntityPlayer) entity)) {
+        if (!canDamage(owner, entity) || !entity.canBeCollidedWith()) {
             return false;
         }
         return !requireVisible || owner.canEntityBeSeen(entity);
