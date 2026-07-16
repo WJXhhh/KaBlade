@@ -38,6 +38,7 @@ public class Nue extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.ZAIZAN.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 5)
                 )

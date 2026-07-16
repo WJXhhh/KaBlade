@@ -38,6 +38,7 @@ public class GalacticNova extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.LIGHTS_ON_STAGE.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
                         new EnchantmentDefinition(

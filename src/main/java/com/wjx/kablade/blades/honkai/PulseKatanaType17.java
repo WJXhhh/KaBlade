@@ -39,7 +39,8 @@ public class PulseKatanaType17 extends BladeDefineBase {
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ModSlashArts.FROST_BLADE.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 4),
+                        new EnchantmentDefinition(
                         ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 1))
         ));
     }

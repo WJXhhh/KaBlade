@@ -3,6 +3,7 @@ package com.wjx.kablade.property;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.specialeffect.FuelTheRuin;
+import com.wjx.kablade.specialeffect.RoaringNimbus;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -87,6 +88,14 @@ public final class KabladeBladeProperties {
                                 ? 100 : data.get(FuelTheRuin.HUD_BUFF_KEY))
                         .orElse(0))
                 .maxValue(100)
+                .build());
+
+        PlayerPropertyRegistry.register(PlayerProperty.builder("roaring_nimbus")
+                .displayName(Component.translatable("prop.kablade.roaring_nimbus")
+                        .withStyle(ChatFormatting.AQUA))
+                .intValue(RoaringNimbus::readiness)
+                .activeWhen(RoaringNimbus::isHeldBy)
+                .maxValue(RoaringNimbus.COOLDOWN_TICKS)
                 .build());
     }
 }

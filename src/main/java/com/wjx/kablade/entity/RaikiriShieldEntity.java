@@ -3,6 +3,7 @@ package com.wjx.kablade.entity;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.network.protocol.Packet;
@@ -10,6 +11,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -43,6 +45,8 @@ public class RaikiriShieldEntity extends Entity {
 
     private static final int LIFETIME = 200;
     private static final double CONTACT_RADIUS = 1.0;
+    private static final int PARALYSIS_DURATION = 40;
+    private static final int PARALYSIS_AMPLIFIER = 0;
     /** amplifierCalc 琛ユ绯绘暟锛堣€愪箙鍜屼激瀹冲叡鐢ㄥ悓涓€涓斁澶у櫒鍊硷級銆?*/
     private static final float AMP_FACTOR = 1.0F;
 
@@ -132,7 +136,11 @@ public class RaikiriShieldEntity extends Entity {
                 e -> e != this && e instanceof LivingEntity living
                         && SaTargeting.canDamageAttackable(this.thrower, living))) {
             if (e instanceof LivingEntity target) {
-                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, (ServerLevel) this.level(), this, this.thrower, contactDamage);
+                if (com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                        target, (ServerLevel) this.level(), this, this.thrower, contactDamage)) {
+                    target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
+                            PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
+                }
             }
         }
     }

@@ -43,6 +43,7 @@ public class FairySword extends BladeDefineBase {
                         .addSpecialEffect(ModSpecialEffects.POWER_OF_WIND.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2)
                 )

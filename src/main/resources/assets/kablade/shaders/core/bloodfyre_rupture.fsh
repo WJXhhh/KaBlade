@@ -44,17 +44,17 @@ void main() {
         color *= 1.30 + fibers * 0.82;
     } else if (kind < 2.5) {
         float core = 1.0 - smoothstep(0.0, width * 0.30, abs(p.x));
-        color = mix(vec3(1.0, 0.22, 0.018), vec3(1.0, 0.96, 0.68), core);
+        color = mix(vec3(1.0, 0.22, 0.018), vec3(1.0, 0.99, 0.88), core);
         alpha *= 0.68 + core * 0.52;
-        color *= 1.65 + core * 2.25;
+        color *= 2.15 + core * 3.10;
     } else {
         vec2 discUv = vec2(fract(texCoord0.x * 0.5) * 2.0, v) * 2.0 - 1.0;
         float radius = length(discUv);
         float rays = pow(max(0.0, sin(atan(discUv.y, discUv.x) * 9.0 + n * 4.0)), 7.0);
         float disc = 1.0 - smoothstep(0.06, 0.95, radius);
         alpha = vertexColor.a * ColorModulator.a * (disc * 0.52 + rays * 0.72);
-        color = mix(vec3(1.0, 0.10, 0.015), vec3(1.0, 0.94, 0.65), 1.0 - smoothstep(0.0, 0.34, radius));
-        color *= 1.65 + rays * 1.8;
+        color = mix(vec3(1.0, 0.10, 0.015), vec3(1.0, 0.99, 0.86), 1.0 - smoothstep(0.0, 0.34, radius));
+        color *= 2.10 + rays * 2.80;
     }
 
     if (alpha < 0.004) discard;

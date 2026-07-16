@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.specialeffect.BurstDrive;
 import com.wjx.kablade.specialeffect.DivinePenalty;
 import com.wjx.kablade.specialeffect.EMInduction;
+import com.wjx.kablade.specialeffect.EMPulsar;
 import com.wjx.kablade.specialeffect.FuelTheRuin;
 import com.wjx.kablade.specialeffect.GlacialBane;
 import com.wjx.kablade.specialeffect.HolyEnergyImpact;
@@ -11,6 +12,7 @@ import com.wjx.kablade.specialeffect.Oripursuit;
 import com.wjx.kablade.specialeffect.Phoenix;
 import com.wjx.kablade.specialeffect.PowerOfWind;
 import com.wjx.kablade.specialeffect.RagingIzumo;
+import com.wjx.kablade.specialeffect.RoaringNimbus;
 import com.wjx.kablade.specialeffect.SPLighting;
 import com.wjx.kablade.specialeffect.ThunderBlitz;
 import com.wjx.kablade.specialeffect.Turbulence;
@@ -60,6 +62,12 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> EM_INDUCTION = REGISTRY.register(
             "em_induction", EMInduction::new);
+
+    public static final RegistryObject<SpecialEffect> EM_PULSAR = REGISTRY.register(
+            "em_pulsar", EMPulsar::new);
+
+    public static final RegistryObject<SpecialEffect> ROARING_NIMBUS = REGISTRY.register(
+            "roaring_nimbus", RoaringNimbus::new);
 
     public static final RegistryObject<SpecialEffect> GLACIAL_BANE = REGISTRY.register(
             "glacial_bane", GlacialBane::new);

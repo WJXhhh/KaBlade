@@ -33,6 +33,7 @@ public class BambooLumi extends BladeDefineBase {
                         .maxDamage(220)
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2)
                 )

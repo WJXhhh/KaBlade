@@ -42,6 +42,7 @@ public class KeyOfLimpidity extends BladeDefineBase {
                         .addSpecialEffect(ModSpecialEffects.TRUE_SELF.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 5),
                         new EnchantmentDefinition(

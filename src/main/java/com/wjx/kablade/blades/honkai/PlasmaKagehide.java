@@ -40,6 +40,7 @@ public class PlasmaKagehide extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.ABSOLUTE_ZERO.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2),
                         new EnchantmentDefinition(

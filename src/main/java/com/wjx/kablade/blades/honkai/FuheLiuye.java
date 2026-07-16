@@ -38,7 +38,8 @@ public class FuheLiuye extends BladeDefineBase {
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ModSlashArts.CHOP_WILLOW.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2),
+                        new EnchantmentDefinition(
                         ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 1))
         ));
     }

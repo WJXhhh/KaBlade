@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.wjx.kablade.client.KabladeRenderTypes;
-import com.wjx.kablade.client.shader.OculusSkillRenderer;
 import com.wjx.kablade.entity.SwordEnlightenmentEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -24,6 +23,7 @@ public final class SwordEnlightenmentRenderer extends EntityRenderer<SwordEnligh
     private static final int LOOP_SEGMENTS = 58;
     private static final int SWEEP_SEGMENTS = 54;
     private static final int SHARD_COUNT = 58;
+    private static final float BLADE_LIGHT_RADIUS_SCALE = 1.35F;
 
     public SwordEnlightenmentRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -33,10 +33,7 @@ public final class SwordEnlightenmentRenderer extends EntityRenderer<SwordEnligh
     @Override
     public void render(SwordEnlightenmentEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if (KabladeRenderTypes.useShaderFallbackTextures()
-                && !OculusSkillRenderer.isRenderingPass()
-                && OculusSkillRenderer.runPostIfNeeded(immediate ->
-                render(entity, entityYaw, partialTick, poseStack, immediate, packedLight))) {
+        if (BloodfyreOculusPipeline.enqueue(entity, partialTick)) {
             super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
             return;
         }
@@ -57,13 +54,110 @@ public final class SwordEnlightenmentRenderer extends EntityRenderer<SwordEnligh
         renderPurpleArcSlashes(age, mat, vc);
         renderDiagonalBlades(age, mat, vc);
         renderFragments(age, mat, vc);
-        if (KabladeRenderTypes.useShaderFallbackTextures()) {
-            renderOculusFallbackFilaments(age, mat, vc);
-        }
 
         poseStack.popPose();
         renderBillboards(entity, age, poseStack, vc);
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+    }
+
+    static void renderOculusColor(PoseStack poseStack,
+                                  BloodfyreOculusPipeline.DrawContext context,
+                                  float age, float yaw,
+                                  Vector3f cameraLeft, Vector3f cameraUp) {
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.SWORD_ENLIGHTENMENT,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderOculusGeometry(age, yaw, cameraLeft, cameraUp, poseStack, vc));
+    }
+
+    static void renderOculusGlow(PoseStack poseStack,
+                                 BloodfyreOculusPipeline.DrawContext context,
+                                 float age, float yaw,
+                                 Vector3f cameraLeft, Vector3f cameraUp) {
+        // Bloom only the cutting edges. Feeding the full halo shell and pulse billboards into
+        // the mask merges the lattice into one wandering orb after five blur passes.
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.SWORD_ENLIGHTENMENT,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE, vc -> {
+                    poseStack.pushPose();
+                    poseStack.mulPose(Axis.YP.rotationDegrees(-yaw));
+                    Matrix4f mat = poseStack.last().pose();
+                    renderSlashTimeline(age, mat, vc);
+                    renderPurpleArcSlashes(age, mat, vc);
+                    renderDiagonalBlades(age, mat, vc);
+                    poseStack.popPose();
+                });
+    }
+
+    private static void renderOculusGeometry(float age, float yaw,
+                                             Vector3f cameraLeft, Vector3f cameraUp,
+                                             PoseStack poseStack, VertexConsumer vc) {
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.YP.rotationDegrees(-yaw));
+        Matrix4f mat = poseStack.last().pose();
+        renderGroundRings(age, mat, vc);
+        renderHaloShell(age, mat, vc);
+        renderSlashTimeline(age, mat, vc);
+        renderPurpleArcSlashes(age, mat, vc);
+        renderDiagonalBlades(age, mat, vc);
+        renderFragments(age, mat, vc);
+        poseStack.popPose();
+        renderOculusBillboards(age, yaw, cameraLeft, cameraUp, poseStack.last().pose(), vc);
+    }
+
+    private static void renderOculusBillboards(float age, float yaw,
+                                               Vector3f cameraLeft, Vector3f cameraUp,
+                                               Matrix4f mat, VertexConsumer vc) {
+        drawOculusPulseBillboard(age, yaw, cameraLeft, cameraUp, mat, vc, 7.4F, 4.2F,
+                0.0F, 1.25F, 2.35F, 6.4F, 0.86F, 0.48F);
+        drawOculusPulseBillboard(age, yaw, cameraLeft, cameraUp, mat, vc, 11.5F, 6.0F,
+                0.15F, 1.35F, 2.55F, 4.8F, 0.74F, -12.0F);
+        drawOculusPulseBillboard(age, yaw, cameraLeft, cameraUp, mat, vc, 17.0F, 7.0F,
+                0.0F, 1.58F, 2.75F, 4.5F, 0.68F, 22.0F);
+        drawOculusPulseBillboard(age, yaw, cameraLeft, cameraUp, mat, vc, 23.0F, 7.5F,
+                -0.10F, 1.72F, 3.05F, 4.1F, 0.54F, -28.0F);
+        drawOculusPulseBillboard(age, yaw, cameraLeft, cameraUp, mat, vc, 31.0F, 9.0F,
+                0.0F, 1.80F, 3.30F, 5.1F, 0.62F, 10.0F);
+    }
+
+    private static void drawOculusPulseBillboard(float age, float yaw,
+                                                 Vector3f cameraLeft, Vector3f cameraUp,
+                                                 Matrix4f mat, VertexConsumer vc,
+                                                 float center, float duration,
+                                                 float x, float y, float z, float scale,
+                                                 float alphaScale, float rotation) {
+        float local = 1.0F - Math.abs(age - center) / duration;
+        float pulse = smootherStep(Mth.clamp(local, 0.0F, 1.0F));
+        if (pulse <= 0.01F) {
+            return;
+        }
+        float flicker = 0.82F + 0.18F * Mth.sin(age * 1.7F + center);
+        Vector3f worldCenter = new Vector3f(x, y, z).rotateY(-yaw * Mth.DEG_TO_RAD);
+        Vector3f right = new Vector3f(cameraLeft).negate().normalize();
+        Vector3f up = new Vector3f(cameraUp).normalize();
+        float angle = (rotation + age * 2.4F) * Mth.DEG_TO_RAD;
+        float cos = Mth.cos(angle);
+        float sin = Mth.sin(angle);
+        Vector3f screenX = new Vector3f(right).mul(cos).add(new Vector3f(up).mul(sin));
+        Vector3f screenY = new Vector3f(up).mul(cos).sub(new Vector3f(right).mul(sin));
+        float half = scale * (0.70F + pulse * 0.38F) * 0.5F;
+        Vector3f p0 = new Vector3f(worldCenter).sub(new Vector3f(screenX).mul(half))
+                .sub(new Vector3f(screenY).mul(half));
+        Vector3f p1 = new Vector3f(worldCenter).add(new Vector3f(screenX).mul(half))
+                .sub(new Vector3f(screenY).mul(half));
+        Vector3f p2 = new Vector3f(worldCenter).add(new Vector3f(screenX).mul(half))
+                .add(new Vector3f(screenY).mul(half));
+        Vector3f p3 = new Vector3f(worldCenter).sub(new Vector3f(screenX).mul(half))
+                .add(new Vector3f(screenY).mul(half));
+        quad(vc, mat,
+                p0.x, p0.y, p0.z, 6.0F, 1.0F,
+                p1.x, p1.y, p1.z, 7.0F, 1.0F,
+                p2.x, p2.y, p2.z, 7.0F, 0.0F,
+                p3.x, p3.y, p3.z, 6.0F, 0.0F,
+                0.96F, 0.78F, 1.0F, pulse * alphaScale * flicker);
+    }
+
+    private static boolean useLegacyShaderFallback() {
+        return KabladeRenderTypes.useShaderFallbackTextures()
+                && !BloodfyreOculusPipeline.isPrivateGeometryPass();
     }
 
     private static void renderGroundRings(float age, Matrix4f mat, VertexConsumer vc) {
@@ -273,7 +367,7 @@ public final class SwordEnlightenmentRenderer extends EntityRenderer<SwordEnligh
 
     private void renderBillboards(SwordEnlightenmentEntity entity, float age,
                                   PoseStack poseStack, VertexConsumer vc) {
-        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+        if (useLegacyShaderFallback()) {
             renderOculusFallbackStarbursts(entity, age, poseStack, vc);
             return;
         }
@@ -421,6 +515,7 @@ public final class SwordEnlightenmentRenderer extends EntityRenderer<SwordEnligh
                                           float startDeg, float endDeg,
                                           float yStart, float yEnd, float zOffset, float width,
                                           float red, float green, float blue, float alphaScale) {
+        radius *= BLADE_LIGHT_RADIUS_SCALE;
         float reveal = smootherStep(stage(age, start, duration));
         float fade = 1.0F - smootherStep(stage(age, start + duration + 9.0F, 9.0F));
         float alpha = reveal * fade * alphaScale;
@@ -762,8 +857,9 @@ public final class SwordEnlightenmentRenderer extends EntityRenderer<SwordEnligh
 
     private static void vertex(VertexConsumer vc, Matrix4f mat, float x, float y, float z,
                                float u, float v, float red, float green, float blue, float alpha) {
-        float safeAlpha = Mth.clamp(KabladeRenderTypes.fallbackAlpha(alpha, 1.28F), 0.0F, 1.0F);
-        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+        float alphaScale = useLegacyShaderFallback() ? 1.28F : 1.0F;
+        float safeAlpha = Mth.clamp(alpha * alphaScale, 0.0F, 1.0F);
+        if (useLegacyShaderFallback()) {
             vc.vertex(mat, x, y, z).color(red, green, blue, safeAlpha).endVertex();
             return;
         }

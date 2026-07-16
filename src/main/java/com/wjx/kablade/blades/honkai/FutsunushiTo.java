@@ -35,6 +35,7 @@ public class FutsunushiTo extends BladeDefineBase {
                         .addSpecialEffect(ModSpecialEffects.RAGING_IZUMO.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 6),
                         new EnchantmentDefinition(

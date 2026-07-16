@@ -20,7 +20,7 @@ public final class BloodfyreFrenzyArts extends SlashArts {
 
     private static final float BASE_DAMAGE = 54.0F;
     private static final float ATTACK_FACTOR = 12.0F;
-    private static final float DAMAGE_MULTIPLIER = 2.5F;
+    private static final float DAMAGE_MULTIPLIER = 4.0F;
 
     public BloodfyreFrenzyArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);

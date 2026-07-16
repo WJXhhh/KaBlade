@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.wjx.kablade.client.KabladeRenderTypes;
-import com.wjx.kablade.client.shader.OculusSkillRenderer;
 import com.wjx.kablade.entity.UtpalaAuraEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -35,10 +34,7 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
     @Override
     public void render(UtpalaAuraEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if (KabladeRenderTypes.useShaderFallbackTextures()
-                && !OculusSkillRenderer.isRenderingPass()
-                && OculusSkillRenderer.runPostIfNeeded(immediate ->
-                render(entity, entityYaw, partialTick, poseStack, immediate, packedLight))) {
+        if (BloodfyreOculusPipeline.enqueue(entity, partialTick)) {
             super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
             return;
         }
@@ -59,12 +55,49 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
         renderIceBurst(age, poseStack, vc);
         renderPhantomBlade(age, poseStack, vc);
         renderResidualStream(age, poseStack, vc);
-        if (KabladeRenderTypes.useShaderFallbackTextures()) {
-            renderOculusBloomOverlay(age, poseStack, vc);
-        }
 
         poseStack.popPose();
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+    }
+
+    static void renderOculusColor(PoseStack poseStack,
+                                  BloodfyreOculusPipeline.DrawContext context,
+                                  float age, float yaw) {
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.YP.rotationDegrees(-yaw));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.UTPALA,
+                BloodfyreOculusPipeline.BlendMode.ALPHA,
+                vc -> renderLocalVeil(age, poseStack, vc));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.UTPALA,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderOculusMain(age, poseStack, vc));
+        poseStack.popPose();
+    }
+
+    static void renderOculusGlow(PoseStack poseStack,
+                                 BloodfyreOculusPipeline.DrawContext context,
+                                 float age, float yaw) {
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.YP.rotationDegrees(-yaw));
+        context.draw(BloodfyreOculusPipeline.AnalyticShader.UTPALA,
+                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
+                vc -> renderOculusMain(age, poseStack, vc));
+        poseStack.popPose();
+    }
+
+    private static void renderOculusMain(float age, PoseStack poseStack, VertexConsumer vc) {
+        renderFootGlow(age, poseStack, vc);
+        renderOpeningIceRing(age, poseStack, vc);
+        renderOpeningWindRipples(age, poseStack, vc);
+        renderVortex(age, poseStack, vc);
+        renderIceBurst(age, poseStack, vc);
+        renderPhantomBlade(age, poseStack, vc);
+        renderResidualStream(age, poseStack, vc);
+    }
+
+    private static boolean useLegacyShaderFallback() {
+        return KabladeRenderTypes.useShaderFallbackTextures()
+                && !BloodfyreOculusPipeline.isPrivateGeometryPass();
     }
 
     private static void renderFootGlow(float age, PoseStack poseStack, VertexConsumer vc) {
@@ -705,7 +738,7 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
                                          float tailRadius, float headRadius, float halfWidth,
                                          float y0, float y1, float alpha,
                                          float red, float green, float blue) {
-        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+        if (useLegacyShaderFallback()) {
             drawRadialStreakFallback(mat, vc, angle, tailRadius, headRadius, halfWidth,
                     y0, y1, alpha, red, green, blue);
             return;
@@ -789,7 +822,7 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
 
     private static void drawBrokenRing(Matrix4f mat, VertexConsumer vc, float y, float radius, float width,
                                        float scatter, float red, float green, float blue, float alpha) {
-        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+        if (useLegacyShaderFallback()) {
             drawBrokenRingBands(mat, vc, y, radius, width, scatter, red, green, blue, alpha);
             return;
         }
@@ -819,7 +852,7 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
 
     private static void drawRing(Matrix4f mat, VertexConsumer vc, float y, float radius, float width,
                                  float red, float green, float blue, float alpha) {
-        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+        if (useLegacyShaderFallback()) {
             drawRingBands(mat, vc, y, radius, width, red, green, blue, alpha);
             return;
         }
@@ -960,7 +993,7 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
                                    float x1, float y1, float z1, float r1, float g1, float b1, float a1,
                                    float x2, float y2, float z2, float r2, float g2, float b2, float a2,
                                    float x3, float y3, float z3, float r3, float g3, float b3, float a3) {
-        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+        if (useLegacyShaderFallback()) {
             fallbackQuad(vc, mat,
                     x0, y0, z0, r0, g0, b0, a0,
                     x1, y1, z1, r1, g1, b1, a1,
@@ -980,7 +1013,7 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
                                         float x1, float y1, float z1, float r1, float g1, float b1, float a1,
                                         float x2, float y2, float z2, float r2, float g2, float b2, float a2,
                                         float x3, float y3, float z3, float r3, float g3, float b3, float a3) {
-        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+        if (useLegacyShaderFallback()) {
             fallbackQuad(vc, mat,
                     x0, y0, z0, r0, g0, b0, a0,
                     x1, y1, z1, r1, g1, b1, a1,
@@ -1027,10 +1060,10 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
                                float x, float y, float z,
                                float red, float green, float blue, float alpha,
                                float u, float v) {
-        float safeAlpha = KabladeRenderTypes.useShaderFallbackTextures()
+        float safeAlpha = useLegacyShaderFallback()
                 ? Mth.clamp(alpha * 1.32F, 0.0F, 1.0F)
                 : alpha;
-        if (KabladeRenderTypes.useShaderFallbackTextures()) {
+        if (useLegacyShaderFallback()) {
             fallbackVertex(vc, mat, x, y, z, red, green, blue, alpha);
             return;
         }

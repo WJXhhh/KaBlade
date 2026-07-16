@@ -38,7 +38,8 @@ public class Osahoko extends BladeDefineBase {
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .addSpecialEffect(ModSpecialEffects.TURBULENCE.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
+                        new EnchantmentDefinition(
                         ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2))
         ));
     }

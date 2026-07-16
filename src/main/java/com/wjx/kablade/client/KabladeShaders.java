@@ -3,6 +3,7 @@ package com.wjx.kablade.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.renderer.BloodfyreOculusPipeline;
+import com.wjx.kablade.client.renderer.RaidenCycloneOculusPipeline;
 import com.wjx.kablade.client.renderer.ShockImpactOculusPipeline;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +20,7 @@ public final class KabladeShaders {
 
     private static ShaderInstance stageLight;
     private static ShaderInstance shockImpact;
+    private static ShaderInstance raidenCyclone;
     private static ShaderInstance zaizan;
     private static ShaderInstance utpalaAura;
     private static ShaderInstance swordEnlightenment;
@@ -34,6 +36,7 @@ public final class KabladeShaders {
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
         BloodfyreOculusPipeline.invalidateResources();
+        RaidenCycloneOculusPipeline.invalidateResources();
         ShockImpactOculusPipeline.invalidateResources();
         event.registerShader(new ShaderInstance(
                         event.getResourceProvider(),
@@ -45,6 +48,11 @@ public final class KabladeShaders {
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "shock_impact"),
                         DefaultVertexFormat.POSITION_COLOR_TEX),
                 shader -> shockImpact = shader);
+        event.registerShader(new ShaderInstance(
+                        event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "raiden_cyclone"),
+                        DefaultVertexFormat.POSITION_COLOR_TEX),
+                shader -> raidenCyclone = shader);
         event.registerShader(new ShaderInstance(
                         event.getResourceProvider(),
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "zaizan"),
@@ -93,6 +101,10 @@ public final class KabladeShaders {
 
     public static ShaderInstance shockImpact() {
         return shockImpact;
+    }
+
+    public static ShaderInstance raidenCyclone() {
+        return raidenCyclone;
     }
 
     public static ShaderInstance zaizan() {

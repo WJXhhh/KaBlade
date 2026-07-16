@@ -11,6 +11,8 @@ import com.wjx.kablade.client.shader.ShaderCompat;
 import com.wjx.kablade.client.shader.SkillPostShaders;
 import com.wjx.kablade.client.shader.SkillShaderTarget;
 import com.wjx.kablade.entity.BloodfyreFrenzyEntity;
+import com.wjx.kablade.entity.SwordEnlightenmentEntity;
+import com.wjx.kablade.entity.UtpalaAuraEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
@@ -53,7 +55,10 @@ import java.util.function.Consumer;
 @Mod.EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class BloodfyreOculusPipeline {
     private static final Map<Integer, QueuedEffect> QUEUED = new LinkedHashMap<>();
-    private static final BloodfyreFramebuffer FRAMEBUFFER = new BloodfyreFramebuffer();
+    private static final Map<Integer, QueuedUtpala> UTPALA_QUEUED = new LinkedHashMap<>();
+    private static final Map<Integer, QueuedSword> SWORD_QUEUED = new LinkedHashMap<>();
+    private static final BloodfyreFramebuffer FRAMEBUFFER = new BloodfyreFramebuffer(false);
+    private static final BloodfyreFramebuffer HONKAI_FRAMEBUFFER = new BloodfyreFramebuffer(true);
     private static final ProgramSet PROGRAMS = new ProgramSet();
     private static final MeshDrawer MESH_DRAWER = new MeshDrawer();
     private static final int BLOOM_BLUR_PASSES = 5;
@@ -63,6 +68,7 @@ public final class BloodfyreOculusPipeline {
     private static boolean loggedMissingTarget;
     private static boolean loggedFailure;
     private static boolean loggedActive;
+    private static boolean privateGeometryPass;
 
     private BloodfyreOculusPipeline() {
     }
@@ -81,6 +87,41 @@ public final class BloodfyreOculusPipeline {
         return true;
     }
 
+    /** Queues Frozen Naraka without exposing its analytic quads to Oculus' entity programs. */
+    public static boolean enqueue(UtpalaAuraEntity entity, float partialTick) {
+        if (!ShaderCompat.shouldUseOculusPostPath()) {
+            return false;
+        }
+        UTPALA_QUEUED.put(entity.getId(), new QueuedUtpala(
+                entity,
+                Mth.lerp(partialTick, entity.xOld, entity.getX()),
+                Mth.lerp(partialTick, entity.yOld, entity.getY()),
+                Mth.lerp(partialTick, entity.zOld, entity.getZ()),
+                Mth.rotLerp(partialTick, entity.yRotO, entity.getYRot()),
+                entity.tickCount + partialTick));
+        return true;
+    }
+
+    /** Queues Sword Enlightenment for the same private full-detail HDR path. */
+    public static boolean enqueue(SwordEnlightenmentEntity entity, float partialTick) {
+        if (!ShaderCompat.shouldUseOculusPostPath()) {
+            return false;
+        }
+        SWORD_QUEUED.put(entity.getId(), new QueuedSword(
+                entity,
+                Mth.lerp(partialTick, entity.xOld, entity.getX()),
+                Mth.lerp(partialTick, entity.yOld, entity.getY()),
+                Mth.lerp(partialTick, entity.zOld, entity.getZ()),
+                Mth.rotLerp(partialTick, entity.yRotO, entity.getYRot()),
+                entity.tickCount + partialTick));
+        return true;
+    }
+
+    /** True only while a private program is collecting the original UV-rich geometry. */
+    static boolean isPrivateGeometryPass() {
+        return privateGeometryPass;
+    }
+
     /** Mark direct GL programs/FBOs stale after a shader or resource reload. */
     public static void invalidateResources() {
         resourcesDirty = true;
@@ -92,14 +133,20 @@ public final class BloodfyreOculusPipeline {
 
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS || QUEUED.isEmpty()) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS
+                || (QUEUED.isEmpty() && UTPALA_QUEUED.isEmpty() && SWORD_QUEUED.isEmpty())) {
             return;
         }
 
         List<QueuedEffect> effects = new ArrayList<>(QUEUED.values());
+        List<QueuedUtpala> utpalaEffects = new ArrayList<>(UTPALA_QUEUED.values());
+        List<QueuedSword> swordEffects = new ArrayList<>(SWORD_QUEUED.values());
         QUEUED.clear();
+        UTPALA_QUEUED.clear();
+        SWORD_QUEUED.clear();
         if (disabledForSession || !ShaderCompat.shouldUseOculusPostPath()) {
             renderFallback(event, effects);
+            renderHonkaiFallback(event, utpalaEffects, swordEffects);
             return;
         }
 
@@ -110,6 +157,7 @@ public final class BloodfyreOculusPipeline {
                 Main.LOGGER.warn("Bloodfyre Oculus renderer could not resolve a complete translucent target; using safe geometry fallback.");
             }
             renderFallback(event, effects);
+            renderHonkaiFallback(event, utpalaEffects, swordEffects);
             return;
         }
 
@@ -126,24 +174,33 @@ public final class BloodfyreOculusPipeline {
             if (resourcesDirty) {
                 PROGRAMS.close();
                 FRAMEBUFFER.close();
+                HONKAI_FRAMEBUFFER.close();
                 MESH_DRAWER.close();
                 resourcesDirty = false;
             }
             PROGRAMS.ensureLoaded();
-            FRAMEBUFFER.ensureAllocated(target.width(), target.height());
-
             float gameTime = shaderGameTime(event.getPartialTick());
             DrawContext context = new DrawContext(
                     new Matrix4f(RenderSystem.getModelViewMatrix()),
                     new Matrix4f(event.getProjectionMatrix()), gameTime);
 
-            FRAMEBUFFER.beginEffect(target);
-            renderQueued(event, effects, context, false);
+            if (!effects.isEmpty()) {
+                FRAMEBUFFER.ensureAllocated(target.width(), target.height());
+                FRAMEBUFFER.beginEffect(target);
+                renderQueued(event, effects, context, false);
+                FRAMEBUFFER.beginMask(target);
+                renderQueued(event, effects, context, true);
+                FRAMEBUFFER.composite(target);
+            }
 
-            FRAMEBUFFER.beginMask(target);
-            renderQueued(event, effects, context, true);
-
-            FRAMEBUFFER.composite(target);
+            if (!utpalaEffects.isEmpty() || !swordEffects.isEmpty()) {
+                HONKAI_FRAMEBUFFER.ensureAllocated(target.width(), target.height());
+                HONKAI_FRAMEBUFFER.beginEffect(target);
+                renderHonkaiQueued(event, utpalaEffects, swordEffects, context, false);
+                HONKAI_FRAMEBUFFER.beginMask(target);
+                renderHonkaiQueued(event, utpalaEffects, swordEffects, context, true);
+                HONKAI_FRAMEBUFFER.composite(target);
+            }
         } catch (RuntimeException | IOException exception) {
             failed = true;
             disabledForSession = true;
@@ -157,6 +214,7 @@ public final class BloodfyreOculusPipeline {
 
         if (failed) {
             renderFallback(event, effects);
+            renderHonkaiFallback(event, utpalaEffects, swordEffects);
         }
     }
 
@@ -164,6 +222,8 @@ public final class BloodfyreOculusPipeline {
     public static void onLevelUnload(LevelEvent.Unload event) {
         if (event.getLevel().isClientSide()) {
             QUEUED.clear();
+            UTPALA_QUEUED.clear();
+            SWORD_QUEUED.clear();
             invalidateResources();
         }
     }
@@ -199,6 +259,46 @@ public final class BloodfyreOculusPipeline {
         }
     }
 
+    private static void renderHonkaiQueued(RenderLevelStageEvent event,
+                                           List<QueuedUtpala> utpalaEffects,
+                                           List<QueuedSword> swordEffects,
+                                           DrawContext context, boolean glowMask) {
+        Vec3 camera = event.getCamera().getPosition();
+        org.joml.Vector3f cameraLeft = event.getCamera().getLeftVector();
+        org.joml.Vector3f cameraUp = event.getCamera().getUpVector();
+        PoseStack poseStack = event.getPoseStack();
+
+        for (QueuedUtpala effect : utpalaEffects) {
+            if (!effect.entity().isAlive() || effect.age() >= effect.entity().getLifetime() + 2.0F) {
+                continue;
+            }
+            poseStack.pushPose();
+            poseStack.translate(effect.x() - camera.x, effect.y() - camera.y, effect.z() - camera.z);
+            if (glowMask) {
+                UtpalaAuraRenderer.renderOculusGlow(poseStack, context, effect.age(), effect.yaw());
+            } else {
+                UtpalaAuraRenderer.renderOculusColor(poseStack, context, effect.age(), effect.yaw());
+            }
+            poseStack.popPose();
+        }
+
+        for (QueuedSword effect : swordEffects) {
+            if (!effect.entity().isAlive() || effect.age() >= effect.entity().getLifetime() + 2.0F) {
+                continue;
+            }
+            poseStack.pushPose();
+            poseStack.translate(effect.x() - camera.x, effect.y() - camera.y, effect.z() - camera.z);
+            if (glowMask) {
+                SwordEnlightenmentRenderer.renderOculusGlow(
+                        poseStack, context, effect.age(), effect.yaw(), cameraLeft, cameraUp);
+            } else {
+                SwordEnlightenmentRenderer.renderOculusColor(
+                        poseStack, context, effect.age(), effect.yaw(), cameraLeft, cameraUp);
+            }
+            poseStack.popPose();
+        }
+    }
+
     private static void renderFallback(RenderLevelStageEvent event, List<QueuedEffect> effects) {
         Vec3 camera = event.getCamera().getPosition();
         PoseStack poseStack = event.getPoseStack();
@@ -217,12 +317,26 @@ public final class BloodfyreOculusPipeline {
         immediate.endBatch();
     }
 
+    private static void renderHonkaiFallback(RenderLevelStageEvent event,
+                                             List<QueuedUtpala> utpalaEffects,
+                                             List<QueuedSword> swordEffects) {
+        if (utpalaEffects.isEmpty() && swordEffects.isEmpty()) {
+            return;
+        }
+        MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new BufferBuilder(524288));
+        DrawContext context = DrawContext.safeFallback(immediate);
+        renderHonkaiQueued(event, utpalaEffects, swordEffects, context, false);
+        immediate.endBatch();
+    }
+
     public enum AnalyticShader {
         FRENZY("bloodfyre_frenzy"),
         RUPTURE("bloodfyre_rupture"),
         SMOKE("bloodfyre_smoke"),
         SCAR("bloodfyre_scar"),
-        PARTICLE("bloodfyre_particle");
+        PARTICLE("bloodfyre_particle"),
+        UTPALA("utpala_aura"),
+        SWORD_ENLIGHTENMENT("sword_enlightenment");
 
         private final String name;
 
@@ -241,18 +355,43 @@ public final class BloodfyreOculusPipeline {
         private final Matrix4f modelView;
         private final Matrix4f projection;
         private final float gameTime;
+        private final MultiBufferSource.BufferSource fallback;
 
         private DrawContext(Matrix4f modelView, Matrix4f projection, float gameTime) {
             this.modelView = modelView;
             this.projection = projection;
             this.gameTime = gameTime;
+            this.fallback = null;
+        }
+
+        private DrawContext(MultiBufferSource.BufferSource fallback) {
+            this.modelView = null;
+            this.projection = null;
+            this.gameTime = 0.0F;
+            this.fallback = fallback;
+        }
+
+        private static DrawContext safeFallback(MultiBufferSource.BufferSource fallback) {
+            return new DrawContext(fallback);
         }
 
         public void draw(AnalyticShader shader, BlendMode blend,
                          Consumer<VertexConsumer> geometry) {
             QuadTriangleConsumer consumer = new QuadTriangleConsumer();
-            geometry.accept(consumer);
+            boolean previousPass = privateGeometryPass;
+            privateGeometryPass = true;
+            try {
+                geometry.accept(consumer);
+            } finally {
+                privateGeometryPass = previousPass;
+            }
             if (consumer.vertices.isEmpty()) {
+                return;
+            }
+
+            if (fallback != null) {
+                VertexConsumer output = fallback.getBuffer(safeRenderType(shader, blend));
+                emitPositionColor(output, consumer.vertices);
                 return;
             }
 
@@ -260,6 +399,18 @@ public final class BloodfyreOculusPipeline {
             program.apply(modelView, projection, gameTime);
             applyBlend(blend);
             MESH_DRAWER.draw(consumer.vertices);
+        }
+
+        private static net.minecraft.client.renderer.RenderType safeRenderType(
+                AnalyticShader shader, BlendMode blend) {
+            return switch (shader) {
+                case UTPALA -> blend == BlendMode.ALPHA
+                        ? com.wjx.kablade.client.KabladeRenderTypes.utpalaOculusSafeAlpha()
+                        : com.wjx.kablade.client.KabladeRenderTypes.utpalaOculusSafeAdditive();
+                case SWORD_ENLIGHTENMENT ->
+                        com.wjx.kablade.client.KabladeRenderTypes.swordEnlightenmentOculusSafe();
+                default -> throw new IllegalArgumentException("No safe RenderType for " + shader);
+            };
         }
 
         private static void applyBlend(BlendMode blend) {
@@ -280,6 +431,24 @@ public final class BloodfyreOculusPipeline {
     private record QueuedEffect(BloodfyreFrenzyEntity entity,
                                 double x, double y, double z,
                                 float yaw, float age, int seed) {
+    }
+
+    private record QueuedUtpala(UtpalaAuraEntity entity,
+                                double x, double y, double z,
+                                float yaw, float age) {
+    }
+
+    private record QueuedSword(SwordEnlightenmentEntity entity,
+                               double x, double y, double z,
+                               float yaw, float age) {
+    }
+
+    private static void emitPositionColor(VertexConsumer output, List<RawVertex> vertices) {
+        for (RawVertex vertex : vertices) {
+            output.vertex(vertex.x, vertex.y, vertex.z)
+                    .color(vertex.red, vertex.green, vertex.blue, vertex.alpha)
+                    .endVertex();
+        }
     }
 
     private static final class ProgramSet implements AutoCloseable {
@@ -395,21 +564,28 @@ public final class BloodfyreOculusPipeline {
 
     private static final class BloodfyreFramebuffer implements AutoCloseable {
         private final FloatBuffer transparent = BufferUtils.createFloatBuffer(4);
+        private final boolean honkaiComposite;
         private int effectFramebuffer;
         private int copyFramebuffer;
         private int effectTexture;
         private int maskTexture;
-        private int blurTexture;
+        private int blurTextureA;
+        private int blurTextureB;
         private int sceneTexture;
         private int width;
         private int height;
+
+        private BloodfyreFramebuffer(boolean honkaiComposite) {
+            this.honkaiComposite = honkaiComposite;
+        }
 
         private void ensureAllocated(int nextWidth, int nextHeight) {
             if (effectFramebuffer == 0) effectFramebuffer = GL30.glGenFramebuffers();
             if (copyFramebuffer == 0) copyFramebuffer = GL30.glGenFramebuffers();
             if (effectTexture == 0) effectTexture = GL11.glGenTextures();
             if (maskTexture == 0) maskTexture = GL11.glGenTextures();
-            if (blurTexture == 0) blurTexture = GL11.glGenTextures();
+            if (blurTextureA == 0) blurTextureA = GL11.glGenTextures();
+            if (blurTextureB == 0) blurTextureB = GL11.glGenTextures();
             if (sceneTexture == 0) sceneTexture = GL11.glGenTextures();
             if (width == nextWidth && height == nextHeight) {
                 return;
@@ -418,7 +594,8 @@ public final class BloodfyreOculusPipeline {
             height = nextHeight;
             allocate(effectTexture);
             allocate(maskTexture);
-            allocate(blurTexture);
+            allocate(blurTextureA);
+            allocate(blurTextureB);
             allocate(sceneTexture);
         }
 
@@ -461,12 +638,17 @@ public final class BloodfyreOculusPipeline {
 
         private void composite(SkillShaderTarget target) {
             copyScene(target);
-            blurMask();
+            int bloomTexture = blurMask();
             GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, target.framebufferId());
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             GL11.glViewport(0, 0, width, height);
-            SkillPostShaders.compositeBloodfyre(
-                    sceneTexture, effectTexture, maskTexture, width, height);
+            if (honkaiComposite) {
+                SkillPostShaders.compositeHonkai(
+                        sceneTexture, effectTexture, bloomTexture, width, height);
+            } else {
+                SkillPostShaders.compositeBloodfyre(
+                        sceneTexture, effectTexture, maskTexture, bloomTexture, width, height);
+            }
         }
 
         private void copyScene(SkillShaderTarget target) {
@@ -481,13 +663,16 @@ public final class BloodfyreOculusPipeline {
                     GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
         }
 
-        private void blurMask() {
+        private int blurMask() {
+            int source = maskTexture;
             for (int i = 0; i < BLOOM_BLUR_PASSES; i++) {
-                bindPostTarget(blurTexture);
-                SkillPostShaders.blurBloodfyre(maskTexture, width, height, true);
-                bindPostTarget(maskTexture);
-                SkillPostShaders.blurBloodfyre(blurTexture, width, height, false);
+                bindPostTarget(blurTextureA);
+                SkillPostShaders.blurBloodfyre(source, width, height, true);
+                bindPostTarget(blurTextureB);
+                SkillPostShaders.blurBloodfyre(blurTextureA, width, height, false);
+                source = blurTextureB;
             }
+            return source;
         }
 
         private void bindPostTarget(int texture) {
@@ -529,9 +714,10 @@ public final class BloodfyreOculusPipeline {
         public void close() {
             deleteTexture(effectTexture);
             deleteTexture(maskTexture);
-            deleteTexture(blurTexture);
+            deleteTexture(blurTextureA);
+            deleteTexture(blurTextureB);
             deleteTexture(sceneTexture);
-            effectTexture = maskTexture = blurTexture = sceneTexture = 0;
+            effectTexture = maskTexture = blurTextureA = blurTextureB = sceneTexture = 0;
             if (effectFramebuffer != 0) GL30.glDeleteFramebuffers(effectFramebuffer);
             if (copyFramebuffer != 0) GL30.glDeleteFramebuffers(copyFramebuffer);
             effectFramebuffer = copyFramebuffer = 0;

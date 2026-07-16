@@ -41,6 +41,7 @@ public class AuroraBlade extends BladeDefineBase {
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 4),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 4),
                         new EnchantmentDefinition(

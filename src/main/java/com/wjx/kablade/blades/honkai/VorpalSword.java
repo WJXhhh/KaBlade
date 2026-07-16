@@ -38,6 +38,7 @@ public class VorpalSword extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.VORPAL_HOLE.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
                         new EnchantmentDefinition(

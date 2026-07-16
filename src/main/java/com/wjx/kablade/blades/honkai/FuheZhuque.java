@@ -38,7 +38,8 @@ public class FuheZhuque extends BladeDefineBase {
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ModSlashArts.FIRE_OF_SIN.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2),
+                        new EnchantmentDefinition(
                         ResourceLocation.fromNamespaceAndPath("minecraft", "sweeping"), 2))
         ));
     }

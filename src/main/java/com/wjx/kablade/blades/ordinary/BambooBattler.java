@@ -33,6 +33,7 @@ public class BambooBattler extends BladeDefineBase {
                         .maxDamage(280)
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2)
                 )

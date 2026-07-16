@@ -48,5 +48,17 @@ public final class KabladeNetwork {
                 .decoder(MagChaosBladeFxPacket::decode)
                 .consumerMainThread((packet, context) -> MagChaosBladeFxPacket.handle(packet, context.get()))
                 .add();
+
+        CHANNEL.messageBuilder(RaidenCycloneFxPacket.class, 5)
+                .encoder(RaidenCycloneFxPacket::encode)
+                .decoder(RaidenCycloneFxPacket::decode)
+                .consumerMainThread((packet, context) -> RaidenCycloneFxPacket.handle(packet, context.get()))
+                .add();
+
+        CHANNEL.messageBuilder(RaidenCycloneEndPacket.class, 6)
+                .encoder(RaidenCycloneEndPacket::encode)
+                .decoder(RaidenCycloneEndPacket::decode)
+                .consumerMainThread((packet, context) -> RaidenCycloneEndPacket.handle(packet, context.get()))
+                .add();
     }
 }

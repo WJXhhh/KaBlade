@@ -5,6 +5,9 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public final class KabladeClientConfig {
     public static final ForgeConfigSpec SPEC;
     public static final ForgeConfigSpec.EnumValue<SkillShaderMode> SKILL_SHADER_MODE;
+    public static final ForgeConfigSpec.EnumValue<RaidenCycloneQuality> RAIDEN_CYCLONE_QUALITY;
+    public static final ForgeConfigSpec.BooleanValue RAIDEN_CYCLONE_CAMERA_SHAKE;
+    public static final ForgeConfigSpec.BooleanValue RAIDEN_CYCLONE_REDUCED_FLASH;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -19,6 +22,19 @@ public final class KabladeClientConfig {
                 .defineEnum("mode", SkillShaderMode.AUTO);
 
         builder.pop();
+
+        builder.comment("Raiden's Cyclone client effect options.")
+                .push("raiden_cyclone");
+        RAIDEN_CYCLONE_QUALITY = builder
+                .comment("HIGH is the reference-quality presentation.")
+                .defineEnum("quality", RaidenCycloneQuality.HIGH);
+        RAIDEN_CYCLONE_CAMERA_SHAKE = builder
+                .comment("Enable short local camera impulses on Raiden's Cyclone hits.")
+                .define("camera_shake", true);
+        RAIDEN_CYCLONE_REDUCED_FLASH = builder
+                .comment("Reduce full-screen white flashes without removing world-space effect layers.")
+                .define("reduced_flash", false);
+        builder.pop();
         SPEC = builder.build();
     }
 
@@ -29,5 +45,11 @@ public final class KabladeClientConfig {
         AUTO,
         FORCE_VANILLA_CUSTOM,
         FORCE_OCULUS_POST
+    }
+
+    public enum RaidenCycloneQuality {
+        LOW,
+        MEDIUM,
+        HIGH
     }
 }

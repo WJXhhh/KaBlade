@@ -36,6 +36,7 @@ public class KeyOfCastigation extends BladeDefineBase {
                         .addSpecialEffect(ModSpecialEffects.THUNDER_BLITZ.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 3),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 4),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 5)

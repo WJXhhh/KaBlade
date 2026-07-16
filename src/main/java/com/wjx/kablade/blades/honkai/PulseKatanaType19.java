@@ -36,7 +36,8 @@ public class PulseKatanaType19 extends BladeDefineBase {
                         .maxDamage(510)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .build(),
-                List.of(new EnchantmentDefinition(
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
+                        new EnchantmentDefinition(
                         ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 1))
         ));
     }

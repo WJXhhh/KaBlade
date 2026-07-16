@@ -34,6 +34,7 @@ public class PledgeOfRain extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.LOVE_IS_WAR.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 3),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2))

@@ -43,6 +43,7 @@ public class FrozenNaraka extends BladeDefineBase {
                         .addSpecialEffect(ModSpecialEffects.GLACIAL_BANE.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 4),
                         new EnchantmentDefinition(

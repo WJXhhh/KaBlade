@@ -33,6 +33,7 @@ public class SakuraBlossom extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.FALLING_PETALS.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 4)
                 )

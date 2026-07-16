@@ -16,6 +16,8 @@ public final class KabladeRenderTypes extends RenderType {
             new RenderStateShard.ShaderStateShard(KabladeShaders::stageLight);
     private static final RenderStateShard.ShaderStateShard SHOCK_IMPACT_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::shockImpact);
+    private static final RenderStateShard.ShaderStateShard RAIDEN_CYCLONE_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::raidenCyclone);
     private static final RenderStateShard.ShaderStateShard ZAIZAN_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::zaizan);
     private static final RenderStateShard.ShaderStateShard UTPALA_AURA_SHADER =
@@ -88,6 +90,12 @@ public final class KabladeRenderTypes extends RenderType {
             32768,
             TRANSLUCENT_TRANSPARENCY);
 
+    private static final RenderType UTPALA_OCULUS_SAFE_ADDITIVE = shaderFallbackTriangles(
+            "kablade_utpala_oculus_safe_additive", 262144, LIGHTNING_TRANSPARENCY);
+
+    private static final RenderType UTPALA_OCULUS_SAFE_ALPHA = shaderFallbackTriangles(
+            "kablade_utpala_oculus_safe_alpha", 65536, TRANSLUCENT_TRANSPARENCY);
+
     private static final RenderType SWORD_ENLIGHTENMENT = create(
             "kablade_sword_enlightenment",
             DefaultVertexFormat.POSITION_COLOR_TEX,
@@ -107,6 +115,9 @@ public final class KabladeRenderTypes extends RenderType {
             "kablade_sword_enlightenment_fallback",
             131072,
             LIGHTNING_TRANSPARENCY);
+
+    private static final RenderType SWORD_ENLIGHTENMENT_OCULUS_SAFE = shaderFallbackTriangles(
+            "kablade_sword_enlightenment_oculus_safe", 262144, LIGHTNING_TRANSPARENCY);
 
     private static final RenderType BLOODFYRE_FRENZY = create(
             "kablade_bloodfyre_frenzy",
@@ -262,6 +273,23 @@ public final class KabladeRenderTypes extends RenderType {
                     .setWriteMaskState(COLOR_WRITE)
                     .createCompositeState(false));
 
+    // Separate additive POSITION_COLOR pass for the fallback's red halo and white-hot core.
+    // Keeping it triangle-only preserves the diagonal-seam workaround used by the base pass.
+    private static final RenderType BLOODFYRE_SHADER_PACK_GLOW = create(
+            "kablade_bloodfyre_shader_pack_glow",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.TRIANGLES,
+            262144,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
     private static final RenderType STAGE_LIGHT = create(
             "kablade_stage_light",
             DefaultVertexFormat.POSITION_COLOR_TEX,
@@ -365,6 +393,73 @@ public final class KabladeRenderTypes extends RenderType {
                     .setWriteMaskState(COLOR_WRITE)
                     .createCompositeState(false));
 
+    private static final RenderType RAIDEN_CYCLONE = create(
+            "kablade_raiden_cyclone",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            524288,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RAIDEN_CYCLONE_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType RAIDEN_CYCLONE_DARK = create(
+            "kablade_raiden_cyclone_dark",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            131072,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RAIDEN_CYCLONE_SHADER)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType RAIDEN_CYCLONE_FALLBACK = shaderFallback(
+            "kablade_raiden_cyclone_fallback", FALLBACK_TEXTURE, 524288, LIGHTNING_TRANSPARENCY);
+    private static final RenderType RAIDEN_CYCLONE_DARK_FALLBACK = shaderFallback(
+            "kablade_raiden_cyclone_dark_fallback", FALLBACK_TEXTURE, 131072, TRANSLUCENT_TRANSPARENCY);
+
+    // Last-resort shader-pack path. Oculus never sees textured quads here: the
+    // dedicated pipeline has already converted every surface to explicit triangles.
+    private static final RenderType RAIDEN_CYCLONE_SHADER_PACK_BRIGHT = create(
+            "kablade_raiden_cyclone_shader_pack_bright",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.TRIANGLES,
+            524288,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType RAIDEN_CYCLONE_SHADER_PACK_DARK = create(
+            "kablade_raiden_cyclone_shader_pack_dark",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.TRIANGLES,
+            131072,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
     private static final RenderType ZAIZAN = create(
             "kablade_zaizan",
             DefaultVertexFormat.POSITION_COLOR_TEX,
@@ -447,6 +542,22 @@ public final class KabladeRenderTypes extends RenderType {
         return SHOCK_IMPACT_LINES;
     }
 
+    public static RenderType raidenCyclone() {
+        return useShaderFallbackTextures() ? RAIDEN_CYCLONE_FALLBACK : RAIDEN_CYCLONE;
+    }
+
+    public static RenderType raidenCycloneDark() {
+        return useShaderFallbackTextures() ? RAIDEN_CYCLONE_DARK_FALLBACK : RAIDEN_CYCLONE_DARK;
+    }
+
+    public static RenderType raidenCycloneShaderPackBright() {
+        return RAIDEN_CYCLONE_SHADER_PACK_BRIGHT;
+    }
+
+    public static RenderType raidenCycloneShaderPackDark() {
+        return RAIDEN_CYCLONE_SHADER_PACK_DARK;
+    }
+
     public static RenderType zaizan() {
         return useShaderFallbackTextures() ? ZAIZAN_FALLBACK : ZAIZAN;
     }
@@ -463,8 +574,20 @@ public final class KabladeRenderTypes extends RenderType {
         return useShaderFallbackTextures() ? UTPALA_AURA_VEIL_FALLBACK : UTPALA_AURA_VEIL;
     }
 
+    public static RenderType utpalaOculusSafeAdditive() {
+        return UTPALA_OCULUS_SAFE_ADDITIVE;
+    }
+
+    public static RenderType utpalaOculusSafeAlpha() {
+        return UTPALA_OCULUS_SAFE_ALPHA;
+    }
+
     public static RenderType swordEnlightenment() {
         return useShaderFallbackTextures() ? SWORD_ENLIGHTENMENT_FALLBACK : SWORD_ENLIGHTENMENT;
+    }
+
+    public static RenderType swordEnlightenmentOculusSafe() {
+        return SWORD_ENLIGHTENMENT_OCULUS_SAFE;
     }
 
     public static RenderType bloodfyreFrenzy() {
@@ -515,6 +638,10 @@ public final class KabladeRenderTypes extends RenderType {
         return BLOODFYRE_SHADER_PACK_FALLBACK;
     }
 
+    public static RenderType bloodfyreShaderPackGlow() {
+        return BLOODFYRE_SHADER_PACK_GLOW;
+    }
+
     public static boolean useShaderFallbackTextures() {
         return ShaderCompat.shouldUseOculusPostPath();
     }
@@ -550,6 +677,19 @@ public final class KabladeRenderTypes extends RenderType {
                 .createCompositeState(false);
         return create(name, DefaultVertexFormat.POSITION_COLOR,
                 VertexFormat.Mode.QUADS, bufferSize, false, true, state);
+    }
+
+    private static RenderType shaderFallbackTriangles(String name, int bufferSize,
+                                                       RenderStateShard.TransparencyStateShard transparency) {
+        CompositeState state = CompositeState.builder()
+                .setShaderState(POSITION_COLOR_SHADER)
+                .setTransparencyState(transparency)
+                .setDepthTestState(LEQUAL_DEPTH_TEST)
+                .setCullState(NO_CULL)
+                .setWriteMaskState(COLOR_WRITE)
+                .createCompositeState(false);
+        return create(name, DefaultVertexFormat.POSITION_COLOR,
+                VertexFormat.Mode.TRIANGLES, bufferSize, false, true, state);
     }
 
     private static RenderType shaderFallback(String name, ResourceLocation texture, int bufferSize,

@@ -16,6 +16,7 @@ import com.wjx.kablade.blades.honkai.IceEpiphyllum;
 import com.wjx.kablade.blades.honkai.KeyOfCastigation;
 import com.wjx.kablade.blades.honkai.KeyOfLimpidity;
 import com.wjx.kablade.blades.honkai.MagStorm;
+import com.wjx.kablade.blades.honkai.MagTyphoon;
 import com.wjx.kablade.blades.honkai.MuraHori;
 import com.wjx.kablade.blades.honkai.MuraSeshu;
 import com.wjx.kablade.blades.honkai.MuraUson;
@@ -142,6 +143,7 @@ public final class BladeLoader {
     public static BladeDefineBase FUTSUNUSHI_TO;
     public static BladeDefineBase VIBRO_CUTTER;
     public static BladeDefineBase MAG_STORM;
+    public static BladeDefineBase MAG_TYPHOON;
     public static BladeDefineBase KEY_OF_CASTIGATION;
     public static BladeDefineBase KEY_OF_LIMPIDITY;
     public static BladeDefineBase ICE_EPIPHYLLUM;
@@ -245,6 +247,7 @@ public final class BladeLoader {
             "futsunushi_to",
             "vibro_cutter",
             "mag_storm",
+            "mag_typhoon",
             "key_of_castigation",
             "key_of_limpidity",
             "ice_epiphyllum",
@@ -332,6 +335,7 @@ public final class BladeLoader {
         FUTSUNUSHI_TO = new FutsunushiTo(context);
         VIBRO_CUTTER = new VibroCutter(context);
         MAG_STORM = new MagStorm(context);
+        MAG_TYPHOON = new MagTyphoon(context);
         KEY_OF_CASTIGATION = new KeyOfCastigation(context);
         KEY_OF_LIMPIDITY = new KeyOfLimpidity(context);
         ICE_EPIPHYLLUM = new IceEpiphyllum(context);

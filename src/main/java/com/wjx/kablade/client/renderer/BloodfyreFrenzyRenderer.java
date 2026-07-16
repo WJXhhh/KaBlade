@@ -40,11 +40,9 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
     private static final int PETAL_COUNT = 42;
     private static final int EMBER_COUNT = 34;
     private static final float SCAR_RADIUS = 4.34F;
-    // Deliberately aggressive tuning baseline. Start over-bright, then trim these three
-    // primary emitters in-game without lifting the smoke, charred body or ground scar.
-    private static final float OCULUS_MAIN_BLOOM_ALPHA = 0.56F;
-    private static final float OCULUS_RUPTURE_BLOOM_ALPHA = 0.54F;
-    private static final float OCULUS_ATTACHED_FLAME_BLOOM_ALPHA = 0.38F;
+    // Only the hot emitters feed bloom. Smoke, char and the dark scar stay in the color pass.
+    private static final float OCULUS_MAIN_BLOOM_ALPHA = 0.68F;
+    private static final float OCULUS_RUPTURE_BLOOM_ALPHA = 0.64F;
     private static final float[] RUPTURE_ANCHORS = {
             0.05F, 0.13F, 0.22F, 0.31F, 0.41F, 0.52F, 0.63F, 0.73F,
             0.81F, 0.87F, 0.91F, 0.945F, 0.972F
@@ -107,26 +105,15 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
         renderGuide(buffer.getBuffer(KabladeRenderTypes.bloodfyreBlade()), matrix, age, seed);
         renderMainSlash(buffer.getBuffer(KabladeRenderTypes.bloodfyreBladeDark()),
                 matrix, age, seed, false);
-        renderRupture(scaled(buffer.getBuffer(KabladeRenderTypes.bloodfyreRupture()),
-                        1.0F), matrix, age, seed, true, false);
+        renderRupture(buffer.getBuffer(KabladeRenderTypes.bloodfyreRupture()),
+                matrix, age, seed, true, false, false);
         renderSmoke(buffer.getBuffer(KabladeRenderTypes.bloodfyreSmoke()), matrix, age, seed);
         renderFragments(buffer.getBuffer(KabladeRenderTypes.bloodfyreParticle()), matrix, age, seed);
         renderGroundScar(entity, buffer, matrix, age, seed, 1.0F, false);
-        renderAttachedBloodfire(buffer.getBuffer(KabladeRenderTypes.bloodfyreRupture()),
-                matrix, age, seed, false);
         renderEmbers(buffer.getBuffer(KabladeRenderTypes.bloodfyreParticle()), matrix, age, seed);
         renderPetals(poseStack, buffer.getBuffer(KabladeRenderTypes.bloodfyreParticle()), age, seed);
 
-        // Under a shader pack the primary fallback already uses Minecraft's stock
-        // additive path. A second glow pass would be bloomed twice by the pack.
-        renderGuide(vanillaGlow(buffer, 0.26F), matrix, age, seed);
-        renderMainSlash(vanillaGlow(buffer, 0.32F), matrix, age, seed, false);
-        renderRupture(vanillaGlow(buffer, 0.22F), matrix, age, seed, false, false);
-        renderFragments(vanillaGlow(buffer, 0.30F), matrix, age, seed);
-        renderGroundScarVanillaGlow(entity, vanillaGlow(buffer, 0.24F), matrix, age, seed);
-        renderAttachedBloodfire(vanillaGlow(buffer, 0.22F), matrix, age, seed, false);
-        renderEmbers(vanillaGlow(buffer, 0.34F), matrix, age, seed);
-        renderPetals(poseStack, vanillaGlow(buffer, 0.16F), age, seed);
+        renderVanillaGlowLayers(entity, poseStack, buffer, matrix, age, seed);
 
         poseStack.popPose();
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
@@ -145,6 +132,9 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
         renderShaderFallbackBlade(vc, matrix, age, seed);
         renderShaderFallbackBurst(vc, matrix, age, seed);
         renderShaderFallbackScar(entity, vc, matrix, age, seed);
+
+        VertexConsumer glow = buffer.getBuffer(KabladeRenderTypes.bloodfyreShaderPackGlow());
+        renderShaderFallbackGlow(entity, glow, matrix, age, seed);
     }
 
     /** Full-detail color pass used by the frame-level Oculus renderer. */
@@ -160,7 +150,7 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
                 vc -> renderMainSlash(vc, matrix, age, seed, false));
         context.draw(BloodfyreOculusPipeline.AnalyticShader.RUPTURE,
                 BloodfyreOculusPipeline.BlendMode.ADDITIVE,
-                vc -> renderRupture(vc, matrix, age, seed, true, false));
+                vc -> renderRupture(vc, matrix, age, seed, true, false, false));
         context.draw(BloodfyreOculusPipeline.AnalyticShader.SMOKE,
                 BloodfyreOculusPipeline.BlendMode.ALPHA,
                 vc -> renderSmoke(vc, matrix, age, seed));
@@ -173,9 +163,6 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
         context.draw(BloodfyreOculusPipeline.AnalyticShader.SCAR,
                 BloodfyreOculusPipeline.BlendMode.ADDITIVE,
                 vc -> renderGroundScarHeat(entity, vc, matrix, age, seed));
-        context.draw(BloodfyreOculusPipeline.AnalyticShader.RUPTURE,
-                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
-                vc -> renderAttachedBloodfire(vc, matrix, age, seed, false));
         context.draw(BloodfyreOculusPipeline.AnalyticShader.PARTICLE,
                 BloodfyreOculusPipeline.BlendMode.ADDITIVE,
                 vc -> renderEmbers(vc, matrix, age, seed));
@@ -189,31 +176,167 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
                                  BloodfyreOculusPipeline.DrawContext context,
                                  float age, int seed) {
         Matrix4f matrix = poseStack.last().pose();
+        float intensity = BloodfyreTimeline.glowIntensity(age);
         context.draw(BloodfyreOculusPipeline.AnalyticShader.FRENZY,
                 BloodfyreOculusPipeline.BlendMode.ADDITIVE,
-                vc -> renderGuide(scaled(vc, 0.20F), matrix, age, seed));
+                vc -> renderGuide(scaled(vc, 0.34F * intensity), matrix, age, seed));
         context.draw(BloodfyreOculusPipeline.AnalyticShader.FRENZY,
                 BloodfyreOculusPipeline.BlendMode.ADDITIVE,
-                vc -> renderMainSlash(scaled(vc, OCULUS_MAIN_BLOOM_ALPHA), matrix, age, seed, false));
+                vc -> renderMainGlowMask(scaled(vc, OCULUS_MAIN_BLOOM_ALPHA * intensity),
+                        matrix, age, seed));
         context.draw(BloodfyreOculusPipeline.AnalyticShader.RUPTURE,
                 BloodfyreOculusPipeline.BlendMode.ADDITIVE,
-                vc -> renderRupture(scaled(vc, OCULUS_RUPTURE_BLOOM_ALPHA), matrix, age, seed, true, false));
+                vc -> renderRupture(scaled(vc, OCULUS_RUPTURE_BLOOM_ALPHA * intensity),
+                        matrix, age, seed, true, false, true));
         context.draw(BloodfyreOculusPipeline.AnalyticShader.PARTICLE,
                 BloodfyreOculusPipeline.BlendMode.ADDITIVE,
-                vc -> renderFragments(scaled(vc, 0.25F), matrix, age, seed));
+                vc -> renderFragments(scaled(vc, 0.32F * intensity), matrix, age, seed));
         context.draw(BloodfyreOculusPipeline.AnalyticShader.SCAR,
                 BloodfyreOculusPipeline.BlendMode.ADDITIVE,
-                vc -> renderGroundScarHeat(entity, scaled(vc, 0.26F), matrix, age, seed));
-        context.draw(BloodfyreOculusPipeline.AnalyticShader.RUPTURE,
-                BloodfyreOculusPipeline.BlendMode.ADDITIVE,
-                vc -> renderAttachedBloodfire(scaled(vc, OCULUS_ATTACHED_FLAME_BLOOM_ALPHA),
-                        matrix, age, seed, false));
+                vc -> renderGroundScarHeat(entity, scaled(vc, 0.38F * intensity), matrix, age, seed));
         context.draw(BloodfyreOculusPipeline.AnalyticShader.PARTICLE,
                 BloodfyreOculusPipeline.BlendMode.ADDITIVE,
-                vc -> renderEmbers(scaled(vc, 0.30F), matrix, age, seed));
+                vc -> renderEmbers(scaled(vc, 0.42F * intensity), matrix, age, seed));
         context.draw(BloodfyreOculusPipeline.AnalyticShader.PARTICLE,
                 BloodfyreOculusPipeline.BlendMode.ADDITIVE,
-                vc -> renderPetals(poseStack, scaled(vc, 0.12F), age, seed));
+                vc -> renderPetals(poseStack, scaled(vc, 0.18F * intensity), age, seed));
+    }
+
+    /** Stock-renderer approximation of bloom: broad red shell, orange middle, white-hot core. */
+    private static void renderVanillaGlowLayers(BloodfyreFrenzyEntity entity, PoseStack poseStack,
+                                                MultiBufferSource buffer, Matrix4f matrix,
+                                                float age, int seed) {
+        VertexConsumer glow = buffer.getBuffer(KabladeRenderTypes.bloodfyreVanillaGlow());
+        float intensity = BloodfyreTimeline.glowIntensity(age);
+
+        renderGuide(scaled(glow, 0.44F * intensity), matrix, age, seed);
+        renderVanillaMainHalo(glow, matrix, age, seed, intensity);
+        renderMainGlowMask(scaled(glow, 0.80F * intensity), matrix, age, seed);
+        renderRupture(scaled(glow, 0.72F * intensity), matrix, age, seed,
+                true, false, true);
+        renderFragments(scaled(glow, 0.45F * intensity), matrix, age, seed);
+        renderGroundScarVanillaGlow(entity, scaled(glow, 0.48F * intensity), matrix, age, seed);
+        renderEmbers(scaled(glow, 0.54F * intensity), matrix, age, seed);
+        renderPetals(poseStack, scaled(glow, 0.20F * intensity), age, seed);
+    }
+
+    private static void renderVanillaMainHalo(VertexConsumer glow, Matrix4f matrix,
+                                              float age, int seed, float intensity) {
+        float alpha = BloodfyreTimeline.mainAlpha(age);
+        float head = BloodfyreTimeline.slashProgress(age);
+        if (alpha <= 0.002F || head <= 0.001F) {
+            return;
+        }
+        float tail = 0.12F * BloodfyreTimeline.smooth((age - 24.0F) / 8.0F);
+        drawArcBand(glow, matrix, tail, head, 3.08F, 5.04F, 0.050F,
+                alpha * 0.14F * intensity, 0.82F, 0.006F, 0.020F,
+                3, seed + 1201, 0.0F);
+        drawArcBand(glow, matrix, tail, head, 3.26F, 4.94F, 0.060F,
+                alpha * 0.23F * intensity, 1.0F, 0.12F, 0.018F,
+                3, seed + 1223, 0.0F);
+        drawArcBand(glow, matrix, tail, head, 3.48F, 4.88F, 0.072F,
+                alpha * 0.20F * intensity, 1.0F, 0.54F, 0.10F,
+                3, seed + 1249, 0.0F);
+    }
+
+    /** Bright blade surface and filaments only; excludes the black/red body and erosion char. */
+    private static void renderMainGlowMask(VertexConsumer glow, Matrix4f matrix,
+                                           float age, int seed) {
+        float alpha = BloodfyreTimeline.mainAlpha(age);
+        float head = BloodfyreTimeline.slashProgress(age);
+        if (alpha <= 0.002F || head <= 0.001F) {
+            return;
+        }
+
+        float impactAge = Math.max(0.0F, age - BloodfyreTimeline.SLASH_END);
+        float overshoot = age < BloodfyreTimeline.SLASH_END ? 0.0F
+                : 0.046F * (float) Math.exp(-impactAge * 1.22F)
+                * Mth.sin(impactAge * 3.45F + 0.72F);
+        float movingHead = Mth.clamp(head + overshoot, 0.0F, 1.0F);
+        drawErodingBrightBand(glow, matrix, age, 0.0F, movingHead,
+                3.42F, 4.84F, 0.074F, alpha, seed + 163);
+
+        for (int i = 0; i < 4; i++) {
+            float filamentTail = head < 0.995F ? Math.max(0.0F, head - (0.30F + i * 0.045F))
+                    : 0.055F * BloodfyreTimeline.smooth((age - 18.0F - i * 0.35F) / 8.0F);
+            float filamentHead = head < 0.995F ? Math.max(0.0F, head - i * 0.018F)
+                    : 1.0F - 0.035F * BloodfyreTimeline.smooth((age - 18.0F - i * 0.25F) / 7.0F);
+            float fade = 1.0F - BloodfyreTimeline.smooth((age - 24.0F - i * 0.6F) / 5.5F);
+            float radius = 4.20F + i * 0.135F;
+            drawArcBand(glow, matrix, filamentTail, filamentHead,
+                    radius - 0.016F, radius + 0.016F, 0.096F + i * 0.01F,
+                    alpha * fade * 0.92F, 1.0F, 0.80F, 0.32F,
+                    3, seed + 211 + i * 19, 0.0F);
+        }
+
+        float pulseDistance = (age - 13.2F) / 0.78F;
+        float pulse = (float) Math.exp(-pulseDistance * pulseDistance);
+        float headFade = 1.0F - BloodfyreTimeline.smooth((age - 14.2F) / 2.6F);
+        if (headFade > 0.002F) {
+            BloodfyreGeometry.Point center = BloodfyreGeometry.arc(movingHead, 4.58F, 0.10F);
+            BloodfyreGeometry.Point tangent = BloodfyreGeometry.tangent(movingHead, 4.58F);
+            drawJetSheet(glow, matrix, center, tangent, 1.30F + pulse * 0.65F,
+                    0.22F + pulse * 0.16F, alpha * headFade,
+                    1.0F, 0.96F, 0.70F, 2);
+        }
+    }
+
+    /** Shader-pack-safe bright pass using explicit POSITION_COLOR triangles only. */
+    private static void renderShaderFallbackGlow(BloodfyreFrenzyEntity entity, VertexConsumer glow,
+                                                 Matrix4f matrix, float age, int seed) {
+        float intensity = BloodfyreTimeline.glowIntensity(age);
+        float guideAlpha = BloodfyreTimeline.window(age, BloodfyreTimeline.GUIDE_START,
+                BloodfyreTimeline.GUIDE_END, 0.65F, 0.8F);
+        if (guideAlpha > 0.002F) {
+            float progress = BloodfyreTimeline.smooth((age - BloodfyreTimeline.GUIDE_START) / 3.0F);
+            float radius = Mth.lerp(progress, 1.72F, 4.04F);
+            float span = Mth.lerp(progress, 0.20F, 1.0F);
+            float start = (1.0F - span) * 0.5F;
+            float end = 1.0F - start;
+            drawSimpleArcBand(glow, matrix, start, end, radius - 0.065F, radius + 0.065F,
+                    0.058F, 1.0F, 0.12F, 0.025F,
+                    guideAlpha * 0.22F * intensity, 0);
+            drawSimpleArcBand(glow, matrix, start, end, radius - 0.016F, radius + 0.016F,
+                    0.072F, 1.0F, 0.94F, 0.68F,
+                    guideAlpha * 0.70F * intensity, 0);
+        }
+
+        float mainAlpha = BloodfyreTimeline.mainAlpha(age);
+        float head = BloodfyreTimeline.slashProgress(age);
+        if (mainAlpha > 0.002F && head > 0.001F) {
+            float tail = 0.12F * BloodfyreTimeline.smooth((age - 24.0F) / 8.0F);
+            drawSimpleArcBand(glow, matrix, tail, head, 3.05F, 5.04F, 0.052F,
+                    0.86F, 0.004F, 0.018F, mainAlpha * 0.13F * intensity, 0);
+            drawSimpleArcBand(glow, matrix, tail, head, 3.26F, 4.95F, 0.064F,
+                    1.0F, 0.16F, 0.022F, mainAlpha * 0.22F * intensity, 0);
+            drawSimpleArcBand(glow, matrix, tail, head, 4.48F, 4.88F, 0.078F,
+                    1.0F, 0.95F, 0.72F, mainAlpha * 0.72F * intensity, 0);
+        }
+
+        renderShaderFallbackBurst(scaled(glow, 0.72F * intensity), matrix, age, seed);
+        float flash = BloodfyreTimeline.window(age, 11.2F, 15.8F, 0.22F, 2.6F);
+        if (flash > 0.002F) {
+            BloodfyreGeometry.Point endpoint = BloodfyreGeometry.arc(0.975F, 4.62F, 0.55F);
+            fallbackDiamond(glow, matrix, endpoint, 1.28F + flash * 1.20F,
+                    age * 0.08F, 0.95F, 0.015F, 0.025F, flash * 0.20F * intensity);
+            fallbackDiamond(glow, matrix, endpoint, 0.42F + flash * 0.58F,
+                    -age * 0.13F, 1.0F, 0.94F, 0.72F, flash * 0.88F * intensity);
+        }
+
+        float scarAlpha = BloodfyreTimeline.scarAlpha(age);
+        if (scarAlpha > 0.002F) {
+            GroundTrace trace = groundTrace(entity);
+            float scarHead = BloodfyreTimeline.slashProgress(age - 0.10F);
+            float decay = BloodfyreTimeline.smooth((age - 43.0F) / 9.0F);
+            float heat = 1.0F - BloodfyreTimeline.smooth((age - 24.0F) / 9.0F);
+            drawFallbackGroundArc(glow, matrix, trace, scarHead, 0.105F,
+                    scarAlpha * (0.16F + heat * 0.22F) * intensity,
+                    0.92F, 0.015F, 0.020F, seed + 607, decay * 0.82F, 0.016F);
+            drawFallbackGroundArc(glow, matrix, trace, scarHead, 0.026F,
+                    scarAlpha * heat * 0.76F * intensity,
+                    1.0F, 0.78F, 0.40F, seed + 613, decay, 0.022F);
+        }
+
     }
 
     private static void renderShaderFallbackGuide(VertexConsumer vc, Matrix4f matrix, float age) {
@@ -604,7 +727,8 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
     }
 
     private static void renderRupture(VertexConsumer vc, Matrix4f matrix, float age, int seed,
-                                      boolean includeEndpointFlash, boolean shaderFallback) {
+                                      boolean includeEndpointFlash, boolean shaderFallback,
+                                      boolean emissiveOnly) {
         float layerAlpha = BloodfyreTimeline.window(age, BloodfyreTimeline.RUPTURE_START,
                 BloodfyreTimeline.RUPTURE_END, 0.55F, 5.5F);
         if (layerAlpha <= 0.002F) {
@@ -640,23 +764,28 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
                 // vertical plane is deliberately oversized for analytic clipping and
                 // becomes the giant yellow wedges seen in the fallback screenshot.
                 float fallbackLength = Math.min(distance * 0.62F + 0.12F, 1.08F);
-                drawFallbackJetStrip(vc, matrix, anchor, direction, fallbackLength,
-                        0.026F + random * 0.012F, strength * 0.42F,
-                        0.92F, 0.055F, 0.018F, 1);
+                if (!emissiveOnly) {
+                    drawFallbackJetStrip(vc, matrix, anchor, direction, fallbackLength,
+                            0.026F + random * 0.012F, strength * 0.42F,
+                            0.92F, 0.055F, 0.018F, 1);
+                }
                 drawFallbackJetStrip(vc, matrix, anchor.add(direction.scale(0.035F)), direction,
                         fallbackLength * 0.72F, 0.010F,
                         strength * (1.0F - erode * 0.66F) * 0.48F,
                         1.0F, 0.38F, 0.08F, 2);
             } else {
-                drawJetSheet(vc, matrix, anchor, direction, distance + 0.20F,
-                        width * 1.85F + 0.035F, strength * 0.72F,
-                        0.88F, 0.015F, 0.018F, 0);
-                drawJetSheet(vc, matrix, anchor, direction, distance * 1.08F + 0.18F,
-                        width * 0.72F + 0.018F, strength,
-                        1.0F, 0.30F, 0.028F, 1);
+                if (!emissiveOnly) {
+                    drawJetSheet(vc, matrix, anchor, direction, distance + 0.20F,
+                            width * 1.85F + 0.035F, strength * 0.72F,
+                            0.88F, 0.015F, 0.018F, 0);
+                    drawJetSheet(vc, matrix, anchor, direction, distance * 1.08F + 0.18F,
+                            width * 0.72F + 0.018F, strength,
+                            1.0F, 0.30F, 0.028F, 1);
+                }
                 drawJetSheet(vc, matrix, anchor, direction, distance * 1.14F + 0.12F,
-                        width * 0.20F + 0.008F, strength * (1.0F - erode * 0.62F),
-                        1.0F, 0.92F, 0.55F, 2);
+                        width * (emissiveOnly ? 0.30F : 0.20F) + 0.010F,
+                        strength * (1.0F - erode * 0.62F),
+                        1.0F, 0.96F, 0.72F, 2);
             }
         }
 
@@ -887,34 +1016,6 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
             drawGroundBranch(glow, matrix, entity, branch, grow,
                     0.024F, alpha * residual * branchFade, 1.0F, 0.30F, 0.045F, 2,
                     seed + 811 + i * 19);
-        }
-    }
-
-    private static void renderAttachedBloodfire(VertexConsumer vc, Matrix4f matrix,
-                                                float age, int seed, boolean shaderFallback) {
-        float alpha = BloodfyreTimeline.window(age, 0.0F, 46.0F, 1.0F, 7.0F);
-        if (alpha <= 0.002F) {
-            return;
-        }
-        for (int i = 0; i < 6; i++) {
-            float angle = BloodfyreGeometry.deterministic(seed + i * 103, 7.3F) * Mth.TWO_PI;
-            float radius = 0.22F + BloodfyreGeometry.deterministic(seed + i * 107, 2.6F) * 0.42F;
-            BloodfyreGeometry.Point anchor = new BloodfyreGeometry.Point(
-                    Mth.cos(angle) * radius, 0.18F + i * 0.19F, Mth.sin(angle) * radius);
-            BloodfyreGeometry.Point direction = new BloodfyreGeometry.Point(
-                    Mth.sin(angle + age * 0.12F) * 0.12F, 1.0F,
-                    Mth.cos(angle + age * 0.12F) * 0.12F).normalize();
-            float flicker = 0.86F + Mth.sin(age * 1.45F + i * 2.1F) * 0.14F;
-            float width = shaderFallback ? 0.038F + (i % 2) * 0.008F
-                    : 0.10F + (i % 2) * 0.025F;
-            float length = (0.48F + (i % 3) * 0.13F) * flicker;
-            if (shaderFallback) {
-                drawFallbackJetStrip(vc, matrix, anchor, direction, length * 0.78F,
-                        width, alpha * 0.32F, 0.82F, 0.025F, 0.018F, 0);
-            } else {
-                drawJetSheet(vc, matrix, anchor, direction, length, width,
-                        alpha * 0.68F, 0.94F, 0.035F, 0.022F, 0);
-            }
         }
     }
 
@@ -1278,13 +1379,9 @@ public final class BloodfyreFrenzyRenderer extends EntityRenderer<BloodfyreFrenz
                 .endVertex();
     }
 
-    private static VertexConsumer vanillaGlow(MultiBufferSource buffer, float alphaScale) {
-        return new AlphaScaleVertexConsumer(
-                buffer.getBuffer(KabladeRenderTypes.bloodfyreVanillaGlow()), alphaScale);
-    }
-
     private static VertexConsumer scaled(VertexConsumer consumer, float alphaScale) {
-        return alphaScale >= 0.999F ? consumer : new AlphaScaleVertexConsumer(consumer, alphaScale);
+        return Math.abs(alphaScale - 1.0F) <= 0.001F
+                ? consumer : new AlphaScaleVertexConsumer(consumer, alphaScale);
     }
 
     private static final class AlphaScaleVertexConsumer implements VertexConsumer {

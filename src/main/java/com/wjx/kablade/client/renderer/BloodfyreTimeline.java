@@ -71,6 +71,15 @@ final class BloodfyreTimeline {
         return 1.0F - smooth((age - 44.0F) / (SCAR_END - 44.0F));
     }
 
+    /**
+     * Persistent emissive lift with a short overexposure kick at the completed slash.
+     * The world-space layers own this pulse so it never turns into a full-screen flash.
+     */
+    static float glowIntensity(float age) {
+        float distance = (age - SLASH_END) / 1.22F;
+        return 1.0F + 0.70F * (float) Math.exp(-distance * distance);
+    }
+
     static float window(float age, float start, float end, float fadeIn, float fadeOut) {
         if (age <= start || age >= end) {
             return 0.0F;

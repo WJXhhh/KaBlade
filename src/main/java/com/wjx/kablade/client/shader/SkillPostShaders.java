@@ -85,7 +85,75 @@ public final class SkillPostShaders {
 
             uniform sampler2D Scene;
             uniform sampler2D Effect;
-            uniform sampler2D Mask;
+            uniform sampler2D Glow;
+            uniform sampler2D Bloom;
+            uniform vec2 TexelSize;
+            uniform float CoreStrength;
+            uniform float GlowStrength;
+            uniform float DistortionStrength;
+
+            in vec2 vUv;
+            out vec4 fragColor;
+
+            float glowPower(vec4 c) {
+                return max(c.a, max(max(c.r, c.g), c.b));
+            }
+
+            void main() {
+                vec4 rawGlow = texture(Glow, vUv);
+                vec4 bloomSample = texture(Bloom, vUv);
+                vec3 bloomRgb = max(bloomSample.rgb, vec3(0.0));
+                float m = clamp(glowPower(bloomSample), 0.0, 6.0);
+                float left = glowPower(texture(Bloom, vUv - vec2(TexelSize.x, 0.0)));
+                float right = glowPower(texture(Bloom, vUv + vec2(TexelSize.x, 0.0)));
+                float down = glowPower(texture(Bloom, vUv - vec2(0.0, TexelSize.y)));
+                float up = glowPower(texture(Bloom, vUv + vec2(0.0, TexelSize.y)));
+                vec2 warp = vec2(right - left, up - down)
+                        * DistortionStrength * TexelSize * 18.0;
+
+                vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
+                vec4 effect = texture(Effect, vUv);
+
+                // Saturate only where the blurred emissive mask is present. Dark smoke and the
+                // charred blade body therefore retain their contrast instead of turning red.
+                float energy = 1.0 - exp(-m * 1.25);
+                float effectLuma = dot(effect.rgb, vec3(0.2126, 0.7152, 0.0722));
+                vec3 saturatedEffect = max(vec3(0.0), mix(vec3(effectLuma), effect.rgb,
+                        1.0 + energy * 0.42));
+                vec3 base = scene.rgb * (1.0 - clamp(effect.a, 0.0, 1.0)) + saturatedEffect;
+
+                // The broad halo is intentionally blood-red/orange even when its source core
+                // is almost white. A small sampled-hue contribution keeps embers and petals alive.
+                float bloomPeak = max(max(bloomRgb.r, bloomRgb.g), bloomRgb.b);
+                vec3 sampledHue = bloomPeak > 0.0001
+                        ? bloomRgb / bloomPeak : vec3(1.0, 0.10, 0.018);
+                float orangeAmount = clamp(sampledHue.g * 0.72 + sampledHue.b * 0.10, 0.0, 0.62);
+                vec3 bloodHue = mix(vec3(1.0, 0.035, 0.012),
+                        vec3(1.0, 0.34, 0.045), orangeAmount);
+                vec3 bloomHue = mix(bloodHue, sampledHue, 0.18);
+                vec3 bloom = bloomHue * GlowStrength * energy * (0.55 + energy * 1.25);
+
+                // The unblurred texture retains the small, HDR-hot source that the old
+                // in-place blur erased. Push strong sources from gold into near-white.
+                vec3 rawRgb = max(rawGlow.rgb, vec3(0.0));
+                float rawPower = clamp(glowPower(rawGlow), 0.0, 6.0);
+                float rawPeak = max(max(rawRgb.r, rawRgb.g), rawRgb.b);
+                vec3 rawHue = rawPeak > 0.0001 ? rawRgb / rawPeak : vec3(1.0, 0.82, 0.42);
+                float coreEnergy = 1.0 - exp(-rawPower * 1.35);
+                vec3 coreHue = mix(rawHue, vec3(1.0, 0.98, 0.86),
+                        smoothstep(0.18, 0.88, coreEnergy));
+                vec3 core = coreHue * CoreStrength * coreEnergy * (0.65 + coreEnergy * 1.45);
+                fragColor = vec4(base + bloom + core, scene.a);
+            }
+            """;
+
+    private static final String RAIDEN_COMPOSITE_FRAGMENT = """
+            #version 150
+
+            uniform sampler2D Scene;
+            uniform sampler2D Effect;
+            uniform sampler2D Glow;
+            uniform sampler2D Bloom;
             uniform vec2 TexelSize;
             uniform float GlowStrength;
             uniform float DistortionStrength;
@@ -93,44 +161,86 @@ public final class SkillPostShaders {
             in vec2 vUv;
             out vec4 fragColor;
 
-            float maskPower(vec4 c) {
+            float powerOf(vec4 c) {
                 return max(c.a, max(max(c.r, c.g), c.b));
             }
 
             void main() {
-                vec4 mask = texture(Mask, vUv);
-                vec3 maskRgb = max(mask.rgb, vec3(0.0));
-                float m = clamp(maskPower(mask), 0.0, 4.0);
-                float left = maskPower(texture(Mask, vUv - vec2(TexelSize.x, 0.0)));
-                float right = maskPower(texture(Mask, vUv + vec2(TexelSize.x, 0.0)));
-                float down = maskPower(texture(Mask, vUv - vec2(0.0, TexelSize.y)));
-                float up = maskPower(texture(Mask, vUv + vec2(0.0, TexelSize.y)));
+                vec4 bloomSample = texture(Bloom, vUv);
+                float m = clamp(powerOf(bloomSample), 0.0, 5.0);
+                float left = powerOf(texture(Bloom, vUv - vec2(TexelSize.x, 0.0)));
+                float right = powerOf(texture(Bloom, vUv + vec2(TexelSize.x, 0.0)));
+                float down = powerOf(texture(Bloom, vUv - vec2(0.0, TexelSize.y)));
+                float up = powerOf(texture(Bloom, vUv + vec2(0.0, TexelSize.y)));
                 vec2 warp = vec2(right - left, up - down)
-                        * DistortionStrength * TexelSize * 18.0;
+                    * DistortionStrength * TexelSize * 15.0;
 
                 vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
                 vec4 effect = texture(Effect, vUv);
+                vec4 rawGlow = texture(Glow, vUv);
+                float coverage = clamp(effect.a, 0.0, 1.0);
+                vec3 base = scene.rgb * (1.0 - coverage) + max(effect.rgb, vec3(0.0));
 
-                // Saturate only where the emissive mask is present. Dark smoke and the
-                // charred blade body therefore retain their contrast instead of turning red.
-                float energy = 1.0 - exp(-m * 1.55);
-                float effectLuma = dot(effect.rgb, vec3(0.2126, 0.7152, 0.0722));
-                vec3 saturatedEffect = max(vec3(0.0), mix(vec3(effectLuma), effect.rgb,
-                        1.0 + energy * 0.34));
-                vec3 base = scene.rgb * (1.0 - clamp(effect.a, 0.0, 1.0)) + saturatedEffect;
+                vec3 bloomRgb = max(bloomSample.rgb, vec3(0.0));
+                float peak = max(max(bloomRgb.r, bloomRgb.g), bloomRgb.b);
+                vec3 sampledHue = peak > 0.0001
+                    ? bloomRgb / peak : vec3(0.12, 0.78, 1.0);
+                float floorChannel = min(min(sampledHue.r, sampledHue.g), sampledHue.b);
+                float chroma = 1.0 - floorChannel;
+                vec3 cyanBias = vec3(0.10, 0.72, 1.0);
+                vec3 bloomHue = mix(cyanBias, sampledHue, 0.34 + chroma * 0.46);
+                float halo = 1.0 - exp(-m * 1.28);
+                vec3 bloom = bloomHue * GlowStrength * halo * (0.42 + halo * 1.08);
+                vec3 core = max(rawGlow.rgb, vec3(0.0)) * 0.30;
+                fragColor = vec4(base + core + bloom, scene.a);
+            }
+            """;
 
-                // Preserve the mask hue instead of raising every channel to its maximum.
-                // A nearly white source gets a warm-gold halo while its geometric core
-                // remains white-hot in Effect; colored sources keep and strengthen hue.
-                float peak = max(max(maskRgb.r, maskRgb.g), maskRgb.b);
-                vec3 normalizedHue = peak > 0.0001 ? maskRgb / peak : vec3(1.0, 0.42, 0.06);
-                float hueFloor = min(min(normalizedHue.r, normalizedHue.g), normalizedHue.b);
-                float chroma = 1.0 - hueFloor;
+    private static final String HONKAI_COMPOSITE_FRAGMENT = """
+            #version 150
+
+            uniform sampler2D Scene;
+            uniform sampler2D Effect;
+            uniform sampler2D Bloom;
+            uniform vec2 TexelSize;
+            uniform float GlowStrength;
+            uniform float DistortionStrength;
+
+            in vec2 vUv;
+            out vec4 fragColor;
+
+            float powerOf(vec4 c) {
+                return max(c.a, max(max(c.r, c.g), c.b));
+            }
+
+            void main() {
+                vec4 bloomSample = texture(Bloom, vUv);
+                float m = clamp(powerOf(bloomSample), 0.0, 5.0);
+                float left = powerOf(texture(Bloom, vUv - vec2(TexelSize.x, 0.0)));
+                float right = powerOf(texture(Bloom, vUv + vec2(TexelSize.x, 0.0)));
+                float down = powerOf(texture(Bloom, vUv - vec2(0.0, TexelSize.y)));
+                float up = powerOf(texture(Bloom, vUv + vec2(0.0, TexelSize.y)));
+                vec2 warp = vec2(right - left, up - down)
+                        * DistortionStrength * TexelSize * 14.0;
+
+                vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
+                vec4 effect = texture(Effect, vUv);
+                float coverage = clamp(effect.a, 0.0, 1.0);
+                vec3 base = scene.rgb * (1.0 - coverage) + max(effect.rgb, vec3(0.0));
+
+                // Keep the sampled cyan/violet hue. Unlike the Bloodfyre compositor there is
+                // deliberately no warm fallback, so white ice cores and amethyst filaments do
+                // not collapse into a shared yellow halo under a shader pack.
+                vec3 bloomRgb = max(bloomSample.rgb, vec3(0.0));
+                float peak = max(max(bloomRgb.r, bloomRgb.g), bloomRgb.b);
+                vec3 hue = peak > 0.0001 ? bloomRgb / peak : vec3(0.82, 0.90, 1.0);
+                float floorChannel = min(min(hue.r, hue.g), hue.b);
+                float chroma = 1.0 - floorChannel;
                 vec3 pureHue = chroma > 0.001
-                        ? (normalizedHue - vec3(hueFloor)) / chroma
-                        : vec3(1.0, 0.42, 0.06);
-                vec3 bloomHue = mix(normalizedHue, pureHue, 0.68);
-                vec3 bloom = bloomHue * GlowStrength * energy * (0.55 + energy * 0.90);
+                        ? (hue - vec3(floorChannel)) / chroma : hue;
+                vec3 bloomHue = mix(hue, pureHue, chroma * 0.42);
+                float halo = 1.0 - exp(-m * 1.34);
+                vec3 bloom = bloomHue * GlowStrength * halo * (0.38 + halo * 1.02);
                 fragColor = vec4(base + bloom, scene.a);
             }
             """;
@@ -138,6 +248,8 @@ public final class SkillPostShaders {
     private static int blurProgram;
     private static int compositeProgram;
     private static int bloodfyreCompositeProgram;
+    private static int raidenCompositeProgram;
+    private static int honkaiCompositeProgram;
     private static int vertexArray;
 
     private SkillPostShaders() {
@@ -173,22 +285,65 @@ public final class SkillPostShaders {
     }
 
     public static void compositeBloodfyre(int sceneTextureId, int effectTextureId,
-                                          int maskTextureId, int width, int height) {
+                                          int glowTextureId, int bloomTextureId,
+                                          int width, int height) {
         ensurePrograms();
         withFullscreenState(() -> {
             GL20.glUseProgram(bloodfyreCompositeProgram);
             bindTexture(0, sceneTextureId);
             bindTexture(1, effectTextureId);
-            bindTexture(2, maskTextureId);
+            bindTexture(2, glowTextureId);
+            bindTexture(3, bloomTextureId);
             GL20.glUniform1i(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "Scene"), 0);
             GL20.glUniform1i(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "Effect"), 1);
-            GL20.glUniform1i(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "Mask"), 2);
+            GL20.glUniform1i(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "Glow"), 2);
+            GL20.glUniform1i(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "Bloom"), 3);
             GL20.glUniform2f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "TexelSize"),
                     1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
-            // Broad colored bloom: brightness comes from halo area and chroma instead of
-            // clipping all three channels to white at the geometric core.
-            GL20.glUniform1f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "GlowStrength"), 0.90F);
+            GL20.glUniform1f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "CoreStrength"), 0.85F);
+            GL20.glUniform1f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "GlowStrength"), 1.65F);
             GL20.glUniform1f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "DistortionStrength"), 0.12F);
+            drawFullscreenTriangle();
+        });
+    }
+
+    public static void compositeRaiden(int sceneTextureId, int effectTextureId,
+                                       int glowTextureId, int bloomTextureId,
+                                       int width, int height) {
+        ensurePrograms();
+        withFullscreenState(() -> {
+            GL20.glUseProgram(raidenCompositeProgram);
+            bindTexture(0, sceneTextureId);
+            bindTexture(1, effectTextureId);
+            bindTexture(2, glowTextureId);
+            bindTexture(3, bloomTextureId);
+            GL20.glUniform1i(GL20.glGetUniformLocation(raidenCompositeProgram, "Scene"), 0);
+            GL20.glUniform1i(GL20.glGetUniformLocation(raidenCompositeProgram, "Effect"), 1);
+            GL20.glUniform1i(GL20.glGetUniformLocation(raidenCompositeProgram, "Glow"), 2);
+            GL20.glUniform1i(GL20.glGetUniformLocation(raidenCompositeProgram, "Bloom"), 3);
+            GL20.glUniform2f(GL20.glGetUniformLocation(raidenCompositeProgram, "TexelSize"),
+                    1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
+            GL20.glUniform1f(GL20.glGetUniformLocation(raidenCompositeProgram, "GlowStrength"), 0.92F);
+            GL20.glUniform1f(GL20.glGetUniformLocation(raidenCompositeProgram, "DistortionStrength"), 0.10F);
+            drawFullscreenTriangle();
+        });
+    }
+
+    public static void compositeHonkai(int sceneTextureId, int effectTextureId,
+                                       int bloomTextureId, int width, int height) {
+        ensurePrograms();
+        withFullscreenState(() -> {
+            GL20.glUseProgram(honkaiCompositeProgram);
+            bindTexture(0, sceneTextureId);
+            bindTexture(1, effectTextureId);
+            bindTexture(2, bloomTextureId);
+            GL20.glUniform1i(GL20.glGetUniformLocation(honkaiCompositeProgram, "Scene"), 0);
+            GL20.glUniform1i(GL20.glGetUniformLocation(honkaiCompositeProgram, "Effect"), 1);
+            GL20.glUniform1i(GL20.glGetUniformLocation(honkaiCompositeProgram, "Bloom"), 2);
+            GL20.glUniform2f(GL20.glGetUniformLocation(honkaiCompositeProgram, "TexelSize"),
+                    1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
+            GL20.glUniform1f(GL20.glGetUniformLocation(honkaiCompositeProgram, "GlowStrength"), 0.96F);
+            GL20.glUniform1f(GL20.glGetUniformLocation(honkaiCompositeProgram, "DistortionStrength"), 0.10F);
             drawFullscreenTriangle();
         });
     }
@@ -209,6 +364,12 @@ public final class SkillPostShaders {
         }
         if (bloodfyreCompositeProgram == 0) {
             bloodfyreCompositeProgram = createProgram(BLOODFYRE_COMPOSITE_FRAGMENT);
+        }
+        if (raidenCompositeProgram == 0) {
+            raidenCompositeProgram = createProgram(RAIDEN_COMPOSITE_FRAGMENT);
+        }
+        if (honkaiCompositeProgram == 0) {
+            honkaiCompositeProgram = createProgram(HONKAI_COMPOSITE_FRAGMENT);
         }
     }
 
@@ -251,6 +412,7 @@ public final class SkillPostShaders {
         int previousTexture0 = textureBinding2D(0);
         int previousTexture1 = textureBinding2D(1);
         int previousTexture2 = textureBinding2D(2);
+        int previousTexture3 = textureBinding2D(3);
         boolean depthEnabled = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
         boolean depthWriteEnabled = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK);
         boolean blendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
@@ -269,6 +431,7 @@ public final class SkillPostShaders {
             restoreTextureBinding2D(0, previousTexture0);
             restoreTextureBinding2D(1, previousTexture1);
             restoreTextureBinding2D(2, previousTexture2);
+            restoreTextureBinding2D(3, previousTexture3);
             GL13.glActiveTexture(previousActiveTexture);
             GL11.glDepthMask(depthWriteEnabled);
             setEnabled(GL11.GL_DEPTH_TEST, depthEnabled);

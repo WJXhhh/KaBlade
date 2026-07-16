@@ -29,17 +29,17 @@ void main() {
         float diamond = abs(p.x) + abs(p.y);
         float body = 1.0 - smoothstep(0.50, 1.0, diamond);
         float core = 1.0 - smoothstep(0.0, 0.28, diamond);
-        color = mix(tint, vec3(1.0, 0.38, 0.055), core);
+        color = mix(tint, vec3(1.0, 0.92, 0.62), core);
         alpha *= body;
-        color *= 1.10 + core * 1.40;
+        color *= 1.50 + core * 2.10;
     } else {
         vec2 p = vec2(u, v) * 2.0 - 1.0;
         float radius = length(p);
         float spark = 1.0 - smoothstep(0.05, 1.0, radius);
         float flicker = 0.74 + 0.26 * sin(time * 0.72 + hash(vec2(u, v)) * 9.0);
-        color = mix(vec3(1.0, 0.18, 0.015), vec3(1.0, 0.94, 0.52), spark);
+        color = mix(vec3(1.0, 0.18, 0.015), vec3(1.0, 0.99, 0.82), spark);
         alpha *= spark * flicker;
-        color *= 1.5 + spark * 1.7;
+        color *= 2.0 + spark * 2.6;
     }
 
     if (alpha < 0.004) discard;

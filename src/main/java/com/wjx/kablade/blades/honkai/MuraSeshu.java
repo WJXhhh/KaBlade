@@ -3,10 +3,12 @@ package com.wjx.kablade.blades.honkai;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
+import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.PropertiesDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.RenderDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class MuraSeshu extends BladeDefineBase {
                         .baseAttackModifier(6.0F)
                         .maxDamage(260)
                         .build(),
-                List.of()
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 1))
         ));
     }
 

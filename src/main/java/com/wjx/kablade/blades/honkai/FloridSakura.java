@@ -33,6 +33,7 @@ public class FloridSakura extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.CRIMSON_SAKURA.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "fire_aspect"), 4),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 5),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 3),

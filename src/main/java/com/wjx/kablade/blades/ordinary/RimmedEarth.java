@@ -3,10 +3,12 @@ package com.wjx.kablade.blades.ordinary;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
+import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.PropertiesDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.RenderDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class RimmedEarth extends BladeDefineBase {
                         .baseAttackModifier(2.0F)
                         .maxDamage(60)
                         .build(),
-                List.of()
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 1))
                 ));
     }
 

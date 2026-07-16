@@ -36,7 +36,8 @@ public class ByoDen extends BladeDefineBase {
                         .maxDamage(500)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .build(),
-                List.of(new EnchantmentDefinition(
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
+                        new EnchantmentDefinition(
                         ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2))
         ));
     }

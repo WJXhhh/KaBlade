@@ -59,17 +59,17 @@ void main() {
     } else if (kind < 2.5) {
         float outerEdge = smoothstep(0.10, 0.92, v + (warped - 0.5) * 0.20);
         float white = veins * smoothstep(0.42, 0.78, fine);
-        float whiteBody = clamp(0.44 + outerEdge * 0.28 + white * 0.32, 0.0, 0.88);
+        float whiteBody = clamp(0.56 + outerEdge * 0.30 + white * 0.40, 0.0, 1.0);
         color = mix(vec3(1.0, 0.13, 0.012), vec3(1.0, 0.52, 0.075), outerEdge);
-        color = mix(color, vec3(1.0, 0.69, 0.28), whiteBody);
+        color = mix(color, vec3(1.0, 0.97, 0.80), whiteBody);
         alpha *= 0.92 + white * 0.10;
-        color *= 1.24 + white * 0.42 + outerEdge * 0.18;
+        color *= 1.70 + white * 1.10 + outerEdge * 0.35;
     } else if (kind < 3.5) {
         float filament = 1.0 - smoothstep(0.08, 0.58, across);
         float breaks = smoothstep(0.24, 0.62, warped);
-        color = mix(vec3(1.0, 0.18, 0.018), vec3(1.0, 0.93, 0.58), filament);
+        color = mix(vec3(1.0, 0.18, 0.018), vec3(1.0, 0.98, 0.84), filament);
         alpha *= filament * breaks;
-        color *= 1.45 + filament * 1.25;
+        color *= 2.15 + filament * 2.45;
     } else {
         // The erosion front is deliberately rendered with ordinary alpha blending:
         // an additive pass cannot preserve its near-black charred core.

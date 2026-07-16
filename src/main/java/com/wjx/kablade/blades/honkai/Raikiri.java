@@ -38,6 +38,7 @@ public class Raikiri extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.BLADE_WARD.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2),
                         new EnchantmentDefinition(

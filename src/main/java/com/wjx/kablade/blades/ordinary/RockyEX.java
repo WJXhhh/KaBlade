@@ -41,7 +41,7 @@ public class RockyEX extends BladeDefineBase {
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2),
                         new EnchantmentDefinition(
-                                ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2)
+                                ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3)
                 )
         ));
     }

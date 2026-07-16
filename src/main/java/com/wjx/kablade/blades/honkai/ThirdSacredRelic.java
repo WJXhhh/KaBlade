@@ -39,6 +39,7 @@ public class ThirdSacredRelic extends BladeDefineBase {
                         .addSpecialEffect(ModSpecialEffects.HOLY_ENERGY_IMPACT.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2)
                 )

@@ -38,6 +38,7 @@ public class VibroCutter extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.INDUCTION_COLLAPSE.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2)
                 )

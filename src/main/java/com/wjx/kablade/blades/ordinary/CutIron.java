@@ -40,6 +40,7 @@ public class CutIron extends BladeDefineBase {
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 4),
                         new EnchantmentDefinition(

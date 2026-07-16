@@ -35,7 +35,8 @@ public class OneSaltyTuna extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.LETHAL_THRUST.getId())
                         .addSpecialEffect(ModSpecialEffects.UNDYING_SALTINESS.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
+                        new EnchantmentDefinition(
                         ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2))
         ));
     }

@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.core.particles.DustColorTransitionOptions;
@@ -44,6 +45,8 @@ public class SwordEnlightenmentEntity extends Entity {
 
     private static final double HIT_RADIUS = 8.2D;
     private static final double HIT_HEIGHT = 4.8D;
+    private static final int PARALYSIS_DURATION = 80;
+    private static final int PARALYSIS_AMPLIFIER = 2;
 
     private LivingEntity owner;
     private float baseDamage;
@@ -236,6 +239,8 @@ public class SwordEnlightenmentEntity extends Entity {
             float falloff = (float) Mth.clamp(1.0D - horizontal / (HIT_RADIUS * 1.35D), 0.62D, 1.0D);
             if (SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage * falloff)) {
                 spawnHitFeedback(level, target, finisher);
+                target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
+                        PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
             }
 
             Vec3 motion;

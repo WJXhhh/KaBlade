@@ -32,7 +32,8 @@ public class RockyShanchang extends BladeDefineBase {
                         .baseAttackModifier(5.0F)
                         .maxDamage(130)
                         .build(),
-                List.of(new EnchantmentDefinition(
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2),
+                        new EnchantmentDefinition(
                         ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2))
         ));
     }

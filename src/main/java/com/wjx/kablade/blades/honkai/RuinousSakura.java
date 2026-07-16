@@ -41,6 +41,7 @@ public class RuinousSakura extends BladeDefineBase {
                         .addSpecialEffect(ModSpecialEffects.FUEL_THE_RUIN.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "fire_aspect"), 5),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 6),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 4),

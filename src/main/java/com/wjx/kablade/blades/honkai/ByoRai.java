@@ -37,7 +37,8 @@ public class ByoRai extends BladeDefineBase {
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ResourceLocation.fromNamespaceAndPath("slashblade", "sakura_end"))
                         .build(),
-                List.of(new EnchantmentDefinition(
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 4),
+                        new EnchantmentDefinition(
                         ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 1))
         ));
     }

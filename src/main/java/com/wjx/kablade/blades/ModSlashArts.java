@@ -28,6 +28,7 @@ import com.wjx.kablade.slasharts.LightningSwordsArts;
 import com.wjx.kablade.slasharts.LightsOnStageArts;
 import com.wjx.kablade.slasharts.LoveIsWarArts;
 import com.wjx.kablade.slasharts.MagChaosBladeArts;
+import com.wjx.kablade.slasharts.RaidenCycloneArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
 import com.wjx.kablade.slasharts.MoonFangArts;
 import com.wjx.kablade.slasharts.OverSlashArts;
@@ -211,6 +212,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> MAG_CHAOS_BLADE = REGISTRY.register(
             "mag_chaos_blade",
             () -> new MagChaosBladeArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> RAIDEN_CYCLONE = REGISTRY.register(
+            "raiden_cyclone",
+            () -> new RaidenCycloneArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> SNOW_DANCE = REGISTRY.register(
             "snow_dance",

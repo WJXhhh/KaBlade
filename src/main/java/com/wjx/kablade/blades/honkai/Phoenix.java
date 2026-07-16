@@ -40,7 +40,8 @@ public class Phoenix extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.MOLTEN_BLADE.getId())
                         .addSpecialEffect(ModSpecialEffects.PHOENIX.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 4),
+                        new EnchantmentDefinition(
                         ResourceLocation.fromNamespaceAndPath("minecraft", "fire_aspect"), 3))
         ));
     }

@@ -38,6 +38,7 @@ public class SkyBreaker extends BladeDefineBase {
                         .addSpecialEffect(ModSpecialEffects.DIVINE_PENALTY.getId())
                         .build(),
                 List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 4),
                         new EnchantmentDefinition(
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2),
                         new EnchantmentDefinition(
