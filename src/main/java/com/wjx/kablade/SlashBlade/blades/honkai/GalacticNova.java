@@ -46,7 +46,7 @@ public class GalacticNova {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/GalacticNova/texGalactic");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/GalacticNova/mdlGalactic");
 
-        ItemSlashBlade.SpecialAttackType.set(tag,7);
+        ItemSlashBlade.SpecialAttackType.set(tag,461);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
         customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
         ItemSlashBlade.AttackAmplifier.set(tag,1.7f);

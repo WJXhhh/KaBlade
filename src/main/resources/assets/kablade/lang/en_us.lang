@@ -218,6 +218,7 @@ flammpfeil.slashblade.specialattack.love_is_war=Love is War!
 flammpfeil.slashblade.specialattack.induction_collapse=Induction Collapse
 flammpfeil.slashblade.specialattack.utpala_aura=§b§lUtpala Aura
 flammpfeil.slashblade.specialattack.conceptual=Sword Enlightenment
+flammpfeil.slashblade.specialattack.lights_on_stage=Lights on Stage
 
 slashblade.seffect.name.kablade.SETurbulence=§5Turbulence
 slashblade.seffect.name.kablade.divine_penalty=§eDivine_penalty
@@ -249,6 +250,7 @@ flammpfeil.slashblade.specialattack.suiji=§cRandom Fool!
 #生之称
 entity.vorpal_black_hole.name=Vorpal Black Hole
 entity.wine.name=Wine
+entity.stage_light.name=Lights on Stage
 
 #堺之言
 msg.yunluo=DIE！
@@ -265,6 +267,7 @@ prop.title=KaBlade:Effect
 prop.kami_of_war_count=Kami of War
 prop.wind_enchantment_boost=Wind Enchantment
 prop.fair_pow=Power of War
+prop.stage_light=Lights on Stage
 
 #Config
 config.kablade.general=General Settings

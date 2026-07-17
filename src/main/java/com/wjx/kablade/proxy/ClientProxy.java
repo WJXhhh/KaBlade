@@ -5,6 +5,7 @@ import com.wjx.kablade.Entity.Render.RenderConfinementForceField;
 import com.wjx.kablade.Entity.Render.RenderWindEnchantment;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.client.model.SlashBladeModelWarmup;
+import com.wjx.kablade.client.shader.StageLightShader;
 import com.wjx.kablade.util.ParticleManager;
 import com.wjx.kablade.util.handlers.RenderHandler;
 import net.minecraft.client.Minecraft;
@@ -68,6 +69,7 @@ public class ClientProxy extends CommonProxy{
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
+        StageLightShader.registerReloadListener();
         ParticleManager.registerParticles();
     }
 

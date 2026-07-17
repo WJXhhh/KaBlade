@@ -1,0 +1,17 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1",
+    "srcalpha": "1",
+    "dstalpha": "0"
+  },
+  "vertex": "kablade:stage_light",
+  "fragment": "kablade:stage_light",
+  "cull": false,
+  "samplers": [],
+  "uniforms": [
+    { "name": "ColorModulator", "type": "float", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] },
+    { "name": "GameTime", "type": "float", "count": 1, "values": [ 0.0 ] }
+  ]
+}

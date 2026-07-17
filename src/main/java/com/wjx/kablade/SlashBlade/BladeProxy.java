@@ -82,6 +82,7 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(458,new HonkaiInductionCollapse());
             ItemSlashBlade.specialAttacks.put(459,new HonkaiUtpalaAura());
             ItemSlashBlade.specialAttacks.put(460,new HonkaiConceptual());
+            ItemSlashBlade.specialAttacks.put(461,new HonkaiLightsOnStage());
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());

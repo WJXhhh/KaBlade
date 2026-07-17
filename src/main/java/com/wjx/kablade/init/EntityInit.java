@@ -28,6 +28,7 @@ public class EntityInit {
         registerEntity("summon_hedra",EntitySummonHedra.class,13700013,50);
         registerEntity("confinement",EntityConfinementForceField.class,13700014,50);
         registerEntity("conceptual", EntityConceptual.class,13700015,50);
+        registerEntity("stage_light", EntityStageLight.class,13700016,80);
 
 
 

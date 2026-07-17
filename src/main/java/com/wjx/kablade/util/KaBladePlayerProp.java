@@ -106,6 +106,7 @@ public class KaBladePlayerProp {
     public static final String KAMI_OF_WAR_TICK = "KAMI_OF_WAR_TICK".toLowerCase(Locale.ROOT);
     public static final String KAMI_OF_WAR_EX_DAMAGE = "KAMI_OF_WAR_EX_DAMAGE".toLowerCase(Locale.ROOT);
     public static final String WIND_ENCHANTMENT_BOOST = "WIND_ENCHANTMENT_BOOST".toLowerCase(Locale.ROOT);//
+    public static final String STAGE_LIGHT = "STAGE_LIGHT".toLowerCase(Locale.ROOT);
     public static final String FORESIGHT = "FORESIGHT".toLowerCase(Locale.ROOT);
 
 
@@ -118,12 +119,14 @@ public class KaBladePlayerProp {
     static {
         Bufftimes.put(KAMI_OF_WAR_COUNT,6);
         Bufftimes.put(WIND_ENCHANTMENT_BOOST,5);
+        Bufftimes.put(STAGE_LIGHT,10);
         Bufftimes.put(FAIR_POW,1);
     }
 
     public static List<String> buffs = Arrays.asList(
             KAMI_OF_WAR_COUNT,
             WIND_ENCHANTMENT_BOOST,
+            STAGE_LIGHT,
             FAIR_POW);
 
 
