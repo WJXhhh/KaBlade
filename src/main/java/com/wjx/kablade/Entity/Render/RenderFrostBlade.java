@@ -73,10 +73,19 @@ public class RenderFrostBlade extends Render<SummonBladeOfFrostBlade> {
         float pulse = 0.96F + 0.04F * (float) Math.sin(age * 1.4F);
         float finisherScale = entity.isFinisher() ? 1.28F : 1.0F;
 
-        GL11.glRotatef(lerpDegrees(entity.prevRotationYaw, entity.rotationYaw, partialTicks),
-                0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(-lerp(entity.prevRotationPitch, entity.rotationPitch, partialTicks),
-                1.0F, 0.0F, 0.0F);
+        // 飞行速度是实际朝向的最终来源，可避免无锁定发射时旋转同步慢一帧而横置。
+        double horizontalMotion = Math.sqrt(entity.motionX * entity.motionX + entity.motionZ * entity.motionZ);
+        if (horizontalMotion * horizontalMotion + entity.motionY * entity.motionY > 1.0E-8D) {
+            GL11.glRotatef((float) (Math.atan2(entity.motionX, entity.motionZ) * 180.0D / Math.PI),
+                    0.0F, 1.0F, 0.0F);
+            GL11.glRotatef((float) (Math.atan2(-entity.motionY, horizontalMotion) * 180.0D / Math.PI),
+                    1.0F, 0.0F, 0.0F);
+        } else {
+            GL11.glRotatef(-lerpDegrees(entity.prevRotationYaw, entity.rotationYaw, partialTicks),
+                    0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(lerp(entity.prevRotationPitch, entity.rotationPitch, partialTicks),
+                    1.0F, 0.0F, 0.0F);
+        }
         float scale = appear * pulse * finisherScale;
         GL11.glScalef(scale, scale, scale);
 

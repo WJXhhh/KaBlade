@@ -31,7 +31,7 @@ public class HonKaiFrostBlade extends SpecialAttackBase {
         }
 
         float extraDamage = MathFunc.amplifierCalc(
-                ItemSlashBlade.BaseAttackModifier.get(ItemSlashBlade.getItemTagCompound(itemStack)), 1.0F) * 2.0F;
+                ItemSlashBlade.BaseAttackModifier.get(ItemSlashBlade.getItemTagCompound(itemStack)), 1.0F) * 3.0F;
         Entity resolved = TargetingUtil.resolveTarget(entityPlayer, itemStack, 24.0D, 12.0D, 12.0D);
         EntityLivingBase target = resolved instanceof EntityLivingBase
                 && TargetingUtil.canDamage(entityPlayer, resolved) ? (EntityLivingBase) resolved : null;

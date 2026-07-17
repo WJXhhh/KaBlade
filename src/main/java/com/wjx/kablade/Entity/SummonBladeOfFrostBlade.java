@@ -90,9 +90,6 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
             this.fallbackDirection = fallbackDirection.normalize();
         }
         updateFormationPosition(thrower);
-        if (getWaveDelay() == 0) {
-            activate(thrower, target);
-        }
     }
 
     @Override
@@ -109,6 +106,10 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
         super.onUpdate();
 
         if (world.isRemote) {
+            // 服务端仍负责命中与伤害；客户端只按同步速度预测位置，避免高速飞行逐 Tick 跳动。
+            if (getPhase() == PHASE_FLYING) {
+                move(MoverType.SELF, motionX, motionY, motionZ);
+            }
             updateClientEffects();
             return;
         }
@@ -122,9 +123,11 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
         switch (getPhase()) {
             case PHASE_WAITING:
                 EntityLivingBase waitingTarget = getTargetEntity();
-                if (getTargetId() > 0 && (waitingTarget == null || !waitingTarget.isEntityAlive())) {
-                    setDead();
-                    return;
+                if (waitingTarget == null || !TargetingUtil.canDamage(owner, waitingTarget)) {
+                    if (getTargetId() > 0) {
+                        setTarget(null);
+                    }
+                    waitingTarget = null;
                 }
                 updateFormationPosition(owner);
                 if (ticksExisted >= getWaveDelay()) {
@@ -173,8 +176,11 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
         }
 
         EntityLivingBase target = getTargetEntity();
-        if (target == null || !target.isEntityAlive()) {
-            setDead();
+        if (target == null || !TargetingUtil.canDamage(getOwnerEntity(), target)) {
+            // 锁定目标在蓄力期间失效时保留已算出的方向，仍然完成本波发射。
+            setTarget(null);
+            phaseTicks = 0;
+            setPhase(PHASE_FLYING);
             return;
         }
         turnToward(target, phaseTicks);
