@@ -1,6 +1,7 @@
 package com.wjx.kablade;
 
 import com.google.common.collect.Lists;
+import com.wjx.kablade.ExSA.ability.EnderTeleportCanceller;
 import com.wjx.kablade.SlashBlade.blades.recipe.RecipeKaBladeRepair;
 import com.wjx.kablade.config.ModConfig;
 import com.wjx.kablade.creativeTab.*;
@@ -138,6 +139,7 @@ public class Main
 
         EntityInit.registerEntity();
         WorldEvent.loadEvent();
+        MinecraftForge.EVENT_BUS.register(new EnderTeleportCanceller());
 
 
 

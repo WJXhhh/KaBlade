@@ -1,5 +1,6 @@
 package com.wjx.kablade.Entity;
 
+import com.wjx.kablade.ExSA.ability.EnderTeleportCanceller;
 import com.wjx.kablade.util.TargetingUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,7 +12,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -259,10 +260,13 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
             return;
         }
 
+        // Prevent Endermen from teleporting away while this hit is resolved.
+        EnderTeleportCanceller.setTeleportCancel(target, 100);
         target.hurtTime = 0;
         target.hurtResistantTime = 0;
         boolean damaged = target.attackEntityFrom(
-                new EntityDamageSourceIndirect("indirectMagic", this, owner).setMagicDamage(), attackDamage);
+                // Endermen evade EntityDamageSourceIndirect (the same source type as arrows).
+                new EntityDamageSource("magic", owner).setMagicDamage(), attackDamage);
         target.hurtResistantTime = 0;
         if (damaged) {
             target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 60, 2));
