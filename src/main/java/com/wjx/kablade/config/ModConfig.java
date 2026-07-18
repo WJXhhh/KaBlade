@@ -35,6 +35,10 @@ public class ModConfig {
         public static boolean ExtraBotanyGaiaDisableEquipmentRestrictions;
         /** 当启用时，在标题界面预热全部拔刀剑模型、纹理及静态 VBO。 */
         public static boolean EnableSlashBladeModelWarmup = true;
+        /** 静态刀模 VBO 策略：AUTO 按硬件决定，ON 强制开启，OFF 关闭。 */
+        public static String SlashBladeVboMode = "AUTO";
+        /** VBO 缓存硬上限（MiB）；0 表示按硬件自动计算。 */
+        public static int SlashBladeVboCacheMaxMiB;
         /** 当启用时，使用 KaBlade 的 Shift 锁敌边沿触发与限频替换逻辑。 */
         public static boolean EnableShiftLockTargeting = true;
         /** 锁敌诊断日志与计数，生产环境默认关闭。 */
@@ -122,8 +126,26 @@ public class ModConfig {
 
         GeneralConf.EnableSlashBladeModelWarmup = config.getBoolean(
                 "EnableSlashBladeModelWarmup", category, true,
-                "Prewarm all registered SlashBlade models and textures at the title screen and enable the static VBO cache. " +
+                "Prewarm all registered SlashBlade models and textures at the title screen and enable the static VBO cache when allowed by SlashBladeVboMode. " +
                 "Disable this option to use SlashBlade's original rendering path."
+        );
+
+        GeneralConf.SlashBladeVboMode = config.getString(
+                "SlashBladeVboMode", category, "AUTO",
+                "Static blade VBO mode: AUTO uses a hardware-safe profile, ON forces it on, and OFF disables it. " +
+                "AUTO disables the raw VBO path on detected Android/Pojav/OpenGL ES translation environments."
+        ).trim().toUpperCase(java.util.Locale.ROOT);
+        if (!GeneralConf.SlashBladeVboMode.equals("AUTO")
+                && !GeneralConf.SlashBladeVboMode.equals("ON")
+                && !GeneralConf.SlashBladeVboMode.equals("OFF")) {
+            GeneralConf.SlashBladeVboMode = "AUTO";
+            config.get(category, "SlashBladeVboMode", "AUTO").set("AUTO");
+        }
+
+        GeneralConf.SlashBladeVboCacheMaxMiB = config.getInt(
+                "SlashBladeVboCacheMaxMiB", category, 0, 0, 1024,
+                "Hard limit of the adaptive static blade VBO cache in MiB. 0 selects a limit from the hardware profile. " +
+                "The cache grows on demand and uses LRU eviction only after reaching this limit."
         );
 
         GeneralConf.EnableShiftLockTargeting = config.getBoolean(

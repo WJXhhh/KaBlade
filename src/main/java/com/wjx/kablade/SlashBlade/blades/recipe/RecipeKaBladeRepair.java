@@ -3,12 +3,10 @@ package com.wjx.kablade.SlashBlade.blades.recipe;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.Util.ItemSlashUtil;
 import com.wjx.kablade.config.ModConfig;
-import mods.flammpfeil.slashblade.RecipeInstantRepair;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -17,15 +15,14 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.util.List;
-import org.apache.logging.log4j.Level;
 
 /**
  * 替换原版 RecipeInstantRepair，使用完全相同的合成摆法：
  *   " X"
  *   "B "
  *
- * KaBlade 刀 → 免费修复（不消耗 ProudSoul）
- * 原版 SlashBlade 刀 → 正常消耗 ProudSoul（行为与原版一致）
+ * 配置开启：KaBlade 刀免费修复（不消耗 ProudSoul）
+ * 配置关闭或原版 SlashBlade 刀：交给 SlashBlade 原配方处理
  */
 public class RecipeKaBladeRepair extends ShapedOreRecipe {
 
@@ -64,6 +61,8 @@ public class RecipeKaBladeRepair extends ShapedOreRecipe {
         ItemStack target = cInv.getStackInRowAndColumn(0, 1);
         if (target.isEmpty() || !(target.getItem() instanceof ItemSlashBlade))
             return false;
+        if (!ItemSlashUtil.KAITEMBLADE.contains(target.getItem()))
+            return false;
         if (target.getItemDamage() <= 0)
             return false;
 
@@ -84,36 +83,11 @@ public class RecipeKaBladeRepair extends ShapedOreRecipe {
         if (damage <= 0)
             return result;
 
-        // 计算修复量
         int repair = Math.min(stone.getCount(), damage);
 
-        // KaBlade 刀：免费修复，不消耗 ProudSoul
-        if (ItemSlashUtil.KAITEMBLADE.contains(result.getItem())) {
-            Main.logger.log(Level.INFO, "[KaBladeRepair] KaBlade free repair: damage=" + damage + " repair=" + repair);
-            result.setItemDamage(damage - repair);
-            if (result.hasTagCompound()) {
-                result.getTagCompound().setInteger("RepairCount", repair);
-            }
-        } else {
-            Main.logger.log(Level.INFO, "[KaBladeRepair] Original blade: consuming ProudSoul");
-            // 原版 SlashBlade 刀：正常消耗 ProudSoul（与原版行为一致）
-            if (result.hasTagCompound()) {
-                NBTTagCompound tag = result.getTagCompound();
-                int proudSoul = ItemSlashBlade.ProudSoul.get(tag);
-                int repairPoints = proudSoul / RecipeInstantRepair.RepairProudSoulCount;
-                repair = Math.min(stone.getCount(), Math.min(repairPoints, damage));
-
-                Main.logger.log(Level.INFO, "[KaBladeRepair] Original PS=" + proudSoul + " repair=" + repair + " repairPoints=" + repairPoints);
-
-                if (repair > 0) {
-                    proudSoul -= repair * RecipeInstantRepair.RepairProudSoulCount;
-                    result.setItemDamage(damage - repair);
-                    ItemSlashBlade.ProudSoul.set(tag, proudSoul);
-                    tag.setInteger(RecipeInstantRepair.RepairCountStr, repair);
-
-                    Main.logger.log(Level.INFO, "[KaBladeRepair] After repair: PS=" + proudSoul + " damage=" + (damage - repair));
-                }
-            }
+        result.setItemDamage(damage - repair);
+        if (result.hasTagCompound()) {
+            ItemSlashBlade.RepairCount.set(result.getTagCompound(), repair);
         }
 
         return result;
@@ -128,7 +102,9 @@ public class RecipeKaBladeRepair extends ShapedOreRecipe {
         ItemStack target = inv.getStackInRowAndColumn(0, 1);
 
         int repair = 0;
-        if (!target.isEmpty() && target.getItem() instanceof ItemSlashBlade) {
+        if (!target.isEmpty()
+                && target.getItem() instanceof ItemSlashBlade
+                && ItemSlashUtil.KAITEMBLADE.contains(target.getItem())) {
             int damage = target.getItemDamage();
             if (damage > 0) {
                 repair = Math.min(stone.getCount(), damage);

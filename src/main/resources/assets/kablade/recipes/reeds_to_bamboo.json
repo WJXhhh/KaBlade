@@ -1,5 +1,11 @@
 {
   "group": "kablade",
+  "conditions": [
+    {
+      "type": "minecraft:item_exists",
+      "item": "sakura:bamboo"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "0 0",

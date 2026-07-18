@@ -1,6 +1,7 @@
 package com.wjx.kablade.client.model;
 
 import com.wjx.kablade.config.ModConfig;
+import com.wjx.kablade.Main;
 import mods.flammpfeil.slashblade.client.model.obj.Face;
 import mods.flammpfeil.slashblade.client.model.obj.GroupObject;
 import mods.flammpfeil.slashblade.client.model.obj.TextureCoordinate;
@@ -23,7 +24,7 @@ import java.util.Map;
  * 将 SlashBlade 的静态 OBJ 部件上传到 VBO，避免每帧重复遍历 Face 并提交顶点。
  */
 public final class StaticBladeMeshCache {
-    private static final long MAX_CACHE_BYTES = 96L * 1024L * 1024L;
+    private static final long MIB = 1024L * 1024L;
     private static final int VERTEX_STRIDE = DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL.getSize();
     private static final int ENCHANT_COLOR = 0xFF8040CC;
     private static final float TEXTURE_OFFSET = 0.0005F;
@@ -31,6 +32,11 @@ public final class StaticBladeMeshCache {
     private static final Map<MeshKey, MeshEntry> CACHE =
             new LinkedHashMap<MeshKey, MeshEntry>(128, 0.75F, true);
     private static long cachedBytes;
+    private static long cacheLimitBytes;
+    private static long maximumCacheBytes;
+    private static BladeRenderHardwareProfile.Snapshot activeProfile;
+    private static String activeConfiguredMode;
+    private static int activeConfiguredMaxMiB = Integer.MIN_VALUE;
 
     private StaticBladeMeshCache() {
     }
@@ -39,7 +45,7 @@ public final class StaticBladeMeshCache {
      * 返回 true 表示已经使用 VBO 完成绘制，调用方应取消原始 Tessellator 路径。
      */
     public static synchronized boolean render(GroupObject group) {
-        if (!ModConfig.GeneralConf.EnableSlashBladeModelWarmup
+        if (!isVboEnabled()
                 || !OpenGlHelper.useVbo() || group == null || group.faces == null || group.faces.isEmpty()) {
             return false;
         }
@@ -79,7 +85,7 @@ public final class StaticBladeMeshCache {
      * 预建物品栏最常用的部件。白色是普通渲染，紫色是附魔 glint 的第二遍渲染。
      */
     public static synchronized int prewarmGuiParts(WavefrontObject model) {
-        if (!ModConfig.GeneralConf.EnableSlashBladeModelWarmup
+        if (!isVboEnabled()
                 || !OpenGlHelper.useVbo() || model == null || model.groupObjects == null) {
             return 0;
         }
@@ -100,15 +106,45 @@ public final class StaticBladeMeshCache {
     }
 
     public static synchronized void clear() {
-        for (MeshEntry entry : CACHE.values()) {
-            entry.buffer.deleteGlBuffers();
-        }
-        CACHE.clear();
-        cachedBytes = 0L;
+        deleteCachedBuffers();
+        cacheLimitBytes = 0L;
+        maximumCacheBytes = 0L;
+        activeProfile = null;
+        activeConfiguredMode = null;
+        activeConfiguredMaxMiB = Integer.MIN_VALUE;
+        BladeRenderHardwareProfile.invalidate();
+    }
+
+    /** 在客户端线程应用运行中修改的 VBO 配置，并及时释放旧策略创建的缓冲。 */
+    public static synchronized void refreshPolicy() {
+        ensureProfile();
     }
 
     public static synchronized long getCachedBytes() {
         return cachedBytes;
+    }
+
+    public static synchronized long getCacheLimitBytes() {
+        ensureProfile();
+        return cacheLimitBytes;
+    }
+
+    public static synchronized long getMaximumCacheBytes() {
+        ensureProfile();
+        return maximumCacheBytes;
+    }
+
+    public static synchronized BladeRenderHardwareProfile.Snapshot getHardwareProfile() {
+        ensureProfile();
+        return activeProfile;
+    }
+
+    public static synchronized boolean isVboEnabled() {
+        if (!ModConfig.GeneralConf.EnableSlashBladeModelWarmup) {
+            return false;
+        }
+        ensureProfile();
+        return activeProfile.isVboEnabled();
     }
 
     private static boolean isGuiPart(String name) {
@@ -139,11 +175,13 @@ public final class StaticBladeMeshCache {
         if (created == null) {
             return null;
         }
-        if (created.bytes > MAX_CACHE_BYTES) {
+        ensureProfile();
+        if (created.bytes > maximumCacheBytes) {
             created.buffer.deleteGlBuffers();
             return null;
         }
 
+        expandToFit(created.bytes);
         CACHE.put(key, created);
         cachedBytes += created.bytes;
         trimToLimit();
@@ -236,12 +274,69 @@ public final class StaticBladeMeshCache {
 
     private static void trimToLimit() {
         Iterator<Map.Entry<MeshKey, MeshEntry>> iterator = CACHE.entrySet().iterator();
-        while (cachedBytes > MAX_CACHE_BYTES && iterator.hasNext()) {
+        while (cachedBytes > cacheLimitBytes && iterator.hasNext()) {
             MeshEntry entry = iterator.next().getValue();
             cachedBytes -= entry.bytes;
             entry.buffer.deleteGlBuffers();
             iterator.remove();
         }
+    }
+
+    private static void ensureProfile() {
+        String configuredMode = ModConfig.GeneralConf.SlashBladeVboMode;
+        int configuredMaxMiB = ModConfig.GeneralConf.SlashBladeVboCacheMaxMiB;
+        if (activeProfile != null
+                && equalsNullable(activeConfiguredMode, configuredMode)
+                && activeConfiguredMaxMiB == configuredMaxMiB) {
+            return;
+        }
+
+        if (activeProfile != null) {
+            deleteCachedBuffers();
+            BladeRenderHardwareProfile.invalidate();
+            Main.logger.info("SlashBlade VBO configuration changed; old static buffers were released");
+        }
+        activeProfile = BladeRenderHardwareProfile.get();
+        activeConfiguredMode = configuredMode;
+        activeConfiguredMaxMiB = configuredMaxMiB;
+        cacheLimitBytes = activeProfile.getInitialCacheBytes();
+        maximumCacheBytes = activeProfile.getMaximumCacheBytes();
+        Main.logger.info(
+                "SlashBlade VBO profile: tier={}, mode={}, enabled={}, heapMiB={}, initialMiB={}, maxMiB={}, vendor={}, renderer={}, version={}",
+                activeProfile.getTier(), activeProfile.getMode(), activeProfile.isVboEnabled(),
+                activeProfile.getMaxHeapMiB(), cacheLimitBytes / MIB, maximumCacheBytes / MIB,
+                activeProfile.getGlVendor(), activeProfile.getGlRenderer(), activeProfile.getGlVersion());
+    }
+
+    private static void expandToFit(long incomingBytes) {
+        long required = cachedBytes + incomingBytes;
+        if (required <= cacheLimitBytes || cacheLimitBytes >= maximumCacheBytes) {
+            return;
+        }
+
+        long previous = cacheLimitBytes;
+        long expanded = cacheLimitBytes;
+        while (expanded < required && expanded < maximumCacheBytes) {
+            long step = Math.max(32L * MIB, expanded / 2L);
+            expanded = Math.min(maximumCacheBytes, expanded + step);
+        }
+        cacheLimitBytes = expanded;
+        if (cacheLimitBytes != previous) {
+            Main.logger.info("SlashBlade VBO cache expanded: {} MiB -> {} MiB (hard limit {} MiB)",
+                    previous / MIB, cacheLimitBytes / MIB, maximumCacheBytes / MIB);
+        }
+    }
+
+    private static void deleteCachedBuffers() {
+        for (MeshEntry entry : CACHE.values()) {
+            entry.buffer.deleteGlBuffers();
+        }
+        CACHE.clear();
+        cachedBytes = 0L;
+    }
+
+    private static boolean equalsNullable(String left, String right) {
+        return left == null ? right == null : left.equals(right);
     }
 
     private static final class MeshKey {

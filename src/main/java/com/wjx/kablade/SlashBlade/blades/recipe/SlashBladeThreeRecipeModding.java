@@ -1,6 +1,5 @@
 package com.wjx.kablade.SlashBlade.blades.recipe;
 
-import com.wjx.kablade.SlashBlade.BladeLoader;
 import mods.flammpfeil.slashblade.ItemSlashBladeNamed;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.TagPropertyAccessor;
@@ -12,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.util.Map;
@@ -35,73 +33,67 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
 
     @Override
     public boolean matches(InventoryCrafting inv, World world) {
-
         boolean result = super.matches(inv, world);
+        if(!result
+                || requiredStateBlade.isEmpty()
+                || requiredStateBlade2.isEmpty()
+                || requiredStateBlade3.isEmpty()){
+            return false;
+        }
 
+        boolean m1 = false;
+        boolean m2 = false;
+        boolean m3 = false;
 
-        boolean m1 = false,m2= false,m3= false;
-
-
-        if(result && !requiredStateBlade.isEmpty()){ //Start match specific blade
-            requiredStateBlade.setItemDamage(OreDictionary.WILDCARD_VALUE);
-            for(int idx = 0; idx < inv.getSizeInventory(); idx++){
-                ItemStack curIs = inv.getStackInSlot(idx);
-                if(!curIs.isEmpty()
-                        && curIs.getItem() instanceof ItemSlashBlade
-                        && curIs.hasTagCompound()){
-
-
-                    NBTTagCompound reqTag = ItemSlashBlade.getItemTagCompound(requiredStateBlade);
-                    NBTTagCompound srcTag = ItemSlashBlade.getItemTagCompound(curIs);
-
-
-
-
-
-                    if(!curIs.getTranslationKey().equals(requiredStateBlade.getTranslationKey())){
-                        if (curIs.getTranslationKey().equals(requiredStateBlade2.getTranslationKey())){
-                            if(getCur(requiredStateBlade2, curIs)) {
-                                m2 = true;
-                                continue;
-                            }
-                        }
-                        else if(curIs.getTranslationKey().equals(requiredStateBlade3.getTranslationKey())){
-                            if(getCur(requiredStateBlade3, curIs)){
-                                m3 = true;
-                                continue;
-                            }
-                        }
-                        return false;
-                    }
-
-                    m1 = true;
-
-
-                    Map<Enchantment,Integer> oldItemEnchants = EnchantmentHelper.getEnchantments(requiredStateBlade);
-                    for(Map.Entry<Enchantment,Integer> enchant: oldItemEnchants.entrySet())
-                    {
-                        int level = EnchantmentHelper.getEnchantmentLevel(enchant.getKey(),curIs);
-                        if(level < enchant.getValue()){
-                            return false;
-                        }
-                    }
-
-
-
-                    if(0 < tagValueCompare(ItemSlashBlade.ProudSoul, reqTag, srcTag))
-                        return false;
-                    if(0 < tagValueCompare(ItemSlashBlade.KillCount, reqTag, srcTag))
-                        return false;
-                    if(0 < tagValueCompare(ItemSlashBlade.RepairCount, reqTag, srcTag))
-                        return false;
-
-
-
-                }
+        for(int idx = 0; idx < inv.getSizeInventory(); idx++){
+            ItemStack curIs = inv.getStackInSlot(idx);
+            if(curIs.isEmpty()
+                    || !(curIs.getItem() instanceof ItemSlashBlade)
+                    || !curIs.hasTagCompound()){
+                continue;
             }
+
+            if(!m1 && isSameBlade(requiredStateBlade, curIs)){
+                if(!getCur(requiredStateBlade, curIs)){
+                    return false;
+                }
+                m1 = true;
+                continue;
+            }
+
+            if(!m2 && isSameBlade(requiredStateBlade2, curIs)){
+                if(!getCur(requiredStateBlade2, curIs)){
+                    return false;
+                }
+                m2 = true;
+                continue;
+            }
+
+            if(!m3 && isSameBlade(requiredStateBlade3, curIs)){
+                if(!getCur(requiredStateBlade3, curIs)){
+                    return false;
+                }
+                m3 = true;
+                continue;
+            }
+
+            return false;
         }
 
         return result && m1 && m2 && m3;
+    }
+
+    boolean isSameBlade(ItemStack required, ItemStack actual){
+        if(required.getItem() != actual.getItem()){
+            return false;
+        }
+
+        NBTTagCompound reqTag = ItemSlashBlade.getItemTagCompound(required);
+        NBTTagCompound srcTag = ItemSlashBlade.getItemTagCompound(actual);
+        return ItemSlashBladeNamed.CurrentItemName.exists(reqTag)
+                && ItemSlashBladeNamed.CurrentItemName.exists(srcTag)
+                && ItemSlashBladeNamed.CurrentItemName.get(reqTag)
+                .equals(ItemSlashBladeNamed.CurrentItemName.get(srcTag));
     }
 
     boolean getCur(ItemStack s1,ItemStack s2){
@@ -132,7 +124,8 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
             ItemStack curIs = var1.getStackInSlot(idx);
             if(!curIs.isEmpty()
                     && curIs.getItem() instanceof ItemSlashBlade
-                    && curIs.hasTagCompound()){
+                    && curIs.hasTagCompound()
+                    && isSameBlade(requiredStateBlade, curIs)){
 
                 NBTTagCompound oldTag = curIs.getTagCompound();
                 oldTag = oldTag.copy();
@@ -197,6 +190,9 @@ public class SlashBladeThreeRecipeModding extends ShapedOreRecipe {
                     }
                     EnchantmentHelper.setEnchantments(newItemEnchants, result);
                 }
+
+                // 多刀配方只继承第一把主刀，避免镜像摆放改变继承来源。
+                break;
             }
         }
 
