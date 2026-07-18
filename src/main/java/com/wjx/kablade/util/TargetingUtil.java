@@ -142,7 +142,8 @@ public final class TargetingUtil {
         // 1.12.2 的 expand 对负方向会 clamp，使用 union 保证抬头、低头和任意水平方向都覆盖完整射线。
         AxisAlignedBB sweep = owner.getEntityBoundingBox()
                 .grow(1.0D, 1.0D, 1.0D)
-                .union(new AxisAlignedBB(start, end).grow(1.0D + extraBorder));
+                .union(new AxisAlignedBB(start.x, start.y, start.z, end.x, end.y, end.z)
+                        .grow(1.0D + extraBorder));
 
         List<Entity> candidates = world.getEntitiesInAABBexcluding(
                 owner,

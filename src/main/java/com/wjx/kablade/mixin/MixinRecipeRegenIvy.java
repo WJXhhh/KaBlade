@@ -20,7 +20,7 @@ public abstract class MixinRecipeRegenIvy {
      * @author KaBlade
      * @reason 常春藤附着应只要求物品具有可用耐久，不应要求原版工作台修复权限。
      */
-    @Overwrite(remap = true)
+    @Overwrite(remap = false, aliases = "func_77569_a")
     public boolean matches(InventoryCrafting inv, World worldIn) {
         ItemStack tool = ItemStack.EMPTY;
         boolean hasRegenIvy = false;
@@ -62,7 +62,7 @@ public abstract class MixinRecipeRegenIvy {
      * @author KaBlade
      * @reason 与 matches 使用相同的可用耐久判断，避免输出目标与匹配目标不一致。
      */
-    @Overwrite(remap = true)
+    @Overwrite(remap = false, aliases = "func_77572_b")
     public ItemStack getCraftingResult(InventoryCrafting inv) {
         ItemStack tool = ItemStack.EMPTY;
 

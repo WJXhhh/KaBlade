@@ -242,7 +242,8 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
         pointedEntity = null;
         AxisAlignedBB searchBox = this.getEntityBoundingBox()
                 .grow(expandFactor, expandFactor, expandFactor)
-                .union(new AxisAlignedBB(entityPos, reachVec).grow(expandFactor + expandBorder));
+                .union(new AxisAlignedBB(entityPos.x, entityPos.y, entityPos.z,
+                        reachVec.x, reachVec.y, reachVec.z).grow(expandFactor + expandBorder));
         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, searchBox);
         list.removeAll(alreadyHitEntity);
 
