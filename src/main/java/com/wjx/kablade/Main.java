@@ -3,6 +3,7 @@ package com.wjx.kablade;
 import com.google.common.collect.Lists;
 import com.wjx.kablade.ExSA.ability.EnderTeleportCanceller;
 import com.wjx.kablade.SlashBlade.blades.recipe.RecipeKaBladeRepair;
+import com.wjx.kablade.SlashBlade.blades.recipe.RecipeRegenIvyCompat;
 import com.wjx.kablade.config.ModConfig;
 import com.wjx.kablade.creativeTab.*;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -281,6 +282,9 @@ public class Main
         public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
             // 始终注册，配置检查放在 matches() 里，确保配置变更即时生效
             event.getRegistry().register(new RecipeKaBladeRepair());
+            if (Loader.isModLoaded("timeless_ivy")) {
+                event.getRegistry().register(new RecipeRegenIvyCompat());
+            }
         }
     }
 }
