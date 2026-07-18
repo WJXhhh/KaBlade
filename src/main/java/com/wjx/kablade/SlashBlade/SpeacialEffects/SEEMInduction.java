@@ -23,7 +23,7 @@ public class SEEMInduction implements ISpecialEffect, IRemovable {
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return !itemStack.getTranslationKey().equals("wjx.blade.honkai.mag_storm");
+        return !itemStack.getTranslationKey().equals("item.wjx.blade.honkai.mag_storm");
     }
 
     @Override
@@ -45,6 +45,9 @@ public class SEEMInduction implements ISpecialEffect, IRemovable {
     public static final BladeAttackEvent EMInduction = new BladeAttackEvent() {
         @Override
         public void run(ItemStack stack, EntityPlayer player, Entity entity) {
+            if (player.world.isRemote) {
+                return;
+            }
             if (stack.getItem() instanceof ItemSlashBlade){
                 if (SpecialEffects.isEffective(player,stack, BladeProxy.EMInduction) == SpecialEffects.State.Effective){
                     if (entity instanceof EntityLivingBase){

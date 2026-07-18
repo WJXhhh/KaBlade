@@ -49,7 +49,7 @@ public class SEGlacialBane implements ISpecialEffect, IRemovable {
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return !itemStack.getTranslationKey().equals("wjx.blade.honkai.ice_epiphyllum");
+        return !itemStack.getTranslationKey().equals("item.wjx.blade.honkai.ice_epiphyllum");
     }
 
     @SubscribeEvent

@@ -25,7 +25,7 @@ public class SEDivinePenalty implements ISpecialEffect, IRemovable {
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return !itemStack.getTranslationKey().equals("wjx.blade.honkai.sky_breaker");
+        return !itemStack.getTranslationKey().equals("item.wjx.blade.honkai.sky_breaker");
     }
 
     @Override

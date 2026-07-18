@@ -43,7 +43,7 @@ public class SETurbulence implements ISpecialEffect, IRemovable {
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return !itemStack.getTranslationKey().equals("wjx.blade.honkai.osahoko");
+        return !itemStack.getTranslationKey().equals("item.wjx.blade.honkai.osahoko");
     }
 
     @SubscribeEvent
@@ -75,7 +75,7 @@ public class SETurbulence implements ISpecialEffect, IRemovable {
 
     @SubscribeEvent
     public void onPlayerUpdate(TickEvent.PlayerTickEvent event){
-        if (event.phase == TickEvent.Phase.START){
+        if (event.phase == TickEvent.Phase.START && !event.player.world.isRemote){
             EntityPlayer player = event.player;
             NBTTagCompound compound = KaBladePlayerProp.getPropCompound(player);
             if (compound.getInteger(KaBladePlayerProp.TURBULENCE) > 0){

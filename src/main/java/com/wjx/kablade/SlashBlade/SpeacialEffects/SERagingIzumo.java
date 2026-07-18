@@ -36,6 +36,9 @@ public class SERagingIzumo implements ISpecialEffect, IRemovable {
     public static BladeAttackEvent event = new BladeAttackEvent() {
         @Override
         public void run(ItemStack stack, EntityPlayer player, Entity entity) {
+            if (player.world.isRemote) {
+                return;
+            }
             if (stack.getItem() instanceof ItemSlashBlade){
                 if (SpecialEffects.isEffective(player,stack, BladeProxy.RagingIzumo) == SpecialEffects.State.Effective){
                     if (KaBladePlayerProp.getPropCompound(player).getInteger(RAGING_IZUMO_COLD_DOWN) <= 0) {
@@ -76,7 +79,7 @@ public class SERagingIzumo implements ISpecialEffect, IRemovable {
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return !itemStack.getTranslationKey().equals("wjx.blade.honkai.raging_izumo");
+        return !itemStack.getTranslationKey().equals("item.wjx.blade.honkai.futsunushi_to");
     }
 
     @Override
@@ -97,7 +100,7 @@ public class SERagingIzumo implements ISpecialEffect, IRemovable {
 
     @SubscribeEvent
     public void onPlayerUpdate(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
+        if (event.phase == TickEvent.Phase.START && !event.player.world.isRemote) {
             if (KaBladePlayerProp.getPropCompound(event.player).getInteger(RAGING_IZUMO_COLD_DOWN) > 0) {
                 KaBladeEntityProperties.doIntegerLower(KaBladePlayerProp.getPropCompound(event.player), RAGING_IZUMO_COLD_DOWN);
             }

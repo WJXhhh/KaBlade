@@ -51,7 +51,7 @@ public class SETrueSelf implements ISpecialEffect, IRemovable {
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return !itemStack.getTranslationKey().equals("wjx.blade.key_of_limpidity");
+        return !itemStack.getTranslationKey().equals("item.wjx.blade.honkai.key_of_limpidity");
     }
 
     @SubscribeEvent

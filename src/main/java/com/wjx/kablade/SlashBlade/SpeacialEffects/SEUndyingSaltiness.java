@@ -44,7 +44,7 @@ public class SEUndyingSaltiness implements ISpecialEffect, IRemovable {
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return !itemStack.getTranslationKey().equals("wjx.blade.honkai.tuna");
+        return !itemStack.getTranslationKey().equals("item.wjx.blade.honkai.tuna");
     }
 
     @SubscribeEvent
