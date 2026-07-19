@@ -15,9 +15,11 @@ import com.wjx.kablade.specialeffect.RagingIzumo;
 import com.wjx.kablade.specialeffect.RoaringNimbus;
 import com.wjx.kablade.specialeffect.SPLighting;
 import com.wjx.kablade.specialeffect.ThunderBlitz;
+import com.wjx.kablade.specialeffect.ThunderDivinePenalty;
 import com.wjx.kablade.specialeffect.Turbulence;
 import com.wjx.kablade.specialeffect.UndyingSaltiness;
 import com.wjx.kablade.specialeffect.TrueSelf;
+import com.wjx.kablade.specialeffect.Unthinkable;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -75,8 +77,14 @@ public final class ModSpecialEffects {
     public static final RegistryObject<SpecialEffect> THUNDER_BLITZ = REGISTRY.register(
             "thunder_blitz", ThunderBlitz::new);
 
+    public static final RegistryObject<SpecialEffect> THUNDER_DIVINE_PENALTY = REGISTRY.register(
+            "thunder_divine_penalty", ThunderDivinePenalty::new);
+
     public static final RegistryObject<SpecialEffect> TRUE_SELF = REGISTRY.register(
             "true_self", TrueSelf::new);
+
+    public static final RegistryObject<SpecialEffect> UNTHINKABLE = REGISTRY.register(
+            "unthinkable", Unthinkable::new);
 
     public static final RegistryObject<SpecialEffect> FUEL_THE_RUIN = REGISTRY.register(
             "fuel_the_ruin", FuelTheRuin::new);

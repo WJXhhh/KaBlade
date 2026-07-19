@@ -34,7 +34,7 @@ public final class ThunderEdgeArts extends SlashArts {
     private static final float ATTACK_FACTOR = 12.0F;
     private static final int PARALYSIS_DURATION = 100;
     private static final int PARALYSIS_AMPLIFIER = 5;
-    private static final int THUNDER_MARK_DURATION = 300;
+    private static final int NARUKAMI_DURATION = 300;
 
     public ThunderEdgeArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);
@@ -66,7 +66,7 @@ public final class ThunderEdgeArts extends SlashArts {
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
             target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                     PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
-            target.getPersistentData().putInt(ThunderBlitz.THUNDER_MARK_TAG, THUNDER_MARK_DURATION);
+            target.getPersistentData().putInt(ThunderBlitz.NARUKAMI_TAG, NARUKAMI_DURATION);
             if (user instanceof Player player) {
                 player.crit(target);
             }

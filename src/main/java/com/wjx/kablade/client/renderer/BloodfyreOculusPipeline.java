@@ -11,6 +11,7 @@ import com.wjx.kablade.client.shader.ShaderCompat;
 import com.wjx.kablade.client.shader.SkillPostShaders;
 import com.wjx.kablade.client.shader.SkillShaderTarget;
 import com.wjx.kablade.entity.BloodfyreFrenzyEntity;
+import com.wjx.kablade.entity.ConceptualMetaphorEntity;
 import com.wjx.kablade.entity.SwordEnlightenmentEntity;
 import com.wjx.kablade.entity.UtpalaAuraEntity;
 import net.minecraft.client.Minecraft;
@@ -291,9 +292,17 @@ public final class BloodfyreOculusPipeline {
             if (glowMask) {
                 SwordEnlightenmentRenderer.renderOculusGlow(
                         poseStack, context, effect.age(), effect.yaw(), cameraLeft, cameraUp);
+                if (effect.entity() instanceof ConceptualMetaphorEntity) {
+                    ConceptualMetaphorRenderer.renderOculusGlow(
+                            poseStack, context, effect.age(), effect.yaw());
+                }
             } else {
                 SwordEnlightenmentRenderer.renderOculusColor(
                         poseStack, context, effect.age(), effect.yaw(), cameraLeft, cameraUp);
+                if (effect.entity() instanceof ConceptualMetaphorEntity) {
+                    ConceptualMetaphorRenderer.renderOculusColor(
+                            poseStack, context, effect.age(), effect.yaw());
+                }
             }
             poseStack.popPose();
         }
@@ -336,7 +345,8 @@ public final class BloodfyreOculusPipeline {
         SCAR("bloodfyre_scar"),
         PARTICLE("bloodfyre_particle"),
         UTPALA("utpala_aura"),
-        SWORD_ENLIGHTENMENT("sword_enlightenment");
+        SWORD_ENLIGHTENMENT("sword_enlightenment"),
+        CONCEPTUAL_METAPHOR("conceptual_metaphor");
 
         private final String name;
 
@@ -409,6 +419,8 @@ public final class BloodfyreOculusPipeline {
                         : com.wjx.kablade.client.KabladeRenderTypes.utpalaOculusSafeAdditive();
                 case SWORD_ENLIGHTENMENT ->
                         com.wjx.kablade.client.KabladeRenderTypes.swordEnlightenmentOculusSafe();
+                case CONCEPTUAL_METAPHOR ->
+                        com.wjx.kablade.client.KabladeRenderTypes.conceptualMetaphorOculusSafe();
                 default -> throw new IllegalArgumentException("No safe RenderType for " + shader);
             };
         }

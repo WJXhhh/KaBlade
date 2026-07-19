@@ -41,7 +41,7 @@ import java.util.function.Function;
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class InductionCollapseArts extends SlashArts {
 
-    private static final Map<UUID, CollapseState> ACTIVE_COLLAPSES = new ConcurrentHashMap<>();
+    private static final Map<CollapseKey, CollapseState> ACTIVE_COLLAPSES = new ConcurrentHashMap<>();
     private static final Map<UUID, LungeState> ACTIVE_LUNGES = new ConcurrentHashMap<>();
     private static final int EFFECT_DURATION = 80;
     private static final int DAMAGE_INTERVAL = 4;
@@ -127,7 +127,7 @@ public final class InductionCollapseArts extends SlashArts {
                 EFFECT_DURATION, SLOW_AMPLIFIER, false, true));
         long now = level.getServer().getTickCount();
         com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, IMPACT_DAMAGE);
-        ACTIVE_COLLAPSES.put(target.getUUID(), new CollapseState(
+        ACTIVE_COLLAPSES.put(new CollapseKey(target.getUUID(), user.getUUID()), new CollapseState(
                 level.dimension(), target.getUUID(), user.getUUID(), now + EFFECT_DURATION, now + DAMAGE_INTERVAL));
 
         level.playSound(null, target.getX(), target.getY(), target.getZ(),
@@ -259,6 +259,9 @@ public final class InductionCollapseArts extends SlashArts {
             this.expiresAt = expiresAt;
             this.nextDamageAt = nextDamageAt;
         }
+    }
+
+    private record CollapseKey(UUID targetUUID, UUID ownerUUID) {
     }
 
     private static final class LungeState {

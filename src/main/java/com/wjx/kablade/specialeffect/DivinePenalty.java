@@ -19,6 +19,10 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
  * 天罚 —— 「开天剑」专属特殊效果。
  * <p>
@@ -35,8 +39,8 @@ public class DivinePenalty extends SpecialEffect {
     private static final int PARALYSIS_AMPLIFIER = 1;
     private static final float DAMAGE_BOOST = 1.4F;
 
-    /** 反击守卫：反击本身会再次触发 LivingHurtEvent，避免双方都持开天剑时无限递归。 */
-    private static boolean countering = false;
+    /** 仅屏蔽当前反击造成的同一条伤害边，避免影响伤害调用链中的其他玩家。 */
+    private static final Set<CounterDamageKey> ACTIVE_COUNTER_DAMAGE = new HashSet<>();
 
     public DivinePenalty() {
         super(-1, true, true);
@@ -52,19 +56,22 @@ public class DivinePenalty extends SpecialEffect {
         Level level = victim.level();
 
         // 持有者被攻击时反击（带重入守卫，防止互相反击递归）
-        if (!countering && victim instanceof Player player && hasEffect(player)) {
+        if (victim instanceof Player player && hasEffect(player)) {
             if (event.getSource().getEntity() instanceof LivingEntity attacker
-                    && SaTargeting.canDamage(player, attacker)) {
+                    && SaTargeting.canDamage(player, attacker)
+                    && !ACTIVE_COUNTER_DAMAGE.contains(
+                            new CounterDamageKey(attacker.getUUID(), victim.getUUID()))) {
                 LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
                 bolt.setPos(attacker.getX(), attacker.getY(), attacker.getZ());
                 bolt.setVisualOnly(true);
                 level.addFreshEntity(bolt);
-                countering = true;
+                CounterDamageKey counterDamage = new CounterDamageKey(player.getUUID(), attacker.getUUID());
+                ACTIVE_COUNTER_DAMAGE.add(counterDamage);
                 try {
                     attacker.hurt(level.damageSources().playerAttack(player),
                             counterDamage(player.getMainHandItem()));
                 } finally {
-                    countering = false;
+                    ACTIVE_COUNTER_DAMAGE.remove(counterDamage);
                 }
                 attacker.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                         PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
@@ -98,5 +105,8 @@ public class DivinePenalty extends SpecialEffect {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         return (COUNTER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, COUNTER_DAMAGE_FACTOR)) * 2.0F;
+    }
+
+    private record CounterDamageKey(UUID attackerUUID, UUID victimUUID) {
     }
 }

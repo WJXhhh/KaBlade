@@ -35,7 +35,7 @@ public class RuinousSakura extends BladeDefineBase {
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(34.0F)
-                        .maxDamage(1200)
+                        .maxDamage(1000)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ModSlashArts.BLOODFYRE_FRENZY.getId())
                         .addSpecialEffect(ModSpecialEffects.FUEL_THE_RUIN.getId())

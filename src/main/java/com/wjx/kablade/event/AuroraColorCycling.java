@@ -18,7 +18,7 @@ import java.util.List;
  * 极光刃「映天」的颜色轮转效果。
  * <p>
  * 从 1.12.2 的 {@code WorldEvent.loadEvent()} + {@code onWorldUpdate()} 移植而来。
- * 生成一段从青到绿再回到青的色谱，在每个世界 tick 递增索引；
+ * 生成一段从青到绿再回到青的色谱，并使用服务器 tick 计算索引；
  * 当玩家主手持有极光刃时，实时更新其召唤剑颜色。
  */
 @Mod.EventBusSubscriber(modid = Main.MODID)
@@ -26,8 +26,6 @@ public final class AuroraColorCycling {
 
     /** 极光色谱：青 → 绿 → 青（ping-pong）。 */
     private static final List<Integer> COLORS = new ArrayList<>();
-    /** 当前色谱索引。 */
-    private static int colorIndex = 0;
 
     /** 色谱已初始化标志。 */
     private static boolean initialized = false;
@@ -59,18 +57,6 @@ public final class AuroraColorCycling {
         COLORS.addAll(mirror);
     }
 
-    /** 每个世界 tick 递增色谱索引，与 1.12.2 一致。 */
-    @SubscribeEvent
-    public static void onLevelTick(TickEvent.LevelTickEvent event) {
-        if (event.phase != TickEvent.Phase.START) return;
-        if (COLORS.isEmpty()) return;
-
-        colorIndex++;
-        if (colorIndex >= COLORS.size() - 2) {
-            colorIndex = 0;
-        }
-    }
-
     /** 每个玩家 tick：若主手持有极光刃，实时更新召唤剑颜色。 */
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -79,9 +65,13 @@ public final class AuroraColorCycling {
 
         Player player = event.player;
         if (player.level().isClientSide()) return;
+        if (player.getServer() == null) return;
 
         ItemStack stack = player.getMainHandItem();
         if (stack.isEmpty() || !(stack.getItem() instanceof ItemSlashBlade)) return;
+
+        int cycleLength = Math.max(1, COLORS.size() - 2);
+        int colorIndex = Math.floorMod(player.getServer().getTickCount(), cycleLength);
 
         stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
             if (isAuroraBlade(state)) {

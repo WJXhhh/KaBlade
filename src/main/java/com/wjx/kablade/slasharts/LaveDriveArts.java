@@ -21,10 +21,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.function.Function;
 
 /**
@@ -39,8 +42,9 @@ public final class LaveDriveArts extends SlashArts {
 
     private static final int DRIVE_COLOR = 0x600030; // 6291504
 
-    /** 鎸傝捣鐨勯鍒冪敓鎴愰槦鍒?*/
-    private static final List<FlareSpawnEntry> PENDING = new ArrayList<>();
+    /** 按到期 tick 排序，避免一个玩家尚未到期的飞刃阻塞其他玩家已经到期的飞刃。 */
+    private static final Queue<FlareSpawnEntry> PENDING = new PriorityQueue<>(
+            Comparator.comparingLong(entry -> entry.spawnTick));
 
     public LaveDriveArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);
@@ -143,13 +147,16 @@ public final class LaveDriveArts extends SlashArts {
         if (event.phase != TickEvent.Phase.END) return;
         if (PENDING.isEmpty()) return;
 
-        var entry = PENDING.get(0);
-        long now = entry.level.getServer().getTickCount();
+        long now = event.getServer().getTickCount();
 
-        while (!PENDING.isEmpty() && PENDING.get(0).spawnTick <= now) {
-            FlareSpawnEntry e = PENDING.remove(0);
-            e.spawn();
+        while (!PENDING.isEmpty() && PENDING.peek().spawnTick <= now) {
+            PENDING.remove().spawn();
         }
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        PENDING.clear();
     }
 
     /** 涓€鏉″緟鐢熸垚鐨勯鍒冭褰曘€?*/

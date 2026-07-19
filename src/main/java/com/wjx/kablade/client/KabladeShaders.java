@@ -13,6 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 /** Client shader registration for analytic SA effects. */
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -24,11 +25,17 @@ public final class KabladeShaders {
     private static ShaderInstance zaizan;
     private static ShaderInstance utpalaAura;
     private static ShaderInstance swordEnlightenment;
+    private static ShaderInstance conceptualMetaphor;
     private static ShaderInstance bloodfyreFrenzy;
     private static ShaderInstance bloodfyreRupture;
     private static ShaderInstance bloodfyreSmoke;
     private static ShaderInstance bloodfyreScar;
     private static ShaderInstance bloodfyreParticle;
+    private static ShaderInstance raizanWeaponEnergy;
+    private static ShaderInstance raizanLightning;
+    private static ShaderInstance raizanHeartSlash;
+    private static ShaderInstance raizanParticle;
+    private static ShaderInstance raizanComposite;
 
     private KabladeShaders() {
     }
@@ -70,6 +77,11 @@ public final class KabladeShaders {
                 shader -> swordEnlightenment = shader);
         event.registerShader(new ShaderInstance(
                         event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "conceptual_metaphor"),
+                        DefaultVertexFormat.POSITION_COLOR_TEX),
+                shader -> conceptualMetaphor = shader);
+        event.registerShader(new ShaderInstance(
+                        event.getResourceProvider(),
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "bloodfyre_frenzy"),
                         DefaultVertexFormat.POSITION_COLOR_TEX),
                 shader -> bloodfyreFrenzy = shader);
@@ -93,6 +105,35 @@ public final class KabladeShaders {
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "bloodfyre_particle"),
                         DefaultVertexFormat.POSITION_COLOR_TEX),
                 shader -> bloodfyreParticle = shader);
+        // Raizan has a complete geometry fallback, so each optional program may fail alone
+        // without breaking F3+T or removing the important slash/lightning silhouettes.
+        raizanWeaponEnergy = null;
+        raizanLightning = null;
+        raizanHeartSlash = null;
+        raizanParticle = null;
+        raizanComposite = null;
+        registerOptionalRaizanShader(event, "raizan_weapon_energy",
+                shader -> raizanWeaponEnergy = shader);
+        registerOptionalRaizanShader(event, "raizan_lightning",
+                shader -> raizanLightning = shader);
+        registerOptionalRaizanShader(event, "raizan_heart_slash",
+                shader -> raizanHeartSlash = shader);
+        registerOptionalRaizanShader(event, "raizan_particle",
+                shader -> raizanParticle = shader);
+        registerOptionalRaizanShader(event, "raizan_composite",
+                shader -> raizanComposite = shader);
+    }
+
+    private static void registerOptionalRaizanShader(RegisterShadersEvent event, String name,
+                                                      Consumer<ShaderInstance> sink) {
+        try {
+            event.registerShader(new ShaderInstance(event.getResourceProvider(),
+                            ResourceLocation.fromNamespaceAndPath(Main.MODID, name),
+                            DefaultVertexFormat.POSITION_COLOR_TEX), sink);
+        } catch (IOException | RuntimeException exception) {
+            Main.LOGGER.error("Could not compile optional Raizan shader {}; using layered geometry.",
+                    name, exception);
+        }
     }
 
     public static ShaderInstance stageLight() {
@@ -119,6 +160,10 @@ public final class KabladeShaders {
         return swordEnlightenment;
     }
 
+    public static ShaderInstance conceptualMetaphor() {
+        return conceptualMetaphor;
+    }
+
     public static ShaderInstance bloodfyreFrenzy() {
         return bloodfyreFrenzy;
     }
@@ -137,5 +182,25 @@ public final class KabladeShaders {
 
     public static ShaderInstance bloodfyreParticle() {
         return bloodfyreParticle;
+    }
+
+    public static ShaderInstance raizanWeaponEnergy() {
+        return raizanWeaponEnergy;
+    }
+
+    public static ShaderInstance raizanLightning() {
+        return raizanLightning;
+    }
+
+    public static ShaderInstance raizanHeartSlash() {
+        return raizanHeartSlash;
+    }
+
+    public static ShaderInstance raizanParticle() {
+        return raizanParticle;
+    }
+
+    public static ShaderInstance raizanComposite() {
+        return raizanComposite;
     }
 }

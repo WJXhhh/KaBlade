@@ -159,6 +159,18 @@ public final class ModEntities {
                     .noSave()
                     .build("sword_enlightenment"));
 
+    /** Visual and hit timing anchor for Domain of Unity's Conceptual Metaphor. */
+    public static final RegistryObject<EntityType<ConceptualMetaphorEntity>> CONCEPTUAL_METAPHOR = REGISTRY.register(
+            "conceptual_metaphor",
+            () -> EntityType.Builder.<ConceptualMetaphorEntity>of(ConceptualMetaphorEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(16)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("conceptual_metaphor"));
+
     /** Visual anchor for the Shock Impact SA. */
     public static final RegistryObject<EntityType<ShockImpactEntity>> SHOCK_IMPACT = REGISTRY.register(
             "shock_impact",
@@ -229,6 +241,18 @@ public final class ModEntities {
                     .noSummon()
                     .noSave()
                     .build("bloodfyre_frenzy"));
+
+    /** Server timeline and visual anchor for Domain of Sanction's Raizan Cleave. */
+    public static final RegistryObject<EntityType<RaizanCleaveEntity>> RAIZAN_CLEAVE = REGISTRY.register(
+            "raizan_cleave",
+            () -> EntityType.Builder.<RaizanCleaveEntity>of(RaizanCleaveEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(16)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("raizan_cleave"));
 
     /** 「风之结界」光环实体。 */
     public static final RegistryObject<EntityType<TunaEntity>> TUNA = REGISTRY.register(

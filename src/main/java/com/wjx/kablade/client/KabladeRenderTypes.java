@@ -3,6 +3,7 @@ package com.wjx.kablade.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.wjx.kablade.client.shader.ShaderCompat;
+import com.wjx.kablade.client.renderer.RaizanCleavePostPipeline;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +12,12 @@ import net.minecraft.resources.ResourceLocation;
 public final class KabladeRenderTypes extends RenderType {
     private static final ResourceLocation FALLBACK_TEXTURE =
             ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/white.png");
+    private static final ResourceLocation RAIZAN_NOISE_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath("kablade", "textures/effect/raizan_noise.png");
+    private static final ResourceLocation RAIZAN_SLASH_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath("kablade", "textures/effect/raizan_slash_gradient.png");
+    private static final ResourceLocation RAIZAN_PARTICLE_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath("kablade", "textures/effect/raizan_particle_mask.png");
 
     private static final RenderStateShard.ShaderStateShard STAGE_LIGHT_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::stageLight);
@@ -24,6 +31,8 @@ public final class KabladeRenderTypes extends RenderType {
             new RenderStateShard.ShaderStateShard(KabladeShaders::utpalaAura);
     private static final RenderStateShard.ShaderStateShard SWORD_ENLIGHTENMENT_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::swordEnlightenment);
+    private static final RenderStateShard.ShaderStateShard CONCEPTUAL_METAPHOR_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::conceptualMetaphor);
     private static final RenderStateShard.ShaderStateShard BLOODFYRE_FRENZY_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::bloodfyreFrenzy);
     private static final RenderStateShard.ShaderStateShard BLOODFYRE_RUPTURE_SHADER =
@@ -34,6 +43,48 @@ public final class KabladeRenderTypes extends RenderType {
             new RenderStateShard.ShaderStateShard(KabladeShaders::bloodfyreScar);
     private static final RenderStateShard.ShaderStateShard BLOODFYRE_PARTICLE_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::bloodfyreParticle);
+    private static final RenderStateShard.ShaderStateShard RAIZAN_WEAPON_ENERGY_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::raizanWeaponEnergy);
+    private static final RenderStateShard.ShaderStateShard RAIZAN_LIGHTNING_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::raizanLightning);
+    private static final RenderStateShard.ShaderStateShard RAIZAN_HEART_SLASH_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::raizanHeartSlash);
+    private static final RenderStateShard.ShaderStateShard RAIZAN_PARTICLE_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::raizanParticle);
+    private static final RenderStateShard.ShaderStateShard RAIZAN_COMPOSITE_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::raizanComposite);
+
+    private static RenderType raizanType(String name, RenderStateShard.ShaderStateShard shader,
+                                         RenderStateShard.TransparencyStateShard transparency,
+                                         int bufferSize, ResourceLocation texture) {
+        return create(name, DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS,
+                bufferSize, false, true, CompositeState.builder()
+                        .setShaderState(shader)
+                        .setTextureState(new TextureStateShard(texture, false, false))
+                        .setTransparencyState(transparency)
+                        .setDepthTestState(LEQUAL_DEPTH_TEST)
+                        .setCullState(NO_CULL)
+                        .setWriteMaskState(COLOR_WRITE)
+                        .createCompositeState(false));
+    }
+
+    private static final RenderType RAIZAN_WEAPON_ENERGY = raizanType(
+            "kablade_raizan_weapon_energy", RAIZAN_WEAPON_ENERGY_SHADER,
+            LIGHTNING_TRANSPARENCY, 131072, RAIZAN_NOISE_TEXTURE);
+    private static final RenderType RAIZAN_LIGHTNING = raizanType(
+            "kablade_raizan_lightning", RAIZAN_LIGHTNING_SHADER,
+            LIGHTNING_TRANSPARENCY, 262144, RAIZAN_NOISE_TEXTURE);
+    private static final RenderType RAIZAN_HEART_SLASH = raizanType(
+            "kablade_raizan_heart_slash", RAIZAN_HEART_SLASH_SHADER,
+            LIGHTNING_TRANSPARENCY, 262144, RAIZAN_SLASH_TEXTURE);
+    private static final RenderType RAIZAN_PARTICLE = raizanType(
+            "kablade_raizan_particle", RAIZAN_PARTICLE_SHADER,
+            LIGHTNING_TRANSPARENCY, 131072, RAIZAN_PARTICLE_TEXTURE);
+    private static final RenderType RAIZAN_COMPOSITE = raizanType(
+            "kablade_raizan_composite", RAIZAN_COMPOSITE_SHADER,
+            TRANSLUCENT_TRANSPARENCY, 65536, RAIZAN_SLASH_TEXTURE);
+    private static final RenderType RAIZAN_FALLBACK = shaderFallback(
+            "kablade_raizan_fallback", FALLBACK_TEXTURE, 262144, LIGHTNING_TRANSPARENCY);
 
     private static final RenderType INDUCTION_COLLAPSE = create(
             "kablade_induction_collapse",
@@ -118,6 +169,27 @@ public final class KabladeRenderTypes extends RenderType {
 
     private static final RenderType SWORD_ENLIGHTENMENT_OCULUS_SAFE = shaderFallbackTriangles(
             "kablade_sword_enlightenment_oculus_safe", 262144, LIGHTNING_TRANSPARENCY);
+
+    private static final RenderType CONCEPTUAL_METAPHOR = create(
+            "kablade_conceptual_metaphor",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            262144,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(CONCEPTUAL_METAPHOR_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType CONCEPTUAL_METAPHOR_FALLBACK = shaderFallback(
+            "kablade_conceptual_metaphor_fallback", 262144, LIGHTNING_TRANSPARENCY);
+
+    private static final RenderType CONCEPTUAL_METAPHOR_OCULUS_SAFE = shaderFallbackTriangles(
+            "kablade_conceptual_metaphor_oculus_safe", 262144, LIGHTNING_TRANSPARENCY);
 
     private static final RenderType BLOODFYRE_FRENZY = create(
             "kablade_bloodfyre_frenzy",
@@ -590,6 +662,14 @@ public final class KabladeRenderTypes extends RenderType {
         return SWORD_ENLIGHTENMENT_OCULUS_SAFE;
     }
 
+    public static RenderType conceptualMetaphor() {
+        return useShaderFallbackTextures() ? CONCEPTUAL_METAPHOR_FALLBACK : CONCEPTUAL_METAPHOR;
+    }
+
+    public static RenderType conceptualMetaphorOculusSafe() {
+        return CONCEPTUAL_METAPHOR_OCULUS_SAFE;
+    }
+
     public static RenderType bloodfyreFrenzy() {
         return useShaderFallbackTextures() ? BLOODFYRE_FRENZY_FALLBACK : BLOODFYRE_FRENZY;
     }
@@ -640,6 +720,35 @@ public final class KabladeRenderTypes extends RenderType {
 
     public static RenderType bloodfyreShaderPackGlow() {
         return BLOODFYRE_SHADER_PACK_GLOW;
+    }
+
+    public static RenderType raizanWeaponEnergy() {
+        return useRaizanFallback() || KabladeShaders.raizanWeaponEnergy() == null
+                ? RAIZAN_FALLBACK : RAIZAN_WEAPON_ENERGY;
+    }
+
+    public static RenderType raizanLightning() {
+        return useRaizanFallback() || KabladeShaders.raizanLightning() == null
+                ? RAIZAN_FALLBACK : RAIZAN_LIGHTNING;
+    }
+
+    public static RenderType raizanHeartSlash() {
+        return useRaizanFallback() || KabladeShaders.raizanHeartSlash() == null
+                ? RAIZAN_FALLBACK : RAIZAN_HEART_SLASH;
+    }
+
+    public static RenderType raizanParticle() {
+        return useRaizanFallback() || KabladeShaders.raizanParticle() == null
+                ? RAIZAN_FALLBACK : RAIZAN_PARTICLE;
+    }
+
+    public static RenderType raizanComposite() {
+        return useRaizanFallback() || KabladeShaders.raizanComposite() == null
+                ? RAIZAN_FALLBACK : RAIZAN_COMPOSITE;
+    }
+
+    private static boolean useRaizanFallback() {
+        return useShaderFallbackTextures() && !RaizanCleavePostPipeline.isPrivateGeometryPass();
     }
 
     public static boolean useShaderFallbackTextures() {

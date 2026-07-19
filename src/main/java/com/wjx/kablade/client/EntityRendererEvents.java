@@ -35,12 +35,14 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.FREEZE_DOMAIN.get(), FreezeDomainRenderer::new);
         event.registerEntityRenderer(ModEntities.UTPALA_AURA.get(), UtpalaAuraRenderer::new);
         event.registerEntityRenderer(ModEntities.SWORD_ENLIGHTENMENT.get(), SwordEnlightenmentRenderer::new);
+        event.registerEntityRenderer(ModEntities.CONCEPTUAL_METAPHOR.get(), ConceptualMetaphorRenderer::new);
         event.registerEntityRenderer(ModEntities.SHOCK_IMPACT.get(), ShockImpactRenderer::new);
         event.registerEntityRenderer(ModEntities.THUNDER_EDGE_ATTACK.get(), ThunderEdgeAttackRenderer::new);
         event.registerEntityRenderer(ModEntities.FENGXUAN_DIMENSION.get(), FengxuanDimensionRenderer::new);
         event.registerEntityRenderer(ModEntities.ZAIZAN.get(), ZaizanRenderer::new);
         event.registerEntityRenderer(ModEntities.CRIMSON_SAKURA.get(), CrimsonSakuraRenderer::new);
         event.registerEntityRenderer(ModEntities.BLOODFYRE_FRENZY.get(), BloodfyreFrenzyRenderer::new);
+        event.registerEntityRenderer(ModEntities.RAIZAN_CLEAVE.get(), RaizanCleaveRenderer::new);
         event.registerEntityRenderer(ModEntities.TUNA.get(), TunaRenderer::new);
         event.registerEntityRenderer(ModEntities.RAIN_UMBRELLA.get(), RainUmbrellaRenderer::new);
         event.registerEntityRenderer(ModEntities.SUMMONED_HEDRA.get(), SummonedHedraRenderer::new);

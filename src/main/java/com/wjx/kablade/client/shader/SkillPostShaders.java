@@ -245,11 +245,74 @@ public final class SkillPostShaders {
             }
             """;
 
+    private static final String RAIZAN_COMPOSITE_FRAGMENT = """
+            #version 150
+
+            uniform sampler2D Scene;
+            uniform sampler2D Effect;
+            uniform sampler2D Glow;
+            uniform sampler2D Bloom;
+            uniform vec2 TexelSize;
+            uniform float GlowStrength;
+            uniform float DistortionStrength;
+            uniform float ChromaticStrength;
+            uniform float FlashScale;
+
+            in vec2 vUv;
+            out vec4 fragColor;
+
+            float powerOf(vec4 c) {
+                return max(c.a, max(max(c.r, c.g), c.b));
+            }
+
+            void main() {
+                vec4 bloomSample = texture(Bloom, vUv);
+                float m = clamp(powerOf(bloomSample), 0.0, 6.0);
+                float left = powerOf(texture(Bloom, vUv - vec2(TexelSize.x, 0.0)));
+                float right = powerOf(texture(Bloom, vUv + vec2(TexelSize.x, 0.0)));
+                float down = powerOf(texture(Bloom, vUv - vec2(0.0, TexelSize.y)));
+                float up = powerOf(texture(Bloom, vUv + vec2(0.0, TexelSize.y)));
+                vec2 gradient = vec2(right - left, up - down);
+                vec2 warp = gradient * DistortionStrength * TexelSize * 13.0;
+
+                vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
+                vec4 effect = texture(Effect, vUv);
+                float energy = 1.0 - exp(-m * 1.35);
+
+                // The split is sampled only inside the Raizan mask and never exceeds 1.5 px.
+                vec2 split = normalize(gradient + vec2(0.0001)) * TexelSize
+                        * min(1.5, ChromaticStrength * energy * 1.5);
+                vec4 effectR = texture(Effect, clamp(vUv + split, vec2(0.001), vec2(0.999)));
+                vec4 effectB = texture(Effect, clamp(vUv - split, vec2(0.001), vec2(0.999)));
+                vec3 splitEffect = vec3(effectR.r, effect.g, effectB.b);
+                vec3 effectRgb = mix(max(effect.rgb, vec3(0.0)), max(splitEffect, vec3(0.0)),
+                        energy * 0.34);
+                // Every Raizan layer is emissive.  Never use its accumulated alpha
+                // to subtract the scene: broad halos otherwise wash the whole view
+                // grey, especially when an Oculus HDR target is composited back.
+                vec3 base = scene.rgb + effectRgb;
+
+                vec3 bloomRgb = max(bloomSample.rgb, vec3(0.0));
+                float peak = max(max(bloomRgb.r, bloomRgb.g), bloomRgb.b);
+                vec3 hue = peak > 0.0001 ? bloomRgb / peak : vec3(0.68, 0.18, 1.0);
+                vec3 violet = mix(vec3(0.38, 0.06, 0.92), hue, 0.58);
+                vec3 bloom = violet * GlowStrength * energy * (0.42 + energy * 1.10);
+
+                vec3 raw = max(texture(Glow, vUv).rgb, vec3(0.0));
+                float rawPower = clamp(powerOf(texture(Glow, vUv)), 0.0, 5.0);
+                float coreEnergy = (1.0 - exp(-rawPower * 1.55)) * FlashScale;
+                vec3 coreHue = mix(raw, vec3(0.96, 0.90, 1.0), coreEnergy * 0.72);
+                vec3 core = coreHue * coreEnergy * 0.62;
+                fragColor = vec4(base + bloom + core, scene.a);
+            }
+            """;
+
     private static int blurProgram;
     private static int compositeProgram;
     private static int bloodfyreCompositeProgram;
     private static int raidenCompositeProgram;
     private static int honkaiCompositeProgram;
+    private static int raizanCompositeProgram;
     private static int vertexArray;
 
     private SkillPostShaders() {
@@ -348,6 +411,40 @@ public final class SkillPostShaders {
         });
     }
 
+    public static void compositeRaizan(int sceneTextureId, int effectTextureId,
+                                       int glowTextureId, int bloomTextureId,
+                                       int width, int height, float glowStrength,
+                                       float chromaticStrength, float flashScale) {
+        ensurePrograms();
+        withFullscreenState(() -> {
+            GL20.glUseProgram(raizanCompositeProgram);
+            bindTexture(0, sceneTextureId);
+            bindTexture(1, effectTextureId);
+            bindTexture(2, glowTextureId);
+            bindTexture(3, bloomTextureId);
+            GL20.glUniform1i(GL20.glGetUniformLocation(raizanCompositeProgram, "Scene"), 0);
+            GL20.glUniform1i(GL20.glGetUniformLocation(raizanCompositeProgram, "Effect"), 1);
+            GL20.glUniform1i(GL20.glGetUniformLocation(raizanCompositeProgram, "Glow"), 2);
+            GL20.glUniform1i(GL20.glGetUniformLocation(raizanCompositeProgram, "Bloom"), 3);
+            GL20.glUniform2f(GL20.glGetUniformLocation(raizanCompositeProgram, "TexelSize"),
+                    1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
+            GL20.glUniform1f(GL20.glGetUniformLocation(raizanCompositeProgram, "GlowStrength"), glowStrength);
+            GL20.glUniform1f(GL20.glGetUniformLocation(raizanCompositeProgram, "DistortionStrength"), 0.09F);
+            GL20.glUniform1f(GL20.glGetUniformLocation(raizanCompositeProgram, "ChromaticStrength"), chromaticStrength);
+            GL20.glUniform1f(GL20.glGetUniformLocation(raizanCompositeProgram, "FlashScale"), flashScale);
+            drawFullscreenTriangle();
+        });
+    }
+
+    /** Recreates the Raizan-only compositor after F3+T or a render-target transition. */
+    public static void resetRaizan() {
+        RenderSystem.assertOnRenderThread();
+        if (raizanCompositeProgram != 0) {
+            GL20.glDeleteProgram(raizanCompositeProgram);
+            raizanCompositeProgram = 0;
+        }
+    }
+
     public static void blurBloodfyre(int sourceTextureId, int width, int height, boolean horizontal) {
         blur(sourceTextureId, width, height, horizontal);
     }
@@ -370,6 +467,9 @@ public final class SkillPostShaders {
         }
         if (honkaiCompositeProgram == 0) {
             honkaiCompositeProgram = createProgram(HONKAI_COMPOSITE_FRAGMENT);
+        }
+        if (raizanCompositeProgram == 0) {
+            raizanCompositeProgram = createProgram(RAIZAN_COMPOSITE_FRAGMENT);
         }
     }
 

@@ -8,6 +8,9 @@ public final class KabladeClientConfig {
     public static final ForgeConfigSpec.EnumValue<RaidenCycloneQuality> RAIDEN_CYCLONE_QUALITY;
     public static final ForgeConfigSpec.BooleanValue RAIDEN_CYCLONE_CAMERA_SHAKE;
     public static final ForgeConfigSpec.BooleanValue RAIDEN_CYCLONE_REDUCED_FLASH;
+    public static final ForgeConfigSpec.EnumValue<RaizanCleaveQuality> RAIZAN_CLEAVE_QUALITY;
+    public static final ForgeConfigSpec.BooleanValue RAIZAN_CLEAVE_CAMERA_SHAKE;
+    public static final ForgeConfigSpec.BooleanValue RAIZAN_CLEAVE_REDUCED_FLASH;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -35,6 +38,19 @@ public final class KabladeClientConfig {
                 .comment("Reduce full-screen white flashes without removing world-space effect layers.")
                 .define("reduced_flash", false);
         builder.pop();
+
+        builder.comment("Raizan Cleave client effect options.")
+                .push("raizan_cleave");
+        RAIZAN_CLEAVE_QUALITY = builder
+                .comment("HIGH keeps the complete reference layer and particle counts.")
+                .defineEnum("quality", RaizanCleaveQuality.HIGH);
+        RAIZAN_CLEAVE_CAMERA_SHAKE = builder
+                .comment("Enable short local camera impulses on Raizan Cleave hit frames.")
+                .define("camera_shake", true);
+        RAIZAN_CLEAVE_REDUCED_FLASH = builder
+                .comment("Reduce screen-space flashes while retaining all world-space effects.")
+                .define("reduced_flash", false);
+        builder.pop();
         SPEC = builder.build();
     }
 
@@ -48,6 +64,12 @@ public final class KabladeClientConfig {
     }
 
     public enum RaidenCycloneQuality {
+        LOW,
+        MEDIUM,
+        HIGH
+    }
+
+    public enum RaizanCleaveQuality {
         LOW,
         MEDIUM,
         HIGH

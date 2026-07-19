@@ -22,6 +22,10 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
  * Roaring Nimbus, MAG-Typhoon's lightning follow-up against paralyzed targets.
  * The vanilla lightning bolt is visual-only; controlled damage is applied separately.
@@ -33,7 +37,7 @@ public final class RoaringNimbus extends SpecialEffect {
     public static final int COOLDOWN_TICKS = 5 * 20;
 
     private static final float DAMAGE_FACTOR = 3.0F;
-    private static boolean triggering;
+    private static final Set<TriggerDamageKey> ACTIVE_TRIGGER_DAMAGE = new HashSet<>();
 
     public RoaringNimbus() {
         super(-1, true, true);
@@ -42,12 +46,17 @@ public final class RoaringNimbus extends SpecialEffect {
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
         LivingEntity target = event.getEntity();
-        if (target.level().isClientSide() || triggering) {
+        if (target.level().isClientSide()) {
             return;
         }
 
         Entity source = event.getSource().getEntity();
         if (!(source instanceof Player player)) {
+            return;
+        }
+
+        TriggerDamageKey damageKey = new TriggerDamageKey(player.getUUID(), target.getUUID());
+        if (ACTIVE_TRIGGER_DAMAGE.contains(damageKey)) {
             return;
         }
 
@@ -68,11 +77,11 @@ public final class RoaringNimbus extends SpecialEffect {
         bolt.setPos(target.getX(), target.getY(), target.getZ());
         level.addFreshEntity(bolt);
 
-        triggering = true;
+        ACTIVE_TRIGGER_DAMAGE.add(damageKey);
         try {
             SaDamage.hurtSlashArtNoIFrame(target, level, player, dynamicDamage(blade));
         } finally {
-            triggering = false;
+            ACTIVE_TRIGGER_DAMAGE.remove(damageKey);
         }
     }
 
@@ -121,5 +130,8 @@ public final class RoaringNimbus extends SpecialEffect {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         return MathFunc.amplifierCalc(bladeAttack, DAMAGE_FACTOR);
+    }
+
+    private record TriggerDamageKey(UUID attackerUUID, UUID targetUUID) {
     }
 }

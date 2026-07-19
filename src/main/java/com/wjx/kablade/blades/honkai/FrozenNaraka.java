@@ -37,7 +37,7 @@ public class FrozenNaraka extends BladeDefineBase {
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(32.0F)
-                        .maxDamage(1400)
+                        .maxDamage(1200)
                         .slashArtsType(ModSlashArts.UTPALA_AURA.getId())
                         .defaultSwordType(java.util.List.of(SwordType.BEWITCHED))
                         .addSpecialEffect(ModSpecialEffects.GLACIAL_BANE.getId())

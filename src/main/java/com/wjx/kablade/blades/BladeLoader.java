@@ -5,6 +5,8 @@ import com.wjx.kablade.blades.honkai.ByoDen;
 import com.wjx.kablade.blades.honkai.ByoRai;
 import com.wjx.kablade.blades.honkai.CrystalCutter;
 import com.wjx.kablade.blades.honkai.DawnBreaker;
+import com.wjx.kablade.blades.honkai.DomainOfSanction;
+import com.wjx.kablade.blades.honkai.DomainOfUnity;
 import com.wjx.kablade.blades.honkai.FairySword;
 import com.wjx.kablade.blades.honkai.FloridSakura;
 import com.wjx.kablade.blades.honkai.FrozenNaraka;
@@ -145,7 +147,9 @@ public final class BladeLoader {
     public static BladeDefineBase MAG_STORM;
     public static BladeDefineBase MAG_TYPHOON;
     public static BladeDefineBase KEY_OF_CASTIGATION;
+    public static BladeDefineBase DOMAIN_OF_SANCTION;
     public static BladeDefineBase KEY_OF_LIMPIDITY;
+    public static BladeDefineBase DOMAIN_OF_UNITY;
     public static BladeDefineBase ICE_EPIPHYLLUM;
     public static BladeDefineBase FROZEN_NARAKA;
     // 崩坏线·妖精剑
@@ -249,7 +253,9 @@ public final class BladeLoader {
             "mag_storm",
             "mag_typhoon",
             "key_of_castigation",
+            "domain_of_sanction",
             "key_of_limpidity",
+            "domain_of_unity",
             "ice_epiphyllum",
             "frozen_naraka",
             // 龙一文字线
@@ -337,7 +343,9 @@ public final class BladeLoader {
         MAG_STORM = new MagStorm(context);
         MAG_TYPHOON = new MagTyphoon(context);
         KEY_OF_CASTIGATION = new KeyOfCastigation(context);
+        DOMAIN_OF_SANCTION = new DomainOfSanction(context);
         KEY_OF_LIMPIDITY = new KeyOfLimpidity(context);
+        DOMAIN_OF_UNITY = new DomainOfUnity(context);
         ICE_EPIPHYLLUM = new IceEpiphyllum(context);
         FROZEN_NARAKA = new FrozenNaraka(context);
         // 崩坏线·妖精剑

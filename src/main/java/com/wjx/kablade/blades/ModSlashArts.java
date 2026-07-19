@@ -29,6 +29,7 @@ import com.wjx.kablade.slasharts.LightsOnStageArts;
 import com.wjx.kablade.slasharts.LoveIsWarArts;
 import com.wjx.kablade.slasharts.MagChaosBladeArts;
 import com.wjx.kablade.slasharts.RaidenCycloneArts;
+import com.wjx.kablade.slasharts.RaizanCleaveArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
 import com.wjx.kablade.slasharts.MoonFangArts;
 import com.wjx.kablade.slasharts.OverSlashArts;
@@ -45,6 +46,7 @@ import com.wjx.kablade.slasharts.SnowDanceArts;
 import com.wjx.kablade.slasharts.SoulOfFrostArts;
 import com.wjx.kablade.slasharts.ThunderEdgeArts;
 import com.wjx.kablade.slasharts.SwordEnlightenmentArts;
+import com.wjx.kablade.slasharts.ConceptualMetaphorArts;
 import com.wjx.kablade.slasharts.UtpalaAuraArts;
 import com.wjx.kablade.slasharts.VorpalHoleArts;
 import com.wjx.kablade.slasharts.WindEnchantmentArts;
@@ -217,6 +219,10 @@ public final class ModSlashArts {
             "raiden_cyclone",
             () -> new RaidenCycloneArts(entity -> ComboStateRegistry.NONE.getId()));
 
+    public static final RegistryObject<SlashArts> RAIZAN_CLEAVE = REGISTRY.register(
+            "raizan_cleave",
+            () -> new RaizanCleaveArts(entity -> ComboStateRegistry.NONE.getId()));
+
     public static final RegistryObject<SlashArts> SNOW_DANCE = REGISTRY.register(
             "snow_dance",
             () -> new SnowDanceArts(entity -> ComboStateRegistry.NONE.getId()));
@@ -232,6 +238,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> SWORD_ENLIGHTENMENT = REGISTRY.register(
             "sword_enlightenment",
             () -> new SwordEnlightenmentArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> CONCEPTUAL_METAPHOR = REGISTRY.register(
+            "conceptual_metaphor",
+            () -> new ConceptualMetaphorArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> SOUL_OF_FROST = REGISTRY.register(
             "soul_of_frost",

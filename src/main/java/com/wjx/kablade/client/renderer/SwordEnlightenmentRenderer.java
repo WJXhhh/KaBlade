@@ -14,7 +14,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /** Procedural purple-white slash lattice for Sword Enlightenment. */
-public final class SwordEnlightenmentRenderer extends EntityRenderer<SwordEnlightenmentEntity> {
+public class SwordEnlightenmentRenderer<T extends SwordEnlightenmentEntity> extends EntityRenderer<T> {
 
     private static final ResourceLocation EMPTY_TEXTURE =
             ResourceLocation.fromNamespaceAndPath("kablade", "textures/entity/empty.png");
@@ -31,7 +31,7 @@ public final class SwordEnlightenmentRenderer extends EntityRenderer<SwordEnligh
     }
 
     @Override
-    public void render(SwordEnlightenmentEntity entity, float entityYaw, float partialTick,
+    public void render(T entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         if (BloodfyreOculusPipeline.enqueue(entity, partialTick)) {
             super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
@@ -57,7 +57,12 @@ public final class SwordEnlightenmentRenderer extends EntityRenderer<SwordEnligh
 
         poseStack.popPose();
         renderBillboards(entity, age, poseStack, vc);
+        renderVariant(entity, age, poseStack, buffer);
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+    }
+
+    /** Normal-render extension point used by named variants without changing the base effect. */
+    protected void renderVariant(T entity, float age, PoseStack poseStack, MultiBufferSource buffer) {
     }
 
     static void renderOculusColor(PoseStack poseStack,
@@ -895,7 +900,7 @@ public final class SwordEnlightenmentRenderer extends EntityRenderer<SwordEnligh
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SwordEnlightenmentEntity entity) {
+    public ResourceLocation getTextureLocation(T entity) {
         return EMPTY_TEXTURE;
     }
 }

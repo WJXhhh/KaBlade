@@ -65,15 +65,20 @@ public class SwordEnlightenmentEntity extends Entity {
     public static SwordEnlightenmentEntity spawn(ServerLevel level, LivingEntity owner,
                                                  float baseDamage, Vec3 attackPosition) {
         SwordEnlightenmentEntity entity = new SwordEnlightenmentEntity(ModEntities.SWORD_ENLIGHTENMENT.get(), level);
-        entity.owner = owner;
-        entity.baseDamage = baseDamage;
-        entity.setOwnerId(owner.getId());
-        entity.setLifetime(LIFETIME);
-        entity.setPos(attackPosition.x, attackPosition.y, attackPosition.z);
-        entity.setYRot(owner.getYRot());
-        entity.yRotO = owner.yRotO;
+        entity.initialize(owner, baseDamage, attackPosition);
         level.addFreshEntity(entity);
         return entity;
+    }
+
+    /** Initializes a Sword Enlightenment-style entity while allowing named variants to use their own entity type. */
+    protected final void initialize(LivingEntity owner, float baseDamage, Vec3 attackPosition) {
+        this.owner = owner;
+        this.baseDamage = baseDamage;
+        this.setOwnerId(owner.getId());
+        this.setLifetime(LIFETIME);
+        this.setPos(attackPosition.x, attackPosition.y, attackPosition.z);
+        this.setYRot(owner.getYRot());
+        this.yRotO = owner.yRotO;
     }
 
     @Override
@@ -116,10 +121,19 @@ public class SwordEnlightenmentEntity extends Entity {
         playTimelineSounds(level);
         spawnTimelineParticles(level);
         applyTimelineHits(level, source);
+        tickVariant(level, source);
 
         if (this.tickCount >= this.getLifetime()) {
             this.discard();
         }
+    }
+
+    /** Server-side extension point for named variants that add their own timeline beats. */
+    protected void tickVariant(ServerLevel level, LivingEntity source) {
+    }
+
+    protected final float getBaseDamage() {
+        return this.baseDamage;
     }
 
     private LivingEntity resolveOwner() {

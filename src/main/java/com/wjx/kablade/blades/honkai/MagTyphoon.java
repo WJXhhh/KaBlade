@@ -30,7 +30,7 @@ public class MagTyphoon extends BladeDefineBase {
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(32.0F)
-                        .maxDamage(1000)
+                        .maxDamage(1200)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ModSlashArts.RAIDEN_CYCLONE.getId())
                         .addSpecialEffect(ModSpecialEffects.EM_PULSAR.getId())
