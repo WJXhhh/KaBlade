@@ -27,7 +27,7 @@ public final class RaizanCleaveAnimation implements ResourceManagerReloadListene
 
     public static final RaizanCleaveAnimation INSTANCE = new RaizanCleaveAnimation();
     private static final ResourceLocation RESOURCE =
-            ResourceLocation.fromNamespaceAndPath(Main.MODID, "animations/raizan_cleave.json");
+            ResourceLocation.fromNamespaceAndPath(Main.MODID, "kablade_animations/raizan_cleave.json");
     private static final Vector3f MODEL_AXIS = new Vector3f(0.0F, -1.0F, 0.0F);
     private static final Vec3 ZERO = Vec3.ZERO;
 
