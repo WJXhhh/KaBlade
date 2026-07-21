@@ -18,6 +18,12 @@ public final class KabladeRenderTypes extends RenderType {
             ResourceLocation.fromNamespaceAndPath("kablade", "textures/effect/raizan_slash_gradient.png");
     private static final ResourceLocation RAIZAN_PARTICLE_TEXTURE =
             ResourceLocation.fromNamespaceAndPath("kablade", "textures/effect/raizan_particle_mask.png");
+    private static final ResourceLocation THUNDERBOLT_CALL_NOISE_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath("kablade", "textures/effect/raizan_noise.png");
+    private static final ResourceLocation THUNDERBOLT_CALL_CROSS_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath("kablade", "textures/effect/raizan_slash_gradient.png");
+    private static final ResourceLocation THUNDERBOLT_CALL_PARTICLE_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath("kablade", "textures/effect/raizan_particle_mask.png");
 
     private static final RenderStateShard.ShaderStateShard STAGE_LIGHT_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::stageLight);
@@ -53,10 +59,20 @@ public final class KabladeRenderTypes extends RenderType {
             new RenderStateShard.ShaderStateShard(KabladeShaders::raizanParticle);
     private static final RenderStateShard.ShaderStateShard RAIZAN_COMPOSITE_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::raizanComposite);
+    private static final RenderStateShard.ShaderStateShard THUNDERBOLT_CALL_ENERGY_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::thunderboltCallEnergy);
+    private static final RenderStateShard.ShaderStateShard THUNDERBOLT_CALL_LIGHTNING_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::thunderboltCallLightning);
+    private static final RenderStateShard.ShaderStateShard THUNDERBOLT_CALL_CROSS_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::thunderboltCallCross);
+    private static final RenderStateShard.ShaderStateShard THUNDERBOLT_CALL_PARTICLE_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::thunderboltCallParticle);
+    private static final RenderStateShard.ShaderStateShard THUNDERBOLT_CALL_COMPOSITE_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::thunderboltCallComposite);
 
-    private static RenderType raizanType(String name, RenderStateShard.ShaderStateShard shader,
-                                         RenderStateShard.TransparencyStateShard transparency,
-                                         int bufferSize, ResourceLocation texture) {
+    private static RenderType analyticEffectType(String name, RenderStateShard.ShaderStateShard shader,
+                                                 RenderStateShard.TransparencyStateShard transparency,
+                                                 int bufferSize, ResourceLocation texture) {
         return create(name, DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS,
                 bufferSize, false, true, CompositeState.builder()
                         .setShaderState(shader)
@@ -68,23 +84,44 @@ public final class KabladeRenderTypes extends RenderType {
                         .createCompositeState(false));
     }
 
-    private static final RenderType RAIZAN_WEAPON_ENERGY = raizanType(
+    private static final RenderType RAIZAN_WEAPON_ENERGY = analyticEffectType(
             "kablade_raizan_weapon_energy", RAIZAN_WEAPON_ENERGY_SHADER,
             LIGHTNING_TRANSPARENCY, 131072, RAIZAN_NOISE_TEXTURE);
-    private static final RenderType RAIZAN_LIGHTNING = raizanType(
+    private static final RenderType RAIZAN_LIGHTNING = analyticEffectType(
             "kablade_raizan_lightning", RAIZAN_LIGHTNING_SHADER,
             LIGHTNING_TRANSPARENCY, 262144, RAIZAN_NOISE_TEXTURE);
-    private static final RenderType RAIZAN_HEART_SLASH = raizanType(
+    private static final RenderType RAIZAN_HEART_SLASH = analyticEffectType(
             "kablade_raizan_heart_slash", RAIZAN_HEART_SLASH_SHADER,
             LIGHTNING_TRANSPARENCY, 262144, RAIZAN_SLASH_TEXTURE);
-    private static final RenderType RAIZAN_PARTICLE = raizanType(
+    private static final RenderType RAIZAN_PARTICLE = analyticEffectType(
             "kablade_raizan_particle", RAIZAN_PARTICLE_SHADER,
             LIGHTNING_TRANSPARENCY, 131072, RAIZAN_PARTICLE_TEXTURE);
-    private static final RenderType RAIZAN_COMPOSITE = raizanType(
+    private static final RenderType RAIZAN_COMPOSITE = analyticEffectType(
             "kablade_raizan_composite", RAIZAN_COMPOSITE_SHADER,
             TRANSLUCENT_TRANSPARENCY, 65536, RAIZAN_SLASH_TEXTURE);
     private static final RenderType RAIZAN_FALLBACK = shaderFallback(
             "kablade_raizan_fallback", FALLBACK_TEXTURE, 262144, LIGHTNING_TRANSPARENCY);
+    private static final RenderType THUNDERBOLT_CALL_ENERGY = analyticEffectType(
+            "kablade_thunderbolt_call_energy", THUNDERBOLT_CALL_ENERGY_SHADER,
+            LIGHTNING_TRANSPARENCY, 131072, THUNDERBOLT_CALL_NOISE_TEXTURE);
+    private static final RenderType THUNDERBOLT_CALL_LIGHTNING = analyticEffectType(
+            "kablade_thunderbolt_call_lightning", THUNDERBOLT_CALL_LIGHTNING_SHADER,
+            LIGHTNING_TRANSPARENCY, 262144, THUNDERBOLT_CALL_NOISE_TEXTURE);
+    private static final RenderType THUNDERBOLT_CALL_CROSS = analyticEffectType(
+            "kablade_thunderbolt_call_cross", THUNDERBOLT_CALL_CROSS_SHADER,
+            LIGHTNING_TRANSPARENCY, 262144, THUNDERBOLT_CALL_CROSS_TEXTURE);
+    private static final RenderType THUNDERBOLT_CALL_PARTICLE = analyticEffectType(
+            "kablade_thunderbolt_call_particle", THUNDERBOLT_CALL_PARTICLE_SHADER,
+            LIGHTNING_TRANSPARENCY, 131072, THUNDERBOLT_CALL_PARTICLE_TEXTURE);
+    private static final RenderType THUNDERBOLT_CALL_COMPOSITE = analyticEffectType(
+            "kablade_thunderbolt_call_composite", THUNDERBOLT_CALL_COMPOSITE_SHADER,
+            TRANSLUCENT_TRANSPARENCY, 65536, THUNDERBOLT_CALL_CROSS_TEXTURE);
+    private static final RenderType THUNDERBOLT_CALL_ADDITIVE_FALLBACK = shaderFallback(
+            "kablade_thunderbolt_call_additive_fallback", FALLBACK_TEXTURE,
+            262144, LIGHTNING_TRANSPARENCY);
+    private static final RenderType THUNDERBOLT_CALL_ALPHA_FALLBACK = shaderFallback(
+            "kablade_thunderbolt_call_alpha_fallback", FALLBACK_TEXTURE,
+            65536, TRANSLUCENT_TRANSPARENCY);
 
     private static final RenderType INDUCTION_COLLAPSE = create(
             "kablade_induction_collapse",
@@ -745,6 +782,31 @@ public final class KabladeRenderTypes extends RenderType {
     public static RenderType raizanComposite() {
         return useRaizanFallback() || KabladeShaders.raizanComposite() == null
                 ? RAIZAN_FALLBACK : RAIZAN_COMPOSITE;
+    }
+
+    public static RenderType thunderboltCallEnergy() {
+        return useShaderFallbackTextures() || KabladeShaders.thunderboltCallEnergy() == null
+                ? THUNDERBOLT_CALL_ADDITIVE_FALLBACK : THUNDERBOLT_CALL_ENERGY;
+    }
+
+    public static RenderType thunderboltCallLightning() {
+        return useShaderFallbackTextures() || KabladeShaders.thunderboltCallLightning() == null
+                ? THUNDERBOLT_CALL_ADDITIVE_FALLBACK : THUNDERBOLT_CALL_LIGHTNING;
+    }
+
+    public static RenderType thunderboltCallCross() {
+        return useShaderFallbackTextures() || KabladeShaders.thunderboltCallCross() == null
+                ? THUNDERBOLT_CALL_ADDITIVE_FALLBACK : THUNDERBOLT_CALL_CROSS;
+    }
+
+    public static RenderType thunderboltCallParticle() {
+        return useShaderFallbackTextures() || KabladeShaders.thunderboltCallParticle() == null
+                ? THUNDERBOLT_CALL_ADDITIVE_FALLBACK : THUNDERBOLT_CALL_PARTICLE;
+    }
+
+    public static RenderType thunderboltCallComposite() {
+        return useShaderFallbackTextures() || KabladeShaders.thunderboltCallComposite() == null
+                ? THUNDERBOLT_CALL_ALPHA_FALLBACK : THUNDERBOLT_CALL_COMPOSITE;
     }
 
     private static boolean useRaizanFallback() {

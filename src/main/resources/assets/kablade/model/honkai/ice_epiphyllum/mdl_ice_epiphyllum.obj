@@ -1,6 +1,6 @@
 # Blender 5.1.2
 # www.blender.org
-mtllib mdlIceEpiphyllum.mtl
+mtllib mdl_ice_epiphyllum.mtl
 o blade
 v -75.568085 2.115533 2.185844
 v -99.373512 2.043784 2.185844

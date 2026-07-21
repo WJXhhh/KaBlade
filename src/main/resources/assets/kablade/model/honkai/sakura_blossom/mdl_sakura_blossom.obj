@@ -1,6 +1,6 @@
 # Blender 5.1.2
 # www.blender.org
-mtllib mdlSakuraBlossom.mtl
+mtllib mdl_sakura_blossom.mtl
 o blade
 v 25.365547 10.372826 3.653114
 v 25.806496 5.546596 3.687690

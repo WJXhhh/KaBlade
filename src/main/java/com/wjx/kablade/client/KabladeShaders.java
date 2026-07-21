@@ -5,6 +5,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.client.renderer.BloodfyreOculusPipeline;
 import com.wjx.kablade.client.renderer.RaidenCycloneOculusPipeline;
 import com.wjx.kablade.client.renderer.ShockImpactOculusPipeline;
+import com.wjx.kablade.client.renderer.ThunderboltCallOculusPipeline;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,6 +37,11 @@ public final class KabladeShaders {
     private static ShaderInstance raizanHeartSlash;
     private static ShaderInstance raizanParticle;
     private static ShaderInstance raizanComposite;
+    private static ShaderInstance thunderboltCallEnergy;
+    private static ShaderInstance thunderboltCallLightning;
+    private static ShaderInstance thunderboltCallCross;
+    private static ShaderInstance thunderboltCallParticle;
+    private static ShaderInstance thunderboltCallComposite;
 
     private KabladeShaders() {
     }
@@ -45,6 +51,7 @@ public final class KabladeShaders {
         BloodfyreOculusPipeline.invalidateResources();
         RaidenCycloneOculusPipeline.invalidateResources();
         ShockImpactOculusPipeline.invalidateResources();
+        ThunderboltCallOculusPipeline.invalidateResources();
         event.registerShader(new ShaderInstance(
                         event.getResourceProvider(),
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "stage_light"),
@@ -122,6 +129,24 @@ public final class KabladeShaders {
                 shader -> raizanParticle = shader);
         registerOptionalRaizanShader(event, "raizan_composite",
                 shader -> raizanComposite = shader);
+
+        // Thunderbolt Call owns a separate five-program material stack. Each stage keeps
+        // a geometry fallback so one bad resource reload cannot erase the whole SA.
+        thunderboltCallEnergy = null;
+        thunderboltCallLightning = null;
+        thunderboltCallCross = null;
+        thunderboltCallParticle = null;
+        thunderboltCallComposite = null;
+        registerOptionalThunderboltCallShader(event, "thunderbolt_call_energy",
+                shader -> thunderboltCallEnergy = shader);
+        registerOptionalThunderboltCallShader(event, "thunderbolt_call_lightning",
+                shader -> thunderboltCallLightning = shader);
+        registerOptionalThunderboltCallShader(event, "thunderbolt_call_cross",
+                shader -> thunderboltCallCross = shader);
+        registerOptionalThunderboltCallShader(event, "thunderbolt_call_particle",
+                shader -> thunderboltCallParticle = shader);
+        registerOptionalThunderboltCallShader(event, "thunderbolt_call_composite",
+                shader -> thunderboltCallComposite = shader);
     }
 
     private static void registerOptionalRaizanShader(RegisterShadersEvent event, String name,
@@ -132,6 +157,18 @@ public final class KabladeShaders {
                             DefaultVertexFormat.POSITION_COLOR_TEX), sink);
         } catch (IOException | RuntimeException exception) {
             Main.LOGGER.error("Could not compile optional Raizan shader {}; using layered geometry.",
+                    name, exception);
+        }
+    }
+
+    private static void registerOptionalThunderboltCallShader(RegisterShadersEvent event, String name,
+                                                               Consumer<ShaderInstance> sink) {
+        try {
+            event.registerShader(new ShaderInstance(event.getResourceProvider(),
+                            ResourceLocation.fromNamespaceAndPath(Main.MODID, name),
+                            DefaultVertexFormat.POSITION_COLOR_TEX), sink);
+        } catch (IOException | RuntimeException exception) {
+            Main.LOGGER.error("Could not compile optional Thunderbolt Call shader {}; using layered geometry.",
                     name, exception);
         }
     }
@@ -202,5 +239,25 @@ public final class KabladeShaders {
 
     public static ShaderInstance raizanComposite() {
         return raizanComposite;
+    }
+
+    public static ShaderInstance thunderboltCallEnergy() {
+        return thunderboltCallEnergy;
+    }
+
+    public static ShaderInstance thunderboltCallLightning() {
+        return thunderboltCallLightning;
+    }
+
+    public static ShaderInstance thunderboltCallCross() {
+        return thunderboltCallCross;
+    }
+
+    public static ShaderInstance thunderboltCallParticle() {
+        return thunderboltCallParticle;
+    }
+
+    public static ShaderInstance thunderboltCallComposite() {
+        return thunderboltCallComposite;
     }
 }

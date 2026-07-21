@@ -1,6 +1,6 @@
 # Blender 5.1.2
 # www.blender.org
-mtllib mdlMagStorm.mtl
+mtllib mdl_mag_storm.mtl
 o blade
 v -139.913879 -4.985457 -2.685646
 v -139.913879 7.472730 -2.685647

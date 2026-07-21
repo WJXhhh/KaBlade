@@ -35,6 +35,7 @@ import com.wjx.kablade.blades.honkai.Raikiri;
 import com.wjx.kablade.blades.honkai.RuinousSakura;
 import com.wjx.kablade.blades.honkai.SakuraBlossom;
 import com.wjx.kablade.blades.honkai.SkyBreaker;
+import com.wjx.kablade.blades.honkai.SevenThundersRumble;
 import com.wjx.kablade.blades.honkai.ThermalCutter;
 import com.wjx.kablade.blades.honkai.ThirdSacredRelic;
 import com.wjx.kablade.blades.honkai.VibroCutter;
@@ -148,6 +149,7 @@ public final class BladeLoader {
     public static BladeDefineBase MAG_TYPHOON;
     public static BladeDefineBase KEY_OF_CASTIGATION;
     public static BladeDefineBase DOMAIN_OF_SANCTION;
+    public static BladeDefineBase STR_RUMBLE;
     public static BladeDefineBase KEY_OF_LIMPIDITY;
     public static BladeDefineBase DOMAIN_OF_UNITY;
     public static BladeDefineBase ICE_EPIPHYLLUM;
@@ -254,6 +256,7 @@ public final class BladeLoader {
             "mag_typhoon",
             "key_of_castigation",
             "domain_of_sanction",
+            "str_rumble",
             "key_of_limpidity",
             "domain_of_unity",
             "ice_epiphyllum",
@@ -344,6 +347,7 @@ public final class BladeLoader {
         MAG_TYPHOON = new MagTyphoon(context);
         KEY_OF_CASTIGATION = new KeyOfCastigation(context);
         DOMAIN_OF_SANCTION = new DomainOfSanction(context);
+        STR_RUMBLE = new SevenThundersRumble(context);
         KEY_OF_LIMPIDITY = new KeyOfLimpidity(context);
         DOMAIN_OF_UNITY = new DomainOfUnity(context);
         ICE_EPIPHYLLUM = new IceEpiphyllum(context);

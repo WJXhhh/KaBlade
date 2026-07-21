@@ -45,6 +45,7 @@ import com.wjx.kablade.slasharts.ShockImpactArts;
 import com.wjx.kablade.slasharts.SnowDanceArts;
 import com.wjx.kablade.slasharts.SoulOfFrostArts;
 import com.wjx.kablade.slasharts.ThunderEdgeArts;
+import com.wjx.kablade.slasharts.ThunderboltCallArts;
 import com.wjx.kablade.slasharts.SwordEnlightenmentArts;
 import com.wjx.kablade.slasharts.ConceptualMetaphorArts;
 import com.wjx.kablade.slasharts.UtpalaAuraArts;
@@ -222,6 +223,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> RAIZAN_CLEAVE = REGISTRY.register(
             "raizan_cleave",
             () -> new RaizanCleaveArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> THUNDERBOLT_CALL = REGISTRY.register(
+            "thunderbolt_call",
+            () -> new ThunderboltCallArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> SNOW_DANCE = REGISTRY.register(
             "snow_dance",

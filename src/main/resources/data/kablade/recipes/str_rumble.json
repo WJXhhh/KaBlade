@@ -1,0 +1,39 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:str_rumble",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "kablade:electro_signet"
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:domain_of_sanction"
+      }
+    },
+    "C": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:domain_of_unity"
+      }
+    },
+    "D": {
+      "item": "minecraft:sculk_catalyst"
+    },
+    "E": {
+      "item": "minecraft:end_crystal"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "ACA",
+    "DED"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

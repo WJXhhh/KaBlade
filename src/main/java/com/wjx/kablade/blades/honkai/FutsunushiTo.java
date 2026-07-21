@@ -22,8 +22,8 @@ public class FutsunushiTo extends BladeDefineBase {
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/honkai/futsunushi_to/mdlFutsunushiTo.obj"))
-                        .textureName(ResourceUtil.getLocation("model/honkai/futsunushi_to/texFutsunushiTo.png"))
+                        .modelName(ResourceUtil.getLocation("model/honkai/futsunushi_to/mdl_futsunushi_to.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/futsunushi_to/tex_futsunushi_to.png"))
                         .effectColor(16642509)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),

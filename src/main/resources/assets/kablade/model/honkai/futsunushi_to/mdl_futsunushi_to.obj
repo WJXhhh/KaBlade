@@ -1,6 +1,6 @@
 # Blender 5.1.2
 # www.blender.org
-mtllib mdlFutsunushiTo.mtl
+mtllib mdl_futsunushi_to.mtl
 o blade
 v 34.973434 -10.684604 2.660712
 v 34.687023 -12.419171 0.000002

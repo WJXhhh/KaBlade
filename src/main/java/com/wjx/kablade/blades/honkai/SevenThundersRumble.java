@@ -14,36 +14,36 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-public class FloridSakura extends BladeDefineBase {
-    public FloridSakura(BootstapContext<SlashBladeDefinition> context) {
+/** Seven Thunders of Retribution: Rumble. */
+public class SevenThundersRumble extends BladeDefineBase {
+    public SevenThundersRumble(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/honkai/florid_sakura/mdl_florid_sakura.obj"))
-                        .textureName(ResourceUtil.getLocation("model/honkai/florid_sakura/tex_florid_sakura.png"))
-                        .effectColor(0xF3002C)
+                        .modelName(ResourceUtil.getLocation("model/honkai/str_rumble/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/str_rumble/tex.png"))
+                        .effectColor(0x9B00FF)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(24.0F)
-                        .maxDamage(800)
+                        .baseAttackModifier(49.0F)
+                        .maxDamage(1300)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .slashArtsType(ModSlashArts.CRIMSON_SAKURA.getId())
+                        .slashArtsType(ModSlashArts.THUNDERBOLT_CALL.getId())
                         .build(),
                 List.of(
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "fire_aspect"), 4),
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 5),
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 3),
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 4)
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "power"), 7),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 7),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 7)
                 )
         ));
     }
 
     @Override
     public String getKey() {
-        return "florid_sakura";
+        return "str_rumble";
     }
 }

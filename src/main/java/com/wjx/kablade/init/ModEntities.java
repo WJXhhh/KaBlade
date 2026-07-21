@@ -254,6 +254,18 @@ public final class ModEntities {
                     .noSave()
                     .build("raizan_cleave"));
 
+    /** Server timeline and layered visual anchor for Seven Thunders' Thunderbolt Call. */
+    public static final RegistryObject<EntityType<ThunderboltCallEntity>> THUNDERBOLT_CALL = REGISTRY.register(
+            "thunderbolt_call",
+            () -> EntityType.Builder.<ThunderboltCallEntity>of(ThunderboltCallEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(18)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("thunderbolt_call"));
+
     /** 「风之结界」光环实体。 */
     public static final RegistryObject<EntityType<TunaEntity>> TUNA = REGISTRY.register(
             "tuna",

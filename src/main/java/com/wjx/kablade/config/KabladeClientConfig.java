@@ -11,6 +11,9 @@ public final class KabladeClientConfig {
     public static final ForgeConfigSpec.EnumValue<RaizanCleaveQuality> RAIZAN_CLEAVE_QUALITY;
     public static final ForgeConfigSpec.BooleanValue RAIZAN_CLEAVE_CAMERA_SHAKE;
     public static final ForgeConfigSpec.BooleanValue RAIZAN_CLEAVE_REDUCED_FLASH;
+    public static final ForgeConfigSpec.BooleanValue THUNDERBOLT_CALL_CAMERA_SHAKE;
+    public static final ForgeConfigSpec.BooleanValue THUNDERBOLT_CALL_REDUCED_FLASH;
+    public static final ForgeConfigSpec.BooleanValue THUNDERBOLT_CALL_DEBUG_ANCHORS;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -50,6 +53,19 @@ public final class KabladeClientConfig {
         RAIZAN_CLEAVE_REDUCED_FLASH = builder
                 .comment("Reduce screen-space flashes while retaining all world-space effects.")
                 .define("reduced_flash", false);
+        builder.pop();
+
+        builder.comment("Thunderbolt Call client effect options.")
+                .push("thunderbolt_call");
+        THUNDERBOLT_CALL_CAMERA_SHAKE = builder
+                .comment("Enable the package-defined impact shake and FOV impulses.")
+                .define("camera_shake", true);
+        THUNDERBOLT_CALL_REDUCED_FLASH = builder
+                .comment("Reduce the pale-purple screen flash without removing world-space layers.")
+                .define("reduced_flash", false);
+        THUNDERBOLT_CALL_DEBUG_ANCHORS = builder
+                .comment("Show attacker, stored target and target-local anchors for effect debugging.")
+                .define("debug_anchors", false);
         builder.pop();
         SPEC = builder.build();
     }
