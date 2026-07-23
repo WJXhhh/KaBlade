@@ -20,8 +20,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -40,7 +38,6 @@ public final class SlashBladeModelWarmup {
     private boolean warmed;
     private boolean running;
     private boolean rewarmAfterStitch;
-    private int registryFingerprint;
     private WarmupTask pendingWarmup;
 
     @SubscribeEvent
@@ -98,14 +95,6 @@ public final class SlashBladeModelWarmup {
             if (minecraft.currentScreen instanceof GuiMainMenu || minecraft.world != null) {
                 warmup("config-enabled");
             }
-            return;
-        }
-        if (minecraft.world == null) {
-            return;
-        }
-        int currentFingerprint = computeRegistryFingerprint();
-        if (currentFingerprint != registryFingerprint) {
-            warmup("blade-registry-changed");
         }
     }
 
@@ -136,8 +125,7 @@ public final class SlashBladeModelWarmup {
             BladeRenderHardwareProfile.Snapshot profile = StaticBladeMeshCache.getHardwareProfile();
             WarmupTask task = new WarmupTask(reason, stacks.size(),
                     new ArrayList<ResourceLocationRaw>(models),
-                    new ArrayList<ResourceLocationRaw>(textures),
-                    computeRegistryFingerprint(stacks.values()));
+                    new ArrayList<ResourceLocationRaw>(textures));
 
             if (profile.usesIncrementalWarmup()) {
                 pendingWarmup = task;
@@ -185,7 +173,6 @@ public final class SlashBladeModelWarmup {
         }
 
         pendingWarmup = null;
-        registryFingerprint = task.registryFingerprint;
         warmed = true;
         long elapsedMs = (System.nanoTime() - task.started) / 1_000_000L;
         BladeRenderHardwareProfile.Snapshot profile = StaticBladeMeshCache.getHardwareProfile();
@@ -222,31 +209,11 @@ public final class SlashBladeModelWarmup {
         }
     }
 
-    private static int computeRegistryFingerprint() {
-        return computeRegistryFingerprint(collectBladeStacks().values());
-    }
-
-    private static int computeRegistryFingerprint(Collection<ItemStack> stacks) {
-        List<String> entries = new ArrayList<String>();
-        for (ItemStack stack : stacks) {
-            if (stack.isEmpty() || !(stack.getItem() instanceof ItemSlashBlade)) {
-                continue;
-            }
-            ItemSlashBlade blade = (ItemSlashBlade) stack.getItem();
-            entries.add(blade.getModelLocation(stack).toString()
-                    + '\u0000' + blade.getModelTexture(stack).toString()
-                    + '\u0000' + stack.getTranslationKey());
-        }
-        Collections.sort(entries);
-        return entries.hashCode();
-    }
-
     private static final class WarmupTask {
         private final String reason;
         private final int bladeCount;
         private final List<ResourceLocationRaw> models;
         private final List<ResourceLocationRaw> textures;
-        private final int registryFingerprint;
         private final long started = System.nanoTime();
         private int modelIndex;
         private int textureIndex;
@@ -255,12 +222,11 @@ public final class SlashBladeModelWarmup {
         private int failedTextures;
 
         private WarmupTask(String reason, int bladeCount, List<ResourceLocationRaw> models,
-                           List<ResourceLocationRaw> textures, int registryFingerprint) {
+                           List<ResourceLocationRaw> textures) {
             this.reason = reason;
             this.bladeCount = bladeCount;
             this.models = models;
             this.textures = textures;
-            this.registryFingerprint = registryFingerprint;
         }
     }
 }
