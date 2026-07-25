@@ -32,6 +32,7 @@ import com.wjx.kablade.slasharts.RaidenCycloneArts;
 import com.wjx.kablade.slasharts.RaizanCleaveArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
 import com.wjx.kablade.slasharts.MoonFangArts;
+import com.wjx.kablade.slasharts.NarukamiDivinityArts;
 import com.wjx.kablade.slasharts.OverSlashArts;
 import com.wjx.kablade.slasharts.PhantomButterflyArts;
 import com.wjx.kablade.slasharts.PhantomButterflySArts;
@@ -227,6 +228,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> THUNDERBOLT_CALL = REGISTRY.register(
             "thunderbolt_call",
             () -> new ThunderboltCallArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> NARUKAMI_DIVINITY = REGISTRY.register(
+            "narukami_divinity",
+            () -> new NarukamiDivinityArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> SNOW_DANCE = REGISTRY.register(
             "snow_dance",

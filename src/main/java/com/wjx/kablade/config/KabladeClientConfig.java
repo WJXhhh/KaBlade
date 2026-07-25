@@ -14,6 +14,8 @@ public final class KabladeClientConfig {
     public static final ForgeConfigSpec.BooleanValue THUNDERBOLT_CALL_CAMERA_SHAKE;
     public static final ForgeConfigSpec.BooleanValue THUNDERBOLT_CALL_REDUCED_FLASH;
     public static final ForgeConfigSpec.BooleanValue THUNDERBOLT_CALL_DEBUG_ANCHORS;
+    public static final ForgeConfigSpec.BooleanValue NARUKAMI_DIVINITY_CAMERA_SHAKE;
+    public static final ForgeConfigSpec.BooleanValue NARUKAMI_DIVINITY_REDUCED_FLASH;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -66,6 +68,16 @@ public final class KabladeClientConfig {
         THUNDERBOLT_CALL_DEBUG_ANCHORS = builder
                 .comment("Show attacker, stored target and target-local anchors for effect debugging.")
                 .define("debug_anchors", false);
+        builder.pop();
+
+        builder.comment("Narukami Divinity client effect options.")
+                .push("narukami_divinity");
+        NARUKAMI_DIVINITY_CAMERA_SHAKE = builder
+                .comment("Enable restrained camera and FOV impulses on the authored hit cues.")
+                .define("camera_shake", true);
+        NARUKAMI_DIVINITY_REDUCED_FLASH = builder
+                .comment("Reduce screen-space flashes while retaining the world-space lightning.")
+                .define("reduced_flash", false);
         builder.pop();
         SPEC = builder.build();
     }

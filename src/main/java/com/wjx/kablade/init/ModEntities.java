@@ -266,6 +266,18 @@ public final class ModEntities {
                     .noSave()
                     .build("thunderbolt_call"));
 
+    /** Server timeline and layered visual anchor for Narukami Divinity. */
+    public static final RegistryObject<EntityType<NarukamiDivinityEntity>> NARUKAMI_DIVINITY = REGISTRY.register(
+            "narukami_divinity",
+            () -> EntityType.Builder.<NarukamiDivinityEntity>of(NarukamiDivinityEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(20)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("narukami_divinity"));
+
     /** 「风之结界」光环实体。 */
     public static final RegistryObject<EntityType<TunaEntity>> TUNA = REGISTRY.register(
             "tuna",

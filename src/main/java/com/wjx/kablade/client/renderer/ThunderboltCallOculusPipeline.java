@@ -7,10 +7,12 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.client.shader.OculusFramebufferAccess;
 import com.wjx.kablade.client.shader.ShaderCompat;
 import com.wjx.kablade.client.shader.SkillShaderTarget;
+import com.wjx.kablade.entity.NarukamiDivinityEntity;
 import com.wjx.kablade.entity.ThunderboltCallEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -39,7 +41,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Private Oculus/Iris render path for Thunderbolt Call.
+ * Private Oculus/Iris render path shared by Thunderbolt Call and Narukami Divinity.
  *
  * <p>Shader packs replace Minecraft's entity {@code ShaderInstance}s and may reinterpret
  * translucent quads. This path queues visible casts, converts every logical quad to explicit
@@ -49,7 +51,7 @@ import java.util.Optional;
 @Mod.EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT,
         bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class ThunderboltCallOculusPipeline {
-    private static final Map<Integer, QueuedCast> QUEUED = new LinkedHashMap<>();
+    private static final Map<Integer, QueuedEffect> QUEUED = new LinkedHashMap<>();
     private static final ProgramSet PROGRAMS = new ProgramSet();
     private static final MeshDrawer MESH = new MeshDrawer();
 
@@ -64,6 +66,15 @@ public final class ThunderboltCallOculusPipeline {
 
     /** Returns true when the normal entity material pass must be suppressed. */
     public static boolean enqueue(ThunderboltCallEntity entity, float partialTick) {
+        return enqueueEffect(entity, partialTick);
+    }
+
+    /** Narukami uses the same five materials and must bypass shader-pack entity programs too. */
+    public static boolean enqueue(NarukamiDivinityEntity entity, float partialTick) {
+        return enqueueEffect(entity, partialTick);
+    }
+
+    private static boolean enqueueEffect(Entity entity, float partialTick) {
         if (disabledForSession || !ShaderCompat.shouldUseOculusPostPath()) {
             return false;
         }
@@ -71,12 +82,12 @@ public final class ThunderboltCallOculusPipeline {
         if (target.isEmpty() || !target.get().isComplete()) {
             if (!loggedMissingTarget) {
                 loggedMissingTarget = true;
-                Main.LOGGER.warn("Thunderbolt Call could not resolve the Oculus translucent "
-                        + "target; using the normal shader-pack fallback.");
+                Main.LOGGER.warn("Kablade lightning effects could not resolve the Oculus "
+                        + "translucent target; using the normal shader-pack fallback.");
             }
             return false;
         }
-        QUEUED.put(entity.getId(), new QueuedCast(entity, partialTick));
+        QUEUED.put(entity.getId(), new QueuedEffect(entity, partialTick));
         return true;
     }
 
@@ -95,7 +106,7 @@ public final class ThunderboltCallOculusPipeline {
             return;
         }
 
-        List<QueuedCast> casts = new ArrayList<>(QUEUED.values());
+        List<QueuedEffect> casts = new ArrayList<>(QUEUED.values());
         QUEUED.clear();
         if (disabledForSession || !ShaderCompat.shouldUseOculusPostPath()) {
             return;
@@ -123,7 +134,7 @@ public final class ThunderboltCallOculusPipeline {
 
             if (!loggedActive) {
                 loggedActive = true;
-                Main.LOGGER.info("Thunderbolt Call Oculus pipeline active: fbo={}, color={}, "
+                Main.LOGGER.info("Kablade lightning Oculus pipeline active: fbo={}, color={}, "
                                 + "depth={}, size={}x{}, geometry=private-explicit-triangles",
                         target.framebufferId(), target.colorTextureId(), target.depthTextureId(),
                         target.width(), target.height());
@@ -132,7 +143,7 @@ public final class ThunderboltCallOculusPipeline {
             disabledForSession = true;
             if (!loggedFailure) {
                 loggedFailure = true;
-                Main.LOGGER.warn("Disabling the Thunderbolt Call Oculus pipeline for this "
+                Main.LOGGER.warn("Disabling the Kablade lightning Oculus pipeline for this "
                         + "session; subsequent frames will use fallback geometry.", exception);
             }
         } finally {
@@ -153,7 +164,7 @@ public final class ThunderboltCallOculusPipeline {
         GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
         int status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
         if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
-            throw new IllegalStateException("Thunderbolt Call Oculus framebuffer incomplete: 0x"
+            throw new IllegalStateException("Kablade lightning Oculus framebuffer incomplete: 0x"
                     + Integer.toHexString(status));
         }
         GL11.glViewport(0, 0, target.width(), target.height());
@@ -164,12 +175,12 @@ public final class ThunderboltCallOculusPipeline {
         GL11.glColorMask(true, true, true, true);
     }
 
-    private static void renderQueued(RenderLevelStageEvent event, List<QueuedCast> casts,
+    private static void renderQueued(RenderLevelStageEvent event, List<QueuedEffect> casts,
                                      DrawContext context) {
         Vec3 camera = event.getCamera().getPosition();
         PoseStack poseStack = event.getPoseStack();
-        for (QueuedCast cast : casts) {
-            ThunderboltCallEntity entity = cast.entity();
+        for (QueuedEffect cast : casts) {
+            Entity entity = cast.entity();
             if (!entity.isAlive()) {
                 continue;
             }
@@ -179,10 +190,19 @@ public final class ThunderboltCallOculusPipeline {
                 poseStack.translate(position.x - camera.x, position.y - camera.y,
                         position.z - camera.z);
                 RawGeometry geometry = new RawGeometry();
-                ThunderboltCallRenderer.renderGeometry(entity, cast.partialTick(),
-                        poseStack.last().pose(), camera,
-                        geometry.composite, geometry.energy, geometry.cross,
-                        geometry.lightning, geometry.particle);
+                if (entity instanceof ThunderboltCallEntity thunderboltCall) {
+                    ThunderboltCallRenderer.renderGeometry(thunderboltCall, cast.partialTick(),
+                            poseStack.last().pose(), camera,
+                            geometry.composite, geometry.energy, geometry.cross,
+                            geometry.lightning, geometry.particle);
+                } else if (entity instanceof NarukamiDivinityEntity narukamiDivinity) {
+                    NarukamiDivinityRenderer.renderGeometry(narukamiDivinity, cast.partialTick(),
+                            poseStack.last().pose(), camera,
+                            geometry.composite, geometry.energy, geometry.cross,
+                            geometry.lightning, geometry.particle);
+                } else {
+                    continue;
+                }
                 geometry.finish();
                 context.draw(Material.COMPOSITE, geometry.composite);
                 context.draw(Material.ENERGY, geometry.energy);
@@ -208,7 +228,7 @@ public final class ThunderboltCallOculusPipeline {
         MESH.close();
     }
 
-    private record QueuedCast(ThunderboltCallEntity entity, float partialTick) {
+    private record QueuedEffect(Entity entity, float partialTick) {
     }
 
     private enum Material {
@@ -283,7 +303,7 @@ public final class ThunderboltCallOculusPipeline {
         private GlProgram get(Material material) {
             GlProgram program = programs.get(material);
             if (program == null) {
-                throw new IllegalStateException("Thunderbolt Call Oculus program not loaded: "
+                throw new IllegalStateException("Kablade lightning Oculus program not loaded: "
                         + material);
             }
             return program;
@@ -338,7 +358,7 @@ public final class ThunderboltCallOculusPipeline {
             if (GL20.glGetProgrami(program, GL20.GL_LINK_STATUS) == GL11.GL_FALSE) {
                 String log = GL20.glGetProgramInfoLog(program);
                 GL20.glDeleteProgram(program);
-                throw new IllegalStateException("Thunderbolt Call Oculus program link failed ("
+                throw new IllegalStateException("Kablade lightning Oculus program link failed ("
                         + name + "): " + log);
             }
             return new GlProgram(program);
@@ -351,7 +371,7 @@ public final class ThunderboltCallOculusPipeline {
             if (GL20.glGetShaderi(shader, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
                 String log = GL20.glGetShaderInfoLog(shader);
                 GL20.glDeleteShader(shader);
-                throw new IllegalStateException("Thunderbolt Call Oculus shader compile failed ("
+                throw new IllegalStateException("Kablade lightning Oculus shader compile failed ("
                         + name + "): " + log);
             }
             return shader;
@@ -509,7 +529,7 @@ public final class ThunderboltCallOculusPipeline {
 
         private void finish() {
             if (quadSize != 0) {
-                throw new IllegalStateException("Thunderbolt Call emitted an incomplete quad: "
+                throw new IllegalStateException("Kablade lightning effect emitted an incomplete quad: "
                         + quadSize);
             }
         }

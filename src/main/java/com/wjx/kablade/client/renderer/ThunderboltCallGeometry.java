@@ -50,6 +50,46 @@ final class ThunderboltCallGeometry {
         }
     }
 
+    /**
+     * Ribbon extruded inside a fixed world-space plane. This is used for the
+     * Narukami body ring so it remains attached to the character instead of
+     * rotating into a camera-facing halo.
+     */
+    static void ribbonFixed(VertexConsumer out, Matrix4f matrix, Curve curve, int segments,
+                            float head, float tail, float width, Vec3 planeNormal,
+                            int color, float alpha, float erode, long seed, float frame) {
+        float start = Mth.clamp(tail, 0.0F, 1.0F);
+        float end = Mth.clamp(head, 0.0F, 1.0F);
+        if (alpha <= 0.001F || end <= start + 1.0E-4F) {
+            return;
+        }
+        int count = Math.max(2, segments);
+        for (int i = 0; i < count; i++) {
+            float u0 = i / (float) count;
+            float u1 = (i + 1) / (float) count;
+            if (u1 < start || u0 > end) {
+                continue;
+            }
+            float a = Math.max(start, u0);
+            float b = Math.min(end, u1);
+            float middle = (a + b) * 0.5F;
+            float erosionNoise = hash01(seed + i * 0x9E3779B97F4A7C15L
+                    + (long) (frame * 13.0F) * 0x632BE59BD9B4E019L);
+            float edgeErosion = erode * (0.34F + 0.66F * middle);
+            if (erosionNoise < edgeErosion * 0.72F) {
+                continue;
+            }
+            Vec3 p0 = curve.point(a);
+            Vec3 p1 = curve.point(b);
+            float taper0 = endTaper(a);
+            float taper1 = endTaper(b);
+            fixedBeamQuad(out, matrix, p0, p1,
+                    width * (0.12F + 0.88F * taper0),
+                    width * (0.12F + 0.88F * taper1),
+                    planeNormal, color, alpha * (1.0F - edgeErosion * 0.46F), a, b);
+        }
+    }
+
     static void beam(VertexConsumer out, Matrix4f matrix, Vec3 start, Vec3 end,
                      float width, Vec3 camera, int color, float alpha) {
         beamQuad(out, matrix, start, end, width, width, camera, color, alpha, 0.0F, 1.0F);
@@ -181,6 +221,38 @@ final class ThunderboltCallGeometry {
         }
     }
 
+    /** Elliptical fan in a caller-supplied world-space plane. */
+    static void discOriented(VertexConsumer out, Matrix4f matrix, Vec3 center,
+                             Vec3 axisX, Vec3 axisY, float halfWidth, float halfHeight,
+                             int color, float alpha) {
+        if (alpha <= 0.001F || axisX.lengthSqr() < 1.0E-8D || axisY.lengthSqr() < 1.0E-8D) {
+            return;
+        }
+        Vec3 x = axisX.normalize();
+        Vec3 y = axisY.normalize();
+        int red = color >> 16 & 255;
+        int green = color >> 8 & 255;
+        int blue = color & 255;
+        int a8 = Mth.clamp((int) (alpha * 255.0F), 0, 255);
+        int segments = 32;
+        for (int i = 0; i < segments; i++) {
+            double angle0 = i * Mth.TWO_PI / segments;
+            double angle1 = (i + 1) * Mth.TWO_PI / segments;
+            Vec3 edge0 = center.add(x.scale(Math.cos(angle0) * halfWidth))
+                    .add(y.scale(Math.sin(angle0) * halfHeight));
+            Vec3 edge1 = center.add(x.scale(Math.cos(angle1) * halfWidth))
+                    .add(y.scale(Math.sin(angle1) * halfHeight));
+            float u0 = 0.5F + (float) Math.cos(angle0) * 0.5F;
+            float v0 = 0.5F + (float) Math.sin(angle0) * 0.5F;
+            float u1 = 0.5F + (float) Math.cos(angle1) * 0.5F;
+            float v1 = 0.5F + (float) Math.sin(angle1) * 0.5F;
+            vertex(out, matrix, center, red, green, blue, a8, 0.5F, 0.5F);
+            vertex(out, matrix, edge0, red, green, blue, a8, u0, v0);
+            vertex(out, matrix, edge1, red, green, blue, a8, u1, v1);
+            vertex(out, matrix, center, red, green, blue, a8, 0.5F, 0.5F);
+        }
+    }
+
     static void starBurst(VertexConsumer out, Matrix4f matrix, Vec3 center, Vec3 camera,
                           int rays, float minLength, float maxLength, float width,
                           int color, float alpha, long seed, float rotation) {
@@ -272,6 +344,30 @@ final class ThunderboltCallGeometry {
         Vec3 s1 = side.scale(endWidth);
         quad(out, matrix, start.subtract(s0), start.add(s0), end.add(s1), end.subtract(s1),
                 color, alpha, u0, u1, 0.0F, 1.0F);
+    }
+
+    private static void fixedBeamQuad(VertexConsumer out, Matrix4f matrix,
+                                      Vec3 start, Vec3 end,
+                                      float startWidth, float endWidth,
+                                      Vec3 planeNormal, int color, float alpha,
+                                      float u0, float u1) {
+        Vec3 direction = end.subtract(start);
+        Vec3 side = planeNormal.cross(direction);
+        if (direction.lengthSqr() < 1.0E-10D || side.lengthSqr() < 1.0E-10D
+                || alpha <= 0.001F) {
+            return;
+        }
+        side = side.normalize();
+        Vec3 s0 = side.scale(startWidth);
+        Vec3 s1 = side.scale(endWidth);
+        quad(out, matrix, start.subtract(s0), start.add(s0), end.add(s1), end.subtract(s1),
+                color, alpha, u0, u1, 0.0F, 1.0F);
+    }
+
+    private static float endTaper(float u) {
+        float edge = Math.min(Mth.clamp(u / 0.075F, 0.0F, 1.0F),
+                Mth.clamp((1.0F - u) / 0.075F, 0.0F, 1.0F));
+        return edge * edge * (3.0F - 2.0F * edge);
     }
 
     private static void quad(VertexConsumer out, Matrix4f matrix,
