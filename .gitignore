@@ -51,3 +51,14 @@ claude_mimo.ps1
 step.ps1
 kablade-jar-list.txt
 .tmp_sb/
+
+# Local MC百科 editor sessions, audits, and generated artifacts
+/.mcmod*
+/mcmod_mod_*_editor_*
+
+# Standalone local effect-preview repository
+/effect_preview/
+
+# Local Codex configuration and helper script
+/.codex/
+/step_codex.ps1
