@@ -40,9 +40,14 @@ build_output.txt
 
 # Item icons
 icons/
+icons_selected/
 
 # Model work files
 model_work/
+
+# Local project plans and editable image sources
+plans/
+*.psd
 
 # Local dev mod jars
 mods/
