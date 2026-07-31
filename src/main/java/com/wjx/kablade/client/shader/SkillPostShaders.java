@@ -307,12 +307,49 @@ public final class SkillPostShaders {
             }
             """;
 
+    private static final String JIZO_COMPOSITE_FRAGMENT = """
+            #version 150
+
+            uniform sampler2D Scene;
+            uniform sampler2D Effect;
+            uniform sampler2D Glow;
+            uniform sampler2D Bloom;
+
+            in vec2 vUv;
+            out vec4 fragColor;
+
+            float powerOf(vec4 color) {
+                return max(color.a, max(max(color.r, color.g), color.b));
+            }
+
+            void main() {
+                vec4 scene = texture(Scene, vUv);
+                vec4 effect = texture(Effect, vUv);
+                vec4 rawGlow = texture(Glow, vUv);
+                vec4 bloomSample = texture(Bloom, vUv);
+
+                float coverage = clamp(effect.a, 0.0, 1.0);
+                vec3 base = scene.rgb * (1.0 - coverage) + max(effect.rgb, vec3(0.0));
+
+                float bloomEnergy = 1.0 - exp(-powerOf(bloomSample) * 1.30);
+                float coreEnergy = 1.0 - exp(-powerOf(rawGlow) * 1.55);
+                vec3 bloodRed = vec3(1.0, 0.018, 0.008);
+                vec3 hotRed = vec3(1.0, 0.10, 0.035);
+                vec3 halo = mix(bloodRed, hotRed, bloomEnergy)
+                        * bloomEnergy * (0.58 + bloomEnergy * 1.22);
+                vec3 core = mix(bloodRed, vec3(1.0, 0.30, 0.12), coreEnergy)
+                        * coreEnergy * 0.74;
+                fragColor = vec4(base + halo + core, scene.a);
+            }
+            """;
+
     private static int blurProgram;
     private static int compositeProgram;
     private static int bloodfyreCompositeProgram;
     private static int raidenCompositeProgram;
     private static int honkaiCompositeProgram;
     private static int raizanCompositeProgram;
+    private static int jizoCompositeProgram;
     private static int vertexArray;
 
     private SkillPostShaders() {
@@ -436,6 +473,24 @@ public final class SkillPostShaders {
         });
     }
 
+    public static void compositeJizo(int sceneTextureId, int effectTextureId,
+                                     int glowTextureId, int bloomTextureId,
+                                     int width, int height) {
+        ensurePrograms();
+        withFullscreenState(() -> {
+            GL20.glUseProgram(jizoCompositeProgram);
+            bindTexture(0, sceneTextureId);
+            bindTexture(1, effectTextureId);
+            bindTexture(2, glowTextureId);
+            bindTexture(3, bloomTextureId);
+            GL20.glUniform1i(GL20.glGetUniformLocation(jizoCompositeProgram, "Scene"), 0);
+            GL20.glUniform1i(GL20.glGetUniformLocation(jizoCompositeProgram, "Effect"), 1);
+            GL20.glUniform1i(GL20.glGetUniformLocation(jizoCompositeProgram, "Glow"), 2);
+            GL20.glUniform1i(GL20.glGetUniformLocation(jizoCompositeProgram, "Bloom"), 3);
+            drawFullscreenTriangle();
+        });
+    }
+
     /** Recreates the Raizan-only compositor after F3+T or a render-target transition. */
     public static void resetRaizan() {
         RenderSystem.assertOnRenderThread();
@@ -470,6 +525,9 @@ public final class SkillPostShaders {
         }
         if (raizanCompositeProgram == 0) {
             raizanCompositeProgram = createProgram(RAIZAN_COMPOSITE_FRAGMENT);
+        }
+        if (jizoCompositeProgram == 0) {
+            jizoCompositeProgram = createProgram(JIZO_COMPOSITE_FRAGMENT);
         }
     }
 

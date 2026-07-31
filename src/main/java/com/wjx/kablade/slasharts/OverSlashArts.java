@@ -79,10 +79,10 @@ public final class OverSlashArts extends SlashArts {
                 .orElse(4.0F);
         float magicDamage = baseAttack / 2.0F;
         AABB box = user.getBoundingBox().inflate(AOE_RADIUS, 0.25, AOE_RADIUS);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> SaTargeting.canDamageAttackable(user, e));
-        for (LivingEntity target : targets) {
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, magicDamage);
+        var targets = SaTargeting.uniqueTargets(level, user, box);
+        for (var selected : targets) {
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, magicDamage);
         }
         // 鏆村嚮鏁堟灉锛堢矑瀛愮敱瀹㈡埛绔鐞嗭級
 

@@ -179,16 +179,18 @@ public final class RockStrikeArts extends SlashArts {
                 origin.x + reach, origin.y + 3.0, origin.z + reach);
         double reachSq = reach * reach;
 
-        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e.isAlive() && e != user && !damaged.contains(e)
-                        && SaTargeting.canDamageAttackable(user, e))) {
-            double dx = target.getX() - origin.x;
-            double dz = target.getZ() - origin.z;
+        for (var selected : SaTargeting.targets(level, user, box,
+                value -> value.root() != user && !damaged.contains(value.root())
+                        && SaTargeting.canDamageAttackable(user, value.root()))) {
+            LivingEntity target = selected.root();
+            double dx = selected.anchor().x - origin.x;
+            double dz = selected.anchor().z - origin.z;
             if (dx * dx + dz * dz > reachSq) {
                 continue;
                 }
             damaged.add(target);
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, (float) damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, (float) damage);
             launchUp(target, origin, launchUp);
         }
     }

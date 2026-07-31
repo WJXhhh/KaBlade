@@ -120,10 +120,11 @@ public class DawnCrescentEntity extends Entity {
         AABB box = new AABB(this.getX() - rad, this.getY() - 1.0, this.getZ() - rad,
                 this.getX() + rad, this.getY() + 2.0, this.getZ() + rad);
         DamageSource src = this.level().damageSources().indirectMagic(this, this.owner);
-        for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box,
-                e -> SaTargeting.canDamage(this.owner, e))) {
-            if (this.alreadyHit.add(target.getUUID())) {
-                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, (ServerLevel) this.level(), this, this.owner, this.damage);
+        for (var selected : SaTargeting.targets(this.level(), this.owner, box,
+                value -> SaTargeting.canDamage(this.owner, value.root()))) {
+            if (this.alreadyHit.add(selected.damageGroup())) {
+                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                        selected.hitEntity(), (ServerLevel) this.level(), this, this.owner, this.damage);
             }
         }
     }

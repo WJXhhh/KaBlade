@@ -15,6 +15,7 @@ import com.wjx.kablade.blades.honkai.FuheLiuye;
 import com.wjx.kablade.blades.honkai.FuheZhuque;
 import com.wjx.kablade.blades.honkai.GalacticNova;
 import com.wjx.kablade.blades.honkai.IceEpiphyllum;
+import com.wjx.kablade.blades.honkai.JizoMitama;
 import com.wjx.kablade.blades.honkai.KeyOfCastigation;
 import com.wjx.kablade.blades.honkai.KeyOfLimpidity;
 import com.wjx.kablade.blades.honkai.MagStorm;
@@ -138,6 +139,7 @@ public final class BladeLoader {
     public static BladeDefineBase RUINOUS_SAKURA;
     public static BladeDefineBase PLEDGE_OF_RAIN;
     public static BladeDefineBase NUE;
+    public static BladeDefineBase JIZO_MITAMA;
     // 崩坏线·脉冲太刀分支
     public static BladeDefineBase XUANYUAN_KATANA;
     // 崩坏线·苗刀系列 Lv5/分支
@@ -235,7 +237,7 @@ public final class BladeLoader {
             "pulse_katana_t17",
             "pulse_katana_t19",
             "xuanyuan_katana",
-            // 崩坏线·银河新星线：银河追光 → 反力场打刀11式 / 破晓者 / 妖精剑 / 3rd圣遗物 / 影鵺
+            // 崩坏线·银河新星线：银河追光 → 反力场打刀11式 / 破晓者 / 妖精剑 / 3rd圣遗物 / 影鵺 → 地藏御魂
             "galactic",
             "vorpal_sword",
             "dawn_breaker",
@@ -246,6 +248,7 @@ public final class BladeLoader {
             "ruinous_sakura",
             "pledge_of_rain",
             "nue",
+            "jizo_mitama",
             // 崩坏线·苗刀系列：雷妖/电魂 → 雷切/藏锋/开天剑/高周波切割刀
             "byorai",
             "byoden",
@@ -338,6 +341,7 @@ public final class BladeLoader {
         THIRD_SACRED = new ThirdSacredRelic(context);
         PLEDGE_OF_RAIN = new PledgeOfRain(context);
         NUE = new Nue(context);
+        JIZO_MITAMA = new JizoMitama(context);
         // 崩坏线·苗刀系列
         BYO_RAI = new ByoRai(context);
         BYO_DEN = new ByoDen(context);

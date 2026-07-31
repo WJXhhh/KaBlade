@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.InductionCollapseFxPacket;
 import com.wjx.kablade.network.KabladeNetwork;
+import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -83,17 +84,17 @@ public final class InductionCollapseArts extends SlashArts {
         }
     }
 
-    private static LivingEntity findContactTarget(ServerLevel level, LivingEntity user,
-                                                  AABB box, Set<UUID> alreadyHit) {
-        LivingEntity closest = null;
+    private static SaTarget findContactTarget(ServerLevel level, LivingEntity user,
+                                              AABB box, Set<UUID> alreadyHit) {
+        SaTarget closest = null;
         double closestDist = Double.MAX_VALUE;
-        List<LivingEntity> candidates = level.getEntitiesOfClass(LivingEntity.class, box,
-                candidate -> isValidTarget(user, candidate));
-        for (LivingEntity candidate : candidates) {
-            if (alreadyHit.contains(candidate.getUUID())) {
+        List<SaTarget> candidates = SaTargeting.targets(level, user, box,
+                candidate -> isValidTarget(user, candidate.root()));
+        for (SaTarget candidate : candidates) {
+            if (alreadyHit.contains(candidate.damageGroup())) {
                 continue;
             }
-            double dist = candidate.distanceToSqr(user);
+            double dist = candidate.distanceToSqr(user.position());
             if (dist < closestDist) {
                 closest = candidate;
                 closestDist = dist;
@@ -118,7 +119,8 @@ public final class InductionCollapseArts extends SlashArts {
         applyCollapseSweep(level, user, state);
     }
 
-    private static void applyCollapse(ServerLevel level, LivingEntity user, LivingEntity target) {
+    private static void applyCollapse(ServerLevel level, LivingEntity user, SaTarget selected) {
+        LivingEntity target = selected.root();
         if (!isValidTarget(user, target) || target.level() != level) {
             return;
         }
@@ -126,9 +128,11 @@ public final class InductionCollapseArts extends SlashArts {
         target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
                 EFFECT_DURATION, SLOW_AMPLIFIER, false, true));
         long now = level.getServer().getTickCount();
-        com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, IMPACT_DAMAGE);
+        com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                selected.hitEntity(), level, user, IMPACT_DAMAGE);
         ACTIVE_COLLAPSES.put(new CollapseKey(target.getUUID(), user.getUUID()), new CollapseState(
-                level.dimension(), target.getUUID(), user.getUUID(), now + EFFECT_DURATION, now + DAMAGE_INTERVAL));
+                level.dimension(), target.getUUID(), selected.hitEntity().getId(), user.getUUID(),
+                now + EFFECT_DURATION, now + DAMAGE_INTERVAL));
 
         level.playSound(null, target.getX(), target.getY(), target.getZ(),
                 SoundEvents.TRIDENT_THUNDER, SoundSource.PLAYERS, 0.75F, 1.55F);
@@ -159,6 +163,10 @@ public final class InductionCollapseArts extends SlashArts {
             if (!(targetEntity instanceof LivingEntity target) || !target.isAlive()) {
                 return true;
             }
+            Entity physicalTarget = level.getEntity(state.targetEntityId);
+            SaTarget selected = SaTarget.of(physicalTarget)
+                    .filter(value -> value.damageGroup().equals(state.targetUUID))
+                    .orElse(null);
             if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
                 return true;
             }
@@ -175,8 +183,9 @@ public final class InductionCollapseArts extends SlashArts {
             }
 
             int age = (int) (EFFECT_DURATION - (state.expiresAt - now));
-            if (now >= state.nextDamageAt) {
-                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, owner, PULSE_DAMAGE);
+            if (now >= state.nextDamageAt && selected != null) {
+                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                        selected.hitEntity(), level, owner, PULSE_DAMAGE);
                 state.nextDamageAt = now + DAMAGE_INTERVAL;
             }
             if (age % 6 == 0) {
@@ -227,9 +236,9 @@ public final class InductionCollapseArts extends SlashArts {
                 .inflate(SWEEP_RANGE_XZ, SWEEP_RANGE_Y, SWEEP_RANGE_XZ);
         state.lastBox = current;
 
-        LivingEntity hit;
+        SaTarget hit;
         while ((hit = findContactTarget(level, user, sweep, state.hitTargets)) != null) {
-            state.hitTargets.add(hit.getUUID());
+            state.hitTargets.add(hit.damageGroup());
             applyCollapse(level, user, hit);
         }
     }
@@ -247,14 +256,17 @@ public final class InductionCollapseArts extends SlashArts {
     private static final class CollapseState {
         private final ResourceKey<Level> dimension;
         private final UUID targetUUID;
+        private final int targetEntityId;
         private final UUID ownerUUID;
         private final long expiresAt;
         private long nextDamageAt;
 
-        private CollapseState(ResourceKey<Level> dimension, UUID targetUUID, UUID ownerUUID,
+        private CollapseState(ResourceKey<Level> dimension, UUID targetUUID, int targetEntityId,
+                              UUID ownerUUID,
                               long expiresAt, long nextDamageAt) {
             this.dimension = dimension;
             this.targetUUID = targetUUID;
+            this.targetEntityId = targetEntityId;
             this.ownerUUID = ownerUUID;
             this.expiresAt = expiresAt;
             this.nextDamageAt = nextDamageAt;

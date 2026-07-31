@@ -8,8 +8,14 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /** Client render types that need state combinations not exposed by vanilla helpers. */
 public final class KabladeRenderTypes extends RenderType {
+    private static final Map<ResourceLocation, RenderType> JIZO_SOUL_DEPTH = new HashMap<>();
+    private static final Map<ResourceLocation, RenderType> JIZO_SOUL_SURFACE = new HashMap<>();
+    private static final Map<ResourceLocation, RenderType> JIZO_SOUL_GLOW = new HashMap<>();
     private static final ResourceLocation FALLBACK_TEXTURE =
             ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/white.png");
     private static final ResourceLocation RAIZAN_NOISE_TEXTURE =
@@ -39,6 +45,8 @@ public final class KabladeRenderTypes extends RenderType {
             new RenderStateShard.ShaderStateShard(KabladeShaders::swordEnlightenment);
     private static final RenderStateShard.ShaderStateShard CONCEPTUAL_METAPHOR_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::conceptualMetaphor);
+    private static final RenderStateShard.ShaderStateShard JIZO_SOUL_GLOW_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::jizoSoulGlow);
     private static final RenderStateShard.ShaderStateShard BLOODFYRE_FRENZY_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::bloodfyreFrenzy);
     private static final RenderStateShard.ShaderStateShard BLOODFYRE_RUPTURE_SHADER =
@@ -984,5 +992,68 @@ public final class KabladeRenderTypes extends RenderType {
         return create("kablade_rain_ending_ring",
                 DefaultVertexFormat.POSITION_COLOR,
                 VertexFormat.Mode.QUADS, 4096, false, true, state);
+    }
+
+    /**
+     * Depth-only first pass for Jizo's translucent shell.  It keeps only the nearest
+     * textured surface, preventing internal/back-facing triangles from stacking into
+     * the faceted mesh pattern produced by ordinary alpha blending.
+     */
+    public static RenderType jizoSoulDepth(ResourceLocation texture) {
+        return JIZO_SOUL_DEPTH.computeIfAbsent(texture, tex -> {
+            CompositeState state = CompositeState.builder()
+                    .setShaderState(RENDERTYPE_ENTITY_CUTOUT_NO_CULL_SHADER)
+                    .setTextureState(new TextureStateShard(tex, false, false))
+                    .setTransparencyState(NO_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setLightmapState(LIGHTMAP)
+                    .setOverlayState(OVERLAY)
+                    .setWriteMaskState(DEPTH_WRITE)
+                    .createCompositeState(false);
+            return create("kablade_jizo_soul_depth_" + tex,
+                    DefaultVertexFormat.NEW_ENTITY,
+                    VertexFormat.Mode.TRIANGLES, 65536, false, false, state);
+        });
+    }
+
+    /** Color-only second pass restricted to the shell selected by {@link #jizoSoulDepth}. */
+    public static RenderType jizoSoulSurface(ResourceLocation texture) {
+        return JIZO_SOUL_SURFACE.computeIfAbsent(texture, tex -> {
+            CompositeState state = CompositeState.builder()
+                    // Unlit surface color avoids reintroducing the OBJ's flat-triangle
+                    // normal shading after the depth prepass has removed inner layers.
+                    .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                    .setTextureState(new TextureStateShard(tex, false, false))
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(EQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setLightmapState(LIGHTMAP)
+                    .setOverlayState(OVERLAY)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false);
+            return create("kablade_jizo_soul_surface_" + tex,
+                    DefaultVertexFormat.NEW_ENTITY,
+                    VertexFormat.Mode.TRIANGLES, 65536, false, true, state);
+        });
+    }
+
+    /** Additive Fresnel rim rendered only on Jizo's already-resolved outer shell. */
+    public static RenderType jizoSoulGlow(ResourceLocation texture) {
+        return JIZO_SOUL_GLOW.computeIfAbsent(texture, tex -> {
+            CompositeState state = CompositeState.builder()
+                    .setShaderState(JIZO_SOUL_GLOW_SHADER)
+                    .setTextureState(new TextureStateShard(tex, false, false))
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(CULL)
+                    .setLightmapState(LIGHTMAP)
+                    .setOverlayState(OVERLAY)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false);
+            return create("kablade_jizo_soul_glow_" + tex,
+                    DefaultVertexFormat.NEW_ENTITY,
+                    VertexFormat.Mode.TRIANGLES, 65536, false, true, state);
+        });
     }
 }

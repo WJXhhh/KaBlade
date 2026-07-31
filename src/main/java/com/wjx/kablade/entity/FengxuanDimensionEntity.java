@@ -173,9 +173,10 @@ public final class FengxuanDimensionEntity extends Entity {
     private void pullTargets(LivingEntity source) {
         AABB box = pullBox();
         int processed = 0;
-        for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box,
-                target -> isValidTarget(source, target) && isInsidePullRange(target))) {
-            pullTowardCenter(target);
+        for (var selected : SaTargeting.targets(this.level(), source, box,
+                target -> isValidTarget(source, target.root())
+                        && isInsideRange(target.anchor(), PULL_RADIUS_XZ, PULL_RADIUS_Y))) {
+            pullTowardCenter(selected.root());
             if (++processed >= MAX_PULL_TARGETS) {
                 break;
             }
@@ -187,11 +188,14 @@ public final class FengxuanDimensionEntity extends Entity {
         DamageSource damageSource = this.level().damageSources().indirectMagic(this, source);
         float damage = Math.max(1.0F, this.getDamage());
         int processed = 0;
-        for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box,
-                target -> isValidTarget(source, target) && isInsideDamageRange(target))) {
+        for (var selected : SaTargeting.targets(this.level(), source, box,
+                target -> isValidTarget(source, target.root())
+                        && isInsideRange(target.anchor(), DAMAGE_RADIUS_XZ, DAMAGE_RADIUS_Y))) {
+            LivingEntity target = selected.root();
             target.invulnerableTime = 0;
             target.hurtTime = 0;
-            com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource, damage);
+            com.wjx.kablade.util.SaDamage.hurtNoIFrame(
+                    selected.hitEntity(), damageSource, damage);
             if (++processed >= MAX_DAMAGE_TARGETS) {
                 break;
             }
@@ -219,10 +223,15 @@ public final class FengxuanDimensionEntity extends Entity {
     }
 
     private boolean isInsideRange(LivingEntity target, double radiusXZ, double radiusY) {
-        double dx = target.getX() - this.getX();
-        double dz = target.getZ() - this.getZ();
+        return isInsideRange(target.position().add(0.0D, target.getBbHeight() * 0.52D, 0.0D),
+                radiusXZ, radiusY);
+    }
+
+    private boolean isInsideRange(Vec3 center, double radiusXZ, double radiusY) {
+        double dx = center.x - this.getX();
+        double dz = center.z - this.getZ();
         return dx * dx + dz * dz <= radiusXZ * radiusXZ
-                && Math.abs(target.getY() + target.getBbHeight() * 0.52D - this.getY()) <= radiusY;
+                && Math.abs(center.y - this.getY()) <= radiusY;
     }
 
     private void pullTowardCenter(LivingEntity target) {

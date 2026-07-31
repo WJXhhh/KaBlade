@@ -81,7 +81,7 @@ public class Turbulence extends SpecialEffect {
                 bolt.setVisualOnly(true);
                 bolt.setPos(target.getX(), target.getY(), target.getZ());
                 level.addFreshEntity(bolt);
-                target.hurt(level.damageSources().playerAttack(player),
+                com.wjx.kablade.util.SaDamage.hurt(target, level.damageSources().playerAttack(player),
                         dynamicDamage(player.getMainHandItem()));
                 target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                         PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));

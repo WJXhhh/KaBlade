@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -73,15 +74,18 @@ public final class CrimsonSakuraArts extends SlashArts {
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
 
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, scanBox,
-                target -> isAttackable(user, target) && intersectsLookLine(target, eye, end));
+        var targets = SaTargeting.targets(level, user, scanBox,
+                selected -> isAttackable(user, selected.root())
+                        && intersectsLookLine(selected.hitEntity(), eye, end));
         boolean damagedBlade = false;
-        for (LivingEntity target : targets) {
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
             if (user instanceof Player player) {
                 player.crit(target);
             }
             target.invulnerableTime = 0;
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, damage);
             target.setSecondsOnFire(4);
             if (!damagedBlade) {
                 blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
@@ -90,7 +94,7 @@ public final class CrimsonSakuraArts extends SlashArts {
         }
     }
 
-    private static boolean intersectsLookLine(LivingEntity target, Vec3 eye, Vec3 end) {
+    private static boolean intersectsLookLine(Entity target, Vec3 eye, Vec3 end) {
         AABB box = target.getBoundingBox().inflate(target.getPickRadius() + 0.75D);
         return box.contains(eye) || box.clip(eye, end).isPresent();
     }

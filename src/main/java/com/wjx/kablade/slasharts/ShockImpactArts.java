@@ -61,10 +61,10 @@ public final class ShockImpactArts extends SlashArts {
         AABB box = user.getBoundingBox()
                 .inflate(AOE_RADIUS, AOE_VERTICAL, AOE_RADIUS)
                 .move(user.getDeltaMovement().scale(0.5));
-        List<LivingEntity> enemies = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> SaTargeting.canDamageAttackable(user, e));
-        for (LivingEntity target : enemies) {
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, BASE_DAMAGE + extraDamage);
+        var enemies = SaTargeting.uniqueTargets(level, user, box);
+        for (var selected : enemies) {
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, BASE_DAMAGE + extraDamage);
         }
 
         user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,

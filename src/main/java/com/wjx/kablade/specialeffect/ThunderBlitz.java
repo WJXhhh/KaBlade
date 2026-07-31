@@ -47,10 +47,12 @@ public class ThunderBlitz extends SpecialEffect {
         AABB area = player.getBoundingBox()
                 .inflate(RADIUS, VERTICAL_RADIUS, RADIUS)
                 .move(player.getDeltaMovement());
-        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> SaTargeting.canDamage(player, target))) {
+        for (var selected : SaTargeting.targets(level, player, area,
+                target -> SaTargeting.canDamage(player, target.root()))) {
+            LivingEntity target = selected.root();
             if (target.getPersistentData().getInt(NARUKAMI_TAG) > 0 && level.getGameTime() % 10L == 0L) {
-                target.hurt(level.damageSources().playerAttack(player), TICK_DAMAGE);
+                com.wjx.kablade.util.SaDamage.hurt(
+                        selected.hitEntity(), level.damageSources().playerAttack(player), TICK_DAMAGE);
             }
         }
     }

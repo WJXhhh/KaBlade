@@ -96,8 +96,7 @@ public final class ChopWillowArts extends SlashArts {
         DamageSource src = user instanceof Player player
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> SaTargeting.canDamageAttackable(user, e));
+        var targets = SaTargeting.uniqueTargets(level, user, box);
 
         if (targets.isEmpty() && retry < MAX_RETRY) {
             // 鏈懡涓紝涓嬩竴 tick 閲嶈瘯
@@ -107,8 +106,9 @@ public final class ChopWillowArts extends SlashArts {
         }
 
         // 缁撶畻浼ゅ
-        for (LivingEntity target : targets) {
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+        for (var selected : targets) {
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, damage);
         }
         if (!targets.isEmpty()) {
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));

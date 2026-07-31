@@ -6,6 +6,7 @@ import com.wjx.kablade.network.KabladeNetwork;
 import com.wjx.kablade.network.MagChaosBladeFxPacket;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -126,10 +127,9 @@ public final class MagChaosBladeArts extends SlashArts {
         AABB box = user.getBoundingBox()
                 .expandTowards(look.scale(RANGE))
                 .inflate(3.0D, 1.0D, 3.0D);
-        List<LivingEntity> targets = level.getEntitiesOfClass(
-                LivingEntity.class, box, target -> isAttackable(user, target));
+        List<SaTarget> targets = SaTargeting.uniqueTargets(level, user, box, true);
         boolean hit = false;
-        for (LivingEntity target : targets) {
+        for (SaTarget target : targets) {
             hitTarget(level, user, target, damage);
             hit = true;
         }
@@ -143,22 +143,27 @@ public final class MagChaosBladeArts extends SlashArts {
         AABB scanBox = user.getBoundingBox()
                 .expandTowards(look.scale(RANGE))
                 .inflate(1.0D, 1.0D, 1.0D);
-        List<LivingEntity> targets = level.getEntitiesOfClass(
-                LivingEntity.class, scanBox, target -> isAttackable(user, target));
+        List<SaTarget> targets = SaTargeting.targets(level, user, scanBox, target -> {
+            if (!SaTargeting.canDamageAttackable(user, target.root())) {
+                return false;
+            }
+            AABB targetBox = target.hitEntity().getBoundingBox()
+                    .inflate(target.hitEntity().getPickRadius());
+            return targetBox.contains(eye) || targetBox.clip(eye, end).isPresent();
+        });
 
         boolean hit = false;
-        for (LivingEntity target : targets) {
-            AABB targetBox = target.getBoundingBox().inflate(target.getPickRadius());
-            if (!targetBox.contains(eye) && targetBox.clip(eye, end).isEmpty()) {
-                continue;
-            }
+        for (SaTarget target : targets) {
+            AABB targetBox = target.hitEntity().getBoundingBox()
+                    .inflate(target.hitEntity().getPickRadius());
             hitTarget(level, user, target, damage);
             hit = true;
         }
         return hit;
     }
 
-    private static void hitTarget(ServerLevel level, LivingEntity user, LivingEntity target, float damage) {
+    private static void hitTarget(ServerLevel level, LivingEntity user, SaTarget selected, float damage) {
+        LivingEntity target = selected.root();
         DamageSource source = user instanceof Player player
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
@@ -166,7 +171,8 @@ public final class MagChaosBladeArts extends SlashArts {
             player.crit(target);
         }
         target.invulnerableTime = 0;
-        com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+        com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                selected.hitEntity(), level, user, user, damage);
         target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                 PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
         level.sendParticles(ParticleTypes.ELECTRIC_SPARK,
@@ -176,7 +182,7 @@ public final class MagChaosBladeArts extends SlashArts {
     }
 
     private static boolean isAttackable(LivingEntity user, LivingEntity target) {
-        if (!target.isPickable() || !SaTargeting.canDamage(user, target)) {
+        if (!SaTargeting.canDamage(user, target)) {
             return false;
         }
         try {

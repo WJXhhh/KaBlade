@@ -219,6 +219,18 @@ public final class ModEntities {
                     .noSave()
                     .build("zaizan"));
 
+    /** Server timeline and grouped OBJ animation anchor for Soul Appearance. */
+    public static final RegistryObject<EntityType<JizoMitamaSoulEntity>> JIZO_MITAMA_SOUL = REGISTRY.register(
+            "jizo_mitama_soul",
+            () -> EntityType.Builder.<JizoMitamaSoulEntity>of(JizoMitamaSoulEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(18)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("jizo_mitama_soul"));
+
     public static final RegistryObject<EntityType<CrimsonSakuraAttackEntity>> CRIMSON_SAKURA = REGISTRY.register(
             "crimson_sakura",
             () -> EntityType.Builder.<CrimsonSakuraAttackEntity>of(CrimsonSakuraAttackEntity::new, MobCategory.MISC)

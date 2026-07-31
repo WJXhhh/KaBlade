@@ -6,6 +6,7 @@ import com.wjx.kablade.specialeffect.Oripursuit;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
@@ -74,14 +75,16 @@ public final class DomainSuppressionArts extends SlashArts {
                 .orElse(4.0F);
 
         // 射线锁定
-        LivingEntity target = raycastTarget(level, user);
-        if (target == null) {
+        SaTarget selected = raycastTarget(level, user);
+        if (selected == null) {
             return super.doArts(type, user);
         }
+        LivingEntity target = selected.root();
         if (user instanceof Player player) {
-            Oripursuit.lockTarget(player, target);
+            Oripursuit.lockTarget(player, selected);
         } else {
-            blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> state.setTargetEntityId(target));
+            blade.getCapability(ItemSlashBlade.BLADESTATE)
+                    .ifPresent(state -> state.setTargetEntityId(selected.hitEntity()));
         }
 
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, 3.0F);
@@ -90,11 +93,11 @@ public final class DomainSuppressionArts extends SlashArts {
         target.setDeltaMovement(target.getDeltaMovement().add(0, 0.5, 0));
         target.hurtMarked = true;
 
-        final double tx = target.getX();
-        final double tz = target.getZ();
-        final double groundY = target.getY() + 0.02;
-        final double midY = target.getY() + target.getEyeHeight();
-        final double topY = target.getY() + target.getEyeHeight() + 1.0;
+        final double tx = selected.anchor().x;
+        final double tz = selected.anchor().z;
+        final double groundY = selected.anchor().y;
+        final double midY = selected.anchor().y;
+        final double topY = selected.anchor().y + 1.0;
         final float outerDamage = OUTER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F);
         final float freeDamage = GROUND_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F);
 
@@ -295,42 +298,7 @@ public final class DomainSuppressionArts extends SlashArts {
      * 锁空时回退到 {@link SATool#getEntityToWatch}——取身前最近的可攻击实体，
      * 不要求准星正对，避免准星稍偏就完全锁不到导致 SA 看似“放不出来”。
      */
-    private LivingEntity raycastTarget(ServerLevel level, LivingEntity user) {
-        Vec3 eye = user.getEyePosition();
-        Vec3 look = user.getLookAngle();
-        Vec3 end = eye.add(look.scale(RAY_DISTANCE));
-
-        AABB scanBox = user.getBoundingBox()
-                .expandTowards(look.scale(RAY_DISTANCE))
-                .inflate(2.0);
-
-        List<LivingEntity> candidates = level.getEntitiesOfClass(
-                LivingEntity.class, scanBox, e -> e.isPickable() && SaTargeting.canDamage(user, e));
-
-        // 1) 精确射线优先：碰撞箱略放宽 0.3 增加容差。
-        LivingEntity closest = null;
-        double closestDist = RAY_DISTANCE;
-        for (LivingEntity candidate : candidates) {
-            AABB bb = candidate.getBoundingBox().inflate(candidate.getPickRadius() + 0.3);
-            var hit = bb.clip(eye, end);
-            if (bb.contains(eye)) {
-                return candidate;
-            } else if (hit.isPresent()) {
-                double dist = eye.distanceTo(hit.get());
-                if (dist < closestDist) {
-                    closest = candidate;
-                    closestDist = dist;
-                }
-            }
-        }
-        if (closest != null) {
-            return closest;
-        }
-
-        // 2) 回退：身前最近的可攻击实体（与 1.12.2 getEntityToWatch 一致）。
-        if (SATool.getEntityToWatch(user) instanceof LivingEntity watched) {
-            return watched;
-        }
-        return null;
+    private SaTarget raycastTarget(ServerLevel level, LivingEntity user) {
+        return SaTargeting.findInSight(user, RAY_DISTANCE, 0.35D).orElse(null);
     }
 }

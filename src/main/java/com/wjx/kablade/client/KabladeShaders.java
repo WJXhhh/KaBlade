@@ -3,6 +3,7 @@ package com.wjx.kablade.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.renderer.BloodfyreOculusPipeline;
+import com.wjx.kablade.client.renderer.JizoMitamaSoulOculusPipeline;
 import com.wjx.kablade.client.renderer.RaidenCycloneOculusPipeline;
 import com.wjx.kablade.client.renderer.ShockImpactOculusPipeline;
 import com.wjx.kablade.client.renderer.ThunderboltCallOculusPipeline;
@@ -27,6 +28,7 @@ public final class KabladeShaders {
     private static ShaderInstance utpalaAura;
     private static ShaderInstance swordEnlightenment;
     private static ShaderInstance conceptualMetaphor;
+    private static ShaderInstance jizoSoulGlow;
     private static ShaderInstance bloodfyreFrenzy;
     private static ShaderInstance bloodfyreRupture;
     private static ShaderInstance bloodfyreSmoke;
@@ -49,6 +51,7 @@ public final class KabladeShaders {
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
         BloodfyreOculusPipeline.invalidateResources();
+        JizoMitamaSoulOculusPipeline.invalidateResources();
         RaidenCycloneOculusPipeline.invalidateResources();
         ShockImpactOculusPipeline.invalidateResources();
         ThunderboltCallOculusPipeline.invalidateResources();
@@ -87,6 +90,11 @@ public final class KabladeShaders {
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "conceptual_metaphor"),
                         DefaultVertexFormat.POSITION_COLOR_TEX),
                 shader -> conceptualMetaphor = shader);
+        event.registerShader(new ShaderInstance(
+                        event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "jizo_soul_glow"),
+                        DefaultVertexFormat.NEW_ENTITY),
+                shader -> jizoSoulGlow = shader);
         event.registerShader(new ShaderInstance(
                         event.getResourceProvider(),
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "bloodfyre_frenzy"),
@@ -199,6 +207,10 @@ public final class KabladeShaders {
 
     public static ShaderInstance conceptualMetaphor() {
         return conceptualMetaphor;
+    }
+
+    public static ShaderInstance jizoSoulGlow() {
+        return jizoSoulGlow;
     }
 
     public static ShaderInstance bloodfyreFrenzy() {

@@ -2,6 +2,7 @@ package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -45,7 +46,7 @@ public class StarSwordEntity extends PhantomSwordExEntity {
      *
      * @param interval 蓄势悬停的延迟（tick），用于错峰连珠
      */
-    public static StarSwordEntity spawn(Level level, LivingEntity thrower, LivingEntity target,
+    public static StarSwordEntity spawn(Level level, LivingEntity thrower, Entity target,
                                         Vec3 pos, float damage, int color, int interval) {
         StarSwordEntity e = new StarSwordEntity(ModEntities.STAR_SWORD.get(), level);
         Vec3 dir = target.position().add(0.0, target.getBbHeight() * 0.5, 0.0).subtract(pos);
@@ -118,7 +119,7 @@ public class StarSwordEntity extends PhantomSwordExEntity {
             return;
         }
         Entity t = level().getEntity(id);
-        if (!(t instanceof LivingEntity living) || !living.isAlive()) {
+        if (t == null || !SaTargeting.canDamage(thrower, t)) {
             return;
         }
         faceEntity(this, t, TURN_RATE, TURN_RATE);
@@ -127,28 +128,30 @@ public class StarSwordEntity extends PhantomSwordExEntity {
 
     /** 只命中锁定目标，飞行途中不误扎别的实体。 */
     @Override
-    protected Optional<LivingEntity> findTarget() {
+    protected Optional<Entity> findTarget() {
         int id = getTargetEntityId();
         if (id == 0) {
             return Optional.empty();
         }
         Entity t = level().getEntity(id);
-        if (t instanceof LivingEntity living && SaTargeting.canDamage(thrower, living)
-                && !alreadyHit.contains(living.getUUID())
-                && getBoundingBox().inflate(HIT_REACH).intersects(living.getBoundingBox())) {
-            return Optional.of(living);
+        SaTarget target = SaTarget.of(t).orElse(null);
+        if (target != null && SaTargeting.canDamage(thrower, t)
+                && !alreadyHit.contains(target.damageGroup())
+                && getBoundingBox().inflate(HIT_REACH).intersects(t.getBoundingBox())) {
+            return Optional.of(t);
         }
         return Optional.empty();
     }
 
     /** 命中即一击爆散（不骑乘），32 把连珠各自留下一记金色爆闪。 */
     @Override
-    protected void onHitEntity(LivingEntity target) {
-        alreadyHit.add(target.getUUID());
-        target.invulnerableTime = 0;
+    protected void onHitEntity(Entity target) {
+        LivingEntity root = SaTarget.of(target).map(SaTarget::root).orElse(null);
+        if (root == null) return;
+        alreadyHit.add(root.getUUID());
         com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(), attackDamage);
-        target.hurtMarked = true;
-        hitBlade(target);
+        root.hurtMarked = true;
+        hitBlade(root);
 
         if (level() instanceof ServerLevel server) {
             server.sendParticles(ParticleTypes.CRIT, getX(), getY(), getZ(),

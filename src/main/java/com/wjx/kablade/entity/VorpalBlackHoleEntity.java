@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.entity.IShootable;
 import net.minecraft.core.particles.ParticleTypes;
@@ -206,12 +207,14 @@ public class VorpalBlackHoleEntity extends Entity {
 
     private void openingCut(ServerLevel level) {
         DamageSource source = damageSource(level);
-        for (LivingEntity target : targets(level, DAMAGE_RADIUS)) {
-            if (!this.openingHit.add(target.getUUID())) {
+        for (SaTarget selected : targets(level, DAMAGE_RADIUS)) {
+            LivingEntity target = selected.root();
+            if (!this.openingHit.add(selected.damageGroup())) {
                 continue;
             }
             target.invulnerableTime = 0;
-            if (com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, this, this.owner, this.getOpeningDamage())) {
+            if (com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, this.owner, this.getOpeningDamage())) {
                 Vec3 pull = this.position().subtract(target.position())
                         .multiply(0.08, 0.0, 0.08);
                 target.setDeltaMovement(pull.x, 0.28, pull.z);
@@ -227,9 +230,11 @@ public class VorpalBlackHoleEntity extends Entity {
 
     private void energyPulse(ServerLevel level, int pulseIndex) {
         DamageSource source = damageSource(level);
-        for (LivingEntity target : targets(level, DAMAGE_RADIUS * (0.88 + pulseIndex * 0.025))) {
+        for (SaTarget selected : targets(level, DAMAGE_RADIUS * (0.88 + pulseIndex * 0.025))) {
+            LivingEntity target = selected.root();
             target.invulnerableTime = 0;
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, this, this.owner, this.getPulseDamage());
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, this.owner, this.getPulseDamage());
             Vec3 toCenter = this.position().subtract(target.position());
             if (toCenter.lengthSqr() > 1.0E-5) {
                 Vec3 pull = toCenter.normalize().scale(0.16 + pulseIndex * 0.018);
@@ -243,16 +248,16 @@ public class VorpalBlackHoleEntity extends Entity {
                 0.85F, 0.72F + pulseIndex * 0.08F);
     }
 
-    private Iterable<LivingEntity> targets(ServerLevel level, double radius) {
+    private Iterable<SaTarget> targets(ServerLevel level, double radius) {
         AABB bounds = AABB.ofSize(this.position(),
                 radius * 2.0, DAMAGE_VERTICAL_RADIUS * 2.0, radius * 2.0);
         double radiusSq = radius * radius;
-        return level.getEntitiesOfClass(LivingEntity.class, bounds, target -> {
-            if (!canDamage(target)) {
+        return SaTargeting.targets(level, this.owner, bounds, target -> {
+            if (!canDamage(target.root())) {
                 return false;
             }
-            double dx = target.getX() - this.getX();
-            double dz = target.getZ() - this.getZ();
+            double dx = target.anchor().x - this.getX();
+            double dz = target.anchor().z - this.getZ();
             return dx * dx + dz * dz <= radiusSq;
         });
     }

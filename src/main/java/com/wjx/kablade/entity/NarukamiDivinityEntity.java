@@ -4,6 +4,7 @@ import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.slasharts.NarukamiDivinityTimeline;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -67,7 +68,7 @@ public final class NarukamiDivinityEntity extends Entity {
 
     private UUID ownerUuid;
     private LivingEntity owner;
-    private LivingEntity target;
+    private Entity target;
     private float totalDamage;
     private int nextHit;
     private boolean releasedActiveCaster;
@@ -84,7 +85,7 @@ public final class NarukamiDivinityEntity extends Entity {
     }
 
     public static NarukamiDivinityEntity spawn(ServerLevel level, LivingEntity owner,
-                                                LivingEntity target, Vec3 targetAnchor,
+                                                Entity target, Vec3 targetAnchor,
                                                 Vec3 initialForward, float totalDamage) {
         if (!ACTIVE_CASTERS.add(owner.getUUID())) {
             return null;
@@ -184,8 +185,8 @@ public final class NarukamiDivinityEntity extends Entity {
 
     public Vec3 getTargetAnchor(float partialTick) {
         Entity entity = this.level().getEntity(getTargetId());
-        if (entity instanceof LivingEntity living && living.isAlive()) {
-            return living.getPosition(partialTick).add(0.0D, living.getBbHeight() * 0.55D, 0.0D);
+        if (entity != null && entity.isAlive()) {
+            return SaTarget.center(entity.getBoundingBox());
         }
         return getStoredTargetAnchor();
     }
@@ -249,14 +250,14 @@ public final class NarukamiDivinityEntity extends Entity {
         return null;
     }
 
-    private LivingEntity resolveTarget() {
+    private Entity resolveTarget() {
         if (this.target != null && this.target.isAlive()) {
             return this.target;
         }
         Entity entity = this.level().getEntity(getTargetId());
-        if (entity instanceof LivingEntity living && living.isAlive()) {
-            this.target = living;
-            return living;
+        if (entity != null && entity.isAlive() && SaTarget.of(entity).isPresent()) {
+            this.target = entity;
+            return entity;
         }
         return null;
     }
@@ -265,7 +266,7 @@ public final class NarukamiDivinityEntity extends Entity {
         float damage = this.totalDamage * NarukamiDivinityTimeline.DAMAGE_WEIGHTS[hitIndex];
         Vec3 center;
         double radius;
-        List<LivingEntity> victims;
+        List<SaTarget> victims;
         if (hitIndex == 0) {
             center = getTargetAnchor(1.0F);
             radius = OPENING_RADIUS;
@@ -279,19 +280,24 @@ public final class NarukamiDivinityEntity extends Entity {
             radius = CAGE_RADIUS;
             victims = targetsAround(level, source, center, radius);
         }
-        LivingEntity primary = resolveTarget();
-        if (primary != null && SaTargeting.canDamageAttackable(source, primary)
-                && !victims.contains(primary)
-                && primary.getBoundingBox().getCenter().distanceToSqr(center)
+        SaTarget primary = SaTarget.of(resolveTarget()).orElse(null);
+        if (primary != null && SaTargeting.canDamageAttackable(source, primary.hitEntity())
+                && primary.distanceToSqr(center)
                 <= (radius + 1.25D) * (radius + 1.25D)) {
-            victims.add(primary);
+            // Always prefer the explicitly locked physical part. A multipart root may
+            // already be present through another head/body hit box in the AOE scan.
+            mergeTarget(victims, primary, true);
         }
 
-        for (LivingEntity victim : victims) {
-            if (!SaTargeting.canDamage(source, victim)
-                    || !SaDamage.hurtSlashArtNoIFrame(victim, level, this, source, damage)) {
+        boolean damagedAny = false;
+        for (SaTarget selected : victims) {
+            LivingEntity victim = selected.root();
+            if (!SaTargeting.canDamage(source, selected.hitEntity())
+                    || !SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, source, damage)) {
                 continue;
             }
+            damagedAny = true;
             Vec3 push = victim.position().subtract(source.position());
             if (push.lengthSqr() > 1.0E-6D) {
                 double strength = hitIndex == NarukamiDivinityTimeline.HIT_TICKS.length - 1
@@ -304,34 +310,43 @@ public final class NarukamiDivinityEntity extends Entity {
                 player.crit(victim);
             }
         }
-        playHitFx(level, center, hitIndex, !victims.isEmpty());
+        playHitFx(level, center, hitIndex, damagedAny);
     }
 
     /**
      * The two X hits retain their forward impact volume while the accompanying
      * character-centered ring supplies the enlarged circular AOE.
      */
-    private List<LivingEntity> crossAndRingTargets(ServerLevel level, LivingEntity source,
-                                                   Vec3 ringCenter) {
-        List<LivingEntity> victims = targetsAround(level, source, ringCenter, CROSS_RADIUS);
+    private List<SaTarget> crossAndRingTargets(ServerLevel level, LivingEntity source,
+                                               Vec3 ringCenter) {
+        List<SaTarget> victims = targetsAround(level, source, ringCenter, CROSS_RADIUS);
         Vec3 impactCenter = getTargetAnchor(1.0F);
-        for (LivingEntity candidate : targetsAround(
+        for (SaTarget candidate : targetsAround(
                 level, source, impactCenter, CROSS_IMPACT_RADIUS)) {
-            if (!victims.contains(candidate)) {
-                victims.add(candidate);
-            }
+            mergeTarget(victims, candidate, true);
         }
         return victims;
     }
 
-    private List<LivingEntity> targetsAround(ServerLevel level, LivingEntity source,
-                                              Vec3 center, double radius) {
+    private List<SaTarget> targetsAround(ServerLevel level, LivingEntity source,
+                                         Vec3 center, double radius) {
         AABB box = AABB.ofSize(center, radius * 2.0D, radius * 1.55D, radius * 2.0D);
-        return level.getEntitiesOfClass(LivingEntity.class, box, candidate ->
-                candidate.isPickable()
-                        && SaTargeting.canDamageAttackable(source, candidate)
-                        && candidate.getBoundingBox().getCenter().distanceToSqr(center)
-                        <= radius * radius);
+        List<SaTarget> targets = SaTargeting.uniqueTargets(level, source, box);
+        targets.removeIf(candidate -> candidate.distanceToSqr(center) > radius * radius);
+        return targets;
+    }
+
+    private static void mergeTarget(List<SaTarget> targets, SaTarget candidate,
+                                    boolean preferCandidate) {
+        for (int i = 0; i < targets.size(); i++) {
+            if (targets.get(i).damageGroup().equals(candidate.damageGroup())) {
+                if (preferCandidate) {
+                    targets.set(i, candidate);
+                }
+                return;
+            }
+        }
+        targets.add(candidate);
     }
 
     private void playTimelineSounds(ServerLevel level) {

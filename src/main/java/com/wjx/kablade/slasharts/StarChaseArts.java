@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.StarSwordEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -57,8 +58,8 @@ public final class StarChaseArts extends SlashArts {
         // 1.12.2: magicDamage = base/3 + amplifierCalc(base, 4)
         final float damage = bladeAttack / 3.0F + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO);
 
-        final LivingEntity target = resolveTarget(level, user);
-        if (target == null) {
+        final SaTarget selected = resolveTarget(level, user);
+        if (selected == null) {
             level.playSound(null, user.getX(), user.getY(), user.getZ(),
                     SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.8F, 1.6F);
             return super.doArts(type, user);
@@ -66,6 +67,7 @@ public final class StarChaseArts extends SlashArts {
 
         // ① 把目标挑飞——纯起手，不造成伤害（否则这一记 base/3+amplifierCalc(base,4) ≈ 20+ 会直接秒杀，
         //    怪在弹飞瞬间就死、根本等不到追星剑）。伤害全交给随后的 32 把幻影剑。
+        LivingEntity target = selected.root();
         target.setDeltaMovement(0.0, 1.5, 0.0);
         target.hasImpulse = true;
         target.hurtMarked = true;
@@ -73,7 +75,7 @@ public final class StarChaseArts extends SlashArts {
         target.invulnerableTime = 0;
         target.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100, 0));
 
-        Vec3 tc = target.position().add(0.0, target.getBbHeight() * 0.6, 0.0);
+        Vec3 tc = selected.anchor();
         for (int i = 0; i < 20; i++) {
             level.sendParticles(ParticleTypes.CRIT, tc.x, tc.y, tc.z, 1,
                     (rng.nextDouble() - 0.5), (rng.nextDouble() - 0.5), (rng.nextDouble() - 0.5), 0.5);
@@ -89,7 +91,7 @@ public final class StarChaseArts extends SlashArts {
                     tc.y + 6.0 + rng.nextDouble() * 4.0,         // 上方 6..10 格
                     tc.z + Math.sin(ang) * r);
             int interval = FIRST_DELAY + i * DELAY_STEP;
-            StarSwordEntity.spawn(level, user, target, spawn, damage, GOLD, interval);
+            StarSwordEntity.spawn(level, user, selected.hitEntity(), spawn, damage, GOLD, interval);
         }
 
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
@@ -98,29 +100,9 @@ public final class StarChaseArts extends SlashArts {
     }
 
     /** 锁定目标(TargetEntityId)优先；否则取准星前方最近的可攻击生物（复刻 1.12.2 getEntityToWatch）。 */
-    private static LivingEntity resolveTarget(ServerLevel level, LivingEntity user) {
-        int id = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                .map(ISlashBladeState::getTargetEntityId).orElse(0);
-        if (id != 0) {
-            Entity e = level.getEntity(id);
-            if (e instanceof LivingEntity le && le.isAlive() && le != user
-                    && le.distanceTo(user) < LOCK_RANGE) {
-                return le;
-            }
-        }
-        Vec3 look = user.getLookAngle();
-        AABB box = user.getBoundingBox().inflate(8.0)
-                .move(look.x * 3.0, user.getEyeHeight() + look.y * 3.0, look.z * 3.0);
-        LivingEntity best = null;
-        double bestDist = LOCK_RANGE;
-        for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> SaTargeting.canDamage(user, e))) {
-            double d = e.distanceTo(user);
-            if (d < bestDist) {
-                best = e;
-                bestDist = d;
-            }
-        }
-        return best;
+    private static SaTarget resolveTarget(ServerLevel level, LivingEntity user) {
+        Entity locked = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).resolve()
+                .map(state -> state.getTargetEntity(level)).orElse(null);
+        return SaTargeting.findTarget(user, locked, LOCK_RANGE).orElse(null);
     }
 }

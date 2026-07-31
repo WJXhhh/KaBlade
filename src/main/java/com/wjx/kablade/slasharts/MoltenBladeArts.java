@@ -130,12 +130,15 @@ public final class MoltenBladeArts extends SlashArts {
         DamageSource src = user instanceof Player player
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, sweep,
-                target -> isAttackable(user, target) && !state.hitTargets.contains(target.getUUID()));
+        var targets = SaTargeting.targets(level, user, sweep,
+                selected -> isAttackable(user, selected.root())
+                        && !state.hitTargets.contains(selected.damageGroup()));
 
-        for (LivingEntity target : targets) {
-            state.hitTargets.add(target.getUUID());
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, state.damage);
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
+            state.hitTargets.add(selected.damageGroup());
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, state.damage);
             target.setSecondsOnFire(FIRE_SECONDS);
             if (!state.bladeDamaged) {
                 user.getMainHandItem().hurtAndBreak(1, user,

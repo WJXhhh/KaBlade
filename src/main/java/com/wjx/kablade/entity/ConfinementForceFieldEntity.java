@@ -117,9 +117,11 @@ public class ConfinementForceFieldEntity extends Entity {
         AABB box = this.getBoundingBox()
                 .inflate(FIELD_RADIUS, 2.0, FIELD_RADIUS);
 
-        List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, box, this::canAffect);
+        var targets = SaTargeting.targets(serverLevel, this.owner, box,
+                selected -> canAffect(selected.root()));
 
-        for (LivingEntity target : targets) {
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
             // 禁锢标记：纯内部标记（隐藏粒子与图标），仅供 onLivingHurt 放大伤害用
             target.addEffect(new MobEffectInstance(ModMobEffects.CONFINEMENT.get(),
                     5, 0, false, false, false));
@@ -127,7 +129,8 @@ public class ConfinementForceFieldEntity extends Entity {
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
                     5, 3, false, true));
 
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, serverLevel, this, this.owner, FIELD_DAMAGE);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), serverLevel, this, this.owner, FIELD_DAMAGE);
         }
     }
 

@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -42,9 +43,10 @@ public final class AbsoluteZeroArts extends SlashArts {
 
         ServerLevel level = (ServerLevel) user.level();
         ItemStack blade = user.getMainHandItem();
-        LivingEntity target = SATool.getEntityInSight(user, RAY_DISTANCE);
+        SaTarget selected = SATool.getTargetInSight(user, RAY_DISTANCE).orElse(null);
 
-        if (target != null) {
+        if (selected != null) {
+            LivingEntity target = selected.root();
             if (user instanceof Player player) {
                 player.crit(target);
             }
@@ -60,7 +62,8 @@ public final class AbsoluteZeroArts extends SlashArts {
             target.invulnerableTime = 0;
             target.addEffect(new MobEffectInstance(ModMobEffects.FREEZE.get(),
                     FREEZE_DURATION, FREEZE_AMPLIFIER));
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, user, damage);
             target.setTicksFrozen(Math.max(target.getTicksFrozen(),
                     target.getTicksRequiredToFreeze() + FREEZE_DURATION));
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));

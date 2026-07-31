@@ -54,16 +54,17 @@ public final class ThunderEdgeArts extends SlashArts {
         AABB area = user.getBoundingBox()
                 .expandTowards(look.scale(RANGE))
                 .inflate(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> SaTargeting.canDamageAttackable(user, target));
+        var targets = SaTargeting.uniqueTargets(level, user, area);
 
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float damage = (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR)) * DAMAGE_MULTIPLIER;
 
-        for (LivingEntity target : targets) {
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, damage);
             target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                     PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
             target.getPersistentData().putInt(ThunderBlitz.NARUKAMI_TAG, NARUKAMI_DURATION);

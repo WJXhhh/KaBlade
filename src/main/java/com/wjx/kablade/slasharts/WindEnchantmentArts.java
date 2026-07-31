@@ -2,6 +2,7 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.WindEnchantmentEntity;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraft.core.particles.ParticleTypes;
@@ -60,30 +61,37 @@ public final class WindEnchantmentArts extends SlashArts {
                 .expandTowards(look.scale(RAY_DISTANCE))
                 .inflate(1.0);
 
-        List<LivingEntity> candidates = level.getEntitiesOfClass(
-                LivingEntity.class, scanBox,
-                e -> e != player && e.isAlive() && e.isPickable());
+        List<SaTarget> candidates = SaTargeting.targets(level, player, scanBox, candidate -> {
+            if (!SaTargeting.canDamageAttackable(player, candidate.root())) {
+                return false;
+            }
+            AABB bb = candidate.hitEntity().getBoundingBox()
+                    .inflate(candidate.hitEntity().getPickRadius());
+            return bb.contains(eye) || bb.clip(eye, end).isPresent();
+        });
 
-        LivingEntity target = null;
+        SaTarget selected = null;
         double closestDist = RAY_DISTANCE;
 
-        for (LivingEntity candidate : candidates) {
-            AABB bb = candidate.getBoundingBox().inflate(candidate.getPickRadius());
+        for (SaTarget candidate : candidates) {
+            AABB bb = candidate.hitEntity().getBoundingBox()
+                    .inflate(candidate.hitEntity().getPickRadius());
             var hitOpt = bb.clip(eye, end);
             if (bb.contains(eye)) {
-                target = candidate;
+                selected = candidate;
                 closestDist = 0;
                 break;
             } else if (hitOpt.isPresent()) {
                 double d = eye.distanceTo(hitOpt.get());
                 if (d < closestDist) {
-                    target = candidate;
+                    selected = candidate;
                     closestDist = d;
                 }
             }
         }
 
         // 2. 鏀诲嚮鐩爣
+        LivingEntity target = selected == null ? null : selected.root();
         if (target != null && !SaTargeting.canDamageAttackable(player, target)) {
             return super.doArts(type, user);
         }
@@ -91,7 +99,8 @@ public final class WindEnchantmentArts extends SlashArts {
             blade.getItem().hurtEnemy(blade, target, player);
             player.crit(target);
             // 绗簩娈碉細棰濆浼ゅ
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, player, EXTRA_DAMAGE);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, player, player, EXTRA_DAMAGE);
         }
 
         for (int i = 0; i < SMOKE_PARTICLES; i++) {

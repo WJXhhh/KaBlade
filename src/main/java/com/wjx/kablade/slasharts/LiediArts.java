@@ -1,5 +1,7 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.util.SaDamage;
+import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import mods.flammpfeil.slashblade.util.AttackManager;
@@ -9,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -48,9 +51,14 @@ public final class LiediArts extends SlashArts {
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
 
-        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, box,
-                target -> SaTargeting.canDamageAttackable(user, target))) {
-            AttackManager.doMeleeAttack(user, target, true, true);
+        for (SaTarget selected : SaTargeting.uniqueTargets(level, user, box)) {
+            LivingEntity target = selected.root();
+            if (selected.isMultipartPart()) {
+                SaDamage.hurtNoIFrame(selected.hitEntity(), source,
+                        (float) user.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            } else {
+                AttackManager.doMeleeAttack(user, target, true, true);
+            }
             if (user instanceof Player player) {
                 player.crit(target);
             }
@@ -58,7 +66,7 @@ public final class LiediArts extends SlashArts {
             target.hasImpulse = true;
             target.hurtMarked = true;
             target.invulnerableTime = 0;
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, EXTRA_DAMAGE);
+            SaDamage.hurtSlashArtNoIFrame(selected.hitEntity(), level, user, user, EXTRA_DAMAGE);
             target.invulnerableTime = 0;
         }
 

@@ -89,8 +89,10 @@ public class FreezeDomainEntity extends Entity {
         AABB box = new AABB(
                 this.getX() - RANGE_XZ, this.getY(), this.getZ() - RANGE_XZ,
                 this.getX() + RANGE_XZ, this.getY() + RANGE_UP, this.getZ() + RANGE_XZ);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box, this::canAffect);
-        for (LivingEntity target : targets) {
+        var targets = SaTargeting.targets(level, this.owner, box,
+                selected -> canAffect(selected.root()));
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
             target.getPersistentData().putInt(BOOSTER_TAG, BOOSTER_TICKS);
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
                     BOOSTER_TICKS, 3, false, true));

@@ -4,6 +4,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -75,7 +76,7 @@ public class DivinePenalty extends SpecialEffect {
                     level.addFreshEntity(bolt);
                     ACTIVE_COUNTER_DAMAGE.add(counterDamage);
                     try {
-                        attacker.hurt(level.damageSources().playerAttack(player),
+                        SaDamage.hurt(attacker, level.damageSources().playerAttack(player),
                                 counterDamage(player.getMainHandItem()));
                     } finally {
                         ACTIVE_COUNTER_DAMAGE.remove(counterDamage);

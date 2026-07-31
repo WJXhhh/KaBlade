@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.ButterflySwordEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -46,7 +47,7 @@ public final class PhantomButterflySArts extends SlashArts {
         final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F);
 
-        final LivingEntity target = resolveTarget(level, user);
+        final SaTarget target = resolveTarget(level, user);
 
         if (target == null) {
             // No target: scatter 12 phantom swords around the user.
@@ -76,17 +77,17 @@ public final class PhantomButterflySArts extends SlashArts {
                 float a = rng.nextFloat() * 100.0F;
                 float b = rng.nextFloat() * 40.0F;
                 float e = rng.nextFloat() * 100.0F;
-                double x = target.getX() + (50.0 - a) / 3.0;
-                double y = target.getY() + (20.0 - b) / 10.0 + 1.0 + user.getEyeHeight() / 2.0;
-                double z = target.getZ() + (50.0 - e) / 3.0;
-                float yaw = target.getYRot() + (float) (i * 7);
+                double x = target.anchor().x + (50.0 - a) / 3.0;
+                double y = target.anchor().y + (20.0 - b) / 10.0 + user.getEyeHeight() / 2.0;
+                double z = target.anchor().z + (50.0 - e) / 3.0;
+                float yaw = target.hitEntity().getYRot() + (float) (i * 7);
                 int interval = i + 1;
 
                 ButterflySwordEntity sword = ButterflySwordEntity.spawn(
                         level, user, new Vec3(x, y, z),
                         damage, WHITE, LIFETIME, interval, yaw, 0.0F);
                 sword.setRoll(0F);
-                sword.setTargetEntityId(target.getId());
+                sword.setTargetEntityId(target.hitEntity().getId());
                 sword.setLegacyDriveSpeed(1.0E-4F * a * i + 1.0E-4F);
             }
         }
@@ -108,29 +109,9 @@ public final class PhantomButterflySArts extends SlashArts {
     /**
      * Prefer SlashBlade's locked target, then fall back to a forward search.
      */
-    private static LivingEntity resolveTarget(ServerLevel level, LivingEntity user) {
-        int id = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                .map(ISlashBladeState::getTargetEntityId).orElse(0);
-        if (id != 0) {
-            Entity e = level.getEntity(id);
-            if (e instanceof LivingEntity le && le.isAlive() && le != user
-                    && le.distanceTo(user) < LOCK_RANGE) {
-                return le;
-            }
-        }
-        Vec3 look = user.getLookAngle();
-        AABB box = user.getBoundingBox().inflate(8.0)
-                .move(look.x * 3.0, user.getEyeHeight() + look.y * 3.0, look.z * 3.0);
-        LivingEntity best = null;
-        double bestDist = LOCK_RANGE;
-        for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> SaTargeting.canDamage(user, e))) {
-            double d = e.distanceTo(user);
-            if (d < bestDist) {
-                best = e;
-                bestDist = d;
-            }
-        }
-        return best;
+    private static SaTarget resolveTarget(ServerLevel level, LivingEntity user) {
+        Entity locked = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).resolve()
+                .map(state -> state.getTargetEntity(level)).orElse(null);
+        return SaTargeting.findTarget(user, locked, LOCK_RANGE).orElse(null);
     }
 }

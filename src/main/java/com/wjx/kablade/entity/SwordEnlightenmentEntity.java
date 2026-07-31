@@ -235,14 +235,16 @@ public class SwordEnlightenmentEntity extends Entity {
         AABB area = new AABB(
                 this.getX() - HIT_RADIUS, this.getY() - 0.65D, this.getZ() - HIT_RADIUS,
                 this.getX() + HIT_RADIUS, this.getY() + HIT_HEIGHT, this.getZ() + HIT_RADIUS);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> target != source && target.isPickable() && SaTargeting.canDamage(source, target));
+        var targets = SaTargeting.targets(level, source, area,
+                selected -> selected.root() != source
+                        && SaTargeting.canDamage(source, selected.root()));
         DamageSource damageSource = level.damageSources().indirectMagic(this, source);
         Vec3 forward = flatForward();
         Vec3 pullCenter = this.position().add(forward.scale(2.15D)).add(0.0D, 1.1D, 0.0D);
 
-        for (LivingEntity target : targets) {
-            Vec3 center = target.position().add(0.0D, target.getBbHeight() * 0.52D, 0.0D);
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
+            Vec3 center = selected.anchor();
             Vec3 rel = center.subtract(this.position().add(0.0D, 1.0D, 0.0D));
             double horizontal = Math.sqrt(rel.x * rel.x + rel.z * rel.z);
             double vertical = Math.abs(rel.y);
@@ -251,7 +253,8 @@ public class SwordEnlightenmentEntity extends Entity {
             }
 
             float falloff = (float) Mth.clamp(1.0D - horizontal / (HIT_RADIUS * 1.35D), 0.62D, 1.0D);
-            if (SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage * falloff)) {
+            if (SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, source, damage * falloff)) {
                 spawnHitFeedback(level, target, finisher);
                 target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                         PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));

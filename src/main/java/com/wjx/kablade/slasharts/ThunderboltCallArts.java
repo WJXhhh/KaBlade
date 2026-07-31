@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.ThunderboltCallEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -44,11 +45,11 @@ public final class ThunderboltCallArts extends SlashArts {
         }
 
         ItemStack blade = user.getMainHandItem();
-        LivingEntity target = resolveTarget(level, user, blade);
+        SaTarget target = resolveTarget(level, user, blade);
         Vec3 launchDirection = normalizedLook(user);
         Vec3 targetAnchor = target == null
                 ? user.getEyePosition().add(launchDirection.scale(VIRTUAL_TARGET_DISTANCE))
-                : target.position().add(0.0D, target.getBbHeight() * 0.58D, 0.0D);
+                : target.anchor();
 
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
@@ -56,7 +57,8 @@ public final class ThunderboltCallArts extends SlashArts {
         float totalDamage = (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
                 * DAMAGE_MULTIPLIER;
 
-        if (ThunderboltCallEntity.spawn(level, user, target, targetAnchor,
+        if (ThunderboltCallEntity.spawn(level, user,
+                target == null ? null : target.hitEntity(), targetAnchor,
                 launchDirection, totalDamage) == null) {
             return super.doArts(type, user);
         }
@@ -68,30 +70,10 @@ public final class ThunderboltCallArts extends SlashArts {
         return super.doArts(type, user);
     }
 
-    private static LivingEntity resolveTarget(ServerLevel level, LivingEntity user, ItemStack blade) {
+    private static SaTarget resolveTarget(ServerLevel level, LivingEntity user, ItemStack blade) {
         Entity locked = blade.getCapability(ItemSlashBlade.BLADESTATE).resolve()
                 .map(state -> state.getTargetEntity(level)).orElse(null);
-        if (locked instanceof LivingEntity living && validTarget(user, living)) {
-            return living;
-        }
-
-        Vec3 eye = user.getEyePosition();
-        Vec3 look = normalizedLook(user);
-        Vec3 end = eye.add(look.scale(TARGET_RANGE));
-        AABB rayArea = user.getBoundingBox().expandTowards(look.scale(TARGET_RANGE)).inflate(1.25D);
-        return level.getEntitiesOfClass(LivingEntity.class, rayArea,
-                        target -> validTarget(user, target)
-                                && target.getBoundingBox().inflate(target.getPickRadius() + 0.35D)
-                                .clip(eye, end).isPresent())
-                .stream()
-                .min(Comparator.comparingDouble(target -> target.distanceToSqr(user)))
-                .orElse(null);
-    }
-
-    private static boolean validTarget(LivingEntity user, LivingEntity target) {
-        return target.distanceToSqr(user) <= TARGET_RANGE * TARGET_RANGE
-                && target.isPickable()
-                && SaTargeting.canDamageAttackable(user, target);
+        return SaTargeting.findTarget(user, locked, TARGET_RANGE).orElse(null);
     }
 
     private static Vec3 normalizedLook(LivingEntity user) {

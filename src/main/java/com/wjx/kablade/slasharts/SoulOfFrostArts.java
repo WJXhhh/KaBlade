@@ -3,7 +3,9 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.PhantomSwordExEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
@@ -62,21 +64,27 @@ public final class SoulOfFrostArts extends SlashArts {
         scheduleSnowTrail(level, drive, SNOW_TRAIL_TICKS);
         SaFx.schedule(level, ACCELERATION_DELAY, () -> accelerateDrive(drive, look));
 
-        LivingEntity target = resolveTarget(level, user);
-        if (target != null) {
+        SaTarget selected = resolveTarget(level, user);
+        if (selected != null) {
+            LivingEntity target = selected.root();
             // Old AL_Xuepo applied a managed melee hit before spawning the tracking swords.
-            AttackManager.doMeleeAttack(user, target, true, true);
+            // Multipart bosses need that hit delivered through the selected physical part.
+            if (selected.isMultipartPart()) {
+                SaDamage.hurtSlashArtNoIFrame(selected.hitEntity(), level, user, user, damage);
+            } else {
+                AttackManager.doMeleeAttack(user, target, true, true);
+            }
             if (user instanceof Player player) {
                 player.crit(target);
             }
             blade.getCapability(ItemSlashBlade.BLADESTATE)
-                    .ifPresent(state -> state.setTargetEntityId(target));
+                    .ifPresent(state -> state.setTargetEntityId(selected.hitEntity()));
 
             target.setDeltaMovement(Vec3.ZERO);
             target.hurtMarked = true;
             target.hurtTime = 0;
             target.invulnerableTime = 0;
-            spawnPotionSwords(level, user, target, damage);
+            spawnPotionSwords(level, user, selected.hitEntity(), damage);
         }
 
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
@@ -85,25 +93,11 @@ public final class SoulOfFrostArts extends SlashArts {
         return super.doArts(type, user);
     }
 
-    private static LivingEntity resolveTarget(ServerLevel level, LivingEntity user) {
+    private static SaTarget resolveTarget(ServerLevel level, LivingEntity user) {
         Entity locked = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).resolve()
                 .map(state -> state.getTargetEntity(level))
                 .orElse(null);
-        if (locked instanceof LivingEntity living && isValidTarget(user, living)) {
-            return living;
-        }
-
-        Entity watched = SATool.getEntityToWatch(user);
-        if (watched instanceof LivingEntity living && isValidTarget(user, living)) {
-            return living;
-        }
-
-        return null;
-    }
-
-    private static boolean isValidTarget(LivingEntity user, LivingEntity target) {
-        return SaTargeting.canDamage(user, target)
-                && target.distanceToSqr(user) <= LOCK_RANGE * LOCK_RANGE;
+        return SaTargeting.findTarget(user, locked, LOCK_RANGE).orElse(null);
     }
 
     private static EntityDrive spawnSoulOfFrostDrive(ServerLevel level, LivingEntity user, Vec3 pos, Vec3 look, double damage) {
@@ -151,7 +145,7 @@ public final class SoulOfFrostArts extends SlashArts {
                 pos.x, pos.y, pos.z, SNOW_BURST_COUNT, 2.8D, 1.2D, 2.8D, 0.025D);
     }
 
-    private static void spawnPotionSwords(ServerLevel level, LivingEntity user, LivingEntity target, float damage) {
+    private static void spawnPotionSwords(ServerLevel level, LivingEntity user, Entity target, float damage) {
         for (int i = 0; i < 3; i++) {
             PhantomSwordExEntity sword = PhantomSwordExEntity.spawn(
                     level,

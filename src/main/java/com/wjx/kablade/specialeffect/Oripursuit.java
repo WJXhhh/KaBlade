@@ -6,6 +6,7 @@ import com.wjx.kablade.network.KabladeNetwork;
 import com.wjx.kablade.network.OripursuitLockPacket;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
@@ -78,7 +79,7 @@ public class Oripursuit extends SpecialEffect {
         ItemStack blade = player.getMainHandItem();
         if (!isOripursuitBlade(blade)) return;
 
-        LivingEntity target = raycastTarget((ServerLevel) user.level(), player);
+        SaTarget target = raycastTarget((ServerLevel) user.level(), player);
         if (target != null) {
             lockTarget(player, target);
         }
@@ -226,18 +227,22 @@ public class Oripursuit extends SpecialEffect {
     }
 
     public static void lockTarget(Player player, LivingEntity target) {
+        SaTarget.of(target).ifPresent(value -> lockTarget(player, value));
+    }
+
+    public static void lockTarget(Player player, SaTarget target) {
         CompoundTag persist = player.getPersistentData();
         CompoundTag playerData = persist.contains(Player.PERSISTED_NBT_TAG)
                 ? persist.getCompound(Player.PERSISTED_NBT_TAG) : new CompoundTag();
-        playerData.putString(LOCKED_UUID_KEY, target.getUUID().toString());
+        playerData.putString(LOCKED_UUID_KEY, target.root().getUUID().toString());
         playerData.putInt(LOCKED_TIMER_KEY, LOCK_DURATION);
         persist.put(Player.PERSISTED_NBT_TAG, playerData);
 
         player.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                .ifPresent(state -> state.setTargetEntityId(target));
+                .ifPresent(state -> state.setTargetEntityId(target.hitEntity()));
         if (player instanceof ServerPlayer serverPlayer) {
             KabladeNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer),
-                    new OripursuitLockPacket(target.getId()));
+                    new OripursuitLockPacket(target.hitEntity().getId()));
         }
     }
 
@@ -255,37 +260,7 @@ public class Oripursuit extends SpecialEffect {
         }
     }
 
-    private static LivingEntity raycastTarget(ServerLevel level, LivingEntity user) {
-        Vec3 eye = user.getEyePosition();
-        Vec3 look = user.getLookAngle();
-        Vec3 end = eye.add(look.scale(RAY_DISTANCE));
-
-        AABB scanBox = user.getBoundingBox()
-                .expandTowards(look.scale(RAY_DISTANCE))
-                .inflate(1.0);
-
-        List<LivingEntity> candidates = level.getEntitiesOfClass(
-                LivingEntity.class, scanBox, e -> e.isPickable() && SaTargeting.canDamage(user, e));
-
-        LivingEntity closest = null;
-        double closestDist = RAY_DISTANCE;
-
-        for (LivingEntity candidate : candidates) {
-            AABB bb = candidate.getBoundingBox().inflate(candidate.getPickRadius());
-            var hit = bb.clip(eye, end);
-            if (bb.contains(eye)) {
-                closest = candidate;
-                closestDist = 0;
-                break;
-            } else if (hit.isPresent()) {
-                double dist = eye.distanceTo(hit.get());
-                if (dist < closestDist) {
-                    closest = candidate;
-                    closestDist = dist;
-                }
-            }
-        }
-
-        return closest;
+    private static SaTarget raycastTarget(ServerLevel level, LivingEntity user) {
+        return SaTargeting.findInSight(user, RAY_DISTANCE, 0.0D).orElse(null);
     }
 }

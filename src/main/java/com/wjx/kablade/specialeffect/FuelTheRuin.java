@@ -158,11 +158,12 @@ public final class FuelTheRuin extends SpecialEffect {
         AABB area = new AABB(
                 player.getX() - RANGE, player.getY() - VERTICAL_BELOW, player.getZ() - RANGE,
                 player.getX() + RANGE, player.getY() + VERTICAL_ABOVE, player.getZ() + RANGE);
-        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area,
-                entity -> SaTargeting.canDamageAttackable(player, entity))) {
-            Vec3 offset = target.position().add(0.0D, target.getBbHeight() * 0.5D, 0.0D).subtract(origin);
+        for (var selected : SaTargeting.targets(level, player, area,
+                target -> SaTargeting.canDamageAttackable(player, target.root()))) {
+            Vec3 offset = selected.anchor().subtract(origin);
             if (offset.horizontalDistanceSqr() <= RANGE * RANGE) {
-                SaDamage.hurtNoIFrame(target, level.damageSources().playerAttack(player), damage);
+                SaDamage.hurtNoIFrame(
+                        selected.hitEntity(), level.damageSources().playerAttack(player), damage);
             }
         }
     }

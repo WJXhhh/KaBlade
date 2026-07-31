@@ -99,15 +99,17 @@ public class TunaEntity extends Entity {
     private void damageNearby(float damage) {
         ServerLevel level = (ServerLevel) this.level();
         AABB area = this.getBoundingBox().inflate(HIT_RANGE_XZ, HIT_RANGE_Y, HIT_RANGE_XZ);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area,
-                this::canHit);
+        var targets = SaTargeting.targets(level, this.owner, area,
+                selected -> canHit(selected.root()));
 
-        for (LivingEntity target : targets) {
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
             target.invulnerableTime = 0;
             if (this.owner instanceof Player player) {
                 player.crit(target);
             }
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, this, this.owner, damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, this.owner, damage);
             hurtBladeOnce();
         }
     }

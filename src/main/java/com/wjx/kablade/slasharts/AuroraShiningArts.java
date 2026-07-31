@@ -87,7 +87,8 @@ public final class AuroraShiningArts extends SlashArts {
         if (user instanceof Player player) {
             player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, NIGHT_VISION_DURATION, 0, false, false));
         }
-        for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+        for (var selected : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+            LivingEntity t = selected.root();
             t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));
         }
         auroraCharge(level, user, rng);
@@ -217,9 +218,11 @@ public final class AuroraShiningArts extends SlashArts {
                     0, (rng.nextDouble() - 0.5) * 0.6, (rng.nextDouble() - 0.5) * 0.6,
                     (rng.nextDouble() - 0.5) * 0.6, 1.0);
         }
-        for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+        for (var selected : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+            LivingEntity t = selected.root();
             if (!SaTargeting.canDamageAttackable(user, t)) continue;
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(t, level, user, bypassDamage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, bypassDamage);
             t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SLOW_DURATION, 1));
             t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));
         }

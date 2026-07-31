@@ -2,6 +2,7 @@ package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -133,7 +134,7 @@ public class PhantomSwordExEntity extends Entity {
         entityData.set(DATA_THROWER_ID, value == null ? 0 : value.getId());
     }
 
-    public void setTarget(LivingEntity target) {
+    public void setTarget(Entity target) {
         setTargetEntityId(target.getId());
     }
 
@@ -154,7 +155,7 @@ public class PhantomSwordExEntity extends Entity {
             if (mountedTarget != null) {
                 // 骑乘结束时对目标造成终结伤害
                 if (mountedTarget.isAlive()) {
-                    doFinalHit((LivingEntity) mountedTarget);
+                    doFinalHit(mountedTarget);
                 }
             }
             discard();
@@ -197,12 +198,13 @@ public class PhantomSwordExEntity extends Entity {
      * 命中目标时的回调 —— 子类可重写以改变行为（例如闪电剑生成闪电）。
      * 默认行为：附加推力 + 骑乘目标。
      */
-    protected void onHitEntity(LivingEntity target) {
-        target.invulnerableTime = 0;
+    protected void onHitEntity(Entity target) {
+        LivingEntity root = SaTarget.of(target).map(SaTarget::root).orElse(null);
+        if (root == null) return;
         com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(), attackDamage);
-        target.setDeltaMovement(0.0, 0.1, 0.0);
-        target.hurtMarked = true;
-        hitBlade(target);
+        root.setDeltaMovement(0.0, 0.1, 0.0);
+        root.hurtMarked = true;
+        hitBlade(root);
         mountEntity(target);
     }
 
@@ -274,27 +276,29 @@ public class PhantomSwordExEntity extends Entity {
     }
 
     /** 寻找可命中的目标。 */
-    protected Optional<LivingEntity> findTarget() {
+    protected Optional<Entity> findTarget() {
         double ambit = HIT_AMBIT;
         AABB bb = getBoundingBox().inflate(ambit);
-        List<LivingEntity> list = level().getEntitiesOfClass(LivingEntity.class, bb,
-                e -> SaTargeting.canDamage(thrower, e) && !alreadyHit.contains(e.getUUID()));
+        List<SaTarget> list = SaTargeting.uniqueTargets(level(), thrower, bb, false).stream()
+                .filter(target -> !alreadyHit.contains(target.damageGroup()))
+                .toList();
         // 优先命中锁定的目标
         int targetId = getTargetEntityId();
         if (targetId != 0) {
-            Entity locked = level().getEntity(targetId);
-            if (locked instanceof LivingEntity lt && list.contains(lt)) {
-                return Optional.of(lt);
+            for (SaTarget target : list) {
+                if (target.hitEntity().getId() == targetId || target.root().getId() == targetId) {
+                    return Optional.of(target.hitEntity());
+                }
             }
         }
         // 否则最近优先
         double closest = Double.MAX_VALUE;
-        LivingEntity result = null;
-        for (LivingEntity e : list) {
-            double d = distanceToSqr(e);
+        Entity result = null;
+        for (SaTarget target : list) {
+            double d = target.distanceToSqr(position());
             if (d < closest) {
                 closest = d;
-                result = e;
+                result = target.hitEntity();
             }
         }
         return Optional.ofNullable(result);
@@ -357,14 +361,14 @@ public class PhantomSwordExEntity extends Entity {
     }
 
     /** 骑乘结束时对目标造成终结伤害（默认每20 tick触发一次额外伤害）。 */
-    protected void doFinalHit(LivingEntity target) {
-        if (!SaTargeting.canDamage(thrower, target)) {
+    protected void doFinalHit(Entity target) {
+        SaTarget resolved = SaTarget.of(target).orElse(null);
+        if (resolved == null || !SaTargeting.canDamage(thrower, resolved.root())) {
             return;
         }
-        target.invulnerableTime = 0;
         com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
                 damageSource(), Math.max(attackDamage / 2.0F, 1.0F));
-        hitBlade(target);
+        hitBlade(resolved.root());
     }
 
     protected DamageSource damageSource() {

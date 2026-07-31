@@ -59,11 +59,12 @@ public final class FrostCometArts extends SlashArts {
         DamageSource src = user instanceof Player player
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> SaTargeting.canDamageAttackable(user, e));
+        var targets = SaTargeting.uniqueTargets(level, user, box);
 
-        for (LivingEntity target : targets) {
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, damage);
             // 鑴氫笅鏀炬诞鍐帮紙鐢?blockPosition 鍚戜笅鍙栨暣锛岃礋鍧愭爣涔熸纭級
             BlockPos feet = target.blockPosition();
             level.setBlock(feet, Blocks.PACKED_ICE.defaultBlockState(), 3);

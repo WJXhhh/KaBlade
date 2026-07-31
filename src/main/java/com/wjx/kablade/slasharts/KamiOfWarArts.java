@@ -146,9 +146,11 @@ public final class KamiOfWarArts extends SlashArts {
                 .inflate(RADIUS, VERTICAL_RADIUS, RADIUS)
                 .move(user.getDeltaMovement());
         ItemStack blade = user.getMainHandItem();
-        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> SaTargeting.canDamage(user, target))) {
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, BASE_DAMAGE + extraDamage);
+        for (var selected : SaTargeting.targets(level, user, area,
+                target -> SaTargeting.canDamage(user, target.root()))) {
+            LivingEntity target = selected.root();
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, BASE_DAMAGE + extraDamage);
             if (blade.getItem() instanceof ItemSlashBlade && user instanceof Player player) {
                 blade.hurtEnemy(target, player);
             }

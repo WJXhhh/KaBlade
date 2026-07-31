@@ -4,6 +4,7 @@ import com.wjx.kablade.entity.FrostBladeEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -62,10 +63,10 @@ public final class FrostBladeArts extends SlashArts {
                 .orElse(4.0F);
         float damage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR) * DAMAGE_MULTIPLIER;
 
-        LivingEntity target = findTarget(level, user, blade);
+        SaTarget target = findTarget(level, user, blade);
         Vec3 fallbackDirection = target == null
                 ? user.getLookAngle().normalize()
-                : target.position().add(0.0D, target.getBbHeight() * 0.52D, 0.0D)
+                : target.anchor()
                         .subtract(user.getEyePosition()).normalize();
 
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
@@ -73,7 +74,7 @@ public final class FrostBladeArts extends SlashArts {
 
         for (int i = 0; i < SWORD_COUNT; i++) {
             final int wave = i;
-            final LivingEntity lockedTarget = target;
+            final SaTarget lockedTarget = target;
             SaFx.schedule(level, WAVE_DELAYS[i], () -> {
                 if (!user.isAlive() || (lockedTarget != null && !lockedTarget.isAlive())) {
                     return;
@@ -85,7 +86,7 @@ public final class FrostBladeArts extends SlashArts {
         return super.doArts(type, user);
     }
 
-    private static void spawnWave(ServerLevel level, LivingEntity user, LivingEntity target,
+    private static void spawnWave(ServerLevel level, LivingEntity user, SaTarget target,
                                   Vec3 fallbackDirection, float damage, int wave) {
         // 出剑阵列只服从玩家朝向；锁定目标仅负责飞出后的追踪，不能反过来旋转玩家身边的阵列。
         Vec3 forward = SaFx.flatLook(user);
@@ -97,7 +98,7 @@ public final class FrostBladeArts extends SlashArts {
                 .add(0.0D, offset[2], 0.0D);
 
         boolean finisher = wave == SWORD_COUNT - 1;
-        FrostBladeEntity.spawn(level, user, target, spawn, fallbackDirection,
+        FrostBladeEntity.spawn(level, user, target == null ? null : target.hitEntity(), spawn, fallbackDirection,
                 damage, SWORD_COLOR, finisher);
 
         level.playSound(null, spawn.x, spawn.y, spawn.z,
@@ -105,28 +106,14 @@ public final class FrostBladeArts extends SlashArts {
                 finisher ? 0.78F : 0.48F, finisher ? 1.25F : 1.55F + wave * 0.025F);
     }
 
-    private static LivingEntity findTarget(ServerLevel level, LivingEntity user, ItemStack blade) {
+    private static SaTarget findTarget(ServerLevel level, LivingEntity user, ItemStack blade) {
         Entity locked = blade.getCapability(ItemSlashBlade.BLADESTATE).resolve()
                 .map(state -> state.getTargetEntity(level))
                 .orElse(null);
-        if (locked instanceof LivingEntity living
-                && SaTargeting.canDamage(user, living)
-                && living.distanceToSqr(user) <= SEEK_RANGE * SEEK_RANGE) {
-            return living;
-        }
-
-        Entity watched = SATool.getEntityToWatch(user);
-        if (watched instanceof LivingEntity living
-                && SaTargeting.canDamage(user, living)
-                && living.distanceToSqr(user) <= SEEK_RANGE * SEEK_RANGE) {
-            return living;
-        }
-
-        return level.getEntitiesOfClass(LivingEntity.class,
-                        user.getBoundingBox().inflate(12.0D),
-                        e -> SaTargeting.canDamage(user, e))
-                .stream()
-                .min(java.util.Comparator.comparingDouble(user::distanceToSqr))
-                .orElse(null);
+        SaTarget selected = SaTargeting.findTarget(user, locked, SEEK_RANGE).orElse(null);
+        if (selected != null) return selected;
+        return SaTargeting.uniqueTargets(level, user, user.getBoundingBox().inflate(12.0D), false)
+                .stream().min(java.util.Comparator.comparingDouble(
+                        target -> target.distanceToSqr(user.position()))).orElse(null);
     }
 }

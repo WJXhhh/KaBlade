@@ -69,18 +69,20 @@ public final class LightsOnStageArts extends SlashArts {
 
         AABB bounds = AABB.ofSize(origin.add(0.0, 1.0, 0.0),
                 RANGE * 2.0, VERTICAL_RANGE * 2.0, RANGE * 2.0);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, bounds, target -> {
-            if (!SaTargeting.canDamageAttackable(user, target)) {
+        var targets = SaTargeting.targets(level, user, bounds, selected -> {
+            if (!SaTargeting.canDamageAttackable(user, selected.root())) {
                 return false;
             }
-            double dx = target.getX() - origin.x;
-            double dz = target.getZ() - origin.z;
+            double dx = selected.anchor().x - origin.x;
+            double dz = selected.anchor().z - origin.z;
             return dx * dx + dz * dz <= RANGE * RANGE;
         });
 
         DamageSource source = level.damageSources().mobAttack(user);
-        for (LivingEntity target : targets) {
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, damage);
             target.knockback(0.55,
                     origin.x - target.getX(), origin.z - target.getZ());
             level.sendParticles(ParticleTypes.END_ROD,

@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 
 /** Damage helpers for Kablade SA/SE multi-hit timing. */
 public final class SaDamage {
@@ -20,10 +21,31 @@ public final class SaDamage {
     private SaDamage() {
     }
 
+    /** Multipart-aware damage that preserves vanilla invulnerability frames. */
+    public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
+        Entity physicalTarget = SaTargeting.damageEntity(target, damageOrigin(source, target));
+        return physicalTarget.hurt(source, amount);
+    }
+
+    /** Damage an already selected physical target without discarding its multipart part. */
+    public static boolean hurt(Entity target, DamageSource source, float amount) {
+        return SaTarget.of(target).isPresent() && target.hurt(source, amount);
+    }
+
     public static boolean hurtNoIFrame(LivingEntity target, DamageSource source, float amount) {
-        clearInvulnerability(target);
+        Entity physicalTarget = SaTargeting.damageEntity(target, damageOrigin(source, target));
+        return hurtNoIFrame(physicalTarget, source, amount);
+    }
+
+    /** Deliver damage through a multipart part while clearing i-frames on its living root. */
+    public static boolean hurtNoIFrame(Entity target, DamageSource source, float amount) {
+        LivingEntity root = SaTarget.of(target).map(SaTarget::root).orElse(null);
+        if (root == null) {
+            return false;
+        }
+        clearInvulnerability(root);
         boolean hurt = target.hurt(source, amount);
-        target.invulnerableTime = 0;
+        clearInvulnerability(root);
         return hurt;
     }
 
@@ -43,8 +65,25 @@ public final class SaDamage {
         return hurtNoIFrame(target, source, amount);
     }
 
+    public static boolean hurtSlashArtNoIFrame(Entity target, ServerLevel level,
+                                                Entity directEntity, LivingEntity owner, float amount) {
+        if (owner == null) {
+            return false;
+        }
+        DamageSource source = new DamageSource(
+                level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(SLASH_ART),
+                directEntity, owner);
+        return hurtNoIFrame(target, source, amount);
+    }
+
     /** Apply direct, owner-originated slash-art damage. */
     public static boolean hurtSlashArtNoIFrame(LivingEntity target, ServerLevel level,
+                                                LivingEntity owner, float amount) {
+        return hurtSlashArtNoIFrame(target, level, owner, owner, amount);
+    }
+
+    /** Apply direct owner-originated slash-art damage to an exact physical part. */
+    public static boolean hurtSlashArtNoIFrame(Entity target, ServerLevel level,
                                                 LivingEntity owner, float amount) {
         return hurtSlashArtNoIFrame(target, level, owner, owner, amount);
     }
@@ -52,5 +91,14 @@ public final class SaDamage {
     public static void clearInvulnerability(LivingEntity target) {
         target.hurtTime = 0;
         target.invulnerableTime = 0;
+    }
+
+    private static Vec3 damageOrigin(DamageSource source, Entity fallback) {
+        Entity direct = source.getDirectEntity();
+        if (direct != null) {
+            return direct.position();
+        }
+        Entity owner = source.getEntity();
+        return owner != null ? owner.position() : fallback.position();
     }
 }

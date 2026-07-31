@@ -89,10 +89,13 @@ public final class LaveDriveArts extends SlashArts {
 
         // AOE 鏂╁嚮
         AABB box = user.getBoundingBox().inflate(5.0, 0.25, 5.0);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> SaTargeting.canDamageAttackable(user, e) && !e.hasEffect(MobEffects.INVISIBILITY));
-        for (LivingEntity target : targets) {
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, baseAttack);
+        var targets = SaTargeting.targets(level, user, box,
+                selected -> SaTargeting.canDamageAttackable(user, selected.root())
+                        && !selected.root().hasEffect(MobEffects.INVISIBILITY));
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, baseAttack);
             target.invulnerableTime = 0;
             level.sendParticles(ParticleTypes.CRIT,
                     target.getX(), target.getY(0.5), target.getZ(),

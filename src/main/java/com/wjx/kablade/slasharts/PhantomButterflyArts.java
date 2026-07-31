@@ -4,6 +4,7 @@ import com.wjx.kablade.entity.ButterflySwordEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -44,7 +45,7 @@ public final class PhantomButterflyArts extends SlashArts {
         float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        LivingEntity target = resolveTarget(level, user);
+        SaTarget target = resolveTarget(level, user);
 
         if (target == null) {
             spawnAroundUser(level, user, bladeAttack);
@@ -81,7 +82,7 @@ public final class PhantomButterflyArts extends SlashArts {
     }
 
     private static void spawnAroundTarget(ServerLevel level, LivingEntity user,
-                                          LivingEntity target, float bladeAttack) {
+                                          SaTarget target, float bladeAttack) {
         float damage = ((bladeAttack + MathFunc.amplifierCalc(bladeAttack, 2.0F)) / 50.0F
                 + bladeAttack * 0.02F) * DAMAGE_MULTIPLIER;
 
@@ -89,42 +90,25 @@ public final class PhantomButterflyArts extends SlashArts {
             float a = level.random.nextFloat() * 100.0F;
             float b = level.random.nextFloat() * 40.0F;
             float e = level.random.nextFloat() * 100.0F;
-            double x = target.getX() + (50.0D - a) / 3.0D;
-            double y = target.getY() + (20.0D - b) / 10.0D + 1.0D + user.getEyeHeight() / 2.0D;
-            double z = target.getZ() + (50.0D - e) / 3.0D;
+            double x = target.anchor().x + (50.0D - a) / 3.0D;
+            double y = target.anchor().y + (20.0D - b) / 10.0D + user.getEyeHeight() / 2.0D;
+            double z = target.anchor().z + (50.0D - e) / 3.0D;
 
             ButterflySwordEntity sword = ButterflySwordEntity.spawn(
                     level, user, new Vec3(x, y, z),
-                    damage, WHITE, LIFETIME, i + 1, target.getYRot() + i * 7.0F, 0.0F);
+                    damage, WHITE, LIFETIME, i + 1, target.hitEntity().getYRot() + i * 7.0F, 0.0F);
             sword.setRoll(0.0F);
-            sword.setTargetEntityId(target.getId());
+            sword.setTargetEntityId(target.hitEntity().getId());
             sword.setLegacyDriveSpeed(1.0E-4F * a * i + 1.0E-4F);
         }
 
-        level.sendParticles(ParticleTypes.ENCHANT, target.getX(), target.getEyeY(), target.getZ(),
+        level.sendParticles(ParticleTypes.ENCHANT, target.anchor().x, target.anchor().y, target.anchor().z,
                 48, 2.0D, 1.4D, 2.0D, 0.22D);
     }
 
-    private static LivingEntity resolveTarget(ServerLevel level, LivingEntity user) {
-        int id = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                .map(ISlashBladeState::getTargetEntityId)
-                .orElse(0);
-        if (id != 0) {
-            Entity entity = level.getEntity(id);
-            if (entity instanceof LivingEntity living && isValidTarget(user, living)) {
-                return living;
-            }
-        }
-
-        Entity watched = SATool.getEntityToWatch(user);
-        if (watched instanceof LivingEntity living && isValidTarget(user, living)) {
-            return living;
-        }
-        return null;
-    }
-
-    private static boolean isValidTarget(LivingEntity user, LivingEntity target) {
-        return SaTargeting.canDamage(user, target)
-                && target.distanceToSqr(user) <= LOCK_RANGE * LOCK_RANGE;
+    private static SaTarget resolveTarget(ServerLevel level, LivingEntity user) {
+        Entity locked = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).resolve()
+                .map(state -> state.getTargetEntity(level)).orElse(null);
+        return SaTargeting.findTarget(user, locked, LOCK_RANGE).orElse(null);
     }
 }

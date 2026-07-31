@@ -10,6 +10,7 @@ import com.wjx.kablade.specialeffect.EMPulsar;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -76,11 +77,11 @@ public final class RaidenCycloneArts extends SlashArts {
 
         ServerLevel level = (ServerLevel) user.level();
         ItemStack blade = user.getMainHandItem();
-        LivingEntity target = resolveTarget(level, user, blade);
+        SaTarget target = resolveTarget(level, user, blade);
         Vec3 origin = user.position();
         Vec3 targetPoint = target == null
                 ? origin.add(SaFx.flatLook(user).scale(1.6D))
-                : target.position();
+                : target.anchor();
 
         double referenceAngle = Math.atan2(REFERENCE_START_Z, REFERENCE_START_X);
         double worldAngle = Math.atan2(origin.z - targetPoint.z, origin.x - targetPoint.x);
@@ -95,13 +96,15 @@ public final class RaidenCycloneArts extends SlashArts {
         long castId = NEXT_CAST_ID.getAndIncrement();
         long seed = level.random.nextLong() ^ user.getUUID().getMostSignificantBits() ^ castId;
         ActiveCast cast = new ActiveCast(castId, level.dimension(), user.getUUID(),
-                target == null ? null : target.getUUID(), now, level.getGameTime(), seed,
+                target == null ? null : target.root().getUUID(),
+                target == null ? -1 : target.hitEntity().getId(), now, level.getGameTime(), seed,
                 origin, targetPoint, targetPoint, basisRotation, totalDamage);
         ACTIVE.put(user.getUUID(), cast);
         EMPulsar.activate(user, blade);
 
         KabladeNetwork.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> user),
-                new RaidenCycloneFxPacket(castId, user.getId(), target == null ? -1 : target.getId(),
+                new RaidenCycloneFxPacket(castId, user.getId(),
+                        target == null ? -1 : target.hitEntity().getId(),
                         cast.startGameTime, seed,
                         origin.x, origin.y, origin.z,
                         targetPoint.x, targetPoint.y, targetPoint.z, basisRotation));
@@ -148,23 +151,24 @@ public final class RaidenCycloneArts extends SlashArts {
             releaseMagneticThrust(user, cast);
         }
 
-        LivingEntity target = null;
+        SaTarget target = null;
         if (cast.targetUuid != null) {
-            Entity targetEntity = level.getEntity(cast.targetUuid);
-            if (!(targetEntity instanceof LivingEntity living) || !living.isAlive()
-                    || !isAttackable(user, living)
-                    || living.position().distanceToSqr(cast.lastTargetPosition) > 144.0D) {
+            Entity targetEntity = level.getEntity(cast.targetId);
+            SaTarget resolved = SaTarget.of(targetEntity).orElse(null);
+            if (resolved == null || !resolved.root().getUUID().equals(cast.targetUuid)
+                    || !resolved.isAlive() || !SaTargeting.canDamageAttackable(user, targetEntity)
+                    || resolved.anchor().distanceToSqr(cast.lastTargetPosition) > 144.0D) {
                 releaseMagneticThrust(user, cast);
                 sendEnd(user, cast.castId, RaidenCycloneEndPacket.TARGET_LOST);
                 return true;
             }
-            target = living;
-            cast.lastTargetPosition = target.position();
+            target = resolved;
+            cast.lastTargetPosition = target.anchor();
         }
 
         float seconds = elapsedTicks / 20.0F;
         if (elapsedTicks <= MOVEMENT_END_TICK) {
-            applyMagneticThrust(level, user, target == null ? cast.virtualTarget : target.position(),
+            applyMagneticThrust(level, user, target == null ? cast.virtualTarget : target.anchor(),
                     cast.basisRotation, seconds);
         }
 
@@ -215,14 +219,14 @@ public final class RaidenCycloneArts extends SlashArts {
         cast.movementReleased = true;
     }
 
-    private static void resolveHit(ServerLevel level, LivingEntity user, LivingEntity primary,
+    private static void resolveHit(ServerLevel level, LivingEntity user, SaTarget primary,
                                    ActiveCast cast, int hitIndex) {
         boolean mainPhase = hitIndex >= 5;
         Vec3 center;
         double radius;
         if (mainPhase) {
-            if (user.distanceToSqr(primary) > MAIN_HIT_MAX_RANGE * MAIN_HIT_MAX_RANGE) return;
-            center = primary.position().add(0.0D, primary.getBbHeight() * 0.48D, 0.0D);
+            if (primary.distanceToSqr(user.position()) > MAIN_HIT_MAX_RANGE * MAIN_HIT_MAX_RANGE) return;
+            center = primary.anchor();
             radius = 4.5D;
         } else {
             center = user.position().add(0.0D, user.getBbHeight() * 0.48D, 0.0D);
@@ -231,13 +235,20 @@ public final class RaidenCycloneArts extends SlashArts {
 
         float damage = cast.totalDamage * RaidenCycloneTimeline.DAMAGE_WEIGHTS[hitIndex];
         AABB bounds = AABB.ofSize(center, radius * 2.0D, 6.0D, radius * 2.0D);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, bounds,
-                target -> isAttackable(user, target)
-                        && horizontalDistanceSqr(target.position(), center) <= radius * radius);
+        var targets = SaTargeting.targets(level, user, bounds,
+                selected -> isAttackable(user, selected.root())
+                        && horizontalDistanceSqr(selected.anchor(), center) <= radius * radius);
+        if (isAttackable(user, primary.root())
+                && horizontalDistanceSqr(primary.anchor(), center) <= radius * radius) {
+            targets.removeIf(selected -> selected.damageGroup().equals(primary.damageGroup()));
+            targets.add(primary);
+        }
         if (targets.isEmpty()) return;
 
-        for (LivingEntity target : targets) {
-            SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
+            SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, user, damage);
             target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                     PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
             if (user instanceof Player player) player.crit(target);
@@ -261,35 +272,13 @@ public final class RaidenCycloneArts extends SlashArts {
                 SoundSource.PLAYERS, mainPhase ? 0.72F : 0.52F, pitch);
     }
 
-    private static LivingEntity resolveTarget(ServerLevel level, LivingEntity user, ItemStack blade) {
+    private static SaTarget resolveTarget(ServerLevel level, LivingEntity user, ItemStack blade) {
         Entity locked = blade.getCapability(ItemSlashBlade.BLADESTATE).resolve()
                 .map(state -> state.getTargetEntity(level)).orElse(null);
-        if (locked instanceof LivingEntity living && isValidCandidate(user, living)) return living;
-
-        Vec3 eye = user.getEyePosition();
-        Vec3 end = eye.add(user.getLookAngle().scale(TARGET_RANGE));
-        LivingEntity crosshair = level.getEntitiesOfClass(LivingEntity.class,
-                        user.getBoundingBox().expandTowards(user.getLookAngle().scale(TARGET_RANGE)).inflate(1.0D),
-                        target -> isValidCandidate(user, target))
-                .stream()
-                .filter(target -> target.getBoundingBox().inflate(target.getPickRadius() + 0.25D)
-                        .clip(eye, end).isPresent())
-                .min(Comparator.comparingDouble(target -> target.distanceToSqr(user)))
-                .orElse(null);
-        if (crosshair != null) return crosshair;
-
-        return level.getEntitiesOfClass(LivingEntity.class, user.getBoundingBox().inflate(TARGET_RANGE),
-                        target -> isValidCandidate(user, target))
-                .stream().min(Comparator.comparingDouble(target -> target.distanceToSqr(user)))
-                .orElse(null);
-    }
-
-    private static boolean isValidCandidate(LivingEntity user, LivingEntity target) {
-        return target.distanceToSqr(user) <= TARGET_RANGE * TARGET_RANGE && isAttackable(user, target);
+        return SaTargeting.findTarget(user, locked, TARGET_RANGE).orElse(null);
     }
 
     private static boolean isAttackable(LivingEntity user, LivingEntity target) {
-        if (!target.isPickable()) return false;
         try {
             return SaTargeting.canDamageAttackable(user, target);
         } catch (NullPointerException ignored) {
@@ -319,6 +308,7 @@ public final class RaidenCycloneArts extends SlashArts {
         private final ResourceKey<Level> dimension;
         private final UUID ownerUuid;
         private final UUID targetUuid;
+        private final int targetId;
         private final long startServerTick;
         private final long startGameTime;
         private final long seed;
@@ -333,13 +323,14 @@ public final class RaidenCycloneArts extends SlashArts {
         private boolean movementReleased;
 
         private ActiveCast(long castId, ResourceKey<Level> dimension, UUID ownerUuid, UUID targetUuid,
-                           long startServerTick, long startGameTime, long seed, Vec3 origin,
+                           int targetId, long startServerTick, long startGameTime, long seed, Vec3 origin,
                            Vec3 virtualTarget, Vec3 lastTargetPosition, float basisRotation,
                            float totalDamage) {
             this.castId = castId;
             this.dimension = dimension;
             this.ownerUuid = ownerUuid;
             this.targetUuid = targetUuid;
+            this.targetId = targetId;
             this.startServerTick = startServerTick;
             this.startGameTime = startGameTime;
             this.seed = seed;

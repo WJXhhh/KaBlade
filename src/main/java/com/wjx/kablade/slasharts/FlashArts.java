@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -45,15 +46,16 @@ public final class FlashArts extends SlashArts {
                 .orElse(4.0F);
         float damage = (bladeAttack / 3.0F) * 2.0F + MathFunc.amplifierCalc(bladeAttack, 1.0F);
 
-        LivingEntity target = resolveTarget(level, user);
-        if (target == null) {
+        SaTarget selected = resolveTarget(level, user);
+        if (selected == null) {
             level.playSound(null, user.getX(), user.getY(), user.getZ(),
                     SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.8F, 1.6F);
             return super.doArts(type, user);
         }
 
-        prepareTarget(user, target);
-        scheduleFlashHits(level, user, target, damage);
+        LivingEntity target = selected.root();
+        prepareTarget(user, selected);
+        scheduleFlashHits(level, user, selected, damage);
 
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
                 SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, 1.15F, 1.45F);
@@ -63,7 +65,8 @@ public final class FlashArts extends SlashArts {
         return super.doArts(type, user);
     }
 
-    private static void prepareTarget(LivingEntity user, LivingEntity target) {
+    private static void prepareTarget(LivingEntity user, SaTarget selected) {
+        LivingEntity target = selected.root();
         if (user instanceof Player player) {
             player.crit(target);
         }
@@ -73,10 +76,10 @@ public final class FlashArts extends SlashArts {
         target.hurtTime = 0;
         target.invulnerableTime = 0;
         user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                .ifPresent(state -> state.setTargetEntityId(target));
+                .ifPresent(state -> state.setTargetEntityId(selected.hitEntity()));
     }
 
-    private static void scheduleFlashHits(ServerLevel level, LivingEntity user, LivingEntity target, float damage) {
+    private static void scheduleFlashHits(ServerLevel level, LivingEntity user, SaTarget target, float damage) {
         for (int i = 0; i < HIT_COUNT; i++) {
             int hitIndex = i;
             int delay = i / HITS_PER_TICK;
@@ -84,8 +87,9 @@ public final class FlashArts extends SlashArts {
         }
     }
 
-    private static void applyFlashHit(ServerLevel level, LivingEntity user, LivingEntity target,
+    private static void applyFlashHit(ServerLevel level, LivingEntity user, SaTarget selected,
                                       float damage, int hitIndex) {
+        LivingEntity target = selected.root();
         if (!user.isAlive() || !target.isAlive()) {
             return;
         }
@@ -94,7 +98,8 @@ public final class FlashArts extends SlashArts {
         target.hurtMarked = true;
         target.hurtTime = 0;
         target.invulnerableTime = 0;
-        com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+        com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                selected.hitEntity(), level, user, user, damage);
         target.invulnerableTime = 0;
 
         spawnSlashLine(level, target, hitIndex);
@@ -131,29 +136,11 @@ public final class FlashArts extends SlashArts {
                 1, 0.0D, 0.0D, 0.0D, 0.0D);
     }
 
-    private static LivingEntity resolveTarget(ServerLevel level, LivingEntity user) {
+    private static SaTarget resolveTarget(ServerLevel level, LivingEntity user) {
         Entity locked = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).resolve()
                 .map(state -> state.getTargetEntity(level))
                 .orElse(null);
-        if (locked instanceof LivingEntity living && isValidLockedTarget(user, living)) {
-            return living;
-        }
-
-        Entity watched = SATool.getEntityToWatch(user);
-        if (watched instanceof LivingEntity living && isValidWatchedTarget(user, living)) {
-            return living;
-        }
-
-        return null;
-    }
-
-    private static boolean isValidLockedTarget(LivingEntity user, LivingEntity target) {
-        return SaTargeting.canDamage(user, target)
-                && target.distanceToSqr(user) <= LOCKED_TARGET_RANGE * LOCKED_TARGET_RANGE;
-    }
-
-    private static boolean isValidWatchedTarget(LivingEntity user, LivingEntity target) {
-        return isValidLockedTarget(user, target)
-                && target.distanceToSqr(user) <= WATCH_TARGET_RANGE * WATCH_TARGET_RANGE;
+        return SaTargeting.findTarget(user, locked,
+                locked == null ? WATCH_TARGET_RANGE : LOCKED_TARGET_RANGE).orElse(null);
     }
 }

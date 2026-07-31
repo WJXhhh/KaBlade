@@ -2,6 +2,7 @@ package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -52,7 +53,7 @@ public class FrostBladeEntity extends PhantomSwordExEntity {
         super(type, level);
     }
 
-    public static FrostBladeEntity spawn(Level level, LivingEntity thrower, LivingEntity target,
+    public static FrostBladeEntity spawn(Level level, LivingEntity thrower, Entity target,
                                          Vec3 pos, Vec3 fallbackDirection, float damage,
                                          int color, boolean finisher) {
         FrostBladeEntity blade = new FrostBladeEntity(ModEntities.FROST_BLADE_EDGE.get(), level);
@@ -142,43 +143,43 @@ public class FrostBladeEntity extends PhantomSwordExEntity {
     }
 
     @Override
-    protected Optional<LivingEntity> findTarget() {
+    protected Optional<Entity> findTarget() {
         int targetId = getTargetEntityId();
         AABB hitBox = getBoundingBox().inflate(isFinisher() ? 1.25D : 0.95D);
 
         if (targetId != 0) {
             Entity target = level().getEntity(targetId);
-            if (target instanceof LivingEntity living
-                    && SaTargeting.canDamage(thrower, living)
-                    && hitBox.intersects(living.getBoundingBox())) {
-                return Optional.of(living);
+            if (target != null && SaTargeting.canDamage(thrower, target)
+                    && hitBox.intersects(target.getBoundingBox())) {
+                return Optional.of(target);
             }
             return Optional.empty();
         }
 
-        return level().getEntitiesOfClass(LivingEntity.class, hitBox,
-                        e -> SaTargeting.canDamage(thrower, e)
-                                && !alreadyHit.contains(e.getUUID()))
-                .stream()
+        return SaTargeting.uniqueTargets(level(), thrower, hitBox, false).stream()
+                .filter(target -> !alreadyHit.contains(target.damageGroup()))
+                .map(SaTarget::hitEntity)
                 .min(Comparator.comparingDouble(this::distanceToSqr));
     }
 
     @Override
-    protected void onHitEntity(LivingEntity target) {
+    protected void onHitEntity(Entity target) {
         if (isImpacting()) {
             return;
         }
 
-        alreadyHit.add(target.getUUID());
-        target.invulnerableTime = 0;
+        LivingEntity root = SaTarget.of(target).map(SaTarget::root).orElse(null);
+        if (root == null) return;
+        alreadyHit.add(root.getUUID());
         com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(), attackDamage);
-        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
+        root.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,
                 FROST_SLOW_DURATION, FROST_SLOW_AMPLIFIER));
-        target.setDeltaMovement(target.getDeltaMovement().scale(0.35D));
-        target.hurtMarked = true;
-        hitBlade(target);
+        root.setDeltaMovement(root.getDeltaMovement().scale(0.35D));
+        root.hurtMarked = true;
+        hitBlade(root);
 
-        setPos(target.getX(), target.getY() + target.getBbHeight() * 0.52D, target.getZ());
+        Vec3 impact = SaTarget.center(target.getBoundingBox());
+        setPos(impact.x, impact.y, impact.z);
         setDeltaMovement(Vec3.ZERO);
         setTargetEntityId(0);
         this.entityData.set(DATA_IMPACTING, true);

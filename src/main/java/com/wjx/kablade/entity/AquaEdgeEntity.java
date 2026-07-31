@@ -4,6 +4,8 @@ import com.wjx.kablade.init.ModEntities;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import com.wjx.kablade.util.SaTarget;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -39,13 +41,12 @@ public class AquaEdgeEntity extends ExSlashDriveEntity {
     }
 
     @Override
-    protected void onImpact(LivingEntity target) {
-        target.invulnerableTime = 0;
+    protected void onImpact(Entity target) {
         com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(), attackDamage);
-        if (target.isOnFire()) {
-            target.clearFire();
-        }
-        hitBlade(target);
+        SaTarget.of(target).map(SaTarget::root).ifPresent(root -> {
+            if (root.isOnFire()) root.clearFire();
+            hitBlade(root);
+        });
     }
 
     @Override

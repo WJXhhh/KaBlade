@@ -2,6 +2,7 @@ package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaDamage;
+import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -22,9 +23,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 /** Timeline, ownership and damage anchor for Bloodfyre Frenzy. */
@@ -39,7 +40,7 @@ public final class BloodfyreFrenzyEntity extends Entity {
     private static final double VERTICAL_BELOW = 1.25D;
     private static final double VERTICAL_ABOVE = 4.5D;
 
-    private final Set<UUID> burningTargets = new HashSet<>();
+    private final Map<UUID, Integer> burningTargets = new HashMap<>();
     private LivingEntity owner;
     private float baseDamage;
 
@@ -156,13 +157,15 @@ public final class BloodfyreFrenzyEntity extends Entity {
     private void hitSpin(ServerLevel level, LivingEntity source, double radius, float damage, double lift) {
         Vec3 origin = this.position().add(0.0D, 1.0D, 0.0D);
         DamageSource damageSource = level.damageSources().indirectMagic(this, source);
-        for (LivingEntity target : nearbyTargets(level, source)) {
-            Vec3 center = targetCenter(target);
+        for (SaTarget selected : nearbyTargets(level, source)) {
+            LivingEntity target = selected.root();
+            Vec3 center = selected.anchor();
             Vec3 offset = center.subtract(origin);
             if (Math.abs(offset.y) > 2.7D || offset.horizontalDistanceSqr() > radius * radius) {
                 continue;
             }
-            if (SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage)) {
+            if (SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, source, damage)) {
                 Vec3 pull = origin.subtract(center);
                 pull = pull.horizontalDistanceSqr() > 1.0E-5D
                         ? new Vec3(pull.x, 0.0D, pull.z).normalize().scale(0.10D)
@@ -179,8 +182,9 @@ public final class BloodfyreFrenzyEntity extends Entity {
         Vec3 right = new Vec3(-forward.z, 0.0D, forward.x);
         DamageSource damageSource = level.damageSources().indirectMagic(this, source);
 
-        for (LivingEntity target : nearbyTargets(level, source)) {
-            Vec3 center = targetCenter(target);
+        for (SaTarget selected : nearbyTargets(level, source)) {
+            LivingEntity target = selected.root();
+            Vec3 center = selected.anchor();
             Vec3 offset = center.subtract(origin);
             double ahead = offset.dot(forward);
             double side = Math.abs(offset.dot(right));
@@ -195,11 +199,12 @@ public final class BloodfyreFrenzyEntity extends Entity {
 
             float falloff = (float) Mth.clamp(1.0D - Math.max(0.0D, ahead - 2.0D) / 22.0D,
                     0.62D, 1.0D);
-            if (!SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage * falloff)) {
+            if (!SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, source, damage * falloff)) {
                 continue;
             }
 
-            this.burningTargets.add(target.getUUID());
+            this.burningTargets.put(selected.damageGroup(), selected.hitEntity().getId());
             double push = finisher ? 0.72D : 0.28D;
             double lift = finisher ? 0.24D : 0.12D;
             target.setDeltaMovement(target.getDeltaMovement().scale(finisher ? 0.38D : 0.55D)
@@ -210,29 +215,30 @@ public final class BloodfyreFrenzyEntity extends Entity {
 
     private void hitBurningTargets(ServerLevel level, LivingEntity source, float damage) {
         DamageSource damageSource = level.damageSources().indirectMagic(this, source);
-        this.burningTargets.removeIf(uuid -> {
-            Entity entity = level.getEntity(uuid);
-            if (!(entity instanceof LivingEntity target)
+        this.burningTargets.entrySet().removeIf(entry -> {
+            Entity entity = level.getEntity(entry.getKey());
+            Entity physical = level.getEntity(entry.getValue());
+            SaTarget selected = SaTarget.of(physical)
+                    .filter(value -> value.damageGroup().equals(entry.getKey()))
+                    .orElse(null);
+            if (!(entity instanceof LivingEntity target) || selected == null
                     || !target.isAlive()
                     || !SaTargeting.canDamage(source, target)
-                    || target.distanceToSqr(this) > SCAN_RADIUS * SCAN_RADIUS * 2.0D) {
+                    || selected.distanceToSqr(this.position()) > SCAN_RADIUS * SCAN_RADIUS * 2.0D) {
                 return true;
             }
-            SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage);
+            SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, source, damage);
             return false;
         });
     }
 
-    private List<LivingEntity> nearbyTargets(ServerLevel level, LivingEntity source) {
+    private List<SaTarget> nearbyTargets(ServerLevel level, LivingEntity source) {
         AABB area = new AABB(
                 this.getX() - SCAN_RADIUS, this.getY() - VERTICAL_BELOW, this.getZ() - SCAN_RADIUS,
                 this.getX() + SCAN_RADIUS, this.getY() + VERTICAL_ABOVE, this.getZ() + SCAN_RADIUS);
-        return level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> target.isPickable() && SaTargeting.canDamageAttackable(source, target));
-    }
-
-    private static Vec3 targetCenter(LivingEntity target) {
-        return target.position().add(0.0D, target.getBbHeight() * 0.52D, 0.0D);
+        return SaTargeting.targets(level, source, area,
+                target -> SaTargeting.canDamageAttackable(source, target.root()));
     }
 
     private Vec3 flatForward() {

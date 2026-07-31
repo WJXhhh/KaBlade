@@ -2,6 +2,7 @@ package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -42,7 +43,7 @@ import java.util.UUID;
  * 通用可变速驱动实体 —— 1.12.2 {@code ExSaEntityDrive / EntityDriveAdd} 的移植。
  * <p>
  * 特性：初速/变速时间/末速三段速度曲线、粒子样式、颜色、多段命中、自定义音效。
- * 子类重写 {@link #onImpact(LivingEntity)} 实现不同命中效果。
+ * 子类重写 {@link #onImpact(Entity)} 实现不同命中效果。
  */
 public class ExSlashDriveEntity extends Entity {
 
@@ -329,16 +330,15 @@ public class ExSlashDriveEntity extends Entity {
     protected void doHitDetection() {
         double ambit = 1.5;
         AABB bb = getBoundingBox().inflate(ambit);
-        java.util.List<LivingEntity> targets = level().getEntitiesOfClass(
-                LivingEntity.class, bb,
-                e -> SaTargeting.canDamage(thrower, e) && !alreadyHit.contains(e.getUUID()));
+        java.util.List<SaTarget> targets = SaTargeting.uniqueTargets(level(), thrower, bb, false)
+                .stream().filter(target -> !alreadyHit.contains(target.damageGroup())).toList();
 
-        for (LivingEntity target : targets) {
-            if (isMultiHit() || !alreadyHit.contains(target.getUUID())) {
+        for (SaTarget target : targets) {
+            if (isMultiHit() || !alreadyHit.contains(target.damageGroup())) {
                 if (!isMultiHit()) {
-                    alreadyHit.add(target.getUUID());
+                    alreadyHit.add(target.damageGroup());
                 }
-                onImpact(target);
+                onImpact(target.hitEntity());
             }
         }
     }
@@ -346,11 +346,10 @@ public class ExSlashDriveEntity extends Entity {
     /**
      * 命中回调 —— 子类重写以实现火焰/水流等特殊效果。
      */
-    protected void onImpact(LivingEntity target) {
+    protected void onImpact(Entity target) {
         if (!level().isClientSide()) {
-            target.invulnerableTime = 0;
             com.wjx.kablade.util.SaDamage.hurtNoIFrame(target, damageSource(), attackDamage);
-            hitBlade(target);
+            SaTarget.of(target).map(SaTarget::root).ifPresent(this::hitBlade);
         }
     }
 

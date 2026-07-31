@@ -121,10 +121,11 @@ public class AuroraVeilEntity extends Entity {
         AABB box = new AABB(this.getX() - hw, this.getY() - 0.5, this.getZ() - hw,
                 this.getX() + hw, this.getY() + h, this.getZ() + hw);
         DamageSource src = this.level().damageSources().indirectMagic(this, this.owner);
-        for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box,
-                e -> SaTargeting.canDamage(this.owner, e))) {
-            if (this.alreadyHit.add(target.getUUID())) {
-                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, (ServerLevel) this.level(), this, this.owner, this.damage);
+        for (var selected : SaTargeting.targets(this.level(), this.owner, box,
+                value -> SaTargeting.canDamage(this.owner, value.root()))) {
+            if (this.alreadyHit.add(selected.damageGroup())) {
+                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                        selected.hitEntity(), (ServerLevel) this.level(), this, this.owner, this.damage);
             }
         }
     }

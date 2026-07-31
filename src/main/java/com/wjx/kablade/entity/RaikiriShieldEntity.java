@@ -6,6 +6,7 @@ import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -132,15 +133,13 @@ public class RaikiriShieldEntity extends Entity {
         AABB box = this.getBoundingBox()
                 .inflate(CONTACT_RADIUS, 0.0, CONTACT_RADIUS);
         DamageSource src = this.level().damageSources().mobAttack(this.thrower);
-        for (Entity e : this.level().getEntities(this, box,
-                e -> e != this && e instanceof LivingEntity living
-                        && SaTargeting.canDamageAttackable(this.thrower, living))) {
-            if (e instanceof LivingEntity target) {
-                if (com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                        target, (ServerLevel) this.level(), this, this.thrower, contactDamage)) {
+        for (SaTarget selected : SaTargeting.uniqueTargets(
+                this.level(), this.thrower, box, true)) {
+            LivingEntity target = selected.root();
+            if (com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                        selected.hitEntity(), (ServerLevel) this.level(), this, this.thrower, contactDamage)) {
                     target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                             PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
-                }
             }
         }
     }

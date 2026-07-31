@@ -4,6 +4,8 @@ import com.wjx.kablade.init.ModEntities;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import com.wjx.kablade.util.SaTarget;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -76,11 +78,10 @@ public class LacerateDriveEntity extends ExSlashDriveEntity {
     }
 
     @Override
-    protected void onImpact(LivingEntity target) {
-        target.invulnerableTime = 0;
+    protected void onImpact(Entity target) {
         // indirectMagic 在 1.20.1 已是魔法伤害（不计算护甲），等价 1.12.2 防具穿透
         com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
                 damageSource(), Math.max(attackDamage, 1.0F));
-        hitBlade(target);
+        SaTarget.of(target).map(SaTarget::root).ifPresent(this::hitBlade);
     }
 }

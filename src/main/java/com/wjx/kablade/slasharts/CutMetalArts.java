@@ -64,22 +64,24 @@ public final class CutMetalArts extends SlashArts {
         AABB bb = user.getBoundingBox().inflate(RANGE_XZ, RANGE_Y, RANGE_XZ)
                 .move(user.getDeltaMovement());
         DamageSource src = user.level().damageSources().playerAttack((Player) user);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, bb,
-                e -> SaTargeting.canDamageAttackable(user, e));
+        var targets = SaTargeting.uniqueTargets(level, user, bb);
 
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
 
-        for (LivingEntity target : targets) {
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
             // 鏆村嚮鐗规晥
             target.level().playSound(null, target.getX(), target.getY(), target.getZ(),
                     SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, 1.0F, 1.0F);
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, BASE_DAMAGE + extraDamage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, BASE_DAMAGE + extraDamage);
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
 
             // 鎶ょ敳杩藉姞浼ゅ
             double armor = target.getAttribute(Attributes.ARMOR).getValue();
             if (armor > 0) {
-                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, (float) (armor * ARMOR_RATIO));
+                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                        selected.hitEntity(), level, user, (float) (armor * ARMOR_RATIO));
                 blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
             }
 

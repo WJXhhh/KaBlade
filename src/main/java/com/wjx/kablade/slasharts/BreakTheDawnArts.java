@@ -82,7 +82,8 @@ public final class BreakTheDawnArts extends SlashArts {
         if (user instanceof Player player) {
             player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, NIGHT_VISION_DURATION, 0, false, false));
         }
-        for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+        for (var selected : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+            LivingEntity t = selected.root();
             t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));
             t.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLIND_DURATION, 0));  // 鍒虹洰鏅ㄥ厜
         }
@@ -210,9 +211,11 @@ public final class BreakTheDawnArts extends SlashArts {
             level.sendParticles(ParticleTypes.END_ROD, burst.x, burst.y, burst.z,
                     0, Math.cos(a) * 0.5, 0.1, Math.sin(a) * 0.5, 1.0);
         }
-        for (LivingEntity t : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+        for (var selected : SaFx.forwardHostiles(level, user, FORWARD_RANGE)) {
+            LivingEntity t = selected.root();
             if (!SaTargeting.canDamageAttackable(user, t)) continue;
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(t, level, user, damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, damage);
             t.addEffect(new MobEffectInstance(MobEffects.GLOWING, GLOW_DURATION, 0));
         }
 

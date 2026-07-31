@@ -4,6 +4,7 @@ import com.wjx.kablade.entity.SwordEnlightenmentEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -57,17 +58,9 @@ public final class SwordEnlightenmentArts extends SlashArts {
         Entity locked = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).resolve()
                 .map(state -> state.getTargetEntity(level))
                 .orElse(null);
-        if (locked instanceof LivingEntity target
-                && SaTargeting.canDamage(user, target)
-                && target.distanceToSqr(user) <= LOCK_RANGE * LOCK_RANGE) {
-            return target.position();
-        }
-
-        LivingEntity inSight = SATool.getEntityInSight(user, SIGHT_RANGE);
-        if (inSight != null) {
-            return inSight.position();
-        }
-
-        return user.position();
+        return SaTargeting.findTarget(user, locked,
+                        locked == null ? SIGHT_RANGE : LOCK_RANGE)
+                .map(SaTarget::anchor)
+                .orElse(user.position());
     }
 }

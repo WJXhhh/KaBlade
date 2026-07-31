@@ -45,6 +45,7 @@ import com.wjx.kablade.slasharts.RandomSaArts;
 import com.wjx.kablade.slasharts.ShockImpactArts;
 import com.wjx.kablade.slasharts.SnowDanceArts;
 import com.wjx.kablade.slasharts.SoulOfFrostArts;
+import com.wjx.kablade.slasharts.SoulAppearanceArts;
 import com.wjx.kablade.slasharts.ThunderEdgeArts;
 import com.wjx.kablade.slasharts.ThunderboltCallArts;
 import com.wjx.kablade.slasharts.SwordEnlightenmentArts;
@@ -127,6 +128,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> ZAIZAN = REGISTRY.register(
             "zaizan",
             () -> new ZaizanArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> SOUL_APPEARANCE = REGISTRY.register(
+            "soul_appearance",
+            () -> new SoulAppearanceArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> FALLING_PETALS = REGISTRY.register(
             "falling_petals",

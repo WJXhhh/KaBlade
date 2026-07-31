@@ -245,19 +245,21 @@ public class UtpalaAuraEntity extends Entity {
         AABB area = new AABB(
                 this.getX() - VORTEX_RADIUS, this.getY() - 0.2D, this.getZ() - VORTEX_RADIUS,
                 this.getX() + VORTEX_RADIUS, this.getY() + VORTEX_HEIGHT, this.getZ() + VORTEX_RADIUS);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> SaTargeting.canDamage(source, target));
+        var targets = SaTargeting.targets(level, source, area,
+                selected -> SaTargeting.canDamage(source, selected.root()));
         DamageSource damageSource = level.damageSources().indirectMagic(this, source);
 
-        for (LivingEntity target : targets) {
-            double dx = target.getX() - this.getX();
-            double dz = target.getZ() - this.getZ();
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
+            double dx = selected.anchor().x - this.getX();
+            double dz = selected.anchor().z - this.getZ();
             double horizontal = Math.sqrt(dx * dx + dz * dz);
             if (horizontal > VORTEX_RADIUS) {
                 continue;
             }
 
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, this, source, this.baseDamage * 0.16F);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, source, this.baseDamage * 0.16F);
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 45, 2));
             Vec3 pull = new Vec3(this.getX() - target.getX(), 0.0D, this.getZ() - target.getZ());
             if (pull.lengthSqr() > 1.0E-6D) {
@@ -277,12 +279,13 @@ public class UtpalaAuraEntity extends Entity {
         AABB area = new AABB(
                 this.getX() - range, this.getY() - 1.0D, this.getZ() - range,
                 this.getX() + range, this.getY() + 4.0D, this.getZ() + range);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> SaTargeting.canDamage(source, target));
+        var targets = SaTargeting.targets(level, source, area,
+                selected -> SaTargeting.canDamage(source, selected.root()));
         DamageSource damageSource = level.damageSources().indirectMagic(this, source);
 
-        for (LivingEntity target : targets) {
-            Vec3 center = target.position().add(0.0D, target.getBbHeight() * 0.52D, 0.0D);
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
+            Vec3 center = selected.anchor();
             Vec3 rel = center.subtract(origin);
             double ahead = rel.dot(forward);
             double lateral = Math.abs(rel.dot(right));
@@ -291,7 +294,8 @@ public class UtpalaAuraEntity extends Entity {
                 continue;
             }
 
-            boolean hurt = com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage);
+            boolean hurt = com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, source, damage);
             if (hurt) {
                 spawnForwardHitFeedback(level, target, damage >= this.baseDamage);
             }

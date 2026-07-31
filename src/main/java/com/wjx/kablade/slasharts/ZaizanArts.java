@@ -2,6 +2,7 @@ package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.ZaizanEntity;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -90,17 +91,16 @@ public final class ZaizanArts extends SlashArts {
                 .inflate(AOE_RADIUS, 1.0, AOE_RADIUS)
                 .expandTowards(look.scale(AOE_FRONT_EXTENSION))
                 .move(user.getDeltaMovement());
-        List<Entity> entities = level.getEntities(user, box,
-                e -> e instanceof LivingEntity living
-                        && SaTargeting.canDamageAttackable(user, living));
+        List<SaTarget> targets = SaTargeting.uniqueTargets(level, user, box);
 
-        for (Entity entity : entities) {
-            LivingEntity target = (LivingEntity) entity;
+        for (SaTarget selected : targets) {
+            LivingEntity target = selected.root();
             if (target instanceof Player) {
                 target.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,
                         100, STRENGTH_AMPLIFIER, false, true));
             } else {
-                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, BASE_DAMAGE + extraDamage);
+                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                        selected.hitEntity(), level, user, user, BASE_DAMAGE + extraDamage);
             }
         }
     }

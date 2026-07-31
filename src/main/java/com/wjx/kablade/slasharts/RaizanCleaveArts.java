@@ -3,6 +3,7 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.RaizanCleaveEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -46,15 +47,15 @@ public final class RaizanCleaveArts extends SlashArts {
         }
 
         ItemStack blade = user.getMainHandItem();
-        LivingEntity target = resolveTarget(level, user, blade);
+        SaTarget target = resolveTarget(level, user, blade);
         Vec3 origin = user.position();
         Vec3 flatForward = target == null
                 ? flatLook(user)
-                : flatten(target.position().subtract(origin), flatLook(user));
+                : flatten(target.anchor().subtract(origin), flatLook(user));
         Vec3 targetAnchor = target == null
                 ? origin.add(flatForward.scale(VIRTUAL_TARGET_DISTANCE))
                         .add(0.0D, user.getBbHeight() * 0.52D, 0.0D)
-                : target.position().add(0.0D, target.getBbHeight() * 0.52D, 0.0D);
+                : target.anchor();
         float yaw = (float) (Mth.atan2(-flatForward.x, flatForward.z) * Mth.RAD_TO_DEG);
 
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
@@ -74,30 +75,10 @@ public final class RaizanCleaveArts extends SlashArts {
         return super.doArts(type, user);
     }
 
-    private static LivingEntity resolveTarget(ServerLevel level, LivingEntity user, ItemStack blade) {
+    private static SaTarget resolveTarget(ServerLevel level, LivingEntity user, ItemStack blade) {
         Entity locked = blade.getCapability(ItemSlashBlade.BLADESTATE).resolve()
                 .map(state -> state.getTargetEntity(level)).orElse(null);
-        if (locked instanceof LivingEntity living && validTarget(user, living)) {
-            return living;
-        }
-
-        Vec3 eye = user.getEyePosition();
-        Vec3 look = user.getLookAngle();
-        Vec3 end = eye.add(look.scale(TARGET_RANGE));
-        AABB rayArea = user.getBoundingBox().expandTowards(look.scale(TARGET_RANGE)).inflate(1.0D);
-        return level.getEntitiesOfClass(LivingEntity.class, rayArea,
-                        target -> validTarget(user, target)
-                                && target.getBoundingBox().inflate(target.getPickRadius() + 0.25D)
-                                .clip(eye, end).isPresent())
-                .stream()
-                .min(Comparator.comparingDouble(target -> target.distanceToSqr(user)))
-                .orElse(null);
-    }
-
-    private static boolean validTarget(LivingEntity user, LivingEntity target) {
-        return target.distanceToSqr(user) <= TARGET_RANGE * TARGET_RANGE
-                && target.isPickable()
-                && SaTargeting.canDamageAttackable(user, target);
+        return SaTargeting.findTarget(user, locked, TARGET_RANGE).orElse(null);
     }
 
     private static Vec3 flatLook(LivingEntity user) {

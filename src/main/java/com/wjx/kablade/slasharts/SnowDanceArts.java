@@ -56,10 +56,11 @@ public final class SnowDanceArts extends SlashArts {
         AABB box = new AABB(
                 user.getX() - DOMAIN_RANGE_XZ, user.getY(), user.getZ() - DOMAIN_RANGE_XZ,
                 user.getX() + DOMAIN_RANGE_XZ, user.getY() + DOMAIN_RANGE_UP, user.getZ() + DOMAIN_RANGE_XZ);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                target -> SaTargeting.canDamage(user, target));
+        var targets = SaTargeting.targets(level, user, box,
+                selected -> SaTargeting.canDamage(user, selected.root()));
 
-        for (LivingEntity target : targets) {
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
             target.addEffect(new MobEffectInstance(ModMobEffects.FREEZE.get(),
                     DOMAIN_FREEZE_DURATION, DOMAIN_FREEZE_AMPLIFIER));
             target.setTicksFrozen(Math.max(target.getTicksFrozen(),
@@ -79,15 +80,17 @@ public final class SnowDanceArts extends SlashArts {
         AABB box = user.getBoundingBox()
                 .inflate(AREA_RANGE, AREA_RANGE, AREA_RANGE)
                 .move(user.getDeltaMovement());
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                target -> SaTargeting.canDamage(user, target));
+        var targets = SaTargeting.targets(level, user, box,
+                selected -> SaTargeting.canDamage(user, selected.root()));
 
-        for (LivingEntity target : targets) {
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
             if (user instanceof Player player) {
                 player.crit(target);
             }
             target.invulnerableTime = 0;
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, damage);
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
         }
     }

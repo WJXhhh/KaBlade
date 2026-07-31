@@ -92,11 +92,12 @@ public class GlacialBane extends SpecialEffect {
         AABB box = player.getBoundingBox()
                 .inflate(RANGE, RANGE, RANGE)
                 .move(player.getDeltaMovement());
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                target -> SaTargeting.canDamage(player, target));
+        var targets = SaTargeting.targets(level, player, box,
+                selected -> SaTargeting.canDamage(player, selected.root()));
 
-        for (LivingEntity target : targets) {
-            target.hurt(level.damageSources().playerAttack(player), damage);
+        for (var selected : targets) {
+            com.wjx.kablade.util.SaDamage.hurt(
+                    selected.hitEntity(), level.damageSources().playerAttack(player), damage);
         }
     }
 

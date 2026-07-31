@@ -5,6 +5,7 @@ import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
 import com.wjx.kablade.init.ModComboStates;
+import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.util.AttackHelper;
 import mods.flammpfeil.slashblade.util.AttackManager;
@@ -125,17 +126,17 @@ final class SaFx {
     }
 
     /** 玩家<b>前方</b>（水平半圆内）且 {@code range} 格内的敌对生物；贴身 2 格内一律算命中。用于「向前攻击」的范围结算。 */
-    static List<LivingEntity> forwardHostiles(ServerLevel level, LivingEntity user, double range) {
+    static List<SaTarget> forwardHostiles(ServerLevel level, LivingEntity user, double range) {
         Vec3 flat = flatLook(user);
         double ox = user.getX();
         double oz = user.getZ();
         AABB box = user.getBoundingBox().inflate(range);
-        return level.getEntitiesOfClass(LivingEntity.class, box, e -> {
-            if (!SaTargeting.canDamage(user, e)) {
+        return SaTargeting.targets(level, user, box, selected -> {
+            if (!SaTargeting.canDamage(user, selected.root())) {
                 return false;
             }
-            double dx = e.getX() - ox;
-            double dz = e.getZ() - oz;
+            double dx = selected.anchor().x - ox;
+            double dz = selected.anchor().z - oz;
             double hl = Math.sqrt(dx * dx + dz * dz);
             if (hl > range) {
                 return false;

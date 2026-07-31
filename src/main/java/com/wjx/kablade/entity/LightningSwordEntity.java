@@ -2,6 +2,8 @@ package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
  * 闪电剑实体 —— 1.12.2 {@code EntityLightningSword} 的移植。
  * <p>
  * 命中时在目标位置生成一道真实闪电（包含伤害与点燃），然后自身消失。
- * 继承自 {@link PhantomSwordExEntity}，但重写 {@link #onHitEntity(LivingEntity)}
+ * 继承自 {@link PhantomSwordExEntity}，但重写 {@link #onHitEntity(Entity)}
  * 以产生闪电而非骑乘目标。
  */
 public class LightningSwordEntity extends PhantomSwordExEntity {
@@ -46,7 +48,7 @@ public class LightningSwordEntity extends PhantomSwordExEntity {
     }
 
     @Override
-    protected void onHitEntity(LivingEntity target) {
+    protected void onHitEntity(Entity target) {
         if (!SaTargeting.canDamage(thrower, target)) {
             discard();
             return;
@@ -59,10 +61,9 @@ public class LightningSwordEntity extends PhantomSwordExEntity {
                 bolt.setVisualOnly(true);
                 level().addFreshEntity(bolt);
             }
-            target.invulnerableTime = 0;
             com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
                     damageSource(), Math.max(attackDamage, 1.0F));
-            target.setRemainingFireTicks(100);
+            SaTarget.of(target).map(SaTarget::root).ifPresent(root -> root.setRemainingFireTicks(100));
         }
         discard();
     }

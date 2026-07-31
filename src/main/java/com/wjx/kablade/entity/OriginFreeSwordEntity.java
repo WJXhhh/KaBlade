@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
+import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
@@ -157,14 +158,20 @@ public class OriginFreeSwordEntity extends Entity {
         }
     }
 
-    private Optional<LivingEntity> findHit(Vec3 from, Vec3 to) {
+    private Optional<SaTarget> findHit(Vec3 from, Vec3 to) {
         AABB box = new AABB(
                 Math.min(from.x, to.x), Math.min(from.y, to.y), Math.min(from.z, to.z),
                 Math.max(from.x, to.x), Math.max(from.y, to.y), Math.max(from.z, to.z)).inflate(0.75);
-        LivingEntity closest = null;
+        SaTarget closest = null;
         double closestDist = Double.MAX_VALUE;
-        for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box, this::canHit)) {
-            AABB targetBox = target.getBoundingBox().inflate(0.35);
+        for (SaTarget target : SaTargeting.targets(this.level(), this.owner, box, selected -> {
+            if (!canHit(selected.root())) {
+                return false;
+            }
+            AABB targetBox = selected.hitEntity().getBoundingBox().inflate(0.35);
+            return targetBox.contains(from) || targetBox.clip(from, to).isPresent();
+        })) {
+            AABB targetBox = target.hitEntity().getBoundingBox().inflate(0.35);
             Optional<Vec3> clip = targetBox.clip(from, to);
             double dist = clip.map(from::distanceTo).orElseGet(() -> targetBox.contains(from) ? 0.0 : Double.MAX_VALUE);
             if (dist < closestDist) {
@@ -180,11 +187,11 @@ public class OriginFreeSwordEntity extends Entity {
                 && !this.alreadyHit.contains(target.getUUID());
     }
 
-    private void hitTarget(LivingEntity target) {
-        this.alreadyHit.add(target.getUUID());
-        target.invulnerableTime = 0;
+    private void hitTarget(SaTarget selected) {
+        LivingEntity target = selected.root();
+        this.alreadyHit.add(selected.damageGroup());
         Entity source = this.owner == null ? this : this.owner;
-        com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+        com.wjx.kablade.util.SaDamage.hurtNoIFrame(selected.hitEntity(),
                 this.level().damageSources().indirectMagic(this, source), this.damage);
         target.setDeltaMovement(0.0, 0.1, 0.0);
         target.hurtMarked = true;
@@ -206,9 +213,12 @@ public class OriginFreeSwordEntity extends Entity {
         if (!this.level().isClientSide()) {
             AABB box = this.getBoundingBox().inflate(1.15);
             Entity source = this.owner == null ? this : this.owner;
-            for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, box, this::canHit)) {
-                target.invulnerableTime = 0;
-                com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
+            for (SaTarget selected : SaTargeting.uniqueTargets(this.level(), this.owner, box, false)) {
+                LivingEntity target = selected.root();
+                if (!canHit(target)) {
+                    continue;
+                }
+                com.wjx.kablade.util.SaDamage.hurtNoIFrame(selected.hitEntity(),
                         this.level().damageSources().indirectMagic(this, source), 1.0F);
             }
         }

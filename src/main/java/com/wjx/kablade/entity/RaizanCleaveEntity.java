@@ -6,6 +6,7 @@ import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.slasharts.RaizanCleaveTimeline;
 import com.wjx.kablade.specialeffect.ThunderBlitz;
 import com.wjx.kablade.util.SaDamage;
+import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -240,7 +241,7 @@ public final class RaizanCleaveEntity extends Entity {
 
     private void resolveHit(ServerLevel level, LivingEntity caster, int hitIndex) {
         Vec3 center = getTargetAnchor();
-        List<LivingEntity> targets = hitIndex < 2
+        List<SaTarget> targets = hitIndex < 2
                 ? phaseOneTargets(level, caster, center)
                 : heartTargets(level, caster, center);
         if (targets.isEmpty()) {
@@ -251,11 +252,13 @@ public final class RaizanCleaveEntity extends Entity {
         float damage = this.totalDamage * RaizanCleaveTimeline.DAMAGE_WEIGHTS[hitIndex];
         int paralysisTicks = Math.max(1,
                 RaizanCleaveTimeline.DURATION_TICKS - this.tickCount + 1);
-        for (LivingEntity target : targets) {
-            if (!SaTargeting.canDamage(caster, target)) {
+        for (SaTarget selected : targets) {
+            LivingEntity target = selected.root();
+            if (!SaTargeting.canDamage(caster, selected.hitEntity())) {
                 continue;
             }
-            if (!SaDamage.hurtSlashArtNoIFrame(target, level, this, caster, damage)) {
+            if (!SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, caster, damage)) {
                 continue;
             }
             target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
@@ -274,28 +277,27 @@ public final class RaizanCleaveEntity extends Entity {
         playHitFx(level, center, hitIndex);
     }
 
-    private List<LivingEntity> phaseOneTargets(ServerLevel level, LivingEntity caster, Vec3 center) {
+    private List<SaTarget> phaseOneTargets(ServerLevel level, LivingEntity caster, Vec3 center) {
         AABB box = new AABB(center.x - PHASE_ONE_RADIUS, center.y - HIT_BELOW,
                 center.z - PHASE_ONE_RADIUS, center.x + PHASE_ONE_RADIUS,
                 center.y + HIT_ABOVE, center.z + PHASE_ONE_RADIUS);
-        return level.getEntitiesOfClass(LivingEntity.class, box,
-                target -> target.isPickable()
-                        && SaTargeting.canDamageAttackable(caster, target)
-                        && horizontalDistanceSqr(target.position(), center)
+        return SaTargeting.targets(level, caster, box,
+                target -> SaTargeting.canDamageAttackable(caster, target.root())
+                        && horizontalDistanceSqr(target.anchor(), center)
                         <= PHASE_ONE_RADIUS * PHASE_ONE_RADIUS);
     }
 
-    private List<LivingEntity> heartTargets(ServerLevel level, LivingEntity caster, Vec3 center) {
+    private List<SaTarget> heartTargets(ServerLevel level, LivingEntity caster, Vec3 center) {
         double scan = HEART_HALF_WIDTH + HEART_HALF_DEPTH;
         AABB box = new AABB(center.x - scan, center.y - HIT_BELOW, center.z - scan,
                 center.x + scan, center.y + HIT_ABOVE, center.z + scan);
         Vec3 forward = flatForward();
         Vec3 left = localLeft();
-        return level.getEntitiesOfClass(LivingEntity.class, box, target -> {
-            if (!target.isPickable() || !SaTargeting.canDamageAttackable(caster, target)) {
+        return SaTargeting.targets(level, caster, box, target -> {
+            if (!SaTargeting.canDamageAttackable(caster, target.root())) {
                 return false;
             }
-            Vec3 offset = target.position().subtract(center);
+            Vec3 offset = target.anchor().subtract(center);
             return Math.abs(offset.dot(left)) <= HEART_HALF_WIDTH
                     && Math.abs(offset.dot(forward)) <= HEART_HALF_DEPTH;
         });

@@ -98,12 +98,13 @@ public final class ConceptualMetaphorEntity extends SwordEnlightenmentEntity {
         AABB area = new AABB(
                 this.getX() - HIT_RADIUS, this.getY() - 0.65D, this.getZ() - HIT_RADIUS,
                 this.getX() + HIT_RADIUS, this.getY() + HIT_HEIGHT, this.getZ() + HIT_RADIUS);
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> target.isPickable() && SaTargeting.canDamageAttackable(source, target));
+        var targets = SaTargeting.targets(level, source, area,
+                selected -> SaTargeting.canDamageAttackable(source, selected.root()));
         Vec3 pullCenter = unityCenter();
 
-        for (LivingEntity target : targets) {
-            Vec3 center = target.position().add(0.0D, target.getBbHeight() * 0.52D, 0.0D);
+        for (var selected : targets) {
+            LivingEntity target = selected.root();
+            Vec3 center = selected.anchor();
             Vec3 relative = center.subtract(this.position().add(0.0D, 1.0D, 0.0D));
             double horizontal = Math.sqrt(relative.x * relative.x + relative.z * relative.z);
             if (horizontal > HIT_RADIUS || Math.abs(relative.y) > HIT_HEIGHT) {
@@ -113,7 +114,8 @@ public final class ConceptualMetaphorEntity extends SwordEnlightenmentEntity {
             float falloff = (float) Mth.clamp(
                     1.0D - horizontal / (HIT_RADIUS * 1.35D), 0.62D, 1.0D);
             float damage = this.getBaseDamage() * UNITY_DAMAGE_MULTIPLIER * falloff;
-            if (!SaDamage.hurtSlashArtNoIFrame(target, level, this, source, damage)) {
+            if (!SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, source, damage)) {
                 continue;
             }
 

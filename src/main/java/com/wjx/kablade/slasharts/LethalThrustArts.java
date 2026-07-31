@@ -4,6 +4,7 @@ import com.wjx.kablade.entity.TunaEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SATool;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SlashArts;
@@ -37,10 +38,10 @@ public final class LethalThrustArts extends SlashArts {
 
         ServerLevel level = (ServerLevel) user.level();
         ItemStack blade = user.getMainHandItem();
-        LivingEntity target = resolveTarget(level, user, blade);
+        SaTarget target = resolveTarget(level, user, blade);
         Vec3 spawn = target == null
                 ? user.position().add(user.getDeltaMovement())
-                : target.position();
+                : target.anchor();
 
         float baseAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
@@ -54,24 +55,10 @@ public final class LethalThrustArts extends SlashArts {
         return super.doArts(type, user);
     }
 
-    private static LivingEntity resolveTarget(ServerLevel level, LivingEntity user, ItemStack blade) {
+    private static SaTarget resolveTarget(ServerLevel level, LivingEntity user, ItemStack blade) {
         Entity locked = blade.getCapability(ItemSlashBlade.BLADESTATE).resolve()
                 .map(state -> state.getTargetEntity(level))
                 .orElse(null);
-        if (locked instanceof LivingEntity living && isValidTarget(user, living)) {
-            return living;
-        }
-
-        Entity watched = SATool.getEntityToWatch(user);
-        if (watched instanceof LivingEntity living && isValidTarget(user, living)) {
-            return living;
-        }
-
-        return null;
-    }
-
-    private static boolean isValidTarget(LivingEntity user, LivingEntity target) {
-        return SaTargeting.canDamage(user, target)
-                && target.distanceToSqr(user) <= LOCK_RANGE * LOCK_RANGE;
+        return SaTargeting.findTarget(user, locked, LOCK_RANGE).orElse(null);
     }
 }

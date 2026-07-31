@@ -6,6 +6,7 @@ import com.wjx.kablade.slasharts.ThunderboltCallTimeline;
 import com.wjx.kablade.specialeffect.ThunderBlitz;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -71,7 +72,7 @@ public final class ThunderboltCallEntity extends Entity {
 
     private UUID ownerUuid;
     private LivingEntity owner;
-    private LivingEntity target;
+    private Entity target;
     private float totalDamage;
     private int nextHit;
     private boolean releasedActiveCaster;
@@ -88,7 +89,7 @@ public final class ThunderboltCallEntity extends Entity {
     }
 
     public static ThunderboltCallEntity spawn(ServerLevel level, LivingEntity owner,
-                                               LivingEntity target, Vec3 targetAnchor,
+                                               Entity target, Vec3 targetAnchor,
                                                Vec3 launchDirection, float totalDamage) {
         if (!ACTIVE_CASTERS.add(owner.getUUID())) {
             return null;
@@ -187,8 +188,8 @@ public final class ThunderboltCallEntity extends Entity {
 
     public Vec3 getTargetAnchor(float partialTick) {
         Entity entity = this.level().getEntity(getTargetId());
-        if (entity instanceof LivingEntity living && living.isAlive()) {
-            return living.getPosition(partialTick).add(0.0D, living.getBbHeight() * 0.58D, 0.0D);
+        if (entity != null && entity.isAlive()) {
+            return SaTarget.center(entity.getBoundingBox());
         }
         return getStoredTargetAnchor();
     }
@@ -252,27 +253,29 @@ public final class ThunderboltCallEntity extends Entity {
         return null;
     }
 
-    private LivingEntity resolveTarget() {
+    private Entity resolveTarget() {
         if (this.target != null && this.target.isAlive()) {
             return this.target;
         }
         Entity entity = this.level().getEntity(getTargetId());
-        if (entity instanceof LivingEntity living && living.isAlive()) {
-            this.target = living;
-            return living;
+        if (entity != null && entity.isAlive() && SaTarget.of(entity).isPresent()) {
+            this.target = entity;
+            return entity;
         }
         return null;
     }
 
     private void resolveHit(ServerLevel level, LivingEntity source, int hitIndex) {
         float damage = this.totalDamage * ThunderboltCallTimeline.DAMAGE_WEIGHTS[hitIndex];
-        List<LivingEntity> targets = hitIndex == 0
+        List<SaTarget> targets = hitIndex == 0
                 ? impactTargets(level, source, IMPACT_RADIUS)
                 : crossTargets(level, source);
         Vec3 anchor = getTargetAnchor(1.0F);
-        for (LivingEntity victim : targets) {
-            if (!SaTargeting.canDamage(source, victim)
-                    || !SaDamage.hurtSlashArtNoIFrame(victim, level, this, source, damage)) {
+        for (SaTarget selected : targets) {
+            LivingEntity victim = selected.root();
+            if (!SaTargeting.canDamage(source, selected.hitEntity())
+                    || !SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, this, source, damage)) {
                 continue;
             }
             victim.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
@@ -296,17 +299,22 @@ public final class ThunderboltCallEntity extends Entity {
         playHitFx(level, anchor, hitIndex, !targets.isEmpty());
     }
 
-    private List<LivingEntity> impactTargets(ServerLevel level, LivingEntity source, double radius) {
+    private List<SaTarget> impactTargets(ServerLevel level, LivingEntity source, double radius) {
         Vec3 center = getTargetAnchor(1.0F);
         AABB box = AABB.ofSize(center, radius * 2.0D, radius * 2.0D, radius * 2.0D);
-        LivingEntity primary = resolveTarget();
-        return level.getEntitiesOfClass(LivingEntity.class, box, candidate ->
-                candidate.isPickable() && SaTargeting.canDamageAttackable(source, candidate)
-                        && (candidate == primary || candidate.getBoundingBox().getCenter()
-                        .distanceToSqr(center) <= radius * radius));
+        SaTarget primary = SaTarget.of(resolveTarget()).orElse(null);
+        List<SaTarget> targets = SaTargeting.targets(level, source, box, candidate ->
+                SaTargeting.canDamageAttackable(source, candidate.root())
+                        && candidate.distanceToSqr(center) <= radius * radius);
+        if (primary != null && SaTargeting.canDamageAttackable(source, primary.hitEntity())
+                && primary.distanceToSqr(center) <= radius * radius) {
+            targets.removeIf(candidate -> candidate.damageGroup().equals(primary.damageGroup()));
+            targets.add(primary);
+        }
+        return targets;
     }
 
-    private List<LivingEntity> crossTargets(ServerLevel level, LivingEntity source) {
+    private List<SaTarget> crossTargets(ServerLevel level, LivingEntity source) {
         Vec3 forward = getLaunchDirection();
         Vec3 right = new Vec3(0.0D, 1.0D, 0.0D).cross(forward);
         if (right.lengthSqr() < 1.0E-8D) {
@@ -323,16 +331,17 @@ public final class ThunderboltCallEntity extends Entity {
                 X_HALF_WIDTH + 1.5D, X_HALF_HEIGHT + 1.5D, X_HALF_WIDTH + 1.5D);
         Vec3 finalRight = right;
         Vec3 finalUp = up;
-        return level.getEntitiesOfClass(LivingEntity.class, box, candidate -> {
-            if (!candidate.isPickable() || !SaTargeting.canDamageAttackable(source, candidate)) {
+        return SaTargeting.targets(level, source, box, candidate -> {
+            if (!SaTargeting.canDamageAttackable(source, candidate.root())) {
                 return false;
             }
-            Vec3 offset = candidate.getBoundingBox().getCenter().subtract(origin);
+            Entity physical = candidate.hitEntity();
+            Vec3 offset = candidate.anchor().subtract(origin);
             double ahead = offset.dot(forward);
             double lateral = Math.abs(offset.dot(finalRight));
             double vertical = Math.abs(offset.dot(finalUp));
-            double horizontalMargin = candidate.getBbWidth() * 0.5D;
-            double verticalMargin = candidate.getBbHeight() * 0.5D;
+            double horizontalMargin = physical.getBbWidth() * 0.5D;
+            double verticalMargin = physical.getBbHeight() * 0.5D;
             return ahead >= -horizontalMargin && ahead <= totalReach + horizontalMargin
                     && lateral <= X_HALF_WIDTH + horizontalMargin
                     && vertical <= X_HALF_HEIGHT + verticalMargin;

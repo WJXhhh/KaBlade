@@ -4,6 +4,8 @@ import com.wjx.kablade.init.ModEntities;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import com.wjx.kablade.util.SaTarget;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -39,11 +41,12 @@ public class FlareEdgeEntity extends ExSlashDriveEntity {
     }
 
     @Override
-    protected void onImpact(LivingEntity target) {
-        target.invulnerableTime = 0;
+    protected void onImpact(Entity target) {
         com.wjx.kablade.util.SaDamage.hurtNoIFrame(target,
                 damageSource(), Math.max(attackDamage / 2.0F, 1.0F));
-        target.setRemainingFireTicks(100); // 5秒
-        hitBlade(target);
+        SaTarget.of(target).map(SaTarget::root).ifPresent(root -> {
+            root.setRemainingFireTicks(100); // 5秒
+            hitBlade(root);
+        });
     }
 }

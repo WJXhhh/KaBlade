@@ -96,11 +96,11 @@ public final class FireOfSinArts extends SlashArts {
                 pos.x - IGNITE_RANGE, pos.y - 1.0, pos.z - IGNITE_RANGE,
                 pos.x + IGNITE_RANGE, pos.y + 2.0, pos.z + IGNITE_RANGE);
 
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> SaTargeting.canDamage(user, e));
+        var targets = SaTargeting.targets(level, user, box,
+                selected -> SaTargeting.canDamage(user, selected.root()));
 
-        for (LivingEntity target : targets) {
-            target.setSecondsOnFire(FIRE_SECONDS);
+        for (var selected : targets) {
+            selected.root().setSecondsOnFire(FIRE_SECONDS);
         }
     }
 

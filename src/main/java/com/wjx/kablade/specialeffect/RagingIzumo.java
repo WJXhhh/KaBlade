@@ -98,9 +98,11 @@ public class RagingIzumo extends SpecialEffect {
         AABB area = player.getBoundingBox()
                 .inflate(RADIUS, VERTICAL_RADIUS, RADIUS)
                 .move(player.getDeltaMovement());
-        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area,
-                target -> SaTargeting.canDamage(player, target))) {
-            target.hurt(level.damageSources().explosion(player, player), BASE_DAMAGE + extraDamage);
+        for (var selected : SaTargeting.targets(level, player, area,
+                target -> SaTargeting.canDamage(player, target.root()))) {
+            LivingEntity target = selected.root();
+            com.wjx.kablade.util.SaDamage.hurt(selected.hitEntity(),
+                    level.damageSources().explosion(player, player), BASE_DAMAGE + extraDamage);
             target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(), 40, 2));
         }
         player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 100, 2, false, true));

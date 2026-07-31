@@ -3,7 +3,9 @@ package com.wjx.kablade.slasharts;
 import com.wjx.kablade.entity.LightningSwordEntity;
 import com.wjx.kablade.entity.PhantomSwordExEntity;
 import com.wjx.kablade.util.SATool;
+import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -56,15 +58,15 @@ public final class LightningSwordsArts extends SlashArts {
         }
 
         // Prefer SlashBlade's lock target, then fall back to the entity under the crosshair.
-        Entity target = blade.getCapability(ItemSlashBlade.BLADESTATE).resolve()
+        Entity locked = blade.getCapability(ItemSlashBlade.BLADESTATE).resolve()
                 .map(state -> state.getTargetEntity(level))
                 .orElse(null);
-        if (target == null || !target.isAlive() || target.distanceTo(user) >= 30.0F) {
-            target = SATool.getEntityToWatch(user);
-        }
-        if (!(target instanceof LivingEntity livingTarget) || !SaTargeting.canDamage(user, livingTarget)) {
+        SaTarget selected = SaTargeting.findTarget(user, locked, 30.0D).orElse(null);
+        if (selected == null) {
             return super.doArts(type, user);
         }
+        LivingEntity livingTarget = selected.root();
+        Entity physicalTarget = selected.hitEntity();
 
         // 魂耗尽力扣
         blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
@@ -85,8 +87,13 @@ public final class LightningSwordsArts extends SlashArts {
                 * ((float) powerLevel / 5.0F)
                 * (1.5F + 0.2F * rank)) * 0.5F;
 
-        // Opening hit: use SlashBlade's managed melee path and reproduce the old critical burst.
-        AttackManager.doMeleeAttack(user, livingTarget, true, true);
+        // Multipart roots commonly reject damage themselves. Route the opening hit through
+        // the selected physical part; ordinary targets keep SlashBlade's managed melee path.
+        if (selected.isMultipartPart()) {
+            SaDamage.hurtSlashArtNoIFrame(physicalTarget, level, user, user, Math.max(1.0F, baseAttack));
+        } else {
+            AttackManager.doMeleeAttack(user, livingTarget, true, true);
+        }
         level.sendParticles(ParticleTypes.CRIT,
                 livingTarget.getX(), livingTarget.getY(0.5D), livingTarget.getZ(),
                 18, livingTarget.getBbWidth() * 0.5D, livingTarget.getBbHeight() * 0.35D,
@@ -95,7 +102,7 @@ public final class LightningSwordsArts extends SlashArts {
         livingTarget.setDeltaMovement(0.0, 0.0, 0.0);
         livingTarget.hurtMarked = true;
 
-        Vec3 tpos = livingTarget.position();
+        Vec3 tpos = selected.anchor();
 
         // ═══════════════════════════════════════════════════════
         // 第①波：PhantomSwordEx × 3（紫，目标周围R2）
@@ -119,7 +126,7 @@ public final class LightningSwordsArts extends SlashArts {
                     dir,                  // iniYaw
                     90.0F                 // iniPitch
             );
-            ph.setTarget(livingTarget);
+            ph.setTarget(physicalTarget);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -145,7 +152,7 @@ public final class LightningSwordsArts extends SlashArts {
                     dir,                      // iniYaw
                     90.0F                     // iniPitch
             );
-            ls.setTarget(livingTarget);
+            ls.setTarget(physicalTarget);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -172,7 +179,7 @@ public final class LightningSwordsArts extends SlashArts {
                     user.getYRot(),     // old constructor inherited the user's aim
                     user.getXRot()
             );
-            ls.setTarget(livingTarget);
+            ls.setTarget(physicalTarget);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -190,7 +197,7 @@ public final class LightningSwordsArts extends SlashArts {
                 dir4,                        // iniYaw
                 90.0F                        // iniPitch → 朝下
         );
-        ls4.setTarget(livingTarget);
+        ls4.setTarget(physicalTarget);
 
         return super.doArts(type, user);
     }

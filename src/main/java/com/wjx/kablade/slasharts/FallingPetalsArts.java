@@ -5,6 +5,7 @@ import com.wjx.kablade.network.FallingPetalsMarkPacket;
 import com.wjx.kablade.network.KabladeNetwork;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
+import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.slasharts.SakuraEnd;
@@ -108,8 +109,14 @@ public final class FallingPetalsArts extends SlashArts {
                 .expandTowards(look.scale(RAY_DISTANCE))
                 .inflate(1.0D, 1.0D, 1.0D);
 
-        List<LivingEntity> candidates = level.getEntitiesOfClass(
-                LivingEntity.class, scanBox, target -> isAttackable(user, target));
+        List<SaTarget> candidates = SaTargeting.targets(level, user, scanBox, selected -> {
+            if (!SaTargeting.canDamageAttackable(user, selected.root())) {
+                return false;
+            }
+            AABB box = selected.hitEntity().getBoundingBox()
+                    .inflate(selected.hitEntity().getPickRadius());
+            return box.contains(eye) || box.clip(eye, end).isPresent();
+        });
         DamageSource source = user instanceof Player player
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
@@ -118,8 +125,10 @@ public final class FallingPetalsArts extends SlashArts {
         double closestDistance = RAY_DISTANCE;
         boolean hitAny = false;
 
-        for (LivingEntity target : candidates) {
-            AABB box = target.getBoundingBox().inflate(target.getPickRadius());
+        for (SaTarget selected : candidates) {
+            LivingEntity target = selected.root();
+            AABB box = selected.hitEntity().getBoundingBox()
+                    .inflate(selected.hitEntity().getPickRadius());
             var hit = box.clip(eye, end);
             double distance;
             if (box.contains(eye)) {
@@ -134,7 +143,8 @@ public final class FallingPetalsArts extends SlashArts {
                 player.crit(target);
             }
             target.invulnerableTime = 0;
-            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(target, level, user, damage);
+            com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, user, damage);
             hitAny = true;
 
             if (distance < closestDistance) {
@@ -147,9 +157,6 @@ public final class FallingPetalsArts extends SlashArts {
     }
 
     private static boolean isAttackable(LivingEntity user, LivingEntity target) {
-        if (!target.isPickable()) {
-            return false;
-        }
         return SaTargeting.canDamageAttackable(user, target);
     }
 
