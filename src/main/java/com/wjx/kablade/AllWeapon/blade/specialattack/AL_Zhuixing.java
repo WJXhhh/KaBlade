@@ -45,13 +45,14 @@ public class AL_Zhuixing extends SpecialAttackBase {
                 blade.attackTargetEntity(itemStack, target, entityPlayer, true);
                 entityPlayer.onCriticalHit(target);
                 //double o = target.posY + 10.0;
-                target.motionX = 0.0;
-                target.motionY = 1.5;
-                target.motionZ = 0.0;
-                if (target instanceof EntityLivingBase) {
-                    blade.setDaunting((EntityLivingBase)target);
-                    ((EntityLivingBase)target).hurtTime = 0;
-                    ((EntityLivingBase)target).hurtResistantTime = 0;
+                EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(target);
+                if (effectTarget != null) {
+                    effectTarget.motionX = 0.0;
+                    effectTarget.motionY = 1.5;
+                    effectTarget.motionZ = 0.0;
+                    blade.setDaunting(effectTarget);
+                    effectTarget.hurtTime = 0;
+                    effectTarget.hurtResistantTime = 0;
                 }
                 int count = 1 + StylishRankManager.getStylishRank(entityPlayer);
                 Random rand = new Random();

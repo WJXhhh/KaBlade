@@ -1,5 +1,6 @@
 package com.wjx.kablade.Entity;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.MessageSpawnLighParticleOn;
 import com.wjx.kablade.util.KaBladeEntityProperties;
@@ -93,19 +94,22 @@ public class EntityConfinementForceField extends Entity implements IThrowableEnt
         }
         if(!world.isRemote)
         {
-            List<Entity> list = world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().grow(6.0D, 2.0D, 6.0D), EntitySelectorAttackable.getInstance());
-            for (Entity e : list) {
-                if (e instanceof EntityLivingBase) {
-                    if (e != owner && owner instanceof EntityPlayer) {
-                        ((EntityLivingBase) e).hurtResistantTime = 0;
-                        ((EntityLivingBase) e).attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner).setDamageBypassesArmor(), 4.0F);
-                        ((EntityLivingBase) e).hurtResistantTime = 0;
+            List<Entity> list = owner == null ? new java.util.ArrayList<>() : world.getEntitiesInAABBexcluding(this,
+                    this.getEntityBoundingBox().grow(6.0D, 2.0D, 6.0D),
+                    entity -> TargetingUtil.canSelectForDamage(owner, entity));
+            for (Entity e : TargetingUtil.getDistinctDamageTargets(list)) {
+                EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(e);
+                if (effectTarget != null) {
+                    if (effectTarget != owner && owner instanceof EntityPlayer) {
+                        effectTarget.hurtResistantTime = 0;
+                        e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner).setDamageBypassesArmor(), 4.0F);
+                        effectTarget.hurtResistantTime = 0;
                         if (blade != null && owner instanceof EntityPlayer) {
-                            blade.hitEntity((EntityLivingBase) e, (EntityPlayer) owner);
+                            blade.hitEntity(effectTarget, (EntityPlayer) owner);
                         }
-                        NBTTagCompound entityProperties = KaBladeEntityProperties.getPropCompound(e);
+                        NBTTagCompound entityProperties = KaBladeEntityProperties.getPropCompound(effectTarget);
                         entityProperties.setInteger(KaBladeEntityProperties.CONFINEMENT,2);
-                        ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,5,3));
+                        effectTarget.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,5,3));
                         if(ticksExisted%2==0)
                         {
                             for (int i = 0; i < 1; i++) {
@@ -113,17 +117,17 @@ public class EntityConfinementForceField extends Entity implements IThrowableEnt
                                 float direction = (float) (rand.nextFloat() * 2 * Math.PI);
                                 float x = (float) (Math.cos(direction) * speed);
                                 float z = (float) (Math.sin(direction) * speed);
-                                Main.PACKET_HANDLER.sendToAll(new MessageSpawnLighParticleOn(e.posX, e.posY + 1 + ((rand.nextFloat()) / 10), e.posZ, x, (rand.nextFloat() - 0.5) / 10, z));
+                                Main.PACKET_HANDLER.sendToAll(new MessageSpawnLighParticleOn(effectTarget.posX, effectTarget.posY + 1 + ((rand.nextFloat()) / 10), effectTarget.posZ, x, (rand.nextFloat() - 0.5) / 10, z));
                             }
                         }
 
-                    } else if(e!=owner){
-                        ((EntityLivingBase) e).hurtResistantTime = 0;
-                        ((EntityLivingBase) e).attackEntityFrom(DamageSource.causeMobDamage(owner).setDamageBypassesArmor(), 4.0F);
-                        ((EntityLivingBase) e).hurtResistantTime = 0;
-                        NBTTagCompound entityProperties = KaBladeEntityProperties.getPropCompound(e);
+                    } else if(effectTarget!=owner){
+                        effectTarget.hurtResistantTime = 0;
+                        e.attackEntityFrom(DamageSource.causeMobDamage(owner).setDamageBypassesArmor(), 4.0F);
+                        effectTarget.hurtResistantTime = 0;
+                        NBTTagCompound entityProperties = KaBladeEntityProperties.getPropCompound(effectTarget);
                         entityProperties.setInteger(KaBladeEntityProperties.CONFINEMENT,2);
-                        ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,5,3));
+                        effectTarget.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,5,3));
                         if(ticksExisted%2==0)
                         {
                             for (int i = 0; i < 1; i++) {
@@ -131,7 +135,7 @@ public class EntityConfinementForceField extends Entity implements IThrowableEnt
                                 float direction = (float) (rand.nextFloat() * 2 * Math.PI);
                                 float x = (float) (Math.cos(direction) * speed);
                                 float z = (float) (Math.sin(direction) * speed);
-                                Main.PACKET_HANDLER.sendToAll(new MessageSpawnLighParticleOn(e.posX, e.posY + 1 + ((rand.nextFloat()) / 10), e.posZ, x, (rand.nextFloat() - 0.5) / 10, z));
+                                Main.PACKET_HANDLER.sendToAll(new MessageSpawnLighParticleOn(effectTarget.posX, effectTarget.posY + 1 + ((rand.nextFloat()) / 10), effectTarget.posZ, x, (rand.nextFloat() - 0.5) / 10, z));
                             }
                         }
                     }

@@ -218,10 +218,10 @@ public class EntitySummonHedra extends Entity implements IThrowableEntity {
                         if (d3 < tmpDistance || tmpDistance == 0.0D) {
                             if (entity == this.getRidingEntity() && !entity.canRiderInteract()) {
                                 if (tmpDistance == 0.0D) {
-                                    pointedEntity = TargetingUtil.getSelectionTarget(entity);
+                                    pointedEntity = TargetingUtil.getAimTarget(entity);
                                 }
                             } else {
-                                pointedEntity = TargetingUtil.getSelectionTarget(entity);
+                                pointedEntity = TargetingUtil.getAimTarget(entity);
                                 tmpDistance = d3;
                             }
                         }
@@ -229,7 +229,7 @@ public class EntitySummonHedra extends Entity implements IThrowableEntity {
                 }
             } while(!(0.0D < tmpDistance) && tmpDistance != 0.0D);
 
-            pointedEntity = TargetingUtil.getSelectionTarget(entity);
+            pointedEntity = TargetingUtil.getAimTarget(entity);
             tmpDistance = 0.0D;
         }
     }
@@ -518,7 +518,8 @@ public class EntitySummonHedra extends Entity implements IThrowableEntity {
         Entity damageTarget = TargetingUtil.getDamageReceiver(target);
         Entity effectEntity = effectTarget != null ? effectTarget : target;
 
-        this.mountEntity(effectEntity);
+        // 保留实际命中的 multipart 部件，避免剑附着后跳回父实体身体。
+        this.mountEntity(target);
         if (!this.world.isRemote) {
             float magicDamage = Math.max(1.0F, this.AttackLevel);
             damageTarget.hurtResistantTime = 0;

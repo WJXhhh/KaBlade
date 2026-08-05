@@ -1,6 +1,6 @@
 package com.wjx.kablade.Entity;
 
-import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,7 +13,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.world.World;
 
-public class EntitySummonedSwordPotionEffectAdd extends EntitySummonedSwordBase {
+public class EntitySummonedSwordPotionEffectAdd extends EntitySummonedSwordBasePlus {
     public EntitySummonedSwordPotionEffectAdd(World par1World) {
         super(par1World);
     }
@@ -48,24 +48,27 @@ public class EntitySummonedSwordPotionEffectAdd extends EntitySummonedSwordBase 
             this.world.newExplosion(this, this.posX, this.posY, this.posZ, 1.0f, false, false);
         }
         if (!this.world.isRemote) {
-            float magicDamage = 0.0f;
+            EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(target);
             target.hurtResistantTime = 0;
+            if (effectTarget != null) {
+                effectTarget.hurtResistantTime = 0;
+            }
             DamageSource ds = new EntityDamageSource("directMagic", this.getThrower()).setDamageBypassesArmor().setMagicDamage();
             target.attackEntityFrom(ds, AttackLevel);
-            if (this.blade != null && target instanceof EntityLivingBase && this.thrower != null && this.thrower instanceof EntityLivingBase) {
+            if (this.blade != null && effectTarget != null && this.thrower instanceof EntityLivingBase) {
                 if (!target.isEntityAlive()) {
                     // empty if block
 
                 }
-                target.motionX = 0.0;
-                target.motionY = 0.0;
-                target.motionZ = 0.0;
-                target.addVelocity(0.0, 0.1, 0.0);
-                ((EntityLivingBase)target).hurtTime = 0;
+                effectTarget.motionX = 0.0;
+                effectTarget.motionY = 0.0;
+                effectTarget.motionZ = 0.0;
+                effectTarget.addVelocity(0.0, 0.1, 0.0);
+                effectTarget.hurtTime = 0;
                 if (!this.getBurst()) {
-                    ((EntityLivingBase)target).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 100, 2));
+                    effectTarget.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 100, 2));
                 }
-                ((ItemSlashBlade) this.blade.getItem()).setDaunting((EntityLivingBase)target);
+                ((ItemSlashBlade) this.blade.getItem()).setDaunting(effectTarget);
             }
         }
         this.setDead();

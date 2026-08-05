@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.Spear;
@@ -39,24 +40,25 @@ public class HonKaiFrostComet extends SpecialAttackBase {
             AxisAlignedBB bb = entityPlayer.getEntityBoundingBox();
             bb = bb.grow(5.0D, 1.0D, 5.0D);
             bb = bb.offset(entityPlayer.motionX, entityPlayer.motionY, entityPlayer.motionZ);
-            List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb, input -> input != entityPlayer && input.isEntityAlive());
+            List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb,
+                    input -> TargetingUtil.canSelectForDamage(entityPlayer, input));
             float extraDamage = MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),1f) * 1.5f;
             if (list.size() != 0) {
-                for (Entity entity : list) {
-                    if (entity instanceof EntityLivingBase) {
+                for (Entity entity : TargetingUtil.getDistinctDamageTargets(list)) {
+                    EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(entity);
+                    if (effectTarget != null) {
 
                         entityPlayer.onCriticalHit(entity);
-                        ((EntityLivingBase) entity).hurtResistantTime = 0;
+                        effectTarget.hurtResistantTime = 0;
                         entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(), extraDamage);
-                        ((EntityLivingBase) entity).hurtResistantTime = 0;
-                        if (entity instanceof EntityLivingBase)
-                            itemStack.hitEntity((EntityLivingBase) entity,entityPlayer);
+                        effectTarget.hurtResistantTime = 0;
+                        itemStack.hitEntity(effectTarget,entityPlayer);
                         Block ice = Blocks.PACKED_ICE;
                         world.setBlockState(new BlockPos(entity.posX, entity.posY, entity.posZ), ice.getDefaultState());
                         world.setBlockState(new BlockPos(entity.posX, entity.posY + 1, entity.posZ), ice.getDefaultState());
-                        entity.motionY= 0;
-                        entity.motionX=0;
-                        entity.motionZ=0;
+                        effectTarget.motionY= 0;
+                        effectTarget.motionX=0;
+                        effectTarget.motionZ=0;
                     }
                 }
 

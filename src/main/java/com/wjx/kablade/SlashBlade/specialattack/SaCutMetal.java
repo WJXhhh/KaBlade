@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -30,21 +31,22 @@ public class SaCutMetal extends SpecialAttackBase {
         World world = entityPlayer.getEntityWorld();
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,60,2));
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox().grow(8,4,8).offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
-        List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input != entityPlayer&&input instanceof EntityLivingBase);
+        List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer, bb,
+                input -> TargetingUtil.canSelectForDamage(entityPlayer, input));
         float extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),8f);
-        for (Entity e: l){
-            if (e instanceof EntityLivingBase){
-                EntityLivingBase en = (EntityLivingBase) e;
+        for (Entity e: TargetingUtil.getDistinctDamageTargets(l)){
+            EntityLivingBase en = TargetingUtil.getSelectionTarget(e);
+            if (en != null){
                 entityPlayer.onCriticalHit(en);
                 en.hurtResistantTime = 0;
-                en.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),8 + extraDamage);
+                e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),8 + extraDamage);
                 en.hurtResistantTime = 0;
                 if (en instanceof EntityLivingBase)
                     itemStack.hitEntity(en,entityPlayer);
                 double armor;
                 armor =en.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue();
                 en.hurtResistantTime = 0;
-                en.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(), (float) (armor*0.5d));
+                e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(), (float) (armor*0.5d));
                 en.hurtResistantTime = 0;
                 if (en instanceof EntityLivingBase)
                     itemStack.hitEntity(en,entityPlayer);

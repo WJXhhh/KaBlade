@@ -1,6 +1,7 @@
 package com.wjx.kablade.Entity;
 
 import com.wjx.kablade.util.KaBladeEntityProperties;
+import com.wjx.kablade.util.TargetingUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,11 +57,13 @@ public class EntityFreezeDomain extends Entity {
         super.onUpdate();
         if (!world.isRemote){
             AxisAlignedBB bb = this.getEntityBoundingBox().grow(8d,0,8d).expand(0d,4d,0d);
-            List<Entity> entityList = this.world.getEntitiesInAABBexcluding(this,bb,input -> input instanceof EntityLivingBase && !(input instanceof EntityPlayer));
-            for (Entity e : entityList){
-                if (e instanceof EntityLivingBase){
+            List<Entity> entityList = this.world.getEntitiesInAABBexcluding(this, bb,
+                    input -> TargetingUtil.getSelectionTarget(input) != null
+                            && !(TargetingUtil.getSelectionTarget(input) instanceof EntityPlayer));
+            for (EntityLivingBase e : TargetingUtil.getDistinctSelectionTargets(entityList)){
+                if (!(e instanceof EntityPlayer)){
                     KaBladeEntityProperties.getPropCompound(e).setInteger(KaBladeEntityProperties.FREEZE_DOMAIN_DAMAGE_BOOSTER,40);
-                    ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,40,3));
+                    e.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,40,3));
                 }
             }
             if (getRenderTick() >=5){

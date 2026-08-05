@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.google.common.base.Predicates;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.util.*;
@@ -67,11 +68,12 @@ public class SEOripursuit implements ISpecialEffect, IRemovable {
                     AxisAlignedBB searchBox = par3EntityPlayer.getEntityBoundingBox()
                             .grow(1.0D, 1.0D, 1.0D)
                             .union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D));
-                    List<Entity> list = world.getEntitiesInAABBexcluding(par3EntityPlayer, searchBox, Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+                    List<Entity> list = world.getEntitiesInAABBexcluding(par3EntityPlayer, searchBox, Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> TargetingUtil.canSelectForDamage(par3EntityPlayer, entity) && TargetingUtil.canUseEntityCollision(entity)));
                     if (!world.isRemote) {
-                        for (Entity e : list) {
-                            if (e instanceof EntityLivingBase) {
-                                addPursuitTargetToPlayer(par3EntityPlayer, e);
+                        for (Entity e : TargetingUtil.getDistinctDamageTargets(list)) {
+                            Entity aimTarget = TargetingUtil.getAimTarget(e);
+                            if (aimTarget != null) {
+                                addPursuitTargetToPlayer(par3EntityPlayer, aimTarget);
                             }
                         }
                     }

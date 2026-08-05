@@ -1,5 +1,6 @@
 package com.wjx.kablade.Entity;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.Vec3f;
 import com.wjx.kablade.util.renderingQueue.Actions.ActionBase;
@@ -292,12 +293,14 @@ public class EntityConceptual extends Entity implements IThrowableEntity {
             if (!world1.isRemote) {
                 if(ticksExisted % 4 == 0)
                 {
-                    List<Entity> list = world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().grow(8.0D, 4.0D, 8.0D), EntitySelectorAttackable.getInstance());
-                    for (Entity entity : list) {
+                    List<Entity> list = owner == null ? new java.util.ArrayList<>() : world.getEntitiesInAABBexcluding(this,
+                            this.getEntityBoundingBox().grow(8.0D, 4.0D, 8.0D),
+                            entity -> TargetingUtil.canSelectForDamage(owner, entity));
+                    for (Entity entity : TargetingUtil.getDistinctDamageTargets(list)) {
 
                         {
-                            if (entity instanceof EntityLivingBase && !(entity.equals(owner))) {
-                                EntityLivingBase living = (EntityLivingBase) entity;
+                            EntityLivingBase living = TargetingUtil.getSelectionTarget(entity);
+                            if (living != null && living != owner) {
                                 if (owner instanceof EntityPlayer) {
                                     float extraDamage = 0;
                                     if (blade != null) {
@@ -309,7 +312,7 @@ public class EntityConceptual extends Entity implements IThrowableEntity {
 
                                     StylishRankManager.doAttack(this.owner);
                                     ((EntityPlayer) owner).onCriticalHit(living);
-                                    living.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner).setDamageBypassesArmor(), 20.0F + extraDamage);
+                                    entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner).setDamageBypassesArmor(), 20.0F + extraDamage);
                                     if (blade != null) {
                                         blade.getItem().hitEntity(blade, living, (EntityPlayer) owner);
 
@@ -320,7 +323,7 @@ public class EntityConceptual extends Entity implements IThrowableEntity {
 
 
                                 } else {
-                                    living.attackEntityFrom(DamageSource.causeMobDamage(owner).setDamageBypassesArmor(), 20.0F);
+                                    entity.attackEntityFrom(DamageSource.causeMobDamage(owner).setDamageBypassesArmor(), 20.0F);
                                     living.hurtTime = 0;
                                     living.hurtResistantTime = 0;
                                 }

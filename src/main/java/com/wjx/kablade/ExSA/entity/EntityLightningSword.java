@@ -1,5 +1,6 @@
 package com.wjx.kablade.ExSA.entity;
 
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorDestructable;
@@ -111,8 +112,9 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
                 }
             }
 
-            list = this.world.getEntitiesInAABBexcluding(this.getThrower(), bb, EntitySelectorAttackable.getInstance());
-            list.removeAll(this.alreadyHitEntity);
+            EntityLivingBase owner = this.getThrower() instanceof EntityLivingBase ? (EntityLivingBase) this.getThrower() : null;
+            list = owner == null ? new java.util.ArrayList<>() : this.world.getEntitiesInAABBexcluding(this.getThrower(), bb,
+                    entity -> TargetingUtil.canSelectForDamage(owner, entity));
             if (this.getTargetEntityId() != 0) {
                 Entity target = this.world.getEntityByID(this.getTargetEntityId());
                 if (target != null && target.isEntityAlive() && target.getEntityBoundingBox().intersects(bb)) {
@@ -120,7 +122,9 @@ public class EntityLightningSword extends EntityPhantomSwordEx{
                 }
             }
 
-            this.alreadyHitEntity.addAll(list);
+            list = TargetingUtil.getDistinctDamageTargets(list);
+            list.removeIf(entity -> TargetingUtil.containsLogicalTarget(this.alreadyHitEntity, entity));
+            this.alreadyHitEntity.addAll(TargetingUtil.getLogicalTargets(list));
             Vec3d vec31 = new Vec3d(this.posX, this.posY, this.posZ);
             Vec3d vec3 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
             double d0 = 10.0D;

@@ -44,11 +44,12 @@ public class LightningSwordsEx extends SpecialAttackBase {
                 StylishRankManager.setNextAttackType(entityPlayer, AttackType);
                 blade.attackTargetEntity(itemStack, target, entityPlayer, Boolean.TRUE);
                 entityPlayer.onCriticalHit(target);
-                target.motionX = 0.0;
-                target.motionY = 0.0;
-                target.motionZ = 0.0;
-                if (target instanceof EntityLivingBase) {
-                    blade.setDaunting((EntityLivingBase)target);
+                EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(target);
+                if (effectTarget != null) {
+                    effectTarget.motionX = 0.0;
+                    effectTarget.motionY = 0.0;
+                    effectTarget.motionZ = 0.0;
+                    blade.setDaunting(effectTarget);
                 }
                 int rank = StylishRankManager.getStylishRank((Entity)entityPlayer);
                 int level  = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, itemStack);

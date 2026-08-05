@@ -480,12 +480,13 @@ public class WorldEvent {
                 AxisAlignedBB bb = player.getEntityBoundingBox();
                 bb = bb.grow(4.0D, 2D, 4.0D);
                 bb = bb.offset(player.motionX, player.motionY, player.motionZ);
-                List<Entity> list = world.getEntitiesInAABBexcluding(player, bb, input -> input != player && input.isEntityAlive());
-                for (Entity entity : list) {
-                    if (entity instanceof EntityLivingBase) {
+                List<Entity> list = world.getEntitiesInAABBexcluding(player, bb,
+                        input -> TargetingUtil.canSelectForDamage(player, input));
+                for (Entity entity : TargetingUtil.getDistinctDamageTargets(list)) {
+                    EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(entity);
+                    if (effectTarget != null) {
                         entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 4 + extraDamage);
-                        if (entity instanceof EntityLivingBase)
-                            player.getHeldItemMainhand().hitEntity((EntityLivingBase) entity, player);
+                        player.getHeldItemMainhand().hitEntity(effectTarget, player);
                         RightEntityCount++;
                     }
                 }
@@ -556,7 +557,7 @@ public class WorldEvent {
                         Vec3d vec3d1 = player.getLook(1.0F);
                         Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
                         List<Entity> pointedEntity = Lists.newArrayList();
-                        List<Entity> list = world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D).union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D)), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+                        List<Entity> list = world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D).union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D)), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> TargetingUtil.canSelectForDamage(player, entity) && TargetingUtil.canUseEntityCollision(entity)));
                         double d2 = dist;
                         for (Entity entity1 : list) {
                             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
@@ -583,10 +584,11 @@ public class WorldEvent {
                             }
                         }
                         if (!pointedEntity.isEmpty()) {
-                            for (Entity e : pointedEntity) {
-                                if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)) {
+                            for (Entity e : TargetingUtil.getDistinctDamageTargets(pointedEntity)) {
+                                EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(e);
+                                if (effectTarget != null && !(effectTarget instanceof EntityPlayer)) {
                                     e.attackEntityFrom(DamageSource.causePlayerDamage(player), 20f + extraDamage);
-                                    ((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY, 100, 3));
+                                    effectTarget.addPotionEffect(new PotionEffect(PotionInit.PARALY, 100, 3));
                                 }
                             }
                         }
@@ -614,15 +616,16 @@ public class WorldEvent {
                             AxisAlignedBB bb = player.getEntityBoundingBox();
                             bb = bb.grow(5, 4, 5);
                             bb = bb.offset(player.motionX, player.motionY, player.motionZ);
-                            List<Entity> entities = world.getEntitiesInAABBexcluding(player, bb, input -> input != player && input instanceof EntityLivingBase);
-                            for (Entity e : entities) {
+                            List<Entity> entities = world.getEntitiesInAABBexcluding(player, bb,
+                                    input -> TargetingUtil.canSelectForDamage(player, input));
+                            for (Entity e : TargetingUtil.getDistinctDamageTargets(entities)) {
+                                EntityLivingBase en = TargetingUtil.getSelectionTarget(e);
                                 e.attackEntityFrom(DamageSource.causeExplosionDamage(player), 8f + extraDamage);
 
-                                if (e instanceof EntityLivingBase) {
+                                if (en != null) {
                                     if(player.getHeldItemMainhand().getItem() instanceof ItemSlashBlade){
-                                        player.getHeldItemMainhand().hitEntity((EntityLivingBase) e,player);
+                                        player.getHeldItemMainhand().hitEntity(en,player);
                                     }
-                                    EntityLivingBase en = (EntityLivingBase) e;
                                     en.addPotionEffect(new PotionEffect(PotionInit.PARALY, 40, 2));
                                 }
                             }

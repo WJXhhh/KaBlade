@@ -32,10 +32,12 @@ public class Qi extends SpecialAttackBase {
         double dx = vec3.x * 3.0D;
         double dy = (double)player.getEyeHeight() + vec3.y * 3.0D;
         double dz = vec3.z * 3.0D;
-        List<Entity> list11 = player.world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().grow(8.0D, 8.0D, 8.0D).offset(dx, dy, dz), input -> input != player && input instanceof  EntityLivingBase );
+        List<Entity> list11 = player.world.getEntitiesInAABBexcluding(player,
+                player.getEntityBoundingBox().grow(8.0D, 8.0D, 8.0D).offset(dx, dy, dz),
+                input -> TargetingUtil.canSelectForDamage(player, input));
         //list11.remove(player);
         if (!list11.isEmpty()) {
-            for (Entity entity : list11) {
+            for (EntityLivingBase entity : TargetingUtil.getDistinctSelectionTargets(list11)) {
                 if(entity instanceof EntityPlayer){
                     KillEvent.killplayer((EntityPlayer) entity, player);
                 }
@@ -48,12 +50,13 @@ public class Qi extends SpecialAttackBase {
             Entity target = TargetingUtil.getValidLockedTarget(player, stack, 100.0D);
             if(target != null)
             {
-                if(target instanceof EntityPlayer){
-                    KillEvent.killplayer((EntityPlayer) target, player);
+                EntityLivingBase selection = TargetingUtil.getSelectionTarget(target);
+                if(selection instanceof EntityPlayer){
+                    KillEvent.killplayer(selection, player);
                 }
-                else {
+                else if(selection != null) {
                     // server.getPlayerList().sendMessage(new TextComponentString(entity.toString()));
-                    KillEvent.killutil((EntityLivingBase) target, player);
+                    KillEvent.killutil(selection, player);
                 }
             }
         }

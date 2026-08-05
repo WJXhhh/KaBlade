@@ -37,13 +37,14 @@ public class AL_WeiZhan extends SpecialAttackBase {
 
             if(target!=null){
                 entityPlayer.onCriticalHit(target);
-                target.motionX = 0.0;
-                target.motionY = 0.0;
-                target.motionZ = 0.0;
-                if (target instanceof EntityLivingBase) {
-                    blade.setDaunting((EntityLivingBase)target);
-                    ((EntityLivingBase)target).hurtTime = 0;
-                    ((EntityLivingBase)target).hurtResistantTime = 0;
+                EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(target);
+                if (effectTarget != null) {
+                    effectTarget.motionX = 0.0;
+                    effectTarget.motionY = 0.0;
+                    effectTarget.motionZ = 0.0;
+                    blade.setDaunting(effectTarget);
+                    effectTarget.hurtTime = 0;
+                    effectTarget.hurtResistantTime = 0;
                 }
                 for (int i = 0; i < 8; ++i) {
                     EntityDriveAdd entityDrive = new EntityDriveAdd(world, entityPlayer, magicDamage, false, 0.0f - ItemSlashBlade.ComboSequence.Battou.swingDirection);

@@ -2,6 +2,7 @@ package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.google.common.base.Predicates;
 import com.wjx.kablade.util.KaBladeEntityProperties;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -30,7 +31,7 @@ public class SaWineBind extends SpecialAttackBase {
         Vec3d vec3d1 = entityPlayer.getLook(1.0F);
         Vec3d vec3d2 = vec3d.add(vec3d1.x * dist, vec3d1.y * dist, vec3d1.z * dist);
         Entity pointedEntity = null;
-        List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D).union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D)), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+        List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D).union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D)), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> TargetingUtil.canSelectForDamage(entityPlayer, entity) && TargetingUtil.canUseEntityCollision(entity)));
         double d2 = dist;
         for (Entity entity1 : list) {
             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
@@ -57,11 +58,12 @@ public class SaWineBind extends SpecialAttackBase {
             }
         }
         if (pointedEntity != null){
-            if (pointedEntity instanceof EntityLivingBase){
+            EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(pointedEntity);
+            if (effectTarget != null){
                 if (!world.isRemote){
-                    KaBladeEntityProperties.getPropCompound(pointedEntity).setInteger(KaBladeEntityProperties.PROP_WINE_BIND,160);
-                    KaBladeEntityProperties.getPropCompound(pointedEntity).setInteger(KaBladeEntityProperties.PROP_WINE_BIND_ATTACKER,entityPlayer.getEntityId());
-                    KaBladeEntityProperties.updateNBTForClient(pointedEntity);
+                    KaBladeEntityProperties.getPropCompound(effectTarget).setInteger(KaBladeEntityProperties.PROP_WINE_BIND,160);
+                    KaBladeEntityProperties.getPropCompound(effectTarget).setInteger(KaBladeEntityProperties.PROP_WINE_BIND_ATTACKER,entityPlayer.getEntityId());
+                    KaBladeEntityProperties.updateNBTForClient(effectTarget);
                 }
             }
         }

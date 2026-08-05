@@ -1,5 +1,6 @@
 package com.wjx.kablade.Entity;
 
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.ArmorPiercing;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.ability.TeleportCanceller;
@@ -274,11 +275,16 @@ public class EntitySlashDimensionAdd extends Entity implements IThrowableEntity 
                 }
 
                 {
-                    List<Entity> list = this.world.getEntitiesInAABBexcluding(this.getThrower(), bb, EntitySelectorAttackable.getInstance());
-                    //list.removeAll(alreadyHitEntity);
+                    EntityLivingBase owner = this.getThrower() instanceof EntityLivingBase ? (EntityLivingBase) this.getThrower() : null;
+                    List<Entity> list = owner == null ? new java.util.ArrayList<>() : this.world.getEntitiesInAABBexcluding(this.getThrower(), bb,
+                            entity -> TargetingUtil.canSelectForDamage(owner, entity));
+                    list = TargetingUtil.getDistinctDamageTargets(list);
+                    if (getIsSingleHit()) {
+                        list.removeIf(entity -> TargetingUtil.containsLogicalTarget(alreadyHitEntity, entity));
+                    }
 
                     if(getIsSingleHit())
-                        alreadyHitEntity.addAll(list);
+                        alreadyHitEntity.addAll(TargetingUtil.getLogicalTargets(list));
 
                     float magicDamage = Math.max(1.0f, AttackLevel);
 

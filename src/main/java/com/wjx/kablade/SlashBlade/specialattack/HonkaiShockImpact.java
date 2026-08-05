@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.Spear;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -28,17 +29,18 @@ public class HonkaiShockImpact extends SpecialAttackBase {
         AxisAlignedBB ax = entityPlayer.getEntityBoundingBox();
         ax= ax.grow(3,1,3);
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
-        List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax, input -> input != entityPlayer && input instanceof EntityLivingBase);
+        List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, ax,
+                input -> TargetingUtil.canSelectForDamage(entityPlayer, input));
         float extraDamage = MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),10f);
-        for (Entity entity : entities){
-            if (entity != null){
-                if (!entityPlayer.world.isRemote && !(entity instanceof EntityPlayer)){
+        for (Entity entity : TargetingUtil.getDistinctDamageTargets(entities)){
+            EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(entity);
+            if (effectTarget != null){
+                if (!entityPlayer.world.isRemote && !(effectTarget instanceof EntityPlayer)){
                     entityPlayer.onCriticalHit(entity);
-                    ((EntityLivingBase) entity).hurtResistantTime = 0;
+                    effectTarget.hurtResistantTime = 0;
                     entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),22 + extraDamage);
-                    ((EntityLivingBase) entity).hurtResistantTime = 0;
-                    if (entity instanceof EntityLivingBase)
-                        itemStack.hitEntity((EntityLivingBase) entity,entityPlayer);
+                    effectTarget.hurtResistantTime = 0;
+                    itemStack.hitEntity(effectTarget,entityPlayer);
                     entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH,100,5));
                 }
             }

@@ -54,14 +54,6 @@ public class SaDomainSuppression extends SpecialAttackBase {
                 Predicates.and(EntitySelectors.NOT_SPECTATING,
                         entity -> TargetingUtil.canSelectForDamage(entityPlayer, entity)
                                 && TargetingUtil.canUseEntityCollision(entity)));
-        Map<Integer, EntityLivingBase> uniqueTargets = new LinkedHashMap<>();
-        for (Entity e : list) {
-            EntityLivingBase target = TargetingUtil.getSelectionTarget(e);
-            if (target != null) {
-                uniqueTargets.put(target.getEntityId(), target);
-            }
-        }
-        List<EntityLivingBase> allTargets = new java.util.ArrayList<>(uniqueTargets.values());
         double d2 = dist;
         for (Entity entity1 : list) {
             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
@@ -69,7 +61,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
 
             if (axisalignedbb.contains(vec3d)) {
                 if (d2 >= 0.0D) {
-                    pointedEntity = TargetingUtil.getSelectionTarget(entity1);
+                    pointedEntity = TargetingUtil.getAimTarget(entity1);
                     d2 = 0.0D;
                 }
             } else if (raytraceresult != null) {
@@ -78,19 +70,39 @@ public class SaDomainSuppression extends SpecialAttackBase {
                 if (d3 < d2 || d2 == 0.0D) {
                     if (entity1.getLowestRidingEntity() == entityPlayer.getLowestRidingEntity() && !entityPlayer.canRiderInteract()) {
                         if (d2 == 0.0D) {
-                            pointedEntity = TargetingUtil.getSelectionTarget(entity1);
+                            pointedEntity = TargetingUtil.getAimTarget(entity1);
                         }
                     } else {
-                        pointedEntity = TargetingUtil.getSelectionTarget(entity1);
+                        pointedEntity = TargetingUtil.getAimTarget(entity1);
                         d2 = d3;
                     }
                 }
             }
         }
+        // 一只 multipart Boss 仍只生成一套剑阵，但追踪实体保留为实际指到的独立部件。
+        Map<Integer, Entity> uniqueTargets = new LinkedHashMap<>();
+        for (Entity e : list) {
+            EntityLivingBase selectionTarget = TargetingUtil.getSelectionTarget(e);
+            Entity aimTarget = TargetingUtil.getAimTarget(e);
+            if (selectionTarget == null || aimTarget == null) {
+                continue;
+            }
+            Entity current = uniqueTargets.get(selectionTarget.getEntityId());
+            if (current == null || entityPlayer.getDistanceSq(aimTarget) < entityPlayer.getDistanceSq(current)) {
+                uniqueTargets.put(selectionTarget.getEntityId(), aimTarget);
+            }
+        }
+        if (pointedEntity != null) {
+            EntityLivingBase pointedSelection = TargetingUtil.getSelectionTarget(pointedEntity);
+            if (pointedSelection != null) {
+                uniqueTargets.put(pointedSelection.getEntityId(), pointedEntity);
+            }
+        }
+        List<Entity> allTargets = new java.util.ArrayList<>(uniqueTargets.values());
         // 确定技能中心位置
         double centerX, centerY, centerZ;
         boolean hasTarget = false;
-        if (pointedEntity instanceof EntityLivingBase) {
+        if (pointedEntity != null) {
             centerX = pointedEntity.posX;
             centerY = pointedEntity.posY;
             centerZ = pointedEntity.posZ;
@@ -210,8 +222,12 @@ public class SaDomainSuppression extends SpecialAttackBase {
                 }
             } else {
                 // 每目标各自独立召唤剑阵
-                for (EntityLivingBase target : allTargets) {
-                    target.motionY = 0.5f;
+                for (Entity target : allTargets) {
+                    EntityLivingBase selectionTarget = TargetingUtil.getSelectionTarget(target);
+                    if (selectionTarget == null) {
+                        continue;
+                    }
+                    selectionTarget.motionY = 0.5f;
                     double cx = target.posX;
                     double cy = target.posY;
                     double cz = target.posZ;

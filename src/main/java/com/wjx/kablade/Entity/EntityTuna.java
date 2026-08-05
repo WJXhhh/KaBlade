@@ -2,6 +2,7 @@ package com.wjx.kablade.Entity;
 
 import com.google.common.base.Predicates;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -93,12 +94,14 @@ public class EntityTuna extends Entity implements IThrowableEntity {
         if (this.ticksExisted == 5) {
             World world1 = this.world;
             if (!world1.isRemote) {
-                List<Entity> list = world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().grow(5.0D, 2.0D, 5.0D), EntitySelectorAttackable.getInstance());
-                for (Entity entity : list) {
+                List<Entity> list = owner == null ? new java.util.ArrayList<>() : world.getEntitiesInAABBexcluding(this,
+                        this.getEntityBoundingBox().grow(5.0D, 2.0D, 5.0D),
+                        entity -> TargetingUtil.canSelectForDamage(owner, entity));
+                for (Entity entity : TargetingUtil.getDistinctDamageTargets(list)) {
 
                     {
-                        if (entity instanceof EntityLivingBase && !(entity.equals(owner))) {
-                            EntityLivingBase living = (EntityLivingBase) entity;
+                        EntityLivingBase living = TargetingUtil.getSelectionTarget(entity);
+                        if (living != null && living != owner) {
                             if (owner instanceof EntityPlayer) {
                                 float extraDamage = 0;
                                 if (blade != null) {
@@ -111,7 +114,7 @@ public class EntityTuna extends Entity implements IThrowableEntity {
                                 StylishRankManager.doAttack(this.owner);
                                 ((EntityPlayer) owner).onCriticalHit( living);
                                 living.hurtResistantTime = 0;
-                                living.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner).setDamageBypassesArmor(), 10.0F + extraDamage);
+                                entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner).setDamageBypassesArmor(), 10.0F + extraDamage);
                                 living.hurtResistantTime = 0;
                                 if (blade != null) {
                                     blade.getItem().hitEntity(blade, living, (EntityPlayer) owner);
@@ -122,7 +125,7 @@ public class EntityTuna extends Entity implements IThrowableEntity {
 
                             } else {
                                 living.hurtResistantTime = 0;
-                                living.attackEntityFrom(DamageSource.causeMobDamage(owner).setDamageBypassesArmor(), 10.0F);
+                                entity.attackEntityFrom(DamageSource.causeMobDamage(owner).setDamageBypassesArmor(), 10.0F);
                                 living.hurtResistantTime = 0;
                             }
 
@@ -145,10 +148,12 @@ public class EntityTuna extends Entity implements IThrowableEntity {
                 world1.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.NEUTRAL, 1.0F, 1.0F, false);
             }
             if (!world1.isRemote) {
-                List<Entity> list = world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().grow(5.0D, 2.0D, 5.0D), EntitySelectorAttackable.getInstance());
-                for (Entity entity : list) {
-                    if (entity instanceof EntityLivingBase && !(entity.equals(owner))) {
-                        EntityLivingBase living = (EntityLivingBase) entity;
+                List<Entity> list = owner == null ? new java.util.ArrayList<>() : world.getEntitiesInAABBexcluding(this,
+                        this.getEntityBoundingBox().grow(5.0D, 2.0D, 5.0D),
+                        entity -> TargetingUtil.canSelectForDamage(owner, entity));
+                for (Entity entity : TargetingUtil.getDistinctDamageTargets(list)) {
+                    EntityLivingBase living = TargetingUtil.getSelectionTarget(entity);
+                    if (living != null && living != owner) {
                         if (owner instanceof EntityPlayer) {
                             float extraDamage = 0;
                             if (blade != null) {
@@ -156,7 +161,7 @@ public class EntityTuna extends Entity implements IThrowableEntity {
                                 extraDamage = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(blade.getTagCompound()), 5f);
                             }
                             living.hurtResistantTime = 0;
-                            living.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner).setDamageBypassesArmor(), 14.0F + extraDamage);
+                            entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) owner).setDamageBypassesArmor(), 14.0F + extraDamage);
                             living.hurtResistantTime = 0;
                             if (blade != null) {
                                 blade.getItem().hitEntity(blade, living, (EntityPlayer) owner);
@@ -166,7 +171,7 @@ public class EntityTuna extends Entity implements IThrowableEntity {
                             StylishRankManager.doAttack(this.owner);
                         } else {
                             living.hurtResistantTime = 0;
-                            living.attackEntityFrom(DamageSource.causeMobDamage(owner).setDamageBypassesArmor(), 10.0F);
+                            entity.attackEntityFrom(DamageSource.causeMobDamage(owner).setDamageBypassesArmor(), 10.0F);
                             living.hurtResistantTime = 0;
                         }
                     }

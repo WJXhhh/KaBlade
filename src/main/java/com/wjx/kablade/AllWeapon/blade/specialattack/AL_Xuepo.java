@@ -53,13 +53,14 @@ public class AL_Xuepo extends SpecialAttackBase {
                 StylishRankManager.setNextAttackType(entityPlayer, StylishRankManager.AttackTypes.PhantomSword);
                 blade.attackTargetEntity(itemStack, target, entityPlayer, true);
                 entityPlayer.onCriticalHit(target);
-                target.motionX = 0.0;
-                target.motionY = 0.0;
-                target.motionZ = 0.0;
-                if (target instanceof EntityLivingBase) {
-                    blade.setDaunting((EntityLivingBase)target);
-                    ((EntityLivingBase)target).hurtTime = 0;
-                    ((EntityLivingBase)target).hurtResistantTime = 0;
+                EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(target);
+                if (effectTarget != null) {
+                    effectTarget.motionX = 0.0;
+                    effectTarget.motionY = 0.0;
+                    effectTarget.motionZ = 0.0;
+                    blade.setDaunting(effectTarget);
+                    effectTarget.hurtTime = 0;
+                    effectTarget.hurtResistantTime = 0;
                 }
                 int count = 1 + StylishRankManager.getStylishRank(entityPlayer);
                 for (int i = 0; i < 3; ++i) {

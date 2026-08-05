@@ -274,7 +274,7 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
 
             if (axisalignedbb.contains(entityPos)) {
                 if (0.0D < tmpDistance || tmpDistance == 0.0D) {
-                    pointedEntity = TargetingUtil.getSelectionTarget(entity);
+                    pointedEntity = TargetingUtil.getAimTarget(entity);
                     tmpDistance = 0.0D;
                 }
             } else if (movingobjectposition != null) {
@@ -283,10 +283,10 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
                 if (d3 < tmpDistance || tmpDistance == 0.0D) {
                     if (entity == this.getRidingEntity() && !entity.canRiderInteract()) {
                         if (tmpDistance == 0.0D) {
-                            pointedEntity = TargetingUtil.getSelectionTarget(entity);
+                            pointedEntity = TargetingUtil.getAimTarget(entity);
                         }
                     } else {
-                        pointedEntity = TargetingUtil.getSelectionTarget(entity);
+                        pointedEntity = TargetingUtil.getAimTarget(entity);
                         tmpDistance = d3;
                     }
                 }
@@ -661,7 +661,8 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
         Entity damageTarget = TargetingUtil.getDamageReceiver(target);
         Entity effectEntity = effectTarget != null ? effectTarget : target;
 
-        mountEntity(effectEntity);
+        // 保留实际命中的 multipart 部件，避免剑附着后跳回父实体身体。
+        mountEntity(target);
 
         if(!this.world.isRemote){
             float magicDamage = Math.max(1.0f, AttackLevel);

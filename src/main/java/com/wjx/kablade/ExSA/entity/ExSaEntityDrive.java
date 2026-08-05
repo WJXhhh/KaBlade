@@ -1,6 +1,7 @@
 package com.wjx.kablade.ExSA.entity;
 
 import com.wjx.kablade.Entity.EntityDriveAdd;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorDestructable;
@@ -156,10 +157,13 @@ public class ExSaEntityDrive extends EntityDriveAdd {
             }
 
             if (!this.getIsMultiHit() || this.ticksExisted % 2 == 0) {
-                List<Entity> list = this.world.getEntitiesInAABBexcluding(this.getThrower(), bb, EntitySelectorAttackable.getInstance());
-                list.removeAll(this.alreadyHitEntity);
+                EntityLivingBase owner = this.getThrower() instanceof EntityLivingBase ? (EntityLivingBase) this.getThrower() : null;
+                List<Entity> list = owner == null ? new java.util.ArrayList<>() : this.world.getEntitiesInAABBexcluding(this.getThrower(), bb,
+                        entity -> TargetingUtil.canSelectForDamage(owner, entity));
+                list = TargetingUtil.getDistinctDamageTargets(list);
+                list.removeIf(entity -> TargetingUtil.containsLogicalTarget(this.alreadyHitEntity, entity));
                 if (!this.getIsMultiHit()) {
-                    this.alreadyHitEntity.addAll(list);
+                    this.alreadyHitEntity.addAll(TargetingUtil.getLogicalTargets(list));
                 }
 
                 float magicDamage = Math.max(1.0F, this.AttackLevel);

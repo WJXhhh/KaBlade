@@ -1,5 +1,6 @@
 package com.wjx.kablade.AllWeapon.blade.specialattack;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.wjx.kablade.util.SATool;
 import mods.flammpfeil.slashblade.EntityDirectAttackDummy;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -43,23 +44,23 @@ public class AL_Liedi extends SpecialAttackBase {
         bb = bb.grow(12.0D, 5.0D, 12.0D);
         bb = bb.offset(entityPlayer.motionX, entityPlayer.motionY, entityPlayer.motionZ);
 
-        List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb, input -> input != entityPlayer && input.isEntityAlive());
+        List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb,
+                input -> TargetingUtil.canSelectForDamage(entityPlayer, input));
         entityPlayer.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 80, 3,false, true));
         if (!list.isEmpty()){
-            for (Entity entity: list){
-                if (entity instanceof EntityLivingBase){
+            for (Entity entity: TargetingUtil.getDistinctDamageTargets(list)){
+                EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(entity);
+                if (effectTarget != null){
                     blade.attackTargetEntity(itemStack, entity, entityPlayer, true);
                     entityPlayer.onCriticalHit(entity);
-                    entity.motionX = 0.0;
-                    entity.motionY = 2.0;
-                    entity.motionZ = 0.0;
-                    ((EntityLivingBase) entity).hurtResistantTime = 0;
+                    effectTarget.motionX = 0.0;
+                    effectTarget.motionY = 2.0;
+                    effectTarget.motionZ = 0.0;
+                    effectTarget.hurtResistantTime = 0;
                     entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),10);
-                    if (entity instanceof EntityLivingBase) {
-                        blade.setDaunting((EntityLivingBase)entity);
-                        ((EntityLivingBase)entity).hurtTime = 0;
-                        ((EntityLivingBase)entity).hurtResistantTime = 0;
-                    }
+                    blade.setDaunting(effectTarget);
+                    effectTarget.hurtTime = 0;
+                    effectTarget.hurtResistantTime = 0;
 
                 }
             }

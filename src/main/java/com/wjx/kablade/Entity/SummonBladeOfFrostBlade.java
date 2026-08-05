@@ -80,7 +80,7 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
         isImmuneToFire = true;
     }
 
-    public SummonBladeOfFrostBlade(World world, EntityLivingBase thrower, @Nullable EntityLivingBase target,
+    public SummonBladeOfFrostBlade(World world, EntityLivingBase thrower, @Nullable Entity target,
                                    float attackDamage, int wave, Vec3d fallbackDirection) {
         this(world);
         setThrower(thrower);
@@ -123,7 +123,7 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
 
         switch (getPhase()) {
             case PHASE_WAITING:
-                EntityLivingBase waitingTarget = getTargetEntity();
+                Entity waitingTarget = getTargetEntity();
                 if (waitingTarget == null || !TargetingUtil.canDamage(owner, waitingTarget)) {
                     if (getTargetId() > 0) {
                         setTarget(null);
@@ -152,12 +152,11 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
         }
     }
 
-    private void activate(EntityLivingBase owner, @Nullable EntityLivingBase target) {
+    private void activate(EntityLivingBase owner, @Nullable Entity target) {
         updateFormationPosition(owner);
         Vec3d direction = target == null
                 ? fallbackDirection
-                : target.getPositionVector().add(new Vec3d(0.0D, target.height * 0.52D, 0.0D))
-                .subtract(getPositionVector());
+                : getTargetPoint(target).subtract(getPositionVector());
         setDirection(direction);
         activeTicks = 0;
         phaseTicks = 0;
@@ -176,7 +175,7 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
             return;
         }
 
-        EntityLivingBase target = getTargetEntity();
+        Entity target = getTargetEntity();
         if (target == null || !TargetingUtil.canDamage(getOwnerEntity(), target)) {
             // 锁定目标在蓄力期间失效时保留已算出的方向，仍然完成本波发射。
             setTarget(null);
@@ -202,7 +201,7 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
         Vec3d end = start.add(new Vec3d(motionX, motionY, motionZ));
         RayTraceResult blockHit = world.rayTraceBlocks(start, end, false, true, false);
         Vec3d collisionEnd = blockHit != null && blockHit.hitVec != null ? blockHit.hitVec : end;
-        EntityLivingBase hit = findEntityHit(start, collisionEnd);
+        Entity hit = findEntityHit(start, collisionEnd);
         if (hit != null) {
             impact(hit);
             return;
@@ -216,35 +215,35 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
     }
 
     @Nullable
-    private EntityLivingBase findEntityHit(Vec3d start, Vec3d end) {
+    private Entity findEntityHit(Vec3d start, Vec3d end) {
         EntityLivingBase owner = getOwnerEntity();
         if (owner == null) {
             return null;
         }
 
         double inflate = isFinisher() ? 1.25D : 0.95D;
-        EntityLivingBase lockedTarget = getTargetEntity();
-        if (getTargetId() > 0) {
-            return intersectsPath(lockedTarget, owner, start, end, inflate) ? lockedTarget : null;
-        }
-
+        Entity lockedTarget = getTargetEntity();
+        EntityLivingBase lockedSelection = TargetingUtil.getSelectionTarget(lockedTarget);
         AxisAlignedBB sweep = getEntityBoundingBox().union(getEntityBoundingBox().offset(
                 end.x - start.x, end.y - start.y, end.z - start.z)).grow(inflate);
-        List<EntityLivingBase> candidates = world.getEntitiesWithinAABB(EntityLivingBase.class, sweep,
-                entity -> TargetingUtil.canDamage(owner, entity));
+        List<Entity> candidates = world.getEntitiesInAABBexcluding(this, sweep,
+                entity -> TargetingUtil.canUseEntityCollision(entity)
+                        && TargetingUtil.canDamage(owner, entity)
+                        && (lockedSelection == null
+                        || TargetingUtil.getSelectionTarget(entity) == lockedSelection));
         return candidates.stream()
                 .filter(entity -> intersectsPath(entity, owner, start, end, inflate))
                 .min(Comparator.comparingDouble(entity -> pathDistanceSq(entity, start, end, inflate)))
                 .orElse(null);
     }
 
-    private boolean intersectsPath(@Nullable EntityLivingBase target, EntityLivingBase owner,
-                                   Vec3d start, Vec3d end, double inflate) {
+    private boolean intersectsPath(@Nullable Entity target, EntityLivingBase owner,
+                                    Vec3d start, Vec3d end, double inflate) {
         return target != null && TargetingUtil.canDamage(owner, target)
                 && pathDistanceSq(target, start, end, inflate) < Double.MAX_VALUE;
     }
 
-    private double pathDistanceSq(EntityLivingBase target, Vec3d start, Vec3d end, double inflate) {
+    private double pathDistanceSq(Entity target, Vec3d start, Vec3d end, double inflate) {
         AxisAlignedBB box = target.getEntityBoundingBox().grow(inflate);
         if (box.contains(start)) {
             return 0.0D;
@@ -253,30 +252,40 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
         return hit != null && hit.hitVec != null ? start.squareDistanceTo(hit.hitVec) : Double.MAX_VALUE;
     }
 
-    private void impact(EntityLivingBase target) {
+    private void impact(Entity target) {
         EntityLivingBase owner = getOwnerEntity();
         if (owner == null || !TargetingUtil.canDamage(owner, target)) {
             setDead();
             return;
         }
 
+        EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(target);
+        Entity damageTarget = TargetingUtil.getDamageReceiver(target);
+
         // Prevent Endermen from teleporting away while this hit is resolved.
-        EnderTeleportCanceller.setTeleportCancel(target, 100);
-        target.hurtTime = 0;
-        target.hurtResistantTime = 0;
-        boolean damaged = target.attackEntityFrom(
+        EnderTeleportCanceller.setTeleportCancel(effectTarget, 100);
+        damageTarget.hurtResistantTime = 0;
+        if (effectTarget != null) {
+            effectTarget.hurtTime = 0;
+            effectTarget.hurtResistantTime = 0;
+        }
+        boolean damaged = damageTarget.attackEntityFrom(
                 // Endermen evade EntityDamageSourceIndirect (the same source type as arrows).
                 new EntityDamageSource("magic", owner).setMagicDamage(), attackDamage);
-        target.hurtResistantTime = 0;
-        if (damaged) {
-            target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 60, 2));
-            target.motionX *= 0.35D;
-            target.motionY *= 0.35D;
-            target.motionZ *= 0.35D;
-            target.velocityChanged = true;
+        damageTarget.hurtResistantTime = 0;
+        if (effectTarget != null) {
+            effectTarget.hurtResistantTime = 0;
+        }
+        if (damaged && effectTarget != null) {
+            effectTarget.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 60, 2));
+            effectTarget.motionX *= 0.35D;
+            effectTarget.motionY *= 0.35D;
+            effectTarget.motionZ *= 0.35D;
+            effectTarget.velocityChanged = true;
         }
 
-        setPosition(target.posX, target.posY + target.height * 0.52D, target.posZ);
+        Vec3d hitPosition = getTargetPoint(target);
+        setPosition(hitPosition.x, hitPosition.y, hitPosition.z);
         motionX = 0.0D;
         motionY = 0.0D;
         motionZ = 0.0D;
@@ -292,16 +301,21 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
                 isFinisher() ? 0.72F : 1.55F);
     }
 
-    private void turnToward(EntityLivingBase target, float maxDegrees) {
-        Vec3d direction = target.getPositionVector().add(
-                        new Vec3d(0.0D, target.getEyeHeight() * 0.75D, 0.0D))
-                .subtract(getPositionVector()).normalize();
+    private void turnToward(Entity target, float maxDegrees) {
+        Vec3d direction = getTargetPoint(target).subtract(getPositionVector()).normalize();
         float desiredYaw = (float) (MathHelper.atan2(-direction.x, direction.z) * 180.0D / Math.PI);
         float horizontal = MathHelper.sqrt(direction.x * direction.x + direction.z * direction.z);
         float desiredPitch = (float) (MathHelper.atan2(-direction.y, horizontal) * 180.0D / Math.PI);
         rotationYaw += MathHelper.clamp(MathHelper.wrapDegrees(desiredYaw - rotationYaw), -maxDegrees, maxDegrees);
         rotationPitch += MathHelper.clamp(MathHelper.wrapDegrees(desiredPitch - rotationPitch), -maxDegrees, maxDegrees);
         setMotionFromRotation();
+    }
+
+    private Vec3d getTargetPoint(Entity target) {
+        AxisAlignedBB box = target.getEntityBoundingBox();
+        return new Vec3d((box.minX + box.maxX) * 0.5D,
+                (box.minY + box.maxY) * 0.5D,
+                (box.minZ + box.maxZ) * 0.5D);
     }
 
     private void setDirection(Vec3d direction) {
@@ -410,15 +424,15 @@ public class SummonBladeOfFrostBlade extends Entity implements IThrowableEntity 
     }
 
     @Nullable
-    private EntityLivingBase getTargetEntity() {
+    private Entity getTargetEntity() {
         Entity entity = world.getEntityByID(getTargetId());
-        if (!(entity instanceof EntityLivingBase) && targetUuid != null && world instanceof WorldServer) {
+        if (entity == null && targetUuid != null && world instanceof WorldServer) {
             entity = ((WorldServer) world).getEntityFromUuid(targetUuid);
         }
-        return entity instanceof EntityLivingBase ? (EntityLivingBase) entity : null;
+        return entity;
     }
 
-    private void setTarget(@Nullable EntityLivingBase target) {
+    private void setTarget(@Nullable Entity target) {
         dataManager.set(TARGET_ID, target == null ? -1 : target.getEntityId());
         targetUuid = target == null ? null : target.getUniqueID();
     }

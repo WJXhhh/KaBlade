@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.wjx.kablade.Entity.EntityDriveAdd;
 import com.wjx.kablade.Entity.EntitySummonSwordFree;
 import com.wjx.kablade.Main;
@@ -73,8 +74,8 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
             bb = bb.offset(entityPlayer.motionX, entityPlayer.motionY, entityPlayer.motionZ);
             List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb, input -> input != entityPlayer && input.isEntityAlive());
             if (list.size()!=0){
-                for (Entity entity: list){
-                    if (entity instanceof EntityLivingBase){
+                for (EntityLivingBase entity: TargetingUtil.getDistinctSelectionTargets(list)){
+                    if(entity != entityPlayer){
                         if(entity.getEntityData().getBoolean("dizui"))
                         {
                             entity.getEntityData().setBoolean("dizui",false);
@@ -117,16 +118,17 @@ public class HonkaiDizuiSA extends SpecialAttackBase {
         bb = bb.grow(16.0D, 5.0D, 16.0D);
         bb = bb.offset(entityPlayer.motionX, entityPlayer.motionY, entityPlayer.motionZ);
         float extraDamage = MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get((itemStack.getTagCompound()))),5f);
-        List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb, input -> input != entityPlayer && input.isEntityAlive());
+        List<Entity> list = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, bb,
+                input -> TargetingUtil.canSelectForDamage(entityPlayer, input));
         if (!list.isEmpty()){
-            for (Entity entity: list){
-                if (entity instanceof EntityLivingBase){
+            for (Entity entity: TargetingUtil.getDistinctDamageTargets(list)){
+                EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(entity);
+                if (effectTarget != null){
                    world.spawnEntity(new EntityLightningBolt(world,entity.posX,entity.posY,entity.posZ,true));
-                   ((EntityLivingBase) entity).hurtResistantTime = 0;
+                   effectTarget.hurtResistantTime = 0;
                    entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),5 + extraDamage);
-                   ((EntityLivingBase) entity).hurtResistantTime = 0;
-                   if (entity instanceof EntityLivingBase)
-                       itemStack.hitEntity((EntityLivingBase) entity,entityPlayer);
+                   effectTarget.hurtResistantTime = 0;
+                   itemStack.hitEntity(effectTarget,entityPlayer);
                    double x = entity.posX;
                     double y = entity.posY;
                     double z = entity.posZ;

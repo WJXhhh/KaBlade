@@ -4,6 +4,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.wjx.kablade.Entity.EntityCrimsonSakuraAttack;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
@@ -43,18 +44,18 @@ public class HonkaiCrimsonSakura extends SpecialAttackBase {
                 ItemSlashBlade.setComboSequence(Objects.requireNonNull(entityPlayer.getHeldItemMainhand().getTagCompound()), ItemSlashBlade.ComboSequence.SlashDim);
             }
 
-            List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().grow(3.0D, 1.0D, 3.0D).union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D)), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
+            List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, entityPlayer.getEntityBoundingBox().grow(3.0D, 1.0D, 3.0D).union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D)), Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> TargetingUtil.canSelectForDamage(entityPlayer, entity) && TargetingUtil.canUseEntityCollision(entity)));
             double d2 = dist;
             if (!list.isEmpty()){
-                for (Entity e : list){
-                    if (e instanceof EntityLivingBase && !(e instanceof EntityPlayer)){
+                for (Entity e : TargetingUtil.getDistinctDamageTargets(list)){
+                    EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(e);
+                    if (effectTarget != null && !(effectTarget instanceof EntityPlayer)){
 
                         entityPlayer.onCriticalHit(e);
-                        ((EntityLivingBase) e).hurtResistantTime = 0;
+                        effectTarget.hurtResistantTime = 0;
                         e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),(50f + extraDamage)*1.2f);
-                        ((EntityLivingBase) e).hurtResistantTime = 0;
-                        if (pointedEntity instanceof EntityLivingBase)
-                            itemStack.hitEntity((EntityLivingBase) pointedEntity,entityPlayer);
+                        effectTarget.hurtResistantTime = 0;
+                        itemStack.hitEntity(effectTarget,entityPlayer);
                         ///((EntityLivingBase) e).addPotionEffect(new PotionEffect(PotionInit.PARALY,100,5));
                         //Main.PACKET_HANDLER.sendToAll(new MessageDizuiKuo(e.getEntityId()));
                     }

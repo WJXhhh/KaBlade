@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.init.PotionInit;
 import com.wjx.kablade.network.MessageSpawnParticleBurst;
@@ -55,11 +56,12 @@ public class SERagingIzumo implements ISpecialEffect, IRemovable {
                             AxisAlignedBB bb = player.getEntityBoundingBox();
                             bb = bb.grow(5, 4, 5);
                             bb = bb.offset(player.motionX, player.motionY, player.motionZ);
-                            List<Entity> entities = world.getEntitiesInAABBexcluding(player, bb, input -> input != player && input instanceof EntityLivingBase);
-                            for (Entity e : entities) {
+                            List<Entity> entities = world.getEntitiesInAABBexcluding(player, bb,
+                                    input -> TargetingUtil.canSelectForDamage(player, input));
+                            for (Entity e : TargetingUtil.getDistinctDamageTargets(entities)) {
                                 e.attackEntityFrom(DamageSource.causeExplosionDamage(player), 8f);
-                                if (e instanceof EntityLivingBase) {
-                                    EntityLivingBase en = (EntityLivingBase) e;
+                                EntityLivingBase en = TargetingUtil.getSelectionTarget(e);
+                                if (en != null) {
                                     en.addPotionEffect(new PotionEffect(PotionInit.PARALY, 40, 2));
                                 }
                             }

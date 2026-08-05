@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.network.MessageSpawnParticleBurst;
@@ -81,9 +82,10 @@ public class SEGlacialBane implements ISpecialEffect, IRemovable {
                                 burst.addGroup(EnumParticleTypes.CLOUD.getParticleID(), 60, 3.0, 1.0, 3.0);
                                 Main.PACKET_HANDLER.sendToAll(burst);
                                 AxisAlignedBB bb = player.getEntityBoundingBox().grow(4,4,4).offset(player.motionX,player.motionY,player.motionZ);
-                                List<Entity> l = world.getEntitiesInAABBexcluding(player,bb, input -> input != player&&input instanceof EntityLivingBase);
-                                for (Entity e : l){
-                                    if (e instanceof EntityLivingBase){
+                                List<Entity> l = world.getEntitiesInAABBexcluding(player, bb,
+                                        input -> TargetingUtil.canSelectForDamage(player, input));
+                                for (Entity e : TargetingUtil.getDistinctDamageTargets(l)){
+                                    if (TargetingUtil.getSelectionTarget(e) != null){
                                         e.attackEntityFrom(DamageSource.causePlayerDamage(player),5f);
                                     }
                                 }

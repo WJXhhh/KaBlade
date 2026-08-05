@@ -1,5 +1,6 @@
 package com.wjx.kablade.Entity;
 
+import com.wjx.kablade.util.TargetingUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -81,9 +82,10 @@ public class EntityRaikiriBlade extends AbsEntityShield {
             setPositionAndUpdate(followX,followY,followZ);
             shouldFollow = true;
             AxisAlignedBB bb = thrower.getEntityBoundingBox().grow(1,0,1).offset(this.motionX,this.motionY,this.motionZ);
-            List<Entity> entitieee = world.getEntitiesInAABBexcluding(this,bb, input -> input !=thrower&&input instanceof EntityLivingBase);
-            for(Entity e : entitieee){
-                if(e instanceof EntityLivingBase){
+            List<Entity> entitieee = world.getEntitiesInAABBexcluding(this, bb,
+                    input -> TargetingUtil.canSelectForDamage(thrower, input));
+            for(Entity e : TargetingUtil.getDistinctDamageTargets(entitieee)){
+                if(TargetingUtil.getSelectionTarget(e) != null){
                     if (!world.isRemote)
                     e.attackEntityFrom(DamageSource.causeMobDamage(thrower).setDamageBypassesArmor(),2f);
                 }

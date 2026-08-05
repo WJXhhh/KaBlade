@@ -1,6 +1,7 @@
 package com.wjx.kablade.Entity;
 
 import com.wjx.kablade.util.KaBladeEntityProperties;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,11 +56,12 @@ public class EntityFreezeDomainEx extends Entity implements IThrowableEntity {
         }
         if (!world.isRemote){
             AxisAlignedBB bb = this.getEntityBoundingBox().grow(8d,0,8d).expand(0d,4d,0d);
-            List<Entity> entityList = this.world.getEntitiesInAABBexcluding(this,bb, EntitySelectorAttackable.getInstance());
-            for (Entity e : entityList){
-                if (e instanceof EntityLivingBase){
+            List<Entity> entityList = owner == null ? new java.util.ArrayList<>() : this.world.getEntitiesInAABBexcluding(this, bb,
+                    entity -> TargetingUtil.canSelectForDamage(owner, entity));
+            for (EntityLivingBase e : TargetingUtil.getDistinctSelectionTargets(entityList)){
+                if (e != owner){
                     KaBladeEntityProperties.getPropCompound(e).setInteger(KaBladeEntityProperties.FREEZE_DOMAIN_DAMAGE_BOOSTER,40);
-                    ((EntityLivingBase) e).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,40,3));
+                    e.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,40,3));
                 }
             }
             if (this.ticksExisted > 150){

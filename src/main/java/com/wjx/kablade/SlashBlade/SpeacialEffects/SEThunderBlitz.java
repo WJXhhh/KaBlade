@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.SpeacialEffects;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.event.WorldEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -52,10 +53,12 @@ public class SEThunderBlitz  implements ISpecialEffect, IRemovable {
                 if (event.player.getHeldItemMainhand().getItem() instanceof ItemSlashBlade && SpecialEffects.isEffective(event.player, event.player.getHeldItemMainhand(), BladeProxy.ThunderBlitz) == SpecialEffects.State.Effective){
                     AxisAlignedBB bb = event.player.getEntityBoundingBox().grow(10,5,10);
                     bb = bb.offset(event.player.motionX, event.player.motionY, event.player.motionZ);
-                    List<Entity> entities = world.getEntitiesInAABBexcluding(event.player, bb, input -> input != event.player && input instanceof EntityLivingBase);
-                    for (Entity entity : entities){
-                        if(entity instanceof EntityLivingBase){
-                            if(entity.getEntityData().getInteger("dizuitime") > 0){
+                    List<Entity> entities = world.getEntitiesInAABBexcluding(event.player, bb,
+                            input -> TargetingUtil.canSelectForDamage(event.player, input));
+                    for (Entity entity : TargetingUtil.getDistinctDamageTargets(entities)){
+                        EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(entity);
+                        if(effectTarget != null){
+                            if(effectTarget.getEntityData().getInteger("dizuitime") > 0){
                                 if(world.getTotalWorldTime() % 10 == 0){
                                     entity.attackEntityFrom(DamageSource.causePlayerDamage(event.player),5f);
                                 }

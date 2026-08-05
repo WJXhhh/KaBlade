@@ -6,6 +6,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.event.WorldEvent;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.TargetingUtil;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -51,14 +52,15 @@ public class SaAuroraShining extends SpecialAttackBase {
         }
         float extraDamage2 = MathFunc.amplifierCalc(ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound()),4f);
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox().grow(20,10,20).offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
-        List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb,input -> input != entityPlayer&&input instanceof EntityLivingBase);
-            for (Entity e : l){
-                if (e instanceof EntityLivingBase){
-                    EntityLivingBase ee = (EntityLivingBase) e;
+        List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer, bb,
+                input -> TargetingUtil.canSelectForDamage(entityPlayer, input));
+            for (Entity e : TargetingUtil.getDistinctDamageTargets(l)){
+                EntityLivingBase ee = TargetingUtil.getSelectionTarget(e);
+                if (ee != null){
                     ee.addPotionEffect(new PotionEffect(MobEffects.GLOWING,120,2));
                     if (!world.isRemote){
                         ee.hurtResistantTime = 0;
-                        ee.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),8 + extraDamage2);
+                        e.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),8 + extraDamage2);
                         ee.hurtResistantTime = 0;
                         if (ee instanceof EntityLivingBase)
                             itemStack.hitEntity(ee,entityPlayer);

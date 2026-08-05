@@ -1,6 +1,7 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.Spear;
@@ -28,18 +29,19 @@ public class HonKaiMoltenBlade extends SpecialAttackBase {
        ax= ax.grow(3,1,3);
         ax=ax.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
         float extraDamage = MathFunc.amplifierCalc((ItemSlashBlade.BaseAttackModifier.get(entityPlayer.getHeldItemMainhand().getTagCompound())),15f);
-        List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer,ax,input -> input != entityPlayer && input instanceof EntityLivingBase);
-        for (Entity entity : entities){
-            if (entity != null && !(entity instanceof EntityPlayer)){
+        List<Entity> entities = entityPlayer.world.getEntitiesInAABBexcluding(entityPlayer, ax,
+                input -> TargetingUtil.canSelectForDamage(entityPlayer, input));
+        for (Entity entity : TargetingUtil.getDistinctDamageTargets(entities)){
+            EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(entity);
+            if (effectTarget != null && !(effectTarget instanceof EntityPlayer)){
                 ((ItemSlashBlade)itemStack.getItem()).attackTargetEntity(itemStack, entity, entityPlayer, true);
                 entityPlayer.onCriticalHit(entity);
                 StylishRankManager.setNextAttackType(entity, StylishRankManager.AttackTypes.PhantomSword);
-                ((EntityLivingBase) entity).hurtResistantTime = 0;
+                effectTarget.hurtResistantTime = 0;
                 entity.attackEntityFrom(DamageSource.causePlayerDamage(entityPlayer).setDamageBypassesArmor(),10 + extraDamage);
-                ((EntityLivingBase) entity).hurtResistantTime = 0;
-                if (entity instanceof EntityLivingBase)
-                    itemStack.hitEntity((EntityLivingBase) entity,entityPlayer);
-                entity.setFire(5);
+                effectTarget.hurtResistantTime = 0;
+                itemStack.hitEntity(effectTarget,entityPlayer);
+                effectTarget.setFire(5);
             }
         }
     }

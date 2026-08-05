@@ -20,9 +20,12 @@ import net.minecraft.world.World;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +67,7 @@ public final class TargetingUtil {
             return null;
         }
 
-        Entity target = getSelectionTarget(player.world.getEntityByID(entityId));
+        Entity target = getAimTarget(player.world.getEntityByID(entityId));
         String invalidReason = getInvalidReason(player, target, maxDistance);
         if (invalidReason != null) {
             ItemSlashBlade.TargetEntityId.set(tag, 0);
@@ -101,16 +104,15 @@ public final class TargetingUtil {
             fallbackCandidates = candidates.size();
 
             double bestDistanceSq = Double.MAX_VALUE;
-            Set<Integer> seenTargets = new HashSet<>();
             for (Entity candidate : candidates) {
-                EntityLivingBase selection = getSelectionTarget(candidate);
-                if (selection == null || !seenTargets.add(selection.getEntityId())) {
+                Entity aimTarget = getAimTarget(candidate);
+                if (aimTarget == null) {
                     continue;
                 }
                 double distanceSq = player.getDistanceSq(candidate);
                 if (distanceSq < bestDistanceSq) {
                     bestDistanceSq = distanceSq;
-                    target = selection;
+                    target = aimTarget;
                 }
             }
         }
@@ -156,8 +158,99 @@ public final class TargetingUtil {
         return target instanceof EntityLivingBase ? (EntityLivingBase) target : null;
     }
 
+    /**
+     * 返回用于射线锁定和追踪的实体。像暮色九头蛇头部这样独立加入世界的活体部件保留部件本身，
+     * 只有无法通过实体 ID 稳定追踪的普通 multipart 部件才回退到父级活体。
+     */
+    public static Entity getAimTarget(Entity raw) {
+        EntityLivingBase selection = getSelectionTarget(raw);
+        if (selection == null || raw == null || raw == selection) {
+            return selection;
+        }
+        if (raw instanceof EntityLivingBase && raw.world != null && raw.getEntityId() != 0
+                && raw.world.getEntityByID(raw.getEntityId()) == raw) {
+            return raw;
+        }
+        return selection;
+    }
+
     public static Entity getDamageReceiver(Entity raw) {
         return raw;
+    }
+
+    /**
+     * 范围攻击按逻辑父实体只结算一次，但保留一个真实 multipart 部件作为伤害接收者。
+     * 若查询结果同时包含父实体和部件，优先选择部件，避免九头蛇一类父实体拒绝普通伤害。
+     */
+    public static List<Entity> getDistinctDamageTargets(Iterable<? extends Entity> candidates) {
+        Map<Entity, Entity> targets = new LinkedHashMap<>();
+        if (candidates == null) {
+            return new ArrayList<>();
+        }
+        for (Entity candidate : candidates) {
+            if (candidate == null) {
+                continue;
+            }
+            Entity logical = resolveMultipartParent(candidate);
+            if (logical == null) {
+                logical = candidate;
+            }
+            Entity current = targets.get(logical);
+            if (current == null || shouldPreferDamagePart(candidate, current, logical)) {
+                targets.put(logical, candidate);
+            }
+        }
+        return new ArrayList<>(targets.values());
+    }
+
+    /** 返回去重后的逻辑活体，供状态、强制击杀等必须作用于本体的逻辑使用。 */
+    public static List<EntityLivingBase> getDistinctSelectionTargets(Iterable<? extends Entity> candidates) {
+        Map<EntityLivingBase, EntityLivingBase> targets = new LinkedHashMap<>();
+        if (candidates != null) {
+            for (Entity candidate : candidates) {
+                EntityLivingBase selection = getSelectionTarget(candidate);
+                if (selection != null) {
+                    targets.put(selection, selection);
+                }
+            }
+        }
+        return new ArrayList<>(targets.values());
+    }
+
+    public static boolean containsLogicalTarget(Collection<? extends Entity> entities, Entity candidate) {
+        if (entities == null || candidate == null) {
+            return false;
+        }
+        Entity logical = resolveMultipartParent(candidate);
+        for (Entity entity : entities) {
+            if (entity != null && resolveMultipartParent(entity) == logical) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<Entity> getLogicalTargets(Iterable<? extends Entity> entities) {
+        List<Entity> result = new ArrayList<>();
+        if (entities != null) {
+            for (Entity entity : entities) {
+                Entity logical = resolveMultipartParent(entity);
+                if (logical != null && !containsLogicalTarget(result, logical)) {
+                    result.add(logical);
+                }
+            }
+        }
+        return result;
+    }
+
+    private static boolean shouldPreferDamagePart(Entity candidate, Entity current, Entity logical) {
+        boolean candidateIsPart = candidate != logical;
+        boolean currentIsPart = current != logical;
+        if (candidateIsPart != currentIsPart) {
+            return candidateIsPart;
+        }
+        // 活体部件通常拥有稳定实体 ID，锁定、附着和服务端同步均比临时部件可靠。
+        return candidate instanceof EntityLivingBase && !(current instanceof EntityLivingBase);
     }
 
     public static boolean canUseEntityCollision(Entity raw) {
@@ -215,10 +308,9 @@ public final class TargetingUtil {
 
         Entity best = null;
         double bestDistanceSq = Double.MAX_VALUE;
-        Set<Integer> seenTargets = new HashSet<>();
         for (Entity candidate : candidates) {
-            EntityLivingBase selection = getSelectionTarget(candidate);
-            if (selection == null || !seenTargets.add(selection.getEntityId())) {
+            Entity aimTarget = getAimTarget(candidate);
+            if (aimTarget == null) {
                 continue;
             }
             float border = candidate.getCollisionBorderSize() + extraBorder;
@@ -239,7 +331,7 @@ public final class TargetingUtil {
             }
             if (distanceSq < bestDistanceSq) {
                 bestDistanceSq = distanceSq;
-                best = selection;
+                best = aimTarget;
             }
         }
 

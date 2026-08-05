@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase;
@@ -36,10 +37,10 @@ public class SaBreakTheDawn extends SpecialAttackBase {
             world.spawnEntity(d);
         }
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox().grow(10,10,10).offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
-        List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer,bb,input -> input != entityPlayer&&input instanceof EntityLivingBase);
-            for (Entity e : l){
-                if (e instanceof EntityLivingBase){
-                    EntityLivingBase ee = (EntityLivingBase) e;
+        List<Entity> l = world.getEntitiesInAABBexcluding(entityPlayer, bb,
+                input -> TargetingUtil.canSelectForDamage(entityPlayer, input));
+            for (EntityLivingBase ee : TargetingUtil.getDistinctSelectionTargets(l)){
+                if (ee != entityPlayer){
                     ee.addPotionEffect(new PotionEffect(MobEffects.GLOWING,120,2));
                 }
             }

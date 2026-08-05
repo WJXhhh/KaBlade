@@ -1,11 +1,13 @@
 package com.wjx.kablade.ExSA.entity;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.wjx.kablade.ExSA.ability.EnderTeleportCanceller;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
@@ -78,7 +80,10 @@ public class EntityNoFireLightningBolt extends EntityLightningBolt {
         if (this.lightningState >= 0) {
             ItemStack stack;
             double d0 = 3.0;
-            List<Entity> list = this.world.getEntitiesInAABBexcluding(this,new AxisAlignedBB(this.posX - d0, this.posY - d0, this.posZ - d0, this.posX + d0, this.posY + 6.0 + d0, this.posZ + d0), EntitySelectorAttackable.getInstance());
+            EntityLivingBase owner = this.thrower instanceof EntityLivingBase ? (EntityLivingBase) this.thrower : null;
+            List<Entity> list = owner == null ? new java.util.ArrayList<>() : this.world.getEntitiesInAABBexcluding(this,
+                    new AxisAlignedBB(this.posX - d0, this.posY - d0, this.posZ - d0, this.posX + d0, this.posY + 6.0 + d0, this.posZ + d0),
+                    entity -> TargetingUtil.canSelectForDamage(owner, entity));
             if (this.target.isEntityAlive()) {
                 list.add(this.target);
             }
@@ -87,16 +92,18 @@ public class EntityNoFireLightningBolt extends EntityLightningBolt {
                 int rank = StylishRankManager.getStylishRank(this.thrower);
                 int level = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
                 float magicDamage = 1.0f + ItemSlashBlade.AttackAmplifier.get(tag).floatValue() * (0.3f + (float)level / 10.0f + 0.06f * (float)rank);
+                list = TargetingUtil.getDistinctDamageTargets(list);
                 for (int l = 0; l < list.size(); ++l) {
                     Entity entity;
                     if (this.world.isRemote || (entity = list.get(l)) == null || entity.isDead) continue;
+                    EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(entity);
                     if (entity.hurtResistantTime != 3) {
                         entity.hurtResistantTime = 3;
                     }
-                    EnderTeleportCanceller.setTeleportCancel(entity, 600);
+                    EnderTeleportCanceller.setTeleportCancel(effectTarget != null ? effectTarget : entity, 600);
                     if (ForgeEventFactory.onEntityStruckByLightning(entity, this)) continue;
                     entity.attackEntityFrom(DamageSource.IN_FIRE, magicDamage);
-                    entity.setFire(10);
+                    (effectTarget != null ? effectTarget : entity).setFire(10);
                 }
             }
         }

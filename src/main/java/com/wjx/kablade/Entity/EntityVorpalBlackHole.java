@@ -1,5 +1,6 @@
 package com.wjx.kablade.Entity;
 
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.util.ReflectionAccessHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -73,28 +74,30 @@ public class EntityVorpalBlackHole extends Entity implements IThrowableEntity {
         }else {
             entities = world.getEntitiesInAABBexcluding(this,bb,input -> input !=this);
         }
-        for (Entity e : entities){
-            if (this.getDistance(e)>=0.75){
-                if (e instanceof EntityPlayerMP){
-                    EntityPlayerMP player = (EntityPlayerMP) e;
+        for (Entity e : TargetingUtil.getDistinctDamageTargets(entities)){
+            EntityLivingBase selection = TargetingUtil.getSelectionTarget(e);
+            Entity effectEntity = selection != null ? selection : e;
+            if (this.getDistance(effectEntity)>=0.75){
+                if (effectEntity instanceof EntityPlayerMP){
+                    EntityPlayerMP player = (EntityPlayerMP) effectEntity;
                     if (player.capabilities.isCreativeMode){
                         continue;
                     }
                 }
-                if (e instanceof IThrowableEntity || e instanceof EntityLivingBase){
-                    double posX1 = this.posX - e.posX;
-                    double posY1 = this.posY - e.posY;
-                    double posZ1 = this.posZ - e.posZ;
+                if (e instanceof IThrowableEntity || selection != null){
+                    double posX1 = this.posX - effectEntity.posX;
+                    double posY1 = this.posY - effectEntity.posY;
+                    double posZ1 = this.posZ - effectEntity.posZ;
                     double disX = Math.abs(posX1);
                     double disY = Math.abs(posY1);
                     double disZ = Math.abs(posZ1);
-                    double disCount = 1/this.getDistance(e);
+                    double disCount = 1/this.getDistance(effectEntity);
                     double per1 = Math.max(disX,Math.max(disY,disZ));
                     double perX1,perY1,perZ1;
                     perX1 = posX1/per1;
                     perY1 = posY1/per1;
                     perZ1 = posZ1/per1;
-                    ReflectionAccessHelper.setVelocity(e,perX1 * catchSpeed * disCount,perY1 * catchSpeed * disCount,perZ1 * catchSpeed * disCount);
+                    ReflectionAccessHelper.setVelocity(effectEntity,perX1 * catchSpeed * disCount,perY1 * catchSpeed * disCount,perZ1 * catchSpeed * disCount);
                 }
             }
         }
@@ -105,17 +108,19 @@ public class EntityVorpalBlackHole extends Entity implements IThrowableEntity {
         }else {
             entities2 = world.getEntitiesInAABBexcluding(this,bb2,input -> input !=this);
         }
-        for (Entity e : entities2){
-            if (e instanceof EntityPlayerMP){
-                EntityPlayerMP player = (EntityPlayerMP) e;
+        for (Entity e : TargetingUtil.getDistinctDamageTargets(entities2)){
+            EntityLivingBase selection = TargetingUtil.getSelectionTarget(e);
+            Entity effectEntity = selection != null ? selection : e;
+            if (effectEntity instanceof EntityPlayerMP){
+                EntityPlayerMP player = (EntityPlayerMP) effectEntity;
                 if (player.interactionManager.getGameType() == GameType.CREATIVE ||player.interactionManager.getGameType() == GameType.SPECTATOR){
                     continue;
                 }
             }
-            if (e instanceof IThrowableEntity || e instanceof EntityLivingBase){
-                ReflectionAccessHelper.setVelocity(e,0,0,0);
-                if (e instanceof EntityLivingBase) {
-                    ((EntityLivingBase) e).hurtResistantTime = 0;
+            if (e instanceof IThrowableEntity || selection != null){
+                ReflectionAccessHelper.setVelocity(effectEntity,0,0,0);
+                if (selection != null) {
+                    selection.hurtResistantTime = 0;
                 }
                 if (this.thrower !=null){
                     e.attackEntityFrom(DamageSource.causeMobDamage(thrower).setDamageBypassesArmor(),3);
@@ -123,8 +128,8 @@ public class EntityVorpalBlackHole extends Entity implements IThrowableEntity {
                 else {
                     e.attackEntityFrom(new DamageSource(DamageSource.GENERIC.getDamageType()).setDamageBypassesArmor(),3);
                 }
-                if (e instanceof EntityLivingBase) {
-                    ((EntityLivingBase) e).hurtResistantTime = 0;
+                if (selection != null) {
+                    selection.hurtResistantTime = 0;
                 }
             }
         }

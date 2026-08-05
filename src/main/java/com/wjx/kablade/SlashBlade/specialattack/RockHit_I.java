@@ -1,5 +1,6 @@
 package com.wjx.kablade.SlashBlade.specialattack;
 
+import com.wjx.kablade.util.TargetingUtil;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
@@ -53,20 +54,18 @@ public class RockHit_I extends SpecialAttackBase {
         AxisAlignedBB bb = entityPlayer.getEntityBoundingBox();
         bb = bb.grow(5,4,5);
         bb = bb.offset(entityPlayer.motionX,entityPlayer.motionY,entityPlayer.motionZ);
-        List<Entity> entities = world.getEntitiesInAABBexcluding(entityPlayer,bb, input -> input != entityPlayer && input instanceof EntityLivingBase);
-        for (Entity e : entities){
+        List<Entity> entities = world.getEntitiesInAABBexcluding(entityPlayer, bb,
+                input -> TargetingUtil.canSelectForDamage(entityPlayer, input));
+        for (Entity e : TargetingUtil.getDistinctDamageTargets(entities)){
+            EntityLivingBase en = TargetingUtil.getSelectionTarget(e);
             entityPlayer.onCriticalHit(e);
-            if (e instanceof EntityLivingBase) {
-                ((EntityLivingBase) e).hurtResistantTime = 0;
+            if (en != null) {
+                en.hurtResistantTime = 0;
             }
             e.attackEntityFrom(DamageSource.causeExplosionDamage(entityPlayer).setDamageBypassesArmor(),6f + extraDamage);
-            if (e instanceof EntityLivingBase) {
-                ((EntityLivingBase) e).hurtResistantTime = 0;
-            }
-            if (e instanceof EntityLivingBase)
-                itemStack.hitEntity((EntityLivingBase) e,entityPlayer);
-            if (e instanceof EntityLivingBase){
-                EntityLivingBase en = (EntityLivingBase)e;
+            if (en != null) {
+                en.hurtResistantTime = 0;
+                itemStack.hitEntity(en,entityPlayer);
                 en.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,40,2));
             }
         }
