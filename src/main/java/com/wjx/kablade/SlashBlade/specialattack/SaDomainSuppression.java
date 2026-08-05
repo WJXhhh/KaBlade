@@ -6,10 +6,10 @@ import com.wjx.kablade.Entity.EntitySummonedSwordBasePlus;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.MessageSpawnParticleRing;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.specialattack.SpecialAttackBase;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -26,6 +26,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,13 +50,18 @@ public class SaDomainSuppression extends SpecialAttackBase {
         AxisAlignedBB searchBox = entityPlayer.getEntityBoundingBox()
                 .grow(1.0D, 1.0D, 1.0D)
                 .union(new AxisAlignedBB(vec3d.x, vec3d.y, vec3d.z, vec3d2.x, vec3d2.y, vec3d2.z).grow(2.0D, 2.0D, 2.0D));
-        List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, searchBox, Predicates.and(EntitySelectors.NOT_SPECTATING, entity -> entity != null && entity.canBeCollidedWith() && (entity instanceof EntityPlayer || entity instanceof EntityLiving)));
-        List<EntityLivingBase> allTargets = new java.util.ArrayList<>();
+        List<Entity> list = world.getEntitiesInAABBexcluding(entityPlayer, searchBox,
+                Predicates.and(EntitySelectors.NOT_SPECTATING,
+                        entity -> TargetingUtil.canSelectForDamage(entityPlayer, entity)
+                                && TargetingUtil.canUseEntityCollision(entity)));
+        Map<Integer, EntityLivingBase> uniqueTargets = new LinkedHashMap<>();
         for (Entity e : list) {
-            if (e instanceof EntityLivingBase) {
-                allTargets.add((EntityLivingBase) e);
+            EntityLivingBase target = TargetingUtil.getSelectionTarget(e);
+            if (target != null) {
+                uniqueTargets.put(target.getEntityId(), target);
             }
         }
+        List<EntityLivingBase> allTargets = new java.util.ArrayList<>(uniqueTargets.values());
         double d2 = dist;
         for (Entity entity1 : list) {
             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(entity1.getCollisionBorderSize());
@@ -62,7 +69,7 @@ public class SaDomainSuppression extends SpecialAttackBase {
 
             if (axisalignedbb.contains(vec3d)) {
                 if (d2 >= 0.0D) {
-                    pointedEntity = entity1;
+                    pointedEntity = TargetingUtil.getSelectionTarget(entity1);
                     d2 = 0.0D;
                 }
             } else if (raytraceresult != null) {
@@ -71,10 +78,10 @@ public class SaDomainSuppression extends SpecialAttackBase {
                 if (d3 < d2 || d2 == 0.0D) {
                     if (entity1.getLowestRidingEntity() == entityPlayer.getLowestRidingEntity() && !entityPlayer.canRiderInteract()) {
                         if (d2 == 0.0D) {
-                            pointedEntity = entity1;
+                            pointedEntity = TargetingUtil.getSelectionTarget(entity1);
                         }
                     } else {
-                        pointedEntity = entity1;
+                        pointedEntity = TargetingUtil.getSelectionTarget(entity1);
                         d2 = d3;
                     }
                 }

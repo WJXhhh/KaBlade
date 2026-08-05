@@ -5,7 +5,10 @@ import com.wjx.kablade.config.ModConfig;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MultiPartEntityPart;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,9 +18,14 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -29,6 +37,12 @@ public final class TargetingUtil {
     public static final double DEFAULT_LOCK_DISTANCE = 20.0D;
 
     private static final int SNEAK_MASK = 16;
+    private static final String[] PARENT_METHOD_NAMES = new String[]{"getParent", "getParentEntity"};
+    private static final String[] PARENT_FIELD_NAMES = new String[]{"parent", "hydra", "dragon"};
+    private static final Set<String> DEFAULT_MULTIPART_TARGET_CLASSES = new HashSet<>(Arrays.asList(
+            "com.github.alexthe666.iceandfire.entity.EntityDragonBase",
+            "com.github.alexthe666.iceandfire.entity.EntityDeathWorm"
+    ));
     private static final Map<UUID, LockInputState> LOCK_INPUT_STATES = new HashMap<>();
     private static final Map<UUID, Long> LAST_DEBUG_LOG_TICK = new HashMap<>();
 
@@ -50,7 +64,7 @@ public final class TargetingUtil {
             return null;
         }
 
-        Entity target = player.world.getEntityByID(entityId);
+        Entity target = getSelectionTarget(player.world.getEntityByID(entityId));
         String invalidReason = getInvalidReason(player, target, maxDistance);
         if (invalidReason != null) {
             ItemSlashBlade.TargetEntityId.set(tag, 0);
@@ -87,11 +101,16 @@ public final class TargetingUtil {
             fallbackCandidates = candidates.size();
 
             double bestDistanceSq = Double.MAX_VALUE;
+            Set<Integer> seenTargets = new HashSet<>();
             for (Entity candidate : candidates) {
+                EntityLivingBase selection = getSelectionTarget(candidate);
+                if (selection == null || !seenTargets.add(selection.getEntityId())) {
+                    continue;
+                }
                 double distanceSq = player.getDistanceSq(candidate);
                 if (distanceSq < bestDistanceSq) {
                     bestDistanceSq = distanceSq;
-                    target = candidate;
+                    target = selection;
                 }
             }
         }
@@ -106,10 +125,49 @@ public final class TargetingUtil {
 
     /** Final harmful-target check for server-side SA damage. */
     public static boolean canDamage(EntityLivingBase owner, Entity entity) {
-        if (!(entity instanceof EntityLivingBase) || entity == owner || !entity.isEntityAlive()) {
-            return false;
+        return canSelectForDamage(owner, entity);
+    }
+
+    /**
+     * 将可命中的 multipart 部件归一化到用于锁定、去重、友伤判断的父级活体。
+     * 不要求可选模组在编译期存在。
+     */
+    public static Entity resolveMultipartParent(Entity raw) {
+        if (raw == null) {
+            return null;
         }
-        if (!EntitySelectorAttackable.getInstance().apply(entity)) {
+        Entity current = raw;
+        Set<Integer> visited = new HashSet<>();
+        for (int depth = 0; depth < 8 && current != null; depth++) {
+            if (!visited.add(System.identityHashCode(current))) {
+                break;
+            }
+            Entity parent = resolveMultipartParentOnce(current);
+            if (parent == null || parent == current) {
+                break;
+            }
+            current = parent;
+        }
+        return current;
+    }
+
+    public static EntityLivingBase getSelectionTarget(Entity raw) {
+        Entity target = resolveMultipartParent(raw);
+        return target instanceof EntityLivingBase ? (EntityLivingBase) target : null;
+    }
+
+    public static Entity getDamageReceiver(Entity raw) {
+        return raw;
+    }
+
+    public static boolean canUseEntityCollision(Entity raw) {
+        EntityLivingBase selection = getSelectionTarget(raw);
+        return raw != null && (raw.canBeCollidedWith() || (selection != null && selection != raw));
+    }
+
+    public static boolean canSelectForDamage(EntityLivingBase owner, Entity raw) {
+        EntityLivingBase entity = getSelectionTarget(raw);
+        if (owner == null || entity == null || entity == owner || raw == owner || !entity.isEntityAlive()) {
             return false;
         }
         if (entity instanceof EntityPlayer) {
@@ -125,7 +183,10 @@ public final class TargetingUtil {
                 && !owner.getTeam().getAllowFriendlyFire()) {
             return false;
         }
-        return !(entity instanceof EntityTameable) || !((EntityTameable) entity).isOwner(owner);
+        if (entity instanceof EntityTameable && ((EntityTameable) entity).isOwner(owner)) {
+            return false;
+        }
+        return isSlashBladeAttackable(raw, entity) || isCompatibleHostileTarget(raw, entity);
     }
 
     private static RaySearchResult rayTraceEntityWithCount(EntityLivingBase owner, double reach, float extraBorder) {
@@ -154,7 +215,12 @@ public final class TargetingUtil {
 
         Entity best = null;
         double bestDistanceSq = Double.MAX_VALUE;
+        Set<Integer> seenTargets = new HashSet<>();
         for (Entity candidate : candidates) {
+            EntityLivingBase selection = getSelectionTarget(candidate);
+            if (selection == null || !seenTargets.add(selection.getEntityId())) {
+                continue;
+            }
             float border = candidate.getCollisionBorderSize() + extraBorder;
             AxisAlignedBB box = candidate.getEntityBoundingBox().grow(border);
             RayTraceResult hit = box.calculateIntercept(start, end);
@@ -173,7 +239,7 @@ public final class TargetingUtil {
             }
             if (distanceSq < bestDistanceSq) {
                 bestDistanceSq = distanceSq;
-                best = candidate;
+                best = selection;
             }
         }
 
@@ -181,10 +247,11 @@ public final class TargetingUtil {
     }
 
     private static boolean isAttackableCandidate(EntityLivingBase owner, Entity entity, boolean requireVisible) {
-        if (!canDamage(owner, entity) || !entity.canBeCollidedWith()) {
+        EntityLivingBase selection = getSelectionTarget(entity);
+        if (!canSelectForDamage(owner, entity) || !canUseEntityCollision(entity)) {
             return false;
         }
-        return !requireVisible || owner.canEntityBeSeen(entity);
+        return !requireVisible || owner.canEntityBeSeen(selection) || owner.canEntityBeSeen(entity);
     }
 
     private static String getInvalidReason(EntityPlayer player, Entity target, double maxDistance) {
@@ -200,10 +267,96 @@ public final class TargetingUtil {
         if (maxDistance > 0.0D && player.getDistanceSq(target) > maxDistance * maxDistance) {
             return "out_of_range";
         }
-        if (!isAttackableCandidate(player, target, false)) {
+        if (!canSelectForDamage(player, target)) {
             return "not_attackable";
         }
         return null;
+    }
+
+    private static Entity resolveMultipartParentOnce(Entity raw) {
+        if (raw instanceof MultiPartEntityPart) {
+            Object parent = ((MultiPartEntityPart) raw).parent;
+            if (parent instanceof Entity) {
+                return (Entity) parent;
+            }
+        }
+        for (String methodName : PARENT_METHOD_NAMES) {
+            Object parent = invokeNoArg(raw, methodName);
+            if (parent instanceof Entity && parent != raw) {
+                return (Entity) parent;
+            }
+        }
+        for (String fieldName : PARENT_FIELD_NAMES) {
+            Object parent = readField(raw, fieldName);
+            if (parent instanceof Entity && parent != raw) {
+                return (Entity) parent;
+            }
+        }
+        return raw;
+    }
+
+    private static Object invokeNoArg(Object target, String methodName) {
+        Class<?> clazz = target.getClass();
+        while (clazz != null && clazz != Object.class) {
+            try {
+                Method method = clazz.getDeclaredMethod(methodName);
+                method.setAccessible(true);
+                return method.invoke(target);
+            } catch (ReflectiveOperationException ignored) {
+                clazz = clazz.getSuperclass();
+            } catch (RuntimeException ignored) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private static Object readField(Object target, String fieldName) {
+        Class<?> clazz = target.getClass();
+        while (clazz != null && clazz != Object.class) {
+            try {
+                Field field = clazz.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                return field.get(target);
+            } catch (ReflectiveOperationException ignored) {
+                clazz = clazz.getSuperclass();
+            } catch (RuntimeException ignored) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private static boolean isSlashBladeAttackable(Entity raw, EntityLivingBase selection) {
+        return EntitySelectorAttackable.getInstance().apply(raw)
+                || (raw != selection && EntitySelectorAttackable.getInstance().apply(selection));
+    }
+
+    private static boolean isCompatibleHostileTarget(Entity raw, EntityLivingBase selection) {
+        if (selection instanceof IMob) {
+            return true;
+        }
+        if (!selection.isNonBoss()) {
+            return true;
+        }
+        return isConfiguredCompatibleTarget(selection)
+                || (raw != selection && isConfiguredCompatibleTarget(raw));
+    }
+
+    private static boolean isConfiguredCompatibleTarget(Entity entity) {
+        Set<String> configured = new HashSet<>(DEFAULT_MULTIPART_TARGET_CLASSES);
+        if (ModConfig.GeneralConf.ExtraMultipartTargetClasses != null) {
+            configured.addAll(Arrays.asList(ModConfig.GeneralConf.ExtraMultipartTargetClasses));
+        }
+        Class<?> clazz = entity.getClass();
+        while (clazz != null && clazz != Object.class) {
+            if (configured.contains(clazz.getName())) {
+                return true;
+            }
+            clazz = clazz.getSuperclass();
+        }
+        String entityName = EntityList.getEntityString(entity);
+        return entityName != null && configured.contains(entityName);
     }
 
     /** Shift 按下边沿调用：允许原版 onUpdate 在当前 Tick 做至多一次兼容重试。 */
@@ -257,9 +410,10 @@ public final class TargetingUtil {
             return;
         }
         LAST_DEBUG_LOG_TICK.put(player.getUniqueID(), tick);
-        Main.logger.info("[Targeting] player={} tick={} thread={} rayCandidates={} fallbackCandidates={} durationUs={} target={}",
+        Main.logger.info("[Targeting] player={} tick={} thread={} rayCandidates={} fallbackCandidates={} durationUs={} target={} targetClass={}",
                 player.getName(), tick, Thread.currentThread().getName(), rayCandidates, fallbackCandidates,
-                durationNanos / 1000L, target == null ? 0 : target.getEntityId());
+                durationNanos / 1000L, target == null ? 0 : target.getEntityId(),
+                target == null ? "null" : target.getClass().getName());
     }
 
     private static void debugInvalidation(EntityPlayer player, int entityId, String reason) {

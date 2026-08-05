@@ -1,6 +1,7 @@
 package com.wjx.kablade.Entity;
 
 import com.google.common.base.Predicate;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorDestructable;
@@ -252,9 +253,9 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
         EntityLivingBase viewer = (owner instanceof EntityLivingBase) ? (EntityLivingBase) owner : null;
 
         for (Entity entity : list) {
-            if (entity == null || !entity.canBeCollidedWith()) continue;
+            if (entity == null || !TargetingUtil.canUseEntityCollision(entity)) continue;
 
-            if (!EntitySelectorAttackable.getInstance().apply(entity))
+            if (viewer == null || !TargetingUtil.canSelectForDamage(viewer, entity))
                 continue;
 
             if(viewer != null && !viewer.canEntityBeSeen(entity))
@@ -273,7 +274,7 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
 
             if (axisalignedbb.contains(entityPos)) {
                 if (0.0D < tmpDistance || tmpDistance == 0.0D) {
-                    pointedEntity = entity;
+                    pointedEntity = TargetingUtil.getSelectionTarget(entity);
                     tmpDistance = 0.0D;
                 }
             } else if (movingobjectposition != null) {
@@ -282,10 +283,10 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
                 if (d3 < tmpDistance || tmpDistance == 0.0D) {
                     if (entity == this.getRidingEntity() && !entity.canRiderInteract()) {
                         if (tmpDistance == 0.0D) {
-                            pointedEntity = entity;
+                            pointedEntity = TargetingUtil.getSelectionTarget(entity);
                         }
                     } else {
-                        pointedEntity = entity;
+                        pointedEntity = TargetingUtil.getSelectionTarget(entity);
                         tmpDistance = d3;
                     }
                 }
@@ -497,13 +498,16 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
         AxisAlignedBB bb2 = this.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D);
 
         List<Predicate<Entity>> selectors = Arrays.asList(EntitySelectorDestructable.getInstance(), EntitySelectorAttackable.getInstance());
+        final EntityLivingBase owner = this.getThrower() instanceof EntityLivingBase ? (EntityLivingBase) this.getThrower() : null;
         for(Predicate<Entity> selector : selectors){
-            List<Entity> list = this.world.getEntitiesInAABBexcluding(this, bb, selector);
+            List<Entity> list = selector.equals(EntitySelectorAttackable.getInstance()) && owner != null
+                    ? this.world.getEntitiesInAABBexcluding(this, bb, entityIn -> TargetingUtil.canSelectForDamage(owner, entityIn))
+                    : this.world.getEntitiesInAABBexcluding(this, bb, selector);
             list.removeAll(alreadyHitEntity);
 
-            if(selector.equals(EntitySelectorAttackable.getInstance()) && getTargetEntityId() != 0){
+            if(selector.equals(EntitySelectorAttackable.getInstance()) && owner != null && getTargetEntityId() != 0){
                 Entity target = world.getEntityByID(getTargetEntityId());
-                if(target != null){
+                if(target != null && TargetingUtil.canSelectForDamage(owner, target)){
                     if(target.getEntityBoundingBox().intersects(bb) || target.getEntityBoundingBox().intersects(bb2) )
                         list.add(target);
                 }
@@ -521,7 +525,7 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
                     if(((EntitySummonedSwordBasePlus) entity1).getThrower() == this.getThrower())
                         continue;
 
-                if (entity1.canBeCollidedWith())
+                if (TargetingUtil.canUseEntityCollision(entity1))
                 {
                     f1 = 0.3F;
                     AxisAlignedBB axisalignedbb1 = entity1.getEntityBoundingBox().grow(f1, f1, f1);
@@ -653,45 +657,58 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
         if(this.thrower != null)
             this.thrower.getEntityData().setInteger("LastHitSummonedSwords",this.getEntityId());
 
-        mountEntity(target);
+        EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(target);
+        Entity damageTarget = TargetingUtil.getDamageReceiver(target);
+        Entity effectEntity = effectTarget != null ? effectTarget : target;
+
+        mountEntity(effectEntity);
 
         if(!this.world.isRemote){
             float magicDamage = Math.max(1.0f, AttackLevel);
-            target.hurtResistantTime = 0;
+            damageTarget.hurtResistantTime = 0;
+            if (effectTarget != null) {
+                effectTarget.hurtResistantTime = 0;
+            }
             DamageSource ds = new EntityDamageSource("directMagic",this.getThrower()).setDamageBypassesArmor().setMagicDamage();
-            target.attackEntityFrom(ds, magicDamage);
+            damageTarget.attackEntityFrom(ds, magicDamage);
 
-            if(!blade.isEmpty() && target instanceof EntityLivingBase && thrower != null && thrower instanceof EntityLivingBase){
+            if(!blade.isEmpty() && effectTarget != null && thrower != null && thrower instanceof EntityLivingBase){
                 StylishRankManager.setNextAttackType(this.thrower ,StylishRankManager.AttackTypes.PhantomSword);
-                ((ItemSlashBlade)blade.getItem()).hitEntity(blade,(EntityLivingBase)target,(EntityLivingBase)thrower);
+                ((ItemSlashBlade)blade.getItem()).hitEntity(blade,effectTarget,(EntityLivingBase)thrower);
 
-                ReflectionAccessHelper.setVelocity(target, 0, 0, 0);
-                target.addVelocity(0.0, 0.1D, 0.0);
+                ReflectionAccessHelper.setVelocity(effectEntity, 0, 0, 0);
+                effectEntity.addVelocity(0.0, 0.1D, 0.0);
 
-                ((EntityLivingBase) target).hurtTime = 1;
+                effectTarget.hurtTime = 1;
 
-                ((ItemSlashBlade)blade.getItem()).setDaunting(((EntityLivingBase) target));
+                ((ItemSlashBlade)blade.getItem()).setDaunting(effectTarget);
             }
         }
     }
 
     protected void blastAttackEntity(Entity target){
         if(!this.world.isRemote){
+            EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(target);
+            Entity damageTarget = TargetingUtil.getDamageReceiver(target);
+            Entity effectEntity = effectTarget != null ? effectTarget : target;
             float magicDamage = 1;
-            target.hurtResistantTime = 0;
+            damageTarget.hurtResistantTime = 0;
+            if (effectTarget != null) {
+                effectTarget.hurtResistantTime = 0;
+            }
             DamageSource ds = new EntityDamageSource("directMagic",this.getThrower()).setDamageBypassesArmor().setMagicDamage();
-            target.attackEntityFrom(ds, magicDamage);
+            damageTarget.attackEntityFrom(ds, magicDamage);
 
-            if(!blade.isEmpty() && target instanceof EntityLivingBase && thrower != null && thrower instanceof EntityLivingBase){
+            if(!blade.isEmpty() && effectTarget != null && thrower != null && thrower instanceof EntityLivingBase){
                 StylishRankManager.setNextAttackType(this.thrower ,StylishRankManager.AttackTypes.PhantomSword);
-                ((ItemSlashBlade)blade.getItem()).hitEntity(blade,(EntityLivingBase)target,(EntityLivingBase)thrower);
+                ((ItemSlashBlade)blade.getItem()).hitEntity(blade,effectTarget,(EntityLivingBase)thrower);
 
-                ReflectionAccessHelper.setVelocity(target, 0, 0, 0);
-                target.addVelocity(0.0, 0.1D, 0.0);
+                ReflectionAccessHelper.setVelocity(effectEntity, 0, 0, 0);
+                effectEntity.addVelocity(0.0, 0.1D, 0.0);
 
-                ((EntityLivingBase) target).hurtTime = 1;
+                effectTarget.hurtTime = 1;
 
-                ((ItemSlashBlade)blade.getItem()).setDaunting(((EntityLivingBase) target));
+                ((ItemSlashBlade)blade.getItem()).setDaunting(effectTarget);
             }
         }
     }
@@ -810,7 +827,10 @@ public static final DataParameter<Float> BRIGHTNESS = EntityDataManager.createKe
         this.world.playSound(null, this.prevPosX, this.prevPosY, this.prevPosZ, SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 0.25F, 1.6F);
 
         AxisAlignedBB bb = this.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D);
-        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, bb, EntitySelectorAttackable.getInstance());
+        final EntityLivingBase owner = this.getThrower() instanceof EntityLivingBase ? (EntityLivingBase) this.getThrower() : null;
+        List<Entity> list = owner == null
+                ? new ArrayList<>()
+                : this.world.getEntitiesInAABBexcluding(this, bb, entity -> TargetingUtil.canSelectForDamage(owner, entity));
         list.removeAll(alreadyHitEntity);
         for(Entity target : list){
             if(blade.isEmpty()) break;

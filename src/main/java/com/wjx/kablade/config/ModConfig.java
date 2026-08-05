@@ -43,6 +43,8 @@ public class ModConfig {
         public static boolean EnableShiftLockTargeting = true;
         /** 锁敌诊断日志与计数，生产环境默认关闭。 */
         public static boolean DebugTargeting;
+        /** 额外允许作为 multipart/Boss 父实体锁定的完整类名。 */
+        public static String[] ExtraMultipartTargetClasses;
     }
 
 
@@ -156,6 +158,12 @@ public class ModConfig {
         GeneralConf.DebugTargeting = config.getBoolean(
                 "DebugTargeting", category, false,
                 "Log rate-limited lock-on resolver diagnostics. Keep disabled on production servers unless investigating targeting."
+        );
+
+        GeneralConf.ExtraMultipartTargetClasses = config.getStringList(
+                "ExtraMultipartTargetClasses", category, new String[0],
+                "Additional fully-qualified parent entity class names that KaBlade may lock through multipart hitboxes. " +
+                "Use this for boss/multipart mobs from other mods without adding a hard dependency."
         );
         if (config.hasChanged()) {
             config.save();

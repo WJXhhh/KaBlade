@@ -1,6 +1,7 @@
 package com.wjx.kablade.Entity;
 
 import com.google.common.base.Predicate;
+import com.wjx.kablade.util.TargetingUtil;
 import mods.flammpfeil.slashblade.ability.StylishRankManager;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorAttackable;
 import mods.flammpfeil.slashblade.entity.selector.EntitySelectorDestructable;
@@ -196,8 +197,8 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
 
                                     entity = var18.next();
                                 } while(entity == null);
-                            } while(!entity.canBeCollidedWith());
-                        } while(!EntitySelectorAttackable.getInstance().apply(entity));
+                            } while(!TargetingUtil.canUseEntityCollision(entity));
+                        } while(viewer == null || !TargetingUtil.canSelectForDamage(viewer, entity));
                     } while(viewer != null && !viewer.canEntityBeSeen(entity));
 
                     float borderSize = entity.getCollisionBorderSize() + expandBorder;
@@ -212,10 +213,10 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
                         if (d3 < tmpDistance || tmpDistance == 0.0D) {
                             if (entity == this.getRidingEntity() && !entity.canRiderInteract()) {
                                 if (tmpDistance == 0.0D) {
-                                    pointedEntity = entity;
+                                    pointedEntity = TargetingUtil.getSelectionTarget(entity);
                                 }
                             } else {
-                                pointedEntity = entity;
+                                pointedEntity = TargetingUtil.getSelectionTarget(entity);
                                 tmpDistance = d3;
                             }
                         }
@@ -223,7 +224,7 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
                 }
             } while(!(0.0D < tmpDistance) && tmpDistance != 0.0D);
 
-            pointedEntity = entity;
+            pointedEntity = TargetingUtil.getSelectionTarget(entity);
             tmpDistance = 0.0D;
         }
     }
@@ -387,13 +388,16 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
         AxisAlignedBB bb = this.getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ).grow(1.0D, 1.0D, 1.0D);
         AxisAlignedBB bb2 = this.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D);
         List<Predicate<Entity>> selectors = Arrays.asList(EntitySelectorDestructable.getInstance(), EntitySelectorAttackable.getInstance());
+        final EntityLivingBase owner = this.getThrower() instanceof EntityLivingBase ? (EntityLivingBase) this.getThrower() : null;
 
         for (Predicate<Entity> selector : selectors) {
-            List<Entity> list = this.world.getEntitiesInAABBexcluding(this, bb, selector);
+            List<Entity> list = selector.equals(EntitySelectorAttackable.getInstance()) && owner != null
+                    ? this.world.getEntitiesInAABBexcluding(this, bb, entityIn -> TargetingUtil.canSelectForDamage(owner, entityIn))
+                    : this.world.getEntitiesInAABBexcluding(this, bb, selector);
             list.removeAll(this.alreadyHitEntity);
-            if (selector.equals(EntitySelectorAttackable.getInstance()) && this.getTargetEntityId() != 0) {
+            if (selector.equals(EntitySelectorAttackable.getInstance()) && owner != null && this.getTargetEntityId() != 0) {
                 Entity target = this.world.getEntityByID(this.getTargetEntityId());
-                if (target != null && (target.getEntityBoundingBox().intersects(bb) || target.getEntityBoundingBox().intersects(bb2))) {
+                if (target != null && TargetingUtil.canSelectForDamage(owner, target) && (target.getEntityBoundingBox().intersects(bb) || target.getEntityBoundingBox().intersects(bb2))) {
                     list.add(target);
                 }
             }
@@ -401,7 +405,7 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
             double d0 = 0.0D;
 
             for (Entity entity1 : list) {
-                if ((!(entity1 instanceof mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase) || ((mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase) entity1).getThrower() != this.getThrower()) && entity1.canBeCollidedWith()) {
+                if ((!(entity1 instanceof mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase) || ((mods.flammpfeil.slashblade.entity.EntitySummonedSwordBase) entity1).getThrower() != this.getThrower()) && TargetingUtil.canUseEntityCollision(entity1)) {
                     float f1 = 0.3F;
                     AxisAlignedBB axisalignedbb1 = entity1.getEntityBoundingBox().grow((double) f1, (double) f1, (double) f1);
                     RayTraceResult movingobjectposition1 = axisalignedbb1.calculateIntercept(Vec3d1, Vec3d);
@@ -504,19 +508,26 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
             this.thrower.getEntityData().setInteger("LastHitSummonedSwords", this.getEntityId());
         }
 
-        this.mountEntity(target);
+        EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(target);
+        Entity damageTarget = TargetingUtil.getDamageReceiver(target);
+        Entity effectEntity = effectTarget != null ? effectTarget : target;
+
+        this.mountEntity(effectEntity);
         if (!this.world.isRemote) {
             float magicDamage = Math.max(1.0F, this.AttackLevel);
-            target.hurtResistantTime = 0;
+            damageTarget.hurtResistantTime = 0;
+            if (effectTarget != null) {
+                effectTarget.hurtResistantTime = 0;
+            }
             DamageSource ds = (new EntityDamageSource("directMagic", this.getThrower())).setDamageBypassesArmor().setMagicDamage();
-            target.attackEntityFrom(ds, magicDamage);
-            if (!this.blade.isEmpty() && target instanceof EntityLivingBase && this.thrower != null && this.thrower instanceof EntityLivingBase) {
+            damageTarget.attackEntityFrom(ds, magicDamage);
+            if (!this.blade.isEmpty() && effectTarget != null && this.thrower != null && this.thrower instanceof EntityLivingBase) {
                 StylishRankManager.setNextAttackType(this.thrower, StylishRankManager.AttackTypes.PhantomSword);
-                ((ItemSlashBlade)this.blade.getItem()).hitEntity(this.blade, (EntityLivingBase)target, (EntityLivingBase)this.thrower);
-                ReflectionAccessHelper.setVelocity(target, 0.0D, 0.0D, 0.0D);
-                target.addVelocity(0.0D, 0.1D, 0.0D);
-                ((EntityLivingBase)target).hurtTime = 1;
-                ((ItemSlashBlade)this.blade.getItem()).setDaunting((EntityLivingBase)target);
+                ((ItemSlashBlade)this.blade.getItem()).hitEntity(this.blade, effectTarget, (EntityLivingBase)this.thrower);
+                ReflectionAccessHelper.setVelocity(effectEntity, 0.0D, 0.0D, 0.0D);
+                effectEntity.addVelocity(0.0D, 0.1D, 0.0D);
+                effectTarget.hurtTime = 1;
+                ((ItemSlashBlade)this.blade.getItem()).setDaunting(effectTarget);
             }
         }
 
@@ -524,17 +535,23 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
 
     protected void blastAttackEntity(Entity target) {
         if (!this.world.isRemote) {
+            EntityLivingBase effectTarget = TargetingUtil.getSelectionTarget(target);
+            Entity damageTarget = TargetingUtil.getDamageReceiver(target);
+            Entity effectEntity = effectTarget != null ? effectTarget : target;
             float magicDamage = 1.0F;
-            target.hurtResistantTime = 0;
+            damageTarget.hurtResistantTime = 0;
+            if (effectTarget != null) {
+                effectTarget.hurtResistantTime = 0;
+            }
             DamageSource ds = (new EntityDamageSource("directMagic", this.getThrower())).setDamageBypassesArmor().setMagicDamage();
-            target.attackEntityFrom(ds, magicDamage);
-            if (!this.blade.isEmpty() && target instanceof EntityLivingBase && this.thrower != null && this.thrower instanceof EntityLivingBase) {
+            damageTarget.attackEntityFrom(ds, magicDamage);
+            if (!this.blade.isEmpty() && effectTarget != null && this.thrower != null && this.thrower instanceof EntityLivingBase) {
                 StylishRankManager.setNextAttackType(this.thrower, StylishRankManager.AttackTypes.PhantomSword);
-                ((ItemSlashBlade)this.blade.getItem()).hitEntity(this.blade, (EntityLivingBase)target, (EntityLivingBase)this.thrower);
-                ReflectionAccessHelper.setVelocity(target, 0.0D, 0.0D, 0.0D);
-                target.addVelocity(0.0D, 0.1D, 0.0D);
-                ((EntityLivingBase)target).hurtTime = 1;
-                ((ItemSlashBlade)this.blade.getItem()).setDaunting((EntityLivingBase)target);
+                ((ItemSlashBlade)this.blade.getItem()).hitEntity(this.blade, effectTarget, (EntityLivingBase)this.thrower);
+                ReflectionAccessHelper.setVelocity(effectEntity, 0.0D, 0.0D, 0.0D);
+                effectEntity.addVelocity(0.0D, 0.1D, 0.0D);
+                effectTarget.hurtTime = 1;
+                ((ItemSlashBlade)this.blade.getItem()).setDaunting(effectTarget);
             }
         }
 
@@ -618,7 +635,10 @@ public class EntitySummonSwordFree extends Entity implements IThrowableEntity {
 
         this.world.playSound((EntityPlayer)null, this.prevPosX, this.prevPosY, this.prevPosZ, SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.NEUTRAL, 0.25F, 1.6F);
         AxisAlignedBB bb = this.getEntityBoundingBox().grow(1.0D, 1.0D, 1.0D);
-        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, bb, EntitySelectorAttackable.getInstance());
+        final EntityLivingBase owner = this.getThrower() instanceof EntityLivingBase ? (EntityLivingBase) this.getThrower() : null;
+        List<Entity> list = owner == null
+                ? new ArrayList<>()
+                : this.world.getEntitiesInAABBexcluding(this, bb, entity -> TargetingUtil.canSelectForDamage(owner, entity));
         list.removeAll(this.alreadyHitEntity);
         Iterator<Entity> var3 = list.iterator();
 

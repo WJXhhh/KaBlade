@@ -289,7 +289,8 @@ public class WorldEvent {
                     player.setHealth(player.getMaxHealth());
                     player.deathTime = 0;
                     player.isDead = false;
-                    player.preparePlayerToSpawn();
+                    if(player.world.isRemote)
+                        player.preparePlayerToSpawn();
                 }
 
             }
