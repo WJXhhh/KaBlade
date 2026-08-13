@@ -1,10 +1,10 @@
 package com.wjx.kablade.util.creative_tab;
 
+import com.google.common.collect.Lists;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.DeferredRegister;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 import java.util.function.BiConsumer;
