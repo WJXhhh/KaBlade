@@ -41,15 +41,28 @@ public final class SkillEffectFramebuffer implements AutoCloseable {
     }
 
     public void composite(SkillShaderTarget target) {
+        composite(target, 2, 0.72F, 0.45F);
+    }
+
+    public void composite(SkillShaderTarget target, int blurPasses,
+                          float glowStrength, float distortionStrength) {
+        composite(target, blurPasses, glowStrength, distortionStrength, 0.0F);
+    }
+
+    public void composite(SkillShaderTarget target, int blurPasses,
+                          float glowStrength, float distortionStrength,
+                          float colorPreservation) {
         RenderSystem.assertOnRenderThread();
         ensureAllocated(target.width(), target.height());
 
         copySceneColor(target);
-        blurMask();
+        blurMask(blurPasses);
 
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, target.framebufferId());
         GL11.glViewport(0, 0, target.width(), target.height());
-        SkillPostShaders.composite(sceneCopyTextureId, maskTextureId, target.width(), target.height());
+        SkillPostShaders.composite(sceneCopyTextureId, maskTextureId,
+                target.width(), target.height(), glowStrength, distortionStrength,
+                colorPreservation);
     }
 
     public void end(SkillShaderTarget target) {
@@ -97,8 +110,8 @@ public final class SkillEffectFramebuffer implements AutoCloseable {
                 GL11.GL_NEAREST);
     }
 
-    private void blurMask() {
-        for (int i = 0; i < 2; i++) {
+    private void blurMask(int passes) {
+        for (int i = 0; i < Math.max(0, passes); i++) {
             bindPostColor(blurTextureId);
             SkillPostShaders.blur(maskTextureId, width, height, true);
             bindPostColor(maskTextureId);

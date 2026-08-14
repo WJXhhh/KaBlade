@@ -56,6 +56,7 @@ public final class SkillPostShaders {
             uniform vec2 TexelSize;
             uniform float GlowStrength;
             uniform float DistortionStrength;
+            uniform float ColorPreservation;
 
             in vec2 vUv;
             out vec4 fragColor;
@@ -74,7 +75,12 @@ public final class SkillPostShaders {
                 vec2 warp = vec2(right - left, up - down) * DistortionStrength * TexelSize * 28.0;
 
                 vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
-                vec3 glowColor = max(mask.rgb, vec3(m));
+                float colorPeak = max(mask.r, max(mask.g, mask.b));
+                vec3 chromaticGlow = colorPeak > 0.00001
+                        ? (mask.rgb / colorPeak) * m
+                        : vec3(m);
+                vec3 glowColor = mix(vec3(m), chromaticGlow,
+                        clamp(ColorPreservation, 0.0, 1.0));
                 vec3 bloom = glowColor * GlowStrength * (0.35 + m * 1.35);
                 fragColor = vec4(scene.rgb + bloom, scene.a);
             }
@@ -369,6 +375,18 @@ public final class SkillPostShaders {
     }
 
     static void composite(int sceneTextureId, int maskTextureId, int width, int height) {
+        composite(sceneTextureId, maskTextureId, width, height, 0.72F, 0.45F);
+    }
+
+    static void composite(int sceneTextureId, int maskTextureId, int width, int height,
+                          float glowStrength, float distortionStrength) {
+        composite(sceneTextureId, maskTextureId, width, height,
+                glowStrength, distortionStrength, 0.0F);
+    }
+
+    static void composite(int sceneTextureId, int maskTextureId, int width, int height,
+                          float glowStrength, float distortionStrength,
+                          float colorPreservation) {
         ensurePrograms();
         withFullscreenState(() -> {
             GL20.glUseProgram(compositeProgram);
@@ -378,8 +396,12 @@ public final class SkillPostShaders {
             GL20.glUniform1i(GL20.glGetUniformLocation(compositeProgram, "Mask"), 1);
             GL20.glUniform2f(GL20.glGetUniformLocation(compositeProgram, "TexelSize"),
                     1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
-            GL20.glUniform1f(GL20.glGetUniformLocation(compositeProgram, "GlowStrength"), 0.72F);
-            GL20.glUniform1f(GL20.glGetUniformLocation(compositeProgram, "DistortionStrength"), 0.45F);
+            GL20.glUniform1f(GL20.glGetUniformLocation(compositeProgram, "GlowStrength"),
+                    glowStrength);
+            GL20.glUniform1f(GL20.glGetUniformLocation(compositeProgram, "DistortionStrength"),
+                    distortionStrength);
+            GL20.glUniform1f(GL20.glGetUniformLocation(compositeProgram, "ColorPreservation"),
+                    colorPreservation);
             drawFullscreenTriangle();
         });
     }

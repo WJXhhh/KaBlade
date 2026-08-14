@@ -50,5 +50,6 @@ public final class KbladeClientEvents {
     @SubscribeEvent
     public static void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(RaizanCleaveAnimation.INSTANCE);
+        event.registerReloadListener(BladeLuminousTextureLayer.INSTANCE);
     }
 }

@@ -16,6 +16,8 @@ public final class KabladeRenderTypes extends RenderType {
     private static final Map<ResourceLocation, RenderType> JIZO_SOUL_DEPTH = new HashMap<>();
     private static final Map<ResourceLocation, RenderType> JIZO_SOUL_SURFACE = new HashMap<>();
     private static final Map<ResourceLocation, RenderType> JIZO_SOUL_GLOW = new HashMap<>();
+    private static final Map<ResourceLocation, RenderType> BLADE_LUMINOUS_TEXTURE = new HashMap<>();
+    private static final Map<ResourceLocation, RenderType> BLADE_LUMINOUS_HAND_TEXTURE = new HashMap<>();
     private static final ResourceLocation FALLBACK_TEXTURE =
             ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/white.png");
     private static final ResourceLocation RAIZAN_NOISE_TEXTURE =
@@ -633,6 +635,62 @@ public final class KabladeRenderTypes extends RenderType {
         return create("kablade_mag_chaos_blade",
                 DefaultVertexFormat.NEW_ENTITY,
                 VertexFormat.Mode.QUADS, 256, false, true, state);
+    }
+
+    /**
+     * Additive, full-bright blade mask pass with a raster depth bias.
+     *
+     * <p>The mask intentionally reuses the base OBJ group. A view-space scale offset is not
+     * stable for large OBJ coordinates or surfaces seen at a shallow angle: the mask can
+     * still quantize to the base surface and fail its depth test in third person or when a
+     * dropped blade lies on the ground. Polygon offset separates the coplanar triangles at
+     * rasterization time without changing the model's visible size.</p>
+     */
+    public static RenderType bladeLuminousTexture(ResourceLocation texture) {
+        return BLADE_LUMINOUS_TEXTURE.computeIfAbsent(texture, tex -> {
+            CompositeState state = CompositeState.builder()
+                    .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                    .setTextureState(new TextureStateShard(tex, true, true))
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setLightmapState(LIGHTMAP)
+                    .setOverlayState(OVERLAY)
+                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setOutputState(ITEM_ENTITY_TARGET)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false);
+            return create("kablade_blade_luminous_texture_" + tex,
+                    DefaultVertexFormat.NEW_ENTITY,
+                    VertexFormat.Mode.TRIANGLES, 256, false, true, state);
+        });
+    }
+
+    /**
+     * Oculus/Iris first-person fallback for a luminous mask.
+     *
+     * <p>Oculus 1.8 does not remap Minecraft's translucent-emissive entity shader to the
+     * dedicated hand program. Selecting the stock entity-solid shader here lets Oculus apply
+     * its hand projection, while the render state keeps the mask full-bright and additive.</p>
+     */
+    public static RenderType bladeLuminousHandTexture(ResourceLocation texture) {
+        return BLADE_LUMINOUS_HAND_TEXTURE.computeIfAbsent(texture, tex -> {
+            CompositeState state = CompositeState.builder()
+                    .setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
+                    .setTextureState(new TextureStateShard(tex, true, true))
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setLightmapState(LIGHTMAP)
+                    .setOverlayState(OVERLAY)
+                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setOutputState(ITEM_ENTITY_TARGET)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false);
+            return create("kablade_blade_luminous_hand_texture_" + tex,
+                    DefaultVertexFormat.NEW_ENTITY,
+                    VertexFormat.Mode.TRIANGLES, 256, false, true, state);
+        });
     }
 
     public static RenderType stageLight() {

@@ -38,6 +38,18 @@ public final class OculusSkillRenderer {
     }
 
     public static boolean runPostIfNeeded(Runnable renderer) {
+        return runPostIfNeeded(renderer, 2, 0.72F, 0.45F);
+    }
+
+    public static boolean runPostIfNeeded(Runnable renderer, int blurPasses,
+                                          float glowStrength, float distortionStrength) {
+        return runPostIfNeeded(renderer, renderer, blurPasses,
+                glowStrength, distortionStrength, 0.0F);
+    }
+
+    public static boolean runPostIfNeeded(Runnable colorRenderer, Runnable maskRenderer,
+                                          int blurPasses, float glowStrength,
+                                          float distortionStrength, float colorPreservation) {
         if (postDisabled || RENDERING_PASS.get()) {
             return false;
         }
@@ -74,9 +86,11 @@ public final class OculusSkillRenderer {
         }
         RENDERING_PASS.set(true);
         try {
-            renderColorPass(target, renderer);
-            renderMaskPass(target, renderer);
-            EFFECT_FRAMEBUFFER.composite(target);
+            renderColorPass(target, colorRenderer);
+            renderMaskPass(target, maskRenderer);
+            EFFECT_FRAMEBUFFER.composite(
+                    target, blurPasses, glowStrength, distortionStrength,
+                    colorPreservation);
         } catch (RuntimeException ex) {
             postDisabled = true;
             Main.LOGGER.warn("Disabling KBlade Oculus skill post-processing for this session.", ex);

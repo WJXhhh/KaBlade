@@ -8,6 +8,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
@@ -18,6 +20,11 @@ public final class ShaderCompat {
     private static final long SHADER_PACK_CACHE_NANOS = 250_000_000L;
     private static boolean cachedShaderPackInUse;
     private static long shaderPackCacheExpiresAt;
+    private static volatile boolean handRendererAccessResolved;
+    private static Object handRendererInstance;
+    private static Method handRendererIsActive;
+    private static volatile boolean shadowRendererAccessResolved;
+    private static Field shadowRendererActive;
 
     private ShaderCompat() {
     }
@@ -56,6 +63,49 @@ public final class ShaderCompat {
         return mods.isLoaded("oculus") || mods.isLoaded("iris");
     }
 
+    /**
+     * True while Oculus/Iris is replaying the first-person item into its dedicated hand pass.
+     *
+     * <p>There is no public Iris API for this short-lived rendering state. Reflection keeps
+     * Oculus optional and lets callers select a hand-compatible stock shader only for the
+     * affected draw, without changing third-person or item-entity rendering.</p>
+     */
+    public static boolean isRenderingShaderPackHand() {
+        if (!isOculusLikeModLoaded() || !isShaderPackInUse()) {
+            return false;
+        }
+
+        resolveHandRendererAccess();
+        if (handRendererInstance == null || handRendererIsActive == null) {
+            return false;
+        }
+
+        try {
+            Object active = handRendererIsActive.invoke(handRendererInstance);
+            return active instanceof Boolean value && value;
+        } catch (ReflectiveOperationException | RuntimeException | LinkageError ignored) {
+            return false;
+        }
+    }
+
+    /** True while Oculus/Iris is rendering the shadow map instead of the visible scene. */
+    public static boolean isRenderingShaderPackShadow() {
+        if (!isOculusLikeModLoaded() || !isShaderPackInUse()) {
+            return false;
+        }
+
+        resolveShadowRendererAccess();
+        if (shadowRendererActive == null) {
+            return false;
+        }
+
+        try {
+            return shadowRendererActive.getBoolean(null);
+        } catch (ReflectiveOperationException | RuntimeException | LinkageError ignored) {
+            return false;
+        }
+    }
+
     public static boolean isShaderPackInUse() {
         long now = System.nanoTime();
         if (now < shaderPackCacheExpiresAt) {
@@ -76,6 +126,59 @@ public final class ShaderCompat {
 
     public static void invalidateShaderPackCache() {
         shaderPackCacheExpiresAt = 0L;
+    }
+
+    private static void resolveHandRendererAccess() {
+        if (handRendererAccessResolved) {
+            return;
+        }
+
+        synchronized (ShaderCompat.class) {
+            if (handRendererAccessResolved) {
+                return;
+            }
+
+            for (String className : new String[]{
+                    "net.irisshaders.iris.pathways.HandRenderer",
+                    "net.coderbot.iris.pathways.HandRenderer"
+            }) {
+                try {
+                    Class<?> handRendererClass = Class.forName(className);
+                    Field instanceField = handRendererClass.getField("INSTANCE");
+                    Method isActiveMethod = handRendererClass.getMethod("isActive");
+                    handRendererInstance = instanceField.get(null);
+                    handRendererIsActive = isActiveMethod;
+                    break;
+                } catch (ReflectiveOperationException | RuntimeException | LinkageError ignored) {
+                }
+            }
+            handRendererAccessResolved = true;
+        }
+    }
+
+    private static void resolveShadowRendererAccess() {
+        if (shadowRendererAccessResolved) {
+            return;
+        }
+
+        synchronized (ShaderCompat.class) {
+            if (shadowRendererAccessResolved) {
+                return;
+            }
+
+            for (String className : new String[]{
+                    "net.irisshaders.iris.shadows.ShadowRenderer",
+                    "net.coderbot.iris.shadows.ShadowRenderer"
+            }) {
+                try {
+                    Class<?> shadowRendererClass = Class.forName(className);
+                    shadowRendererActive = shadowRendererClass.getField("ACTIVE");
+                    break;
+                } catch (ReflectiveOperationException | RuntimeException | LinkageError ignored) {
+                }
+            }
+            shadowRendererAccessResolved = true;
+        }
     }
 
     private static void cacheShaderPackState(boolean enabled, long now) {
