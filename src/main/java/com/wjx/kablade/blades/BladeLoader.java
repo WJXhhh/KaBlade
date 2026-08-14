@@ -63,6 +63,8 @@ import com.wjx.kablade.blades.allweapon.AwXuezou;
 import com.wjx.kablade.blades.allweapon.AwYingyue;
 import com.wjx.kablade.blades.allweapon.AwYouming;
 import com.wjx.kablade.blades.allweapon.AwZhanYue;
+import com.wjx.kablade.blades.honkai.claymore.GreatSword;
+import com.wjx.kablade.blades.honkai.claymore.NuclearPRI;
 import com.wjx.kablade.blades.ordinary.ArcLight;
 import com.wjx.kablade.blades.ordinary.AuroraBlade;
 import com.wjx.kablade.blades.ordinary.BambooBattler;
@@ -160,6 +162,9 @@ public final class BladeLoader {
     public static BladeDefineBase FROZEN_NARAKA;
     // 崩坏线·妖精剑
     public static BladeDefineBase FAIRY_SWORD;
+    // 崩坏线·大剑系列
+    public static BladeDefineBase GREAT_SWORD;
+    public static BladeDefineBase NUCLEAR_PRI;
     // 万物皆刃线（首批 5 把招牌刀，世界合成获取）
     public static BladeDefineBase AW_LIURRH;
     public static BladeDefineBase AW_CHANSHIZHE;
@@ -267,6 +272,8 @@ public final class BladeLoader {
             "domain_of_unity",
             "ice_epiphyllum",
             "frozen_naraka",
+            "greatsword",
+            "nuclear_pri",
             // 龙一文字线
             "splight_initial",
             "splight_normal",
@@ -399,6 +406,9 @@ public final class BladeLoader {
         SPLIGHT_ORIGIN = new SL_Origin(context);
         SPLIGHT_BLACKWATCH = new SL_Blackwatch(context);
         SPLIGHT_SENTA = new SL_Senta(context);
+        // 崩坏大剑
+        GREAT_SWORD = new GreatSword(context);
+        NUCLEAR_PRI = new NuclearPRI(context);
     }
 
     public static void fillCreativeTab(CreativeModeTab.ItemDisplayParameters parameters,
