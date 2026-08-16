@@ -71,6 +71,5 @@ public class CaiJueDizui {
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.DIZUI.add(name);
-        //System.out.println("autumn:starinit");
     }
 }

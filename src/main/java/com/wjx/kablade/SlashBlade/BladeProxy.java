@@ -44,9 +44,7 @@ public class BladeProxy {
         InitEventBus.register(proxy);
         InitEventBus.register(Main.instance);
         new BladeLoader();
-        if(Main.GALoaded)
-        {
-            ItemSlashBlade.specialAttacks.put(280, new Qi());
+        ItemSlashBlade.specialAttacks.put(280, new Qi());
             ItemSlashBlade.specialAttacks.put(281, new HonkaiLacerateBlade());
             ItemSlashBlade.specialAttacks.put(282, new HonkaiDizuiSA());
             ItemSlashBlade.specialAttacks.put(283, new HonKaiFireOfSin());
@@ -98,9 +96,7 @@ public class BladeProxy {
                 ItemSlashBlade.specialAttacks.put(411,new AL_RandomSA());
                 ItemSlashBlade.specialAttacks.put(412,new AL_HuanyingdieS());
             }
-            //AW
-
-        }
+        //AW
         ItemSlashBlade.specialAttacks.put(288,new RockHit_I());
         ItemSlashBlade.specialAttacks.put(289,new SaBreakTheDawn());
         ItemSlashBlade.specialAttacks.put(290,new SaCutMetal());

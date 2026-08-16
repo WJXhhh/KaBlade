@@ -15,7 +15,6 @@ import com.wjx.kablade.SlashBlade.blades.honkai.*;
 import com.wjx.kablade.SlashBlade.blades.honkaip2.*;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.Loader;
 
 import java.util.List;
 
@@ -42,30 +41,14 @@ public class BladeLoader {
 
     public static Item ITEM_SL = null;
 
-    public boolean autu=false;
-
-
-    private void RegistOther(){
-        if(Loader.isModLoaded("the_golden_autumn")) {
-            autu=true;
-        }
-
-    }
     public BladeLoader() {
-
-        RegistOther();
-        if(autu){
-            ITEM_MAGIC = new MagicBlade(Item.ToolMaterial.IRON, 32768.0F, "magicslashblade").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_GOD).setNoRepair();
-            ITEM_HONKAI_NAMED=new Item_HonkaiNamed(Item.ToolMaterial.IRON, 1.0F, "honkainamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
-            ITEM_DIZUI= new Item_Caijue(Item.ToolMaterial.IRON, 1.0F, "honkaidizui").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
-            if(EnableAllWeapon)
-                ITEM_AW=new Item_AwNamed(Item.ToolMaterial.DIAMOND,1.0F,"awnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_ALLWEAPON).setNoRepair();
-            if(EnableSPLight)
-                ITEM_SL = new Item_SLNamed(Item.ToolMaterial.DIAMOND,1.0F,"slnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_SP_LIGHT).setNoRepair();
-        }
-
-
-
+        ITEM_MAGIC = new MagicBlade(Item.ToolMaterial.IRON, 32768.0F, "magicslashblade").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_GOD).setNoRepair();
+        ITEM_HONKAI_NAMED=new Item_HonkaiNamed(Item.ToolMaterial.IRON, 1.0F, "honkainamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
+        ITEM_DIZUI= new Item_Caijue(Item.ToolMaterial.IRON, 1.0F, "honkaidizui").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
+        if(EnableAllWeapon)
+            ITEM_AW=new Item_AwNamed(Item.ToolMaterial.DIAMOND,1.0F,"awnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_ALLWEAPON).setNoRepair();
+        if(EnableSPLight)
+            ITEM_SL = new Item_SLNamed(Item.ToolMaterial.DIAMOND,1.0F,"slnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_SP_LIGHT).setNoRepair();
 
         loadBlade();
     }
@@ -86,10 +69,7 @@ public class BladeLoader {
       this.loadBlade(new BlackSteel());
       this.loadBlade(new ForestShadow());
       this.loadBlade(new Originyer());
-       // Main.logger.info("RegisterHONKAI:"+(autu));
-    if(autu)
-        {
-            this.loadBlade(new MuraSeshu());
+      this.loadBlade(new MuraSeshu());
             this.loadBlade(new MuraHori());
             this.loadBlade(new MuraUson());
             this.loadBlade(new MuraYoto());
@@ -180,8 +160,7 @@ public class BladeLoader {
 
 
 
-            this.loadBlade(new MoDao());
-        }
+      this.loadBlade(new MoDao());
 
 
     }

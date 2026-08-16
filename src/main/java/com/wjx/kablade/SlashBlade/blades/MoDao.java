@@ -68,6 +68,5 @@ public class MoDao {
         ItemSlashBlade.StandbyRenderType.set(tag, 1);
         SlashBlade.registerCustomItemStack(this.name, customblade);
         BladeLoader.NamedGod.add(name);
-        //System.out.println("autumn:starinit");
     }
 }
