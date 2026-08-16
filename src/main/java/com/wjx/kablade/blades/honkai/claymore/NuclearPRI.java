@@ -26,7 +26,7 @@ public class NuclearPRI extends BladeDefineBase {
                 RenderDefinition.Builder.newInstance()
                         .modelName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/mdl.obj"))
                         .textureName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/tex.png"))
-                        .effectColor(0xEEBB22)
+                        .effectColor(0xFFBB22)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()

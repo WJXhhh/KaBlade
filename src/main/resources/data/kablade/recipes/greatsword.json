@@ -1,0 +1,22 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:greatsword",
+  "category": "equipment",
+  "key": {
+    "J": {
+      "item": "minecraft:diamond_sword"
+    },
+    "Z": {
+      "item": "minecraft:diamond_block"
+    }
+  },
+  "pattern": [
+    " ZZ",
+    " JZ",
+    "J  "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}
