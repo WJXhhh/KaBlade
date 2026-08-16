@@ -24,7 +24,13 @@ public class KabladeMixinTweak implements ITweaker{
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader) {
         MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.kablade.mixin_late.json");
+        // Cleanroom discovers mods before cascading their TweakClass, so ModDiscoverer has
+        // already been loaded by the time this method runs. Keep the LoadController hook, but
+        // do not ask Mixin to transform an already loaded discovery class.
+        boolean cleanroom = classLoader.getResource("com/cleanroommc/boot/Main.class") != null;
+        Mixins.addConfiguration(cleanroom
+                ? "mixins.kablade.cleanroom_late.json"
+                : "mixins.kablade.mixin_late.json");
         CodeSource codeSource = this.getClass().getProtectionDomain().getCodeSource();
         if (codeSource != null) {
             URL location = codeSource.getLocation();

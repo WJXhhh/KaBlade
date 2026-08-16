@@ -216,7 +216,6 @@ publishing {
 
 mixin {
     add sourceSets.main, "mixins.kablade.refmap.json"
-    config 'mixins.kablade.mixin_late.json'
 
     debug.verbose = true
     debug.export = true
