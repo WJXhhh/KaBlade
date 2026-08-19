@@ -198,6 +198,7 @@ flammpfeil.slashblade.specialattack.frost_comet=Frost Comet
 flammpfeil.slashblade.specialattack.rock_hit_i=Rock Hit
 flammpfeil.slashblade.specialattack.break_the_dawn=Break The Dawn
 flammpfeil.slashblade.specialattack.cut_metal=Break Metal
+flammpfeil.slashblade.specialattack.vorpal_hole=Vorpal Hole
 flammpfeil.slashblade.specialattack.vorpal_hoe=Vorpal Hole
 flammpfeil.slashblade.specialattack.blade_ward=Blade Ward
 flammpfeil.slashblade.specialattack.absolute_zero=Absolute Zero
@@ -249,6 +250,8 @@ flammpfeil.slashblade.specialattack.suiji=§cRandom Fool!
 
 #生之称
 entity.vorpal_black_hole.name=Vorpal Black Hole
+entity.kablade.vorpal_black_hole.name=Vorpal Black Hole
+entity.EntityVorpalBlackHole.name=Vorpal Black Hole
 entity.wine.name=Wine
 
 #堺之言

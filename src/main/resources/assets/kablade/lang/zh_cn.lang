@@ -211,6 +211,7 @@ flammpfeil.slashblade.specialattack.frost_comet=霜冻彗星
 flammpfeil.slashblade.specialattack.rock_hit_i=磐石撼击
 flammpfeil.slashblade.specialattack.break_the_dawn=弧光破晓
 flammpfeil.slashblade.specialattack.cut_metal=斩铁断金
+flammpfeil.slashblade.specialattack.vorpal_hole=时空黑洞
 flammpfeil.slashblade.specialattack.vorpal_hoe=时空黑洞
 flammpfeil.slashblade.specialattack.blade_ward=灵刃护体
 flammpfeil.slashblade.specialattack.absolute_zero=绝对零度
@@ -249,6 +250,8 @@ slashblade.seffect.name.kablade.true_self=§d明心见性
 
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞
+entity.kablade.vorpal_black_hole.name=反力场黑洞
+entity.EntityVorpalBlackHole.name=反力场黑洞
 entity.wine.name=藤蔓
 
 
