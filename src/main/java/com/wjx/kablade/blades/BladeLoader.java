@@ -95,6 +95,8 @@ import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /** Registers named blades that all use kablade:kablade_blade as their carrier item. */
 public final class BladeLoader {
@@ -305,6 +307,11 @@ public final class BladeLoader {
             "shangguyizhi"
     );
 
+    private static final Set<String> HONKAI_GREATSWORD_BLADE_KEYS = Set.of(
+            "greatsword",
+            "nuclear_pri"
+    );
+
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
         RIMMED_EARTH = new RimmedEarth(context);
         // 岩石线 Lv1：夯土刀 + 安山岩/花岗岩/闪长岩
@@ -416,10 +423,18 @@ public final class BladeLoader {
         fillBladeTab(parameters, output, ModItems.KABLADE_BLADE.getId());
     }
 
-    /** 崩坏线拔刀剑专用创造分页：只列出载体为 kablade_honkai_named 的刀。 */
+    /** 崩坏线太刀专用创造分页：列出崩坏载体中除大剑系列之外的刀。 */
     public static void fillCreativeTabHonkai(CreativeModeTab.ItemDisplayParameters parameters,
                                              CreativeModeTab.Output output) {
-        fillBladeTab(parameters, output, ModItems.KABLADE_HONKAI_BLADE.getId());
+        fillBladeTab(parameters, output, ModItems.KABLADE_HONKAI_BLADE.getId(),
+                path -> !HONKAI_GREATSWORD_BLADE_KEYS.contains(path));
+    }
+
+    /** 崩坏线大剑专用创造分页：只列出崩坏大剑系列。 */
+    public static void fillCreativeTabHonkaiGreatsword(CreativeModeTab.ItemDisplayParameters parameters,
+                                                       CreativeModeTab.Output output) {
+        fillBladeTab(parameters, output, ModItems.KABLADE_HONKAI_BLADE.getId(),
+                HONKAI_GREATSWORD_BLADE_KEYS::contains);
     }
 
     /** 龙一文字线拔刀剑专用创造分页：只列出载体为 kablade_sl_named 的刀。 */
@@ -437,13 +452,21 @@ public final class BladeLoader {
     private static void fillBladeTab(CreativeModeTab.ItemDisplayParameters parameters,
                                      CreativeModeTab.Output output,
                                      net.minecraft.resources.ResourceLocation carrierItemId) {
+        fillBladeTab(parameters, output, carrierItemId, path -> true);
+    }
+
+    private static void fillBladeTab(CreativeModeTab.ItemDisplayParameters parameters,
+                                     CreativeModeTab.Output output,
+                                     net.minecraft.resources.ResourceLocation carrierItemId,
+                                     Predicate<String> pathFilter) {
         if (carrierItemId == null) {
             return;
         }
         HolderLookup.RegistryLookup<SlashBladeDefinition> definitions =
                 SlashBlade.getSlashBladeDefinitionRegistry(parameters.holders());
         definitions.listElements()
-                .filter(definition -> carrierItemId.equals(definition.value().getItemName()))
+                .filter(definition -> carrierItemId.equals(definition.value().getItemName())
+                        && pathFilter.test(definition.value().getName().getPath()))
                 .sorted(Comparator.comparingInt(ref -> {
                     String path = ref.value().getName().getPath();
                     int idx = BLADE_ORDER.indexOf(path);

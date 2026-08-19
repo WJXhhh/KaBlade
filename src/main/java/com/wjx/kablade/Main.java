@@ -63,7 +63,9 @@ public final class Main {
 
     public static final CreativeTabBuilder TAB_KABLADE_NOTED = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".noted")).icon(() -> new ItemStack(ModItems.NOTED.get())));
 
-    public static final CreativeTabBuilder TAB_KABLADE_HONKAI = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".honkai")).icon(() -> new ItemStack(ModItems.HONKAI_ICON.get())));
+    public static final CreativeTabBuilder TAB_KABLADE_HONKAI = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".honkai")).icon(() -> new ItemStack(ModItems.HONKAI_BLADE_ICON.get())));
+
+    public static final CreativeTabBuilder TAB_KABLADE_HONKAI_GREATSWORD = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".honkai_greatsword")).icon(() -> new ItemStack(ModItems.HONKAI_GREATSWORD_ICON.get())));
 
     public static final CreativeTabBuilder TAB_KABLADE_SP_LIGHT = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".sp_light")).icon(() -> new ItemStack(ModItems.SP_LIGHT_ICON.get())));
 
@@ -84,14 +86,16 @@ public final class Main {
 
         TAB_KABLADE_NOTED.addDisplayItems(BladeLoader::fillCreativeTab);
         TAB_KABLADE_HONKAI.addDisplayItems(BladeLoader::fillCreativeTabHonkai);
+        TAB_KABLADE_HONKAI_GREATSWORD.addDisplayItems(BladeLoader::fillCreativeTabHonkaiGreatsword);
         TAB_KABLADE_SP_LIGHT.addDisplayItems(BladeLoader::fillCreativeTabSPLight);
         TAB_KABLADE_ALLWEAPON.addDisplayItems(BladeLoader::fillCreativeTabAllWeapon);
         // Normal items (including RIMMED_EARTH) register into TAB_KABLADE via ModItems -- not duplicated.
         TAB_KABLADE.registerTab("tab_1_kablade", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_NOTED.registerTab("tab_2_noted", CREATIVE_TAB_REGISTRY);
         TAB_KABLADE_HONKAI.registerTab("tab_3_honkai", CREATIVE_TAB_REGISTRY);
-        TAB_KABLADE_SP_LIGHT.registerTab("tab_4_sp_light", CREATIVE_TAB_REGISTRY);
-        TAB_KABLADE_ALLWEAPON.registerTab("tab_5_allweapon", CREATIVE_TAB_REGISTRY);
+        TAB_KABLADE_HONKAI_GREATSWORD.registerTab("tab_4_honkai_greatsword", CREATIVE_TAB_REGISTRY);
+        TAB_KABLADE_SP_LIGHT.registerTab("tab_5_sp_light", CREATIVE_TAB_REGISTRY);
+        TAB_KABLADE_ALLWEAPON.registerTab("tab_6_allweapon", CREATIVE_TAB_REGISTRY);
 
         // --- Config ---
         // --- Config --- COMMON config for global defaults; players can edit config/kablade-common.toml

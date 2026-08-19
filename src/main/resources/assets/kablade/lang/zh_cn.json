@@ -1,7 +1,8 @@
 {
   "itemGroup.kablade": "斩无不断",
   "itemGroup.kablade.noted": "斩无不断 铭刀",
-  "itemGroup.kablade.honkai": "斩无不断 崩坏",
+  "itemGroup.kablade.honkai": "斩无不断 崩坏太刀",
+  "itemGroup.kablade.honkai_greatsword": "斩无不断 崩坏大剑",
   "itemGroup.kablade.sp_light": "斩无不断 龙一文字改",
   "itemGroup.kablade.allweapon": "斩无不断 万物皆刃",
   "item.kablade.kablade_blade": "Kablade 刀",
@@ -11,7 +12,7 @@
   "item.kablade.main_mater": "Kablade",
   "item.kablade.honkai_icon": "崩坏Tab图标",
   "item.kablade.honkai_blade_icon": "崩坏太刀Tab图标",
-  "item.kablade.honkai_greatsword_icon": "崩坏太刀Tab图标",
+  "item.kablade.honkai_greatsword_icon": "崩坏大剑Tab图标",
   "item.kablade.sp_light_icon": "龙一文字Tab图标",
   "item.kablade.allweapon_icon": "万物皆刃Tab图标",
   "item.kablade.liurrh": "§c炎王§9「§l§c流刃若火§r§9」",
