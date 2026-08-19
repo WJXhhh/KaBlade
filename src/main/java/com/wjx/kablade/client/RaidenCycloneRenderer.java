@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -389,7 +388,6 @@ public final class RaidenCycloneRenderer {
             RaidenCycloneTimeline.LocalPose pose = RaidenCycloneTimeline.samplePlayer(sample);
             Vec3 feet = rotateBasis(fx, pose.x(), 0.02D, pose.z());
             float a = alpha * (0.48F - ghost * 0.072F);
-            Vec3 pelvis = feet.add(0.0D, 0.88D, 0.0D);
             Vec3 chest = feet.add(0.0D, 1.45D, 0.0D);
             Vec3 head = feet.add(0.0D, 1.93D, 0.0D);
             segment(dark, matrix, feet, chest, 0.22F, DARK, a * 0.50F);

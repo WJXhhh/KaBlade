@@ -19,7 +19,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
-import java.util.List;
 
 /** Visual and multi-hit anchor for Domain of Unity's Conceptual Metaphor SA. */
 public final class ConceptualMetaphorEntity extends SwordEnlightenmentEntity {

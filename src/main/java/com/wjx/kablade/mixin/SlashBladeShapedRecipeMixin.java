@@ -1,7 +1,6 @@
 package com.wjx.kablade.mixin;
 
 import com.wjx.kablade.Main;
-import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.recipe.SlashBladeShapedRecipe;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;

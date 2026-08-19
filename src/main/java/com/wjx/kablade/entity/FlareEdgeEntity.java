@@ -1,7 +1,6 @@
 package com.wjx.kablade.entity;
 
 import com.wjx.kablade.init.ModEntities;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;

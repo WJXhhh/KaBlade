@@ -4,7 +4,6 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.api.CustomBladeModel;
 import com.wjx.kablade.init.ModItems;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModel;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;

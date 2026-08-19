@@ -20,7 +20,6 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraftforge.network.NetworkHooks;
 
-import java.util.List;
 import java.util.UUID;
 
 /** Visual and damage entity for One Salty Tuna's Lethal Thrust SA. */

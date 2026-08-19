@@ -1,7 +1,6 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.entity.RainUmbrellaEntity;
-import com.wjx.kablade.util.SATool;
 import com.wjx.kablade.util.SaTargeting;
 import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -12,7 +11,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 

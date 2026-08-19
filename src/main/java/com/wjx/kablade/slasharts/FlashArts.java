@@ -1,7 +1,6 @@
 package com.wjx.kablade.slasharts;
 
 import com.wjx.kablade.util.MathFunc;
-import com.wjx.kablade.util.SATool;
 import com.wjx.kablade.util.SaTargeting;
 import com.wjx.kablade.util.SaTarget;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;

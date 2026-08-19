@@ -17,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 
-import java.util.List;
 import java.util.function.Function;
 
 /** Snow Dance, Ice Epiphyllum's actual 1.12.2 slash art bound by SpecialAttackType 299. */

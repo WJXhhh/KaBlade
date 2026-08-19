@@ -23,7 +23,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
 
-import java.util.List;
 
 /** Visible freeze domain for Ice Epiphyllum's Snow Dance, ported from 1.12.2 EntityFreezeDomain. */
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)

@@ -27,7 +27,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import org.joml.Vector3f;
 
-import java.util.List;
 
 /** Visual and delayed-damage anchor for Frozen Naraka's Utpala Aura slash art. */
 public class UtpalaAuraEntity extends Entity {
