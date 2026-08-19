@@ -59,6 +59,7 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(298,new HonkaiMagChaosBlade());
             ItemSlashBlade.specialAttacks.put(299,new HonkaiSnowDance());
             ItemSlashBlade.specialAttacks.put(300,new HonkaiKamiOfWar());
+            ItemSlashBlade.specialAttacks.put(306,new HonkaiLightsOnStage());
             if (ModConfig.GeneralConf.Enable_New_SA_Id){
                 ItemSlashBlade.specialAttacks.put(451,new HonkaiWindEnchantment());
                 ItemSlashBlade.specialAttacks.put(452,new HonKaiZaizan());

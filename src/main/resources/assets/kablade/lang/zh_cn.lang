@@ -232,6 +232,7 @@ flammpfeil.slashblade.specialattack.induction_collapse=高频坍缩
 flammpfeil.slashblade.specialattack.overslash=拔刀术
 flammpfeil.slashblade.specialattack.utpala_aura=§b§l冰天冻云
 flammpfeil.slashblade.specialattack.conceptual=剑体始觉
+flammpfeil.slashblade.specialattack.lights_on_stage=聚光舞台
 
 
 slashblade.seffect.name.kablade.SETurbulence=§5乱流
@@ -267,6 +268,7 @@ prop.title=斩无不断:效果
 
 prop.kami_of_war_count=神威镇世
 prop.wind_enchantment_boost=风之结界
+prop.stage_light=聚光舞台
 prop.fair_pow=风之力
 
 

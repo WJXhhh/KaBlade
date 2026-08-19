@@ -10,7 +10,6 @@ import mods.flammpfeil.slashblade.RecipeAwakeBlade;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.named.event.LoadEvent;
-import mods.flammpfeil.slashblade.specialattack.SakuraEnd;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -46,7 +45,7 @@ public class GalacticNova {
         ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/GalacticNova/texGalactic");
         ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/GalacticNova/mdlGalactic");
 
-        ItemSlashBlade.SpecialAttackType.set(tag,7);
+        ItemSlashBlade.SpecialAttackType.set(tag,306);
         ItemSlashBlade.setBaseAttackModifier(tag,2);
         customblade.getTagCompound().setFloat("baseAttackModifier",15.0F);
         ItemSlashBlade.AttackAmplifier.set(tag,1.7f);

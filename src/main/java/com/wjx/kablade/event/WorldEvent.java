@@ -95,6 +95,8 @@ import static com.wjx.kablade.proxy.ClientProxy.rendererWE;
 //@Mod.EventBusSubscriber
 public class WorldEvent {
 
+    private static final UUID UUID_STAGE_LIGHT = UUID.fromString("7a3b8c9d-0e1f-4a5b-8c7d-9e0f1a2b3c4d");
+
     public WorldEvent() {
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -660,6 +662,28 @@ public class WorldEvent {
                         }
                         if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getModifier(UUID_WIND_ENCHANTMENT) != null) {
                             map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).removeModifier(UUID_WIND_ENCHANTMENT);
+                        }
+                    }
+                }
+                //StageLightBoost
+                {
+                    if (playerProperties.getInteger(KaBladePlayerProp.STAGE_LIGHT) > 0) {
+                        KaBladeEntityProperties.doIntegerLower(playerProperties, KaBladePlayerProp.STAGE_LIGHT);
+                        KaBladePlayerProp.updateNBTForClient(player);
+                        AbstractAttributeMap map = player.getAttributeMap();
+                        if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).getModifier(UUID_STAGE_LIGHT) == null) {
+                            map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).applyModifier(new AttributeModifier(UUID_STAGE_LIGHT, "stage_light", 0.1, 1));
+                        }
+                        if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getModifier(UUID_STAGE_LIGHT) == null) {
+                            map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).applyModifier(new AttributeModifier(UUID_STAGE_LIGHT, "stage_light", 0.1, 1));
+                        }
+                    } else {
+                        AbstractAttributeMap map = player.getAttributeMap();
+                        if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).getModifier(UUID_STAGE_LIGHT) != null) {
+                            map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).removeModifier(UUID_STAGE_LIGHT);
+                        }
+                        if (map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getModifier(UUID_STAGE_LIGHT) != null) {
+                            map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).removeModifier(UUID_STAGE_LIGHT);
                         }
                     }
                 }
