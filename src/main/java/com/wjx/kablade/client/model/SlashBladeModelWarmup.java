@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 对齐 1.20.1 版本的激进预热：标题界面一次性加载全部已注册刀模和纹理。
+ * 在标题界面预热已注册的刀模；纹理预热由独立配置控制。
  */
 public final class SlashBladeModelWarmup {
     private static final ResourceLocationRaw DEFAULT_MODEL =
@@ -35,31 +35,37 @@ public final class SlashBladeModelWarmup {
     private static final ResourceLocationRaw DEFAULT_TEXTURE =
             new ResourceLocationRaw("flammpfeil.slashblade", "model/blade.png");
 
-    private boolean warmed;
+    private boolean modelsWarmed;
+    private boolean texturesWarmed;
     private boolean running;
-    private boolean rewarmAfterStitch;
+    private boolean rewarmModelsAfterStitch;
+    private boolean rewarmTexturesAfterStitch;
     private WarmupTask pendingWarmup;
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event) {
-        if (ModConfig.GeneralConf.EnableSlashBladeModelWarmup
-                && !warmed && event.getGui() instanceof GuiMainMenu) {
+        if (needsWarmup() && event.getGui() instanceof GuiMainMenu) {
             warmup("title-screen");
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onTextureStitchPre(TextureStitchEvent.Pre event) {
-        rewarmAfterStitch = warmed || pendingWarmup != null;
-        warmed = false;
+        rewarmModelsAfterStitch = ModConfig.GeneralConf.EnableSlashBladeModelWarmup
+                && (modelsWarmed || pendingWarmup != null);
+        rewarmTexturesAfterStitch = ModConfig.GeneralConf.EnableSlashBladeTextureWarmup
+                && (texturesWarmed || pendingWarmup != null);
+        modelsWarmed = false;
+        texturesWarmed = false;
         pendingWarmup = null;
         StaticBladeMeshCache.clear();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onTextureStitchPost(TextureStitchEvent.Post event) {
-        if (ModConfig.GeneralConf.EnableSlashBladeModelWarmup && rewarmAfterStitch) {
-            rewarmAfterStitch = false;
+        if (rewarmModelsAfterStitch || rewarmTexturesAfterStitch) {
+            rewarmModelsAfterStitch = false;
+            rewarmTexturesAfterStitch = false;
             warmup("resource-reload");
         }
     }
@@ -71,18 +77,37 @@ public final class SlashBladeModelWarmup {
         }
 
         Minecraft minecraft = Minecraft.getMinecraft();
-        if (!ModConfig.GeneralConf.EnableSlashBladeModelWarmup) {
-            if (warmed || pendingWarmup != null || StaticBladeMeshCache.getCachedBytes() > 0L) {
-                warmed = false;
-                rewarmAfterStitch = false;
-                pendingWarmup = null;
+        boolean modelWarmupEnabled = ModConfig.GeneralConf.EnableSlashBladeModelWarmup;
+        boolean textureWarmupEnabled = ModConfig.GeneralConf.EnableSlashBladeTextureWarmup;
+
+        if (pendingWarmup != null
+                && ((pendingWarmup.prewarmModels && !modelWarmupEnabled)
+                || (pendingWarmup.prewarmTextures && !textureWarmupEnabled)
+                || (!pendingWarmup.prewarmModels && modelWarmupEnabled && !modelsWarmed)
+                || (!pendingWarmup.prewarmTextures && textureWarmupEnabled && !texturesWarmed))) {
+            pendingWarmup = null;
+            modelsWarmed = false;
+            texturesWarmed = false;
+        }
+
+        if (!modelWarmupEnabled) {
+            if (modelsWarmed || StaticBladeMeshCache.getCachedBytes() > 0L) {
+                modelsWarmed = false;
                 StaticBladeMeshCache.clear();
                 Main.logger.info("SlashBlade model warmup disabled; static model cache cleared");
             }
-            return;
+        } else {
+            StaticBladeMeshCache.refreshPolicy();
         }
 
-        StaticBladeMeshCache.refreshPolicy();
+        if (!textureWarmupEnabled) {
+            texturesWarmed = false;
+        }
+
+        if (!modelWarmupEnabled && !textureWarmupEnabled) {
+            pendingWarmup = null;
+            return;
+        }
 
         if (pendingWarmup != null) {
             BladeRenderHardwareProfile.Snapshot profile = StaticBladeMeshCache.getHardwareProfile();
@@ -91,7 +116,7 @@ public final class SlashBladeModelWarmup {
             return;
         }
 
-        if (!warmed) {
+        if (needsWarmup()) {
             if (minecraft.currentScreen instanceof GuiMainMenu || minecraft.world != null) {
                 warmup("config-enabled");
             }
@@ -99,38 +124,49 @@ public final class SlashBladeModelWarmup {
     }
 
     private void warmup(String reason) {
-        if (!ModConfig.GeneralConf.EnableSlashBladeModelWarmup || running || pendingWarmup != null) {
+        boolean prewarmModels = ModConfig.GeneralConf.EnableSlashBladeModelWarmup && !modelsWarmed;
+        boolean prewarmTextures = ModConfig.GeneralConf.EnableSlashBladeTextureWarmup && !texturesWarmed;
+        if ((!prewarmModels && !prewarmTextures) || running || pendingWarmup != null) {
             return;
         }
         running = true;
-        Main.logger.info("[KaBlade]正在进行拔刀剑模型预热");
+        Main.logger.info("[KaBlade]正在进行拔刀剑预热: models={}, textures={}",
+                prewarmModels, prewarmTextures);
         try {
             Map<String, ItemStack> stacks = collectBladeStacks();
             Set<ResourceLocationRaw> models = new LinkedHashSet<ResourceLocationRaw>();
             Set<ResourceLocationRaw> textures = new LinkedHashSet<ResourceLocationRaw>();
-            models.add(DEFAULT_MODEL);
-            models.add(BladeModelManager.resourceDurabilityModel);
-            textures.add(DEFAULT_TEXTURE);
-            textures.add(BladeModelManager.resourceDurabilityTexture);
+            if (prewarmModels) {
+                models.add(DEFAULT_MODEL);
+                models.add(BladeModelManager.resourceDurabilityModel);
+            }
+            if (prewarmTextures) {
+                textures.add(DEFAULT_TEXTURE);
+                textures.add(BladeModelManager.resourceDurabilityTexture);
+            }
 
             for (ItemStack stack : stacks.values()) {
                 if (stack.isEmpty() || !(stack.getItem() instanceof ItemSlashBlade)) {
                     continue;
                 }
                 ItemSlashBlade blade = (ItemSlashBlade) stack.getItem();
-                models.add(blade.getModelLocation(stack));
-                textures.add(blade.getModelTexture(stack));
+                if (prewarmModels) {
+                    models.add(blade.getModelLocation(stack));
+                }
+                if (prewarmTextures) {
+                    textures.add(blade.getModelTexture(stack));
+                }
             }
 
             BladeRenderHardwareProfile.Snapshot profile = StaticBladeMeshCache.getHardwareProfile();
             WarmupTask task = new WarmupTask(reason, stacks.size(),
                     new ArrayList<ResourceLocationRaw>(models),
-                    new ArrayList<ResourceLocationRaw>(textures));
+                    new ArrayList<ResourceLocationRaw>(textures), prewarmModels, prewarmTextures);
 
             if (profile.usesIncrementalWarmup()) {
                 pendingWarmup = task;
                 Main.logger.info(
-                        "SlashBlade model warmup will run incrementally: hardwareTier={}, modelsPerTick={}, texturesPerTick={}",
+                        "SlashBlade warmup will run incrementally: hardwareTier={}, modelsPerTick={}, texturesPerTick={}",
                         profile.getTier(), profile.getModelWarmupBatchSize(), profile.getTextureWarmupBatchSize());
             } else {
                 processWarmup(task, Integer.MAX_VALUE, Integer.MAX_VALUE);
@@ -173,17 +209,27 @@ public final class SlashBladeModelWarmup {
         }
 
         pendingWarmup = null;
-        warmed = true;
+        if (task.prewarmModels) {
+            modelsWarmed = true;
+        }
+        if (task.prewarmTextures) {
+            texturesWarmed = true;
+        }
         long elapsedMs = (System.nanoTime() - task.started) / 1_000_000L;
         BladeRenderHardwareProfile.Snapshot profile = StaticBladeMeshCache.getHardwareProfile();
         Main.logger.info(
-                "SlashBlade model warmup finished: reason={}, blades={}, models={}, textures={}, vbos={}, vboMiB={}, vboLimitMiB={}, vboMaxMiB={}, hardwareTier={}, vboEnabled={}, incremental={}, failedModels={}, failedTextures={}, elapsed={}ms",
+                "SlashBlade warmup finished: reason={}, blades={}, models={}, textures={}, vbos={}, vboMiB={}, vboLimitMiB={}, vboMaxMiB={}, hardwareTier={}, vboEnabled={}, incremental={}, failedModels={}, failedTextures={}, elapsed={}ms",
                 task.reason, task.bladeCount, task.models.size(), task.textures.size(), task.warmedVbos,
                 StaticBladeMeshCache.getCachedBytes() / 1024L / 1024L,
                 StaticBladeMeshCache.getCacheLimitBytes() / 1024L / 1024L,
                 StaticBladeMeshCache.getMaximumCacheBytes() / 1024L / 1024L,
                 profile.getTier(), profile.isVboEnabled(), profile.usesIncrementalWarmup(),
                 task.failedModels, task.failedTextures, elapsedMs);
+    }
+
+    private boolean needsWarmup() {
+        return (ModConfig.GeneralConf.EnableSlashBladeModelWarmup && !modelsWarmed)
+                || (ModConfig.GeneralConf.EnableSlashBladeTextureWarmup && !texturesWarmed);
     }
 
     private static Map<String, ItemStack> collectBladeStacks() {
@@ -214,6 +260,8 @@ public final class SlashBladeModelWarmup {
         private final int bladeCount;
         private final List<ResourceLocationRaw> models;
         private final List<ResourceLocationRaw> textures;
+        private final boolean prewarmModels;
+        private final boolean prewarmTextures;
         private final long started = System.nanoTime();
         private int modelIndex;
         private int textureIndex;
@@ -222,11 +270,14 @@ public final class SlashBladeModelWarmup {
         private int failedTextures;
 
         private WarmupTask(String reason, int bladeCount, List<ResourceLocationRaw> models,
-                           List<ResourceLocationRaw> textures) {
+                           List<ResourceLocationRaw> textures, boolean prewarmModels,
+                           boolean prewarmTextures) {
             this.reason = reason;
             this.bladeCount = bladeCount;
             this.models = models;
             this.textures = textures;
+            this.prewarmModels = prewarmModels;
+            this.prewarmTextures = prewarmTextures;
         }
     }
 }

@@ -33,8 +33,10 @@ public class ModConfig {
         public static boolean ExtraBotanyGaiaAllowSlashBlade;
         /** 当启用时，ExtraBotany 的 Gaia III 与空之律者不再限制玩家装备。 */
         public static boolean ExtraBotanyGaiaDisableEquipmentRestrictions;
-        /** 当启用时，在标题界面预热全部拔刀剑模型、纹理及静态 VBO。 */
+        /** 当启用时，在标题界面预热全部拔刀剑模型及静态 VBO。 */
         public static boolean EnableSlashBladeModelWarmup = true;
+        /** 当启用时，在标题界面预热全部拔刀剑纹理；默认关闭以保持资源包兼容性。 */
+        public static boolean EnableSlashBladeTextureWarmup;
         /** 静态刀模 VBO 策略：AUTO 按硬件决定，ON 强制开启，OFF 关闭。 */
         public static String SlashBladeVboMode = "AUTO";
         /** VBO 缓存硬上限（MiB）；0 表示按硬件自动计算。 */
@@ -128,8 +130,13 @@ public class ModConfig {
 
         GeneralConf.EnableSlashBladeModelWarmup = config.getBoolean(
                 "EnableSlashBladeModelWarmup", category, true,
-                "Prewarm all registered SlashBlade models and textures at the title screen and enable the static VBO cache when allowed by SlashBladeVboMode. " +
+                "Prewarm all registered SlashBlade models at the title screen and enable the static VBO cache when allowed by SlashBladeVboMode. " +
                 "Disable this option to use SlashBlade's original rendering path."
+        );
+
+        GeneralConf.EnableSlashBladeTextureWarmup = config.getBoolean(
+                "EnableSlashBladeTextureWarmup", category, false,
+                "Prewarm all registered SlashBlade textures at the title screen. Disabled by default to reduce VRAM usage and avoid resource-pack compatibility issues."
         );
 
         GeneralConf.SlashBladeVboMode = config.getString(
