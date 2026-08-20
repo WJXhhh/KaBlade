@@ -127,6 +127,9 @@ public class ItemInit {
         }
     };
 
+    /** 寒狱冰天及后续崩坏线武器使用的高阶冰属性材料。 */
+    public static Item SUPERCONDUCTING_METAL = new ItemBase("superconducting_metal",TABKABLADE);
+
     public static Item IRON_COIL = new ItemBase("iron_coil",TABKABLADE);
 
     public static Item.ToolMaterial CHROMIUM_MATERIAL= EnumHelper.addToolMaterial("KABLADE_CHROMIUM",2, 800, 6.8F, 2.6F, 17).setRepairItem(new ItemStack(CHROMIUM_INGOT,1));

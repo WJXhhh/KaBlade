@@ -29,6 +29,9 @@ public class EntityInit {
         registerEntity("confinement",EntityConfinementForceField.class,13700014,50);
         registerEntity("conceptual", EntityConceptual.class,13700015,50);
         registerEntity("stage_light", EntityStageLight.class,13700016,80);
+        registerEntity("shock_impact", EntityShockImpact.class,13700017,96);
+        registerEntity("zaizan", EntityZaizan.class,13700018,96);
+        registerEntity("utpala_aura", EntityUtpalaAura.class,13700019,128);
 
 
 

@@ -36,5 +36,8 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityConfinementForceField.class,RenderConfinementForceField::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityConceptual.class,RenderConceptual::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityStageLight.class,RenderStageLight::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityShockImpact.class,RenderShockImpact::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityZaizan.class,RenderZaizan::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityUtpalaAura.class,RenderUtpalaAura::new);
     }
 }

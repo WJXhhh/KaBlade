@@ -4,6 +4,7 @@ import com.wjx.kablade.Entity.Render.Layer.LayerFreeze;
 import com.wjx.kablade.Entity.Render.RenderConfinementForceField;
 import com.wjx.kablade.Entity.Render.RenderWindEnchantment;
 import com.wjx.kablade.SlashBlade.BladeProxy;
+import com.wjx.kablade.client.model.BladeLuminousTextureLayer;
 import com.wjx.kablade.client.model.SlashBladeModelWarmup;
 import com.wjx.kablade.util.ParticleManager;
 import com.wjx.kablade.util.handlers.RenderHandler;
@@ -11,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
@@ -50,6 +52,10 @@ public class ClientProxy extends CommonProxy{
     public void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
         MinecraftForge.EVENT_BUS.register(new SlashBladeModelWarmup());
+        if (Minecraft.getMinecraft().getResourceManager() instanceof IReloadableResourceManager) {
+            ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
+                    .registerReloadListener(BladeLuminousTextureLayer.INSTANCE);
+        }
         Minecraft.getMinecraft().getRenderManager().entityRenderMap.values().forEach(r -> {
             if (r instanceof RenderLivingBase) {
                 attachRenderLayers((RenderLivingBase<?>) r);

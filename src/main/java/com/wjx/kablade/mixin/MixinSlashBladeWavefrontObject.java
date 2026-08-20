@@ -1,5 +1,6 @@
 package com.wjx.kablade.mixin;
 
+import com.wjx.kablade.client.model.BladeLuminousTextureLayer;
 import com.wjx.kablade.config.ModConfig;
 import mods.flammpfeil.slashblade.client.model.obj.GroupObject;
 import mods.flammpfeil.slashblade.client.model.obj.WavefrontObject;
@@ -26,6 +27,12 @@ public abstract class MixinSlashBladeWavefrontObject {
 
     @Inject(method = "renderPart", at = @At("HEAD"), cancellable = true)
     private void kablade$renderIndexedPart(String partName, CallbackInfo ci) {
+        String baseTarget = BladeLuminousTextureLayer.getBaseTarget(partName);
+        if (baseTarget != null
+                && BladeLuminousTextureLayer.INSTANCE.tryRender(kablade$getGroups(baseTarget))) {
+            ci.cancel();
+            return;
+        }
         if (!ModConfig.GeneralConf.EnableSlashBladeModelWarmup) {
             return;
         }
