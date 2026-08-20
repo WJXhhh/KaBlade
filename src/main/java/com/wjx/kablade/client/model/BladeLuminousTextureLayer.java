@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@code sheath_luminous} 或物品栏对应分组时，本类会改为使用发光贴图重绘基础分组。</p>
  */
 @SideOnly(Side.CLIENT)
-public final class BladeLuminousTextureLayer implements IResourceManagerReloadListener {
+public class BladeLuminousTextureLayer implements IResourceManagerReloadListener {
     public static final BladeLuminousTextureLayer INSTANCE = new BladeLuminousTextureLayer();
 
     private static final String LUMINOUS_GROUP_SUFFIX = "_luminous";
