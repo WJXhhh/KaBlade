@@ -135,7 +135,7 @@ public class ModConfig {
         );
 
         GeneralConf.EnableSlashBladeTextureWarmup = config.getBoolean(
-                "EnableSlashBladeTextureWarmup", category, false,
+                "EnableSlashBladeTextureWarmup", category, true,
                 "Prewarm all registered SlashBlade textures at the title screen. Disabled by default to reduce VRAM usage and avoid resource-pack compatibility issues."
         );
 
