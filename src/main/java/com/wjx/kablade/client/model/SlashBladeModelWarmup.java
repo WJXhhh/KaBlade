@@ -38,8 +38,6 @@ public final class SlashBladeModelWarmup {
     private boolean modelsWarmed;
     private boolean texturesWarmed;
     private boolean running;
-    private boolean rewarmModelsAfterStitch;
-    private boolean rewarmTexturesAfterStitch;
     private WarmupTask pendingWarmup;
 
     @SubscribeEvent
@@ -51,23 +49,12 @@ public final class SlashBladeModelWarmup {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onTextureStitchPre(TextureStitchEvent.Pre event) {
-        rewarmModelsAfterStitch = ModConfig.GeneralConf.EnableSlashBladeModelWarmup
-                && (modelsWarmed || pendingWarmup != null);
-        rewarmTexturesAfterStitch = ModConfig.GeneralConf.EnableSlashBladeTextureWarmup
-                && (texturesWarmed || pendingWarmup != null);
+        // 这里只清理状态，等待资源重载完成后的 ClientTick 再预热。
+        // 第三方拔刀剑可能在 getModelTexture 中注册动态纹理，不能在 stitch 回调内调用。
         modelsWarmed = false;
         texturesWarmed = false;
         pendingWarmup = null;
         StaticBladeMeshCache.clear();
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onTextureStitchPost(TextureStitchEvent.Post event) {
-        if (rewarmModelsAfterStitch || rewarmTexturesAfterStitch) {
-            rewarmModelsAfterStitch = false;
-            rewarmTexturesAfterStitch = false;
-            warmup("resource-reload");
-        }
     }
 
     @SubscribeEvent
