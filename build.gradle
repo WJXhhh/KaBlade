@@ -168,7 +168,7 @@ repositories {
         dir 'libs'
     }
 
-    // CurseMaven — pulls SlashBlade 1.8.62 (and any other CurseForge-only mod jars) by project/file id.
+    // CurseMaven — pulls the pinned SlashBlade version (currently 1.9.65) and other CurseForge-only mod jars by project/file id.
     // includeGroup keeps it from being consulted for non-curse dependencies.
     maven {
         name 'CurseMaven'
@@ -226,7 +226,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
-    // EMI — 仅编译期需要 API，运行时禁用（JEI 已替代）
+    // EMI — optional integration; compile-only here because the runtime is supplied by the user's EMI installation.
     compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
 
     // Client-only dev runtime shader stack for runClient. Controlled by the

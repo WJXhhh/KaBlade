@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "kablade:item/honkai_blade_icon"
+    "layer0": "kablade:item/honkai_katana_icon"
   }
 }

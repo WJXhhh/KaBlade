@@ -59,7 +59,7 @@ public final class ModItems {
     public static final RegistryObject<Item> MAIN_MATER = registerItemBase("main_mater");
     public static final RegistryObject<Item> NOTED = registerItemBase("noted");
     public static final RegistryObject<Item> HONKAI_ICON = registerItemBase("honkai_icon");
-    public static final RegistryObject<Item> HONKAI_BLADE_ICON = registerItemBase("honkai_blade_icon");
+    public static final RegistryObject<Item> HONKAI_KATANA_ICON = registerItemBase("honkai_katana_icon");
     public static final RegistryObject<Item> HONKAI_GREATSWORD_ICON = registerItemBase("honkai_greatsword_icon");
     public static final RegistryObject<Item> SP_LIGHT_ICON = registerItemBase("sp_light_icon");
     public static final RegistryObject<Item> ALLWEAPON_ICON = registerItemBase("allweapon_icon");

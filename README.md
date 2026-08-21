@@ -1,31 +1,58 @@
 # Kablade (斩无不断)
 
-**Kablade** 是一个 Minecraft Forge 1.20.1 模组，作为 **[SlashBlade Resharped (拔刀剑重锋)](https://github.com/0999312/SlashBlade-Resharped)** 的附属（Addon），添加命名拔刀剑、合成材料与专属刀技。
+**Kablade** 是一个 Minecraft Forge 1.20.1 模组，作为 **[SlashBlade Resharped (拔刀剑重锋)](https://github.com/0999312/SlashBlade-Resharped)** 的附属（Addon），添加命名拔刀剑、合成材料、专属刀技、特殊效果和对应的客户端演出。
 
-> **Mod ID:** `kablade`  
-> **作者:** JDJades  
-> **依赖:** Forge ≥47, Minecraft 1.20.1, SlashBlade Resharped ≥1.8
+> **Mod ID:** `kablade`<br>
+> **当前版本:** `2.8.0-b`<br>
+> **作者:** JDJades<br>
+> **运行环境:** Minecraft 1.20.1，Forge 47.x<br>
+> **SlashBlade 依赖:** 运行时最低 `1.8`；当前开发构建锁定 `1.9.65`（CurseForge 文件 `8090912`）
 
 ---
 
 ## 特性
 
-### JEI 集成
+### 命名拔刀剑与创造模式分页
 
-通过 `KbladeJeiPlugin` 为 SlashBlade 的 `JEICompat` subtype 解释器注册本模组的载体物品：
-- 不同命名刀在 JEI 中各自独立显示，不会挤在一个条目里
-- 预览按刀名渲染正确的模型/贴图/颜色
+当前仓库包含普通命名刀、铭刀、崩坏系列、龙一文字改系列和万物皆刃系列；数据生成目录中当前有 85 个命名刀定义。
+
+模组提供 6 个创造模式分页：
+
+- `tab_1_kablade`：普通物品、材料和方块
+- `tab_2_noted`：普通命名拔刀剑
+- `tab_3_honkai`：崩坏太刀
+- `tab_4_honkai_greatsword`：崩坏大剑
+- `tab_5_sp_light`：龙一文字改系列
+- `tab_6_allweapon`：万物皆刃系列
+
+### JEI 与 EMI 集成
+
+- JEI：通过 `KbladeJeiPlugin` 为 4 类命名刀载体注册 SlashBlade subtype 解释器，使不同刀名在 JEI 中独立显示，并使用正确的模型、贴图和颜色预览。
+- EMI：通过 `KbladeEmiPlugin` 注册命名刀堆叠、刀类合成表和对应的刀身预览。
+
+两个兼容模块都是可选的；未安装 JEI 或 EMI 时，模组仍可正常运行。
 
 ### 全局配置
 
-`config/kablade-common.toml`（启动前即可编辑）：
+通用配置文件为 `config/kablade-common.toml`，启动游戏后生成，可在下次启动前编辑。配置分为两个区段：
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `attack_multiplier` | float | 1.0 | 所有命名刀攻击力全局倍率 |
-| `durability_multiplier` | float | 1.0 | 所有命名刀最大耐久全局倍率 |
+| 配置路径 | 类型 | 默认值 | 说明 |
+|---|---|---:|---|
+| `blade_multiplier.attack_multiplier` | double | `1.0` | 所有命名刀基础攻击力倍率 |
+| `blade_multiplier.durability_multiplier` | double | `1.0` | 所有命名刀最大耐久倍率 |
+| `slash_art_targeting.filter_players` | boolean | `true` | SA 目标选择是否过滤玩家 |
+| `slash_art_targeting.protect_tamed_pets` | boolean | `true` | SA/SE 伤害是否保护玩家自己的驯服宠物；盟友宠物遵循队伍友伤规则 |
+| `slash_art_targeting.sa_all_use_targets` | boolean | `false` | 是否让 `SaTargeting` 全部使用 SlashBlade 的 `TargetSelector` |
 
-> **注意**：倍率在刀被创建时烤入 NBT，仅影响**之后**新造的刀；存档里已有的刀不受影响。
+攻击力和耐久倍率会在刀被创建时写入其属性，仅影响之后新创建的刀；存档中已有的刀不会自动改变。
+
+客户端演出配置文件为 `config/kablade-client.toml`，包括以下区段：
+
+- `skill_shader.mode`：`AUTO`、`FORCE_VANILLA_CUSTOM`、`FORCE_OCULUS_POST`，默认 `AUTO`
+- `raiden_cyclone`：质量、镜头震动和闪光控制，默认质量 `HIGH`
+- `raizan_cleave`：质量、镜头震动和闪光控制，默认质量 `HIGH`
+- `thunderbolt_call`：镜头震动、闪光和调试锚点
+- `narukami_divinity`：镜头震动和闪光控制
 
 ### 在线更新检查
 
@@ -73,19 +100,22 @@ cd KBlade2
 ### 构建须知
 
 - **Gradle Daemon 已禁用** (`org.gradle.daemon=false`)，每次构建从头启动
-- **`syncMainConstants`** 任务会在编译前将 `gradle.properties` 中的版本号同步到 `Main.java`，单一起源
-- 开发环境需要 `mixin.env.remapRefMap=true`（已内置于 `build.gradle`），否则 SlashBlade 的 Mixin 在官方映射下会崩溃
+- **`syncMainConstants`** 任务会在编译前将 `gradle.properties` 中的 Mod ID、名称和版本同步到 `Main.java`；请修改 `gradle.properties`，不要直接改 Java 常量
+- 开发环境需要 `mixin.env.remapRefMap=true`（已内置于 `build.gradle`），否则 SlashBlade 的 Mixin 在官方映射下可能无法找到目标
 - `mods.toml` 和 `pack.mcmeta` 通过独立的 `Copy` 任务展开模板变量，而非嵌入 `processResources`
+- `runClient` 默认加载 Embeddium + Oculus 作为客户端着色器测试环境；如需关闭，可运行 `./gradlew runClient -PenableShaderMods=false`
 
 ---
 
 ## 依赖
 
-| 依赖 | 类型 | 来源 |
-|------|------|------|
-| Minecraft Forge 1.20.1 | 必需 | [forge](https://files.minecraftforge.net/) |
-| SlashBlade Resharped | 必需 | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/slashblade-resharped) |
-| JEI | 可选 | [BlameJared](https://maven.blamejared.com) |
+| 依赖 | 类型 | 版本/范围 | 来源 |
+|---|---|---|---|
+| Minecraft | 必需 | `1.20.1` | — |
+| Minecraft Forge | 必需 | `47.x`（开发环境为 `47.4.0`） | [Forge](https://files.minecraftforge.net/) |
+| SlashBlade Resharped | 必需 | 运行时最低 `1.8`；开发构建 `1.9.65` | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/slashblade-resharped) |
+| JEI | 可选 | 1.20.1，开发运行时 `15.20.0.116` | [BlameJared](https://maven.blamejared.com) |
+| EMI | 可选 | `1.1+` | [Terraformers](https://maven.terraformersmc.com/) |
 
 ---
 

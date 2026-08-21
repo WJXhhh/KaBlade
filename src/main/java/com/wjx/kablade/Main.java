@@ -63,7 +63,7 @@ public final class Main {
 
     public static final CreativeTabBuilder TAB_KABLADE_NOTED = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".noted")).icon(() -> new ItemStack(ModItems.NOTED.get())));
 
-    public static final CreativeTabBuilder TAB_KABLADE_HONKAI = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".honkai")).icon(() -> new ItemStack(ModItems.HONKAI_BLADE_ICON.get())));
+    public static final CreativeTabBuilder TAB_KABLADE_HONKAI = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".honkai")).icon(() -> new ItemStack(ModItems.HONKAI_KATANA_ICON.get())));
 
     public static final CreativeTabBuilder TAB_KABLADE_HONKAI_GREATSWORD = new CreativeTabBuilder(CreativeModeTab.builder().title(Component.translatable("itemGroup." + Main.MODID + ".honkai_greatsword")).icon(() -> new ItemStack(ModItems.HONKAI_GREATSWORD_ICON.get())));
 
