@@ -18,7 +18,7 @@ public final class KabladeRenderTypes extends RenderType {
     private static final Map<ResourceLocation, RenderType> JIZO_SOUL_GLOW = new HashMap<>();
     private static final Map<ResourceLocation, RenderType> BLADE_LUMINOUS_TEXTURE = new HashMap<>();
     private static final Map<ResourceLocation, RenderType> BLADE_LUMINOUS_HAND_TEXTURE = new HashMap<>();
-    private static final ResourceLocation FALLBACK_TEXTURE =
+    public static final ResourceLocation FALLBACK_TEXTURE =
             ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/white.png");
     private static final ResourceLocation RAIZAN_NOISE_TEXTURE =
             ResourceLocation.fromNamespaceAndPath("kablade", "textures/effect/raizan_noise.png");
@@ -79,6 +79,8 @@ public final class KabladeRenderTypes extends RenderType {
             new RenderStateShard.ShaderStateShard(KabladeShaders::thunderboltCallParticle);
     private static final RenderStateShard.ShaderStateShard THUNDERBOLT_CALL_COMPOSITE_SHADER =
             new RenderStateShard.ShaderStateShard(KabladeShaders::thunderboltCallComposite);
+    private static final RenderStateShard.ShaderStateShard NUCLEAR_SHOCK_DOME_SHADER =
+            new RenderStateShard.ShaderStateShard(KabladeShaders::nuclearShockDome);
 
     private static RenderType analyticEffectType(String name, RenderStateShard.ShaderStateShard shader,
                                                  RenderStateShard.TransparencyStateShard transparency,
@@ -600,6 +602,28 @@ public final class KabladeRenderTypes extends RenderType {
             65536,
             LIGHTNING_TRANSPARENCY);
 
+    private static final RenderType NUCLEAR_SHOCK_DOME = create(
+            "kablade_nuclear_shock_dome",
+            DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS,
+            131072,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(NUCLEAR_SHOCK_DOME_SHADER)
+                    .setTextureState(new TextureStateShard(FALLBACK_TEXTURE, false, false))
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    private static final RenderType NUCLEAR_SHOCK_DOME_FALLBACK = shaderFallback(
+            "kablade_nuclear_shock_dome_fallback",
+            FALLBACK_TEXTURE,
+            131072,
+            LIGHTNING_TRANSPARENCY);
+
     private KabladeRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
                                boolean affectsCrumbling, boolean sortOnUpload,
                                Runnable setupState, Runnable clearState) {
@@ -735,6 +759,12 @@ public final class KabladeRenderTypes extends RenderType {
 
     public static RenderType zaizan() {
         return useShaderFallbackTextures() ? ZAIZAN_FALLBACK : ZAIZAN;
+    }
+
+    public static RenderType nuclearShockDome() {
+        return (useShaderFallbackTextures() || KabladeShaders.nuclearShockDome() == null)
+                ? NUCLEAR_SHOCK_DOME_FALLBACK
+                : NUCLEAR_SHOCK_DOME;
     }
 
     public static RenderType inductionCollapse() {

@@ -33,6 +33,7 @@ import com.wjx.kablade.slasharts.RaizanCleaveArts;
 import com.wjx.kablade.slasharts.MoltenBladeArts;
 import com.wjx.kablade.slasharts.MoonFangArts;
 import com.wjx.kablade.slasharts.NarukamiDivinityArts;
+import com.wjx.kablade.slasharts.NuclearShockArts;
 import com.wjx.kablade.slasharts.OverSlashArts;
 import com.wjx.kablade.slasharts.PhantomButterflyArts;
 import com.wjx.kablade.slasharts.PhantomButterflySArts;
@@ -277,6 +278,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> PHANTOM_BUTTERFLY_S = REGISTRY.register(
             "phantom_butterfly_s",
             () -> new PhantomButterflySArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> NUCLEAR_SHOCK = REGISTRY.register(
+            "nuclear_shock",
+            () -> new NuclearShockArts(entity -> ModComboStates.FUSION_NUCLEAR_SHOCK.getId()));
 
     private ModSlashArts() {
     }

@@ -1,4 +1,4 @@
-package com.wjx.kablade.blades.honkai.claymore;
+package com.wjx.kablade.blades.honkai.katana;
 
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
@@ -14,33 +14,34 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-/**
- * 融核动力剑·改——沿用融核动力剑初型的属性与模型，替换为 EX 贴图，并绑定专属 SA「核能震动」。
- */
-public class NuclearPRIEX extends BladeDefineBase {
-    public NuclearPRIEX(BootstapContext<SlashBladeDefinition> context) {
+public class SakuraBlossom extends BladeDefineBase {
+    public SakuraBlossom(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/tex2.png"))
-                        .effectColor(0xFFBB22)
+                        .modelName(ResourceUtil.getLocation("model/honkai/sakura_blossom/mdl_sakura_blossom.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/sakura_blossom/tex_sakura_blossom.png"))
+                        .effectColor(0xFF83D2)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(9.0F)
-                        .maxDamage(350)
+                        .baseAttackModifier(19.0F)
+                        .maxDamage(760)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .slashArtsType(ModSlashArts.NUCLEAR_SHOCK.getId())
+                        .slashArtsType(ModSlashArts.FALLING_PETALS.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2))
+                List.of(
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 4)
+                )
         ));
     }
 
     @Override
     public String getKey() {
-        return "nuclear_pri_ex";
+        return "sakura_blossom";
     }
 }

@@ -1,6 +1,5 @@
-package com.wjx.kablade.blades.honkai.claymore;
+package com.wjx.kablade.blades.honkai.katana;
 
-import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
@@ -15,32 +14,36 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 /**
- * 融核动力剑·改——沿用融核动力剑初型的属性与模型，替换为 EX 贴图，并绑定专属 SA「核能震动」。
+ * 苗刀·电魂——崩坏线村正系列 Lv4（平行分支），由妖刀村正 + 红石 + 铁块升级。
+ * 从 1.12.2 移植而来，无 SA，自带亡灵杀手 II。
+ * <p>
+ * 属性：攻击 12.0、耐久 500、默认妖化。
  */
-public class NuclearPRIEX extends BladeDefineBase {
-    public NuclearPRIEX(BootstapContext<SlashBladeDefinition> context) {
+public class ByoDen extends BladeDefineBase {
+    public ByoDen(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/tex2.png"))
-                        .effectColor(0xFFBB22)
+                        .modelName(ResourceUtil.getLocation("model/honkai/byoto/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/byoto/tex_den.png"))
+                        .effectColor(0x8B7355)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(9.0F)
-                        .maxDamage(350)
+                        .baseAttackModifier(12.0F)
+                        .maxDamage(500)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .slashArtsType(ModSlashArts.NUCLEAR_SHOCK.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2))
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
+                        new EnchantmentDefinition(
+                        ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2))
         ));
     }
 
     @Override
     public String getKey() {
-        return "nuclear_pri_ex";
+        return "byoden";
     }
 }

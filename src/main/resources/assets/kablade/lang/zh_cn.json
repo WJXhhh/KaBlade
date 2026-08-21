@@ -269,6 +269,8 @@
   "prop.kablade.fuel_the_ruin": "绯刃残樱",
   "prop.kablade.roaring_nimbus": "雷云",
   "prop.kablade.title": "§6§l斩无不断:效果",
+  "slash_art.kablade.nuclear_shock": "核能震动",
+  "entity.kablade.nuclear_shock": "核能震动",
   "death.attack.slash_art": "%1$s被斩术击杀了",
   "death.attack.slash_art.player": "%1$s被%2$s的斩术击杀了"
 }

@@ -1,7 +1,8 @@
-package com.wjx.kablade.blades.honkai.claymore;
+package com.wjx.kablade.blades.honkai.katana;
 
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
+import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.item.SwordType;
@@ -14,33 +15,34 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-/**
- * 融核动力剑·改——沿用融核动力剑初型的属性与模型，替换为 EX 贴图，并绑定专属 SA「核能震动」。
- */
-public class NuclearPRIEX extends BladeDefineBase {
-    public NuclearPRIEX(BootstapContext<SlashBladeDefinition> context) {
+/** One Salty Tuna, ported from 1.12.2 honkaip2. */
+public class OneSaltyTuna extends BladeDefineBase {
+    public OneSaltyTuna(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/tex2.png"))
-                        .effectColor(0xFFBB22)
+                        .modelName(ResourceUtil.getLocation("model/honkai/tuna/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/tuna/tex.png"))
+                        .effectColor(0x5A7C2A)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(9.0F)
-                        .maxDamage(350)
+                        .baseAttackModifier(12.0F)
+                        .maxDamage(500)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .slashArtsType(ModSlashArts.NUCLEAR_SHOCK.getId())
+                        .slashArtsType(ModSlashArts.LETHAL_THRUST.getId())
+                        .addSpecialEffect(ModSpecialEffects.UNDYING_SALTINESS.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2))
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
+                        new EnchantmentDefinition(
+                        ResourceLocation.fromNamespaceAndPath("minecraft", "smite"), 2))
         ));
     }
 
     @Override
     public String getKey() {
-        return "nuclear_pri_ex";
+        return "tuna";
     }
 }

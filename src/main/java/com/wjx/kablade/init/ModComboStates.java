@@ -44,6 +44,17 @@ public final class ModComboStates {
                     .nextOfTimeout(entity -> ComboStateRegistry.NONE.getId())
                     .build());
 
+    public static final RegistryObject<ComboState> FUSION_NUCLEAR_SHOCK = REGISTRY.register(
+            "fusion_nuclear_shock",
+            () -> ComboState.Builder.newInstance()
+                    .startAndEnd(0, 67)
+                    .speed(1.0F)
+                    .priority(50)
+                    .motionLoc(ResourceUtil.getLocation("combostate/fusion_nuclear_shock_blade.vmd"))
+                    .next(entity -> ComboStateRegistry.NONE.getId())
+                    .nextOfTimeout(entity -> ComboStateRegistry.NONE.getId())
+                    .build());
+
     private ModComboStates() {
     }
 }

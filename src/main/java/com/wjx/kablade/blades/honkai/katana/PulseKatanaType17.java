@@ -1,4 +1,4 @@
-package com.wjx.kablade.blades.honkai.claymore;
+package com.wjx.kablade.blades.honkai.katana;
 
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
@@ -15,32 +15,38 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 /**
- * 融核动力剑·改——沿用融核动力剑初型的属性与模型，替换为 EX 贴图，并绑定专属 SA「核能震动」。
+ * 脉冲太刀17式——崩坏线村正分支，由妖刀雨村 + 红石块 + 活塞合成。
+ * 从 1.12.2 移植而来，专属 SA「寒霜灵刃」（1.12.2 SA 285）。
+ * <p>
+ * 属性：攻击 11.0、耐久 500、默认妖化、自带击退 I。
+ * 也是等离子影秀的合成前置之一。
  */
-public class NuclearPRIEX extends BladeDefineBase {
-    public NuclearPRIEX(BootstapContext<SlashBladeDefinition> context) {
+public class PulseKatanaType17 extends BladeDefineBase {
+    public PulseKatanaType17(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/tex2.png"))
-                        .effectColor(0xFFBB22)
+                        .modelName(ResourceUtil.getLocation("model/honkai/pulse_katanas/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/pulse_katanas/tex_t17.png"))
+                        .effectColor(0x00FFEE)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(9.0F)
-                        .maxDamage(350)
+                        .baseAttackModifier(11.0F)
+                        .maxDamage(500)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .slashArtsType(ModSlashArts.NUCLEAR_SHOCK.getId())
+                        .slashArtsType(ModSlashArts.FROST_BLADE.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2))
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 4),
+                        new EnchantmentDefinition(
+                        ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 1))
         ));
     }
 
     @Override
     public String getKey() {
-        return "nuclear_pri_ex";
+        return "pulse_katana_t17";
     }
 }

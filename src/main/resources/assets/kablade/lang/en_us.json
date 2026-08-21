@@ -269,6 +269,8 @@
   "prop.kablade.fuel_the_ruin": "Fuel the Ruin",
   "prop.kablade.roaring_nimbus": "Roaring Nimbus",
   "prop.kablade.title": "§6§lKablade:Effects",
+  "slash_art.kablade.nuclear_shock": "Nuclear Shock",
+  "entity.kablade.nuclear_shock": "Nuclear Shock",
   "death.attack.slash_art": "%1$s was cut down by a slash art",
   "death.attack.slash_art.player": "%1$s was cut down by %2$s's slash art"
 }

@@ -44,6 +44,7 @@ public final class KabladeShaders {
     private static ShaderInstance thunderboltCallCross;
     private static ShaderInstance thunderboltCallParticle;
     private static ShaderInstance thunderboltCallComposite;
+    private static ShaderInstance nuclearShockDome;
 
     private KabladeShaders() {
     }
@@ -120,6 +121,16 @@ public final class KabladeShaders {
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "bloodfyre_particle"),
                         DefaultVertexFormat.POSITION_COLOR_TEX),
                 shader -> bloodfyreParticle = shader);
+        nuclearShockDome = null;
+        try {
+            event.registerShader(new ShaderInstance(
+                            event.getResourceProvider(),
+                            ResourceLocation.fromNamespaceAndPath(Main.MODID, "nuclear_shock_dome"),
+                            DefaultVertexFormat.POSITION_COLOR_TEX),
+                    shader -> nuclearShockDome = shader);
+        } catch (IOException | RuntimeException exception) {
+            Main.LOGGER.error("Could not compile optional Nuclear Shock shader; using fallback geometry.", exception);
+        }
         // Raizan has a complete geometry fallback, so each optional program may fail alone
         // without breaking F3+T or removing the important slash/lightning silhouettes.
         raizanWeaponEnergy = null;
@@ -271,5 +282,9 @@ public final class KabladeShaders {
 
     public static ShaderInstance thunderboltCallComposite() {
         return thunderboltCallComposite;
+    }
+
+    public static ShaderInstance nuclearShockDome() {
+        return nuclearShockDome;
     }
 }

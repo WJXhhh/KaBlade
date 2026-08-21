@@ -1,7 +1,7 @@
-package com.wjx.kablade.blades.honkai.claymore;
+package com.wjx.kablade.blades.honkai.katana;
 
-import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
+import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.item.SwordType;
@@ -15,32 +15,37 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 /**
- * 融核动力剑·改——沿用融核动力剑初型的属性与模型，替换为 EX 贴图，并绑定专属 SA「核能震动」。
+ * 藏锋 —— 崩坏线苗刀分支，由苗刀·雷妖 + 萤石 + 雷霆凝晶合成。
+ * 从 1.12.2 移植而来，无 SA，自带特殊效果「乱流（Turbulence）」。
+ * <p>
+ * 属性：攻击 13.0、耐久 700、默认妖化、自带锋利 II、召唤剑颜色 0x536474。
  */
-public class NuclearPRIEX extends BladeDefineBase {
-    public NuclearPRIEX(BootstapContext<SlashBladeDefinition> context) {
+public class Osahoko extends BladeDefineBase {
+    public Osahoko(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/tex2.png"))
-                        .effectColor(0xFFBB22)
+                        .modelName(ResourceUtil.getLocation("model/honkai/osahoko/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/osahoko/tex.png"))
+                        .effectColor(0x536474)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(9.0F)
-                        .maxDamage(350)
+                        .baseAttackModifier(13.0F)
+                        .maxDamage(700)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .slashArtsType(ModSlashArts.NUCLEAR_SHOCK.getId())
+                        .addSpecialEffect(ModSpecialEffects.TURBULENCE.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2))
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 5),
+                        new EnchantmentDefinition(
+                        ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2))
         ));
     }
 
     @Override
     public String getKey() {
-        return "nuclear_pri_ex";
+        return "osahoko";
     }
 }

@@ -445,6 +445,18 @@ public final class ModEntities {
                     .noSave()
                     .build("stage_light"));
 
+    /** 「核能震动」的多阶段核爆冲击波实体。 */
+    public static final RegistryObject<EntityType<NuclearShockEntity>> NUCLEAR_SHOCK = REGISTRY.register(
+            "nuclear_shock",
+            () -> EntityType.Builder.<NuclearShockEntity>of(NuclearShockEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 1.0F)
+                    .clientTrackingRange(16)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("nuclear_shock"));
+
     private ModEntities() {
     }
 }

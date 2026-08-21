@@ -137,6 +137,7 @@ public final class Main {
     private void clientSetup(final FMLClientSetupEvent event) {
         // Fetches remote version; UpdateNotifier shows on login screen if newer version exists.
         com.wjx.kablade.update.UpdateChecker.start(VERSION);
+        com.wjx.kablade.client.compat.PlayerAnimationCompat.init();
     }
 
     /** Builds a ResourceLocation under this mod's namespace (e.g. {@code id("my_blade")}). */

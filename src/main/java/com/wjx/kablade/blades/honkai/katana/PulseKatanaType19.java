@@ -1,6 +1,5 @@
-package com.wjx.kablade.blades.honkai.claymore;
+package com.wjx.kablade.blades.honkai.katana;
 
-import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
@@ -15,32 +14,36 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 /**
- * 融核动力剑·改——沿用融核动力剑初型的属性与模型，替换为 EX 贴图，并绑定专属 SA「核能震动」。
+ * 脉冲太刀19式——崩坏线村正分支，由妖刀村正 + 红石块 + 活塞合成。
+ * 从 1.12.2 移植而来，无专属 SA（1.12.2 原版也未设置 SpecialAttackType）。
+ * <p>
+ * 属性：攻击 12.0、耐久 510、默认妖化、自带击退 I。
  */
-public class NuclearPRIEX extends BladeDefineBase {
-    public NuclearPRIEX(BootstapContext<SlashBladeDefinition> context) {
+public class PulseKatanaType19 extends BladeDefineBase {
+    public PulseKatanaType19(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/honkai_claymore/nuclear_pri/tex2.png"))
-                        .effectColor(0xFFBB22)
+                        .modelName(ResourceUtil.getLocation("model/honkai/pulse_katanas/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai/pulse_katanas/tex_t19.png"))
+                        .effectColor(0x33CCFF)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(9.0F)
-                        .maxDamage(350)
+                        .baseAttackModifier(12.0F)
+                        .maxDamage(510)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .slashArtsType(ModSlashArts.NUCLEAR_SHOCK.getId())
                         .build(),
-                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2))
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
+                        new EnchantmentDefinition(
+                        ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 1))
         ));
     }
 
     @Override
     public String getKey() {
-        return "nuclear_pri_ex";
+        return "pulse_katana_t19";
     }
 }
