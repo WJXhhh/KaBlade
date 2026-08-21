@@ -99,17 +99,17 @@
         {
           "start": 8.6, "end": 12.2, "easing": "linear",
           "path": {"type":"ellipse","center":[0.28,2.35,0.30],"axis_u":[0.68,-0.72,0.12],"axis_v":[-0.842,-0.421,-0.541],"start_angle_deg":0.0,"sweep_deg":-155.0,"drift":[0.0,0.0,0.0]},
-          "orientation": {"mode":"explicit_squad","start_tip":[-0.99,-0.06,-0.05],"end_tip":[0.0,0.96,0.28],"start_roll_deg":99.17,"end_roll_deg":-2.29}
+          "orientation": {"mode":"explicit_squad","start_tip":[-0.99,-0.06,-0.05],"end_tip":[0.0,0.96,0.28],"start_roll_deg":99.17,"end_roll_deg":177.71}
         },
         {
           "start": 12.2, "end": 19.0, "easing": "accelerate",
           "path": {"type":"bezier","p0":[0.02,3.18,0.42],"p1":[-0.10,3.15,0.78],"p2":[-0.04,2.05,1.18],"p3":[0.0,1.56,1.08]},
-          "orientation": {"mode":"explicit_squad","start_tip":[0.0,0.96,0.28],"end_tip":[0.0,-0.72,0.69],"start_roll_deg":-2.29,"end_roll_deg":2.29}
+          "orientation": {"mode":"explicit_squad","start_tip":[0.0,0.96,0.28],"end_tip":[0.0,-0.72,0.69],"start_roll_deg":177.71,"end_roll_deg":182.29}
         },
         {
           "start": 19.0, "end": 25.0, "easing": "decelerate",
           "path": {"type":"bezier","p0":[0.0,1.56,1.08],"p1":[0.18,1.42,0.80],"p2":[0.58,2.15,0.18],"p3":[-0.60,1.38,-0.06]},
-          "orientation": {"mode":"explicit_squad","start_tip":[0.0,-0.72,0.69],"end_tip":[0.18,-0.27,-0.94],"start_roll_deg":2.29,"end_roll_deg":99.17}
+          "orientation": {"mode":"explicit_squad","start_tip":[0.0,-0.72,0.69],"end_tip":[0.18,-0.27,-0.94],"start_roll_deg":182.29,"end_roll_deg":99.17}
         },
         {
           "start": 25.0, "end": 28.5, "easing": "smoother",
