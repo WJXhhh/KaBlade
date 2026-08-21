@@ -8,10 +8,12 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.SPLight.blade.ordinary.*;
 import com.wjx.kablade.SlashBlade.blades.*;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_Caijue;
+import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiGreatswordNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_HonkaiNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.Item_KaNamed;
 import com.wjx.kablade.SlashBlade.blades.bladeitem.MagicBlade;
 import com.wjx.kablade.SlashBlade.blades.honkai.*;
+import com.wjx.kablade.SlashBlade.blades.honkai.claymore.*;
 import com.wjx.kablade.SlashBlade.blades.honkaip2.*;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.item.Item;
@@ -29,12 +31,14 @@ public class BladeLoader {
     public static List<String> SLBlades = Lists.newArrayList();
     public static List<String> NamedGod = Lists.newArrayList();
     public static List<String> NamedHonkai = Lists.newArrayList();
+    public static List<String> NamedHonkaiGreatsword = Lists.newArrayList();
     public static List<String> DIZUI = Lists.newArrayList();
 
     public static final Item ITEM_KABLADE_NAMED = new Item_KaNamed(Item.ToolMaterial.IRON, 1.0F, "kanamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES).setNoRepair();
     public static Item ITEM_MAGIC = null;
 
     public static Item ITEM_HONKAI_NAMED = null;
+    public static Item ITEM_HONKAI_GREATSWORD_NAMED = null;
     public static Item ITEM_DIZUI= null;
 
     public static Item ITEM_AW=null;
@@ -44,6 +48,7 @@ public class BladeLoader {
     public BladeLoader() {
         ITEM_MAGIC = new MagicBlade(Item.ToolMaterial.IRON, 32768.0F, "magicslashblade").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_GOD).setNoRepair();
         ITEM_HONKAI_NAMED=new Item_HonkaiNamed(Item.ToolMaterial.IRON, 1.0F, "honkainamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
+        ITEM_HONKAI_GREATSWORD_NAMED = new Item_HonkaiGreatswordNamed(Item.ToolMaterial.IRON, 1.0F, "honkaigreatswordnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI_GREATSWORD).setNoRepair();
         ITEM_DIZUI= new Item_Caijue(Item.ToolMaterial.IRON, 1.0F, "honkaidizui").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_HONKAI).setNoRepair();
         if(EnableAllWeapon)
             ITEM_AW=new Item_AwNamed(Item.ToolMaterial.DIAMOND,1.0F,"awnamed").setMaxDamage(Integer.MAX_VALUE-32768).setCreativeTab(Main.TABKABLADE_BLADES_ALLWEAPON).setNoRepair();
@@ -80,7 +85,7 @@ public class BladeLoader {
             loadBlade(new FuheLiuye());
             loadBlade(new FuheZhuque());
 
-            loadBlade(new CaiJueDizui());
+            // 旧版涤罪七雷（CaiJueDizui/282）保留源码用于存档兼容，但不再作为当前刀加载。
 
             loadBlade(new PulseKatanaType19());
             loadBlade(new PulseKatanaType17());
@@ -112,12 +117,20 @@ public class BladeLoader {
             loadBlade(new KeyOfCastigation());
 
             loadBlade(new FloridSakura());
+            loadBlade(new RuinousSakura());
 
             loadBlade(new OneSaltyTuna());
             loadBlade(new PledgeOfRain());
             loadBlade(new VibroCutter());
             loadBlade(new FrozenNaraka());
             loadBlade(new KeyOfLimpidity());
+            loadBlade(new DomainOfUnity());
+            loadBlade(new SevenThundersRumble());
+            loadBlade(new SevenThundersNarukami());
+
+            // 崩坏大剑系列
+            loadBlade(new GreatSword());
+            loadBlade(new NuclearPRI());
 
 
 

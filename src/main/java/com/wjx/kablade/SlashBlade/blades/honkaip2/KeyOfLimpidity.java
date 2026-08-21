@@ -40,11 +40,11 @@ public class KeyOfLimpidity {
         Item_HonkaiNamed.CurrentItemName.set(tag, name);
         Item_HonkaiNamed.CustomMaxDamage.set(tag, 1200);
 
-        ItemSlashBlade.TextureName.set(tag, "kablade/honkaip2/KeyOfLimpidity/tex");
-        ItemSlashBlade.ModelName.set(tag, "kablade/honkaip2/KeyOfLimpidity/mdl");
+        ItemSlashBlade.TextureName.set(tag, "kablade/Honkai/KeyOfLimpidity/tex");
+        ItemSlashBlade.ModelName.set(tag, "kablade/Honkai/KeyOfLimpidity/mdl");
         customblade.getTagCompound().setFloat("baseAttackModifier",29.0F);
         ItemSlashBlade.AttackAmplifier.set(tag,2.5f);
-        ItemSlashBlade.SpecialAttackType.set(tag,460);
+        ItemSlashBlade.SpecialAttackType.set(tag,462);
         ItemSlashBlade.SummonedSwordColor.set(tag,0xFFAAFF);
         customblade.addEnchantment(Enchantments.POWER,5);
         customblade.addEnchantment(Enchantments.SMITE,4);

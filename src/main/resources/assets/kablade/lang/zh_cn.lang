@@ -49,12 +49,18 @@ item.wjx.blade.honkai.nue.name=影鵺
 item.wjx.blade.honkai.sakura_blossom.name=灵刀·樱吹雪
 item.wjx.blade.honkai.key_of_cas.name=天殛之钥
 item.wjx.blade.honkai.florid_sakura.name=妖刀·赤染樱
+item.wjx.blade.honkai.ruinous_sakura.name=§c魂妖刀§9「§l§c血樱寂灭§r§9」
 item.wjx.blade.honkai.tuna.name=一条咸鱼
 item.wjx.blade.honkai.pledge_of_rain.name=雨后誓言
 item.wjx.blade.honkai.vibro_cutter.name=高周波切割刀
 item.wjx.blade.honkai.frozen_naraka.name=§b御灵刀 寒狱冰天
 item.superconducting_metal.name=超导金属
 item.wjx.blade.honkai.key_of_limpidity.name=澄凝之钥
+item.wjx.blade.honkai.domain_of_unity.name=澄凝之境：自性纯一
+item.wjx.blade.honkai.str_rumble.name=§d§l涤罪七雷·鸣
+item.wjx.blade.honkai.str_narukami.name=§d§l涤罪七雷·鸣雷见
+item.wjx.blade.honkai.greatsword.name=大剑
+item.wjx.blade.honkai.nuclear_pri.name=融核动力剑初型
 
 
 item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
@@ -118,7 +124,8 @@ flammpfeil.slashblade.specialattack.aquaedgeex=「§8§lEx§7」水岚风暴
 itemGroup.tabkablade=斩无不断
 itemGroup.tabkablade_blades=斩无不断:铭刀
 itemGroup.tabkablade_bladesgod=斩无不断:神锻
-itemGroup.tabkablade_honkai=斩无不断:崩坏
+itemGroup.tabkablade_honkai=斩无不断:崩坏太刀
+itemGroup.tabkablade_honkai_greatsword=斩无不断:崩坏大剑
 itemGroup.tabkablade_ore=斩无不断:矿藏
 itemGroup.tabkablade_allweapon=斩无不断:万物皆可为兵刃
 itemGroup.tabkablade_sp_light=斩无不断:龙一文字改
@@ -132,6 +139,7 @@ tile.chromium_ore.name=铬矿石
 tile.molybdenite.name=辉钼矿石
 tile.aurora_ore.name=极光矿石
 
+item.honkai_greatsword_icon.name=崩坏大剑Tab图标
 item.rimmed_earth_stick.name=夯土棍
 item.sturdy_glass_stick.name=强化玻璃棒
 item.chromium_ingot.name=铬锭
@@ -226,6 +234,9 @@ flammpfeil.slashblade.specialattack.kami_of_war=神威镇世
 flammpfeil.slashblade.specialattack.zaizan=罪斩
 flammpfeil.slashblade.specialattack.wind_enchantment=风之结界
 flammpfeil.slashblade.specialattack.falling_petals=灼樱乱神
+flammpfeil.slashblade.specialattack.bloodfyre_frenzy=浴血狂樱
+slashblade.seffect.name.kablade.fuel_the_ruin=§c绯刃残樱
+prop.fuel_the_ruin=绯刃残樱
 flammpfeil.slashblade.specialattack.thunder_edge=雷刃
 flammpfeil.slashblade.specialattack.crimson_sakura=血色落樱
 flammpfeil.slashblade.specialattack.lethal_thrust=致命突刺
@@ -234,6 +245,10 @@ flammpfeil.slashblade.specialattack.induction_collapse=高频坍缩
 flammpfeil.slashblade.specialattack.overslash=拔刀术
 flammpfeil.slashblade.specialattack.utpala_aura=冰天冻云
 flammpfeil.slashblade.specialattack.conceptual=剑体始觉
+flammpfeil.slashblade.specialattack.sword_enlightenment=剑体始觉
+flammpfeil.slashblade.specialattack.conceptual_metaphor=念相了绝
+flammpfeil.slashblade.specialattack.thunderbolt_call=§d§l唤霆霓
+flammpfeil.slashblade.specialattack.narukami_divinity=§d§l鸣雷神
 flammpfeil.slashblade.specialattack.lights_on_stage=聚光舞台
 
 
@@ -248,6 +263,7 @@ slashblade.seffect.name.kablade.power_of_wind=§a风之力
 slashblade.seffect.name.kablade.thunder_blitz=§d万雷轰临
 slashblade.seffect.name.kablade.undying_saltiness=§2咸鱼精神
 slashblade.seffect.name.kablade.true_self=§d明心见性
+slashblade.seffect.name.kablade.unthinkable=§d心行处灭
 
 #生之称
 entity.vorpal_black_hole.name=反力场黑洞

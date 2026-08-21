@@ -32,6 +32,9 @@ public class EntityInit {
         registerEntity("shock_impact", EntityShockImpact.class,13700017,96);
         registerEntity("zaizan", EntityZaizan.class,13700018,96);
         registerEntity("utpala_aura", EntityUtpalaAura.class,13700019,128);
+        registerEntity("bloodfyre_frenzy", EntityBloodfyreFrenzy.class,13700020,128);
+        registerEntity("conceptual_field", EntityConceptualField.class,13700021,128);
+        registerEntity("seven_thunders", EntitySevenThunders.class,13700022,160);
 
 
 

@@ -78,6 +78,7 @@ public class Main
     public static CreativeTabs TABKABLADE_BLADES = null;
     public static CreativeTabs TABKABLADE_BLADES_GOD = null;
     public static CreativeTabs TABKABLADE_BLADES_HONKAI = null;
+    public static CreativeTabs TABKABLADE_BLADES_HONKAI_GREATSWORD = null;
     public static CreativeTabs TABKABLADE_ORE = null;
     public static CreativeTabs TABKABLADE_BLADES_ALLWEAPON = null;
     public static CreativeTabs TABKABLADE_BLADES_SP_LIGHT = null;
@@ -94,6 +95,7 @@ public class Main
     private void setTab(){
         TABKABLADE_BLADES_GOD = new tabkablade_bladesgod("tabkablade_bladesgod");
         TABKABLADE_BLADES_HONKAI = new tabkablade_honkai("tabkablade_honkai");
+        TABKABLADE_BLADES_HONKAI_GREATSWORD = new tabkablade_honkai_greatsword("tabkablade_honkai_greatsword");
         if(EnableAllWeapon){
             TABKABLADE_BLADES_ALLWEAPON=new CreativeTabs("tabkablade_allweapon") {
                 final ItemStack stack=new ItemStack(ItemInit.ICON_AW);

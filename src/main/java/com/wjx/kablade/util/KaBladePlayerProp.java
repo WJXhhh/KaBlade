@@ -108,6 +108,7 @@ public class KaBladePlayerProp {
     public static final String WIND_ENCHANTMENT_BOOST = "WIND_ENCHANTMENT_BOOST".toLowerCase(Locale.ROOT);//
     public static final String STAGE_LIGHT = "STAGE_LIGHT".toLowerCase(Locale.ROOT);
     public static final String FORESIGHT = "FORESIGHT".toLowerCase(Locale.ROOT);
+    public static final String FUEL_THE_RUIN = "fuel_the_ruin";
 
 
     public static final String RAGING_IZUMO_COLD_DOWN = "RAGING_IZUMO_COLD_DOWN".toLowerCase(Locale.ROOT);
@@ -121,13 +122,15 @@ public class KaBladePlayerProp {
         Bufftimes.put(WIND_ENCHANTMENT_BOOST,5);
         Bufftimes.put(STAGE_LIGHT,10);
         Bufftimes.put(FAIR_POW,1);
+        Bufftimes.put(FUEL_THE_RUIN,5);
     }
 
     public static List<String> buffs = Arrays.asList(
             KAMI_OF_WAR_COUNT,
             WIND_ENCHANTMENT_BOOST,
             STAGE_LIGHT,
-            FAIR_POW);
+            FAIR_POW,
+            FUEL_THE_RUIN);
 
 
     public static void initNBT(EntityPlayer e) {

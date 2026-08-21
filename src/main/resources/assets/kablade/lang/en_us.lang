@@ -49,12 +49,18 @@ item.wjx.blade.honkai.nue.name=Nue of the Shadow
 item.wjx.blade.honkai.sakura_blossom.name=Sakura Blossom
 item.wjx.blade.honkai.key_of_cas.name=Key Of Castigation
 item.wjx.blade.honkai.florid_sakura.name=Demonblade - Florid Sakura
+item.wjx.blade.honkai.ruinous_sakura.name=§cSoul Blade§9[§l§cRuinous Sakura§r§9]
 item.wjx.blade.honkai.tuna.name=One Salty Tuna
 item.wjx.blade.honkai.pledge_of_rain.name=Pledge Of Rain
 item.wjx.blade.honkai.vibro_cutter.name=Vibro Cutter
 item.wjx.blade.honkai.frozen_naraka.name=§bFrozen Naraka
 item.superconducting_metal.name=Superconducting Metal
 item.wjx.blade.honkai.key_of_limpidity.name=Key Of Limpidity
+item.wjx.blade.honkai.domain_of_unity.name=Domain of Unity
+item.wjx.blade.honkai.str_rumble.name=§d§lSeven Thunders of Retribution: Rumble
+item.wjx.blade.honkai.str_narukami.name=§d§lSeven Thunders of Retribution: Narukami
+item.wjx.blade.honkai.greatsword.name=Greatsword
+item.wjx.blade.honkai.nuclear_pri.name=Nuclear PRI
 
 item.wjx.blade.honkai.dizui.name=§d§lSeven Thunders of Retribution: Rumble
 
@@ -107,7 +113,8 @@ flammpfeil.slashblade.specialattack.aquaedgeex=「§8§lEx§7」Aqua Edge
 itemGroup.tabkablade=KaBlade
 itemGroup.tabkablade_blades=KaBlade:Blades
 itemGroup.tabkablade_bladesgod=KaBlade:Ultimate Blades
-itemGroup.tabkablade_honkai=KaBlade:Honkai Impact 3 Blades
+itemGroup.tabkablade_honkai=KaBlade:Honkai Katana
+itemGroup.tabkablade_honkai_greatsword=KaBlade:Honkai Greatsword
 itemGroup.tabkablade_ore=KaBlade:Ore
 itemGroup.tabkablade_allweapon=KaBlade:AllWeapon
 itemGroup.tabkablade_sp_light=KaBlade:SP Light
@@ -120,7 +127,7 @@ tile.chromium_ore.name=Chromium Ore
 tile.molybdenite.name=Molybdenite
 tile.aurora_ore.name=Aurora Ore
 
-
+item.honkai_greatsword_icon.name=Honkai Greatsword Tab Icon
 item.rimmed_earth_stick.name=Rimmed Earth Stick
 item.sturdy_glass_stick.name=Sturdy Glass Stick
 item.chromium_ingot.name=Chromium Ingot
@@ -213,6 +220,10 @@ flammpfeil.slashblade.specialattack.kami_of_war=Kami of War
 flammpfeil.slashblade.specialattack.zaizan=Zaizan of Guilt
 flammpfeil.slashblade.specialattack.wind_enchantment=Wind Enchantment
 flammpfeil.slashblade.specialattack.falling_petals=Falling Petals
+item.wjx.blade.honkai.ruinous_sakura.name=§cSoul Blade§9[§l§cRuinous Sakura§r§9]
+flammpfeil.slashblade.specialattack.bloodfyre_frenzy=Bloodfyre Frenzy
+slashblade.seffect.name.kablade.fuel_the_ruin=§cFuel the Ruin
+prop.fuel_the_ruin=Fuel the Ruin
 flammpfeil.slashblade.specialattack.thunder_edge=Thunder Edge
 flammpfeil.slashblade.specialattack.crimson_sakura=Crimson Sakura
 flammpfeil.slashblade.specialattack.lethal_thrust=Lethal Thrust
@@ -220,6 +231,10 @@ flammpfeil.slashblade.specialattack.love_is_war=Love is War!
 flammpfeil.slashblade.specialattack.induction_collapse=Induction Collapse
 flammpfeil.slashblade.specialattack.utpala_aura=Utpala Aura
 flammpfeil.slashblade.specialattack.conceptual=Sword Enlightenment
+flammpfeil.slashblade.specialattack.sword_enlightenment=Sword Enlightenment
+flammpfeil.slashblade.specialattack.conceptual_metaphor=Conceptual Metaphor
+flammpfeil.slashblade.specialattack.thunderbolt_call=§d§lThunderbolt Call
+flammpfeil.slashblade.specialattack.narukami_divinity=§d§lNarukami Divinity
 flammpfeil.slashblade.specialattack.lights_on_stage=Lights on Stage
 
 slashblade.seffect.name.kablade.SETurbulence=§5Turbulence
@@ -233,6 +248,7 @@ slashblade.seffect.name.kablade.power_of_wind=§aPower of Wind
 slashblade.seffect.name.kablade.thunder_blitz=§dThunder Blitz
 slashblade.seffect.name.kablade.undying_saltiness=§2Undying Saltiness
 slashblade.seffect.name.kablade.true_self=True Self
+slashblade.seffect.name.kablade.unthinkable=§dUnthinkable
 #AllWeaponSA
 flammpfeil.slashblade.specialattack.fuzhan=§cBlazing Inferno§4·Embrace Slash
 flammpfeil.slashblade.specialattack.yuqi=§aJade Beauty

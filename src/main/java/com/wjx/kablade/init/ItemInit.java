@@ -143,6 +143,7 @@ public class ItemInit {
     public static Item CHROMIUM_HOE = new NormalTools.ToolHoe("chromium_hoe", CHROMIUM_MATERIAL,TABKABLADE);
     public static Item MOLYBDENUM_SWORD = new NormalTools.ToolSword("molybdenum_sword", MOLYBDENUM_MATERIAL,TABKABLADE);
     public static Item MOLYBDENUM_AXE = new NormalTools.ToolAxe("molybdenum_axe", MOLYBDENUM_MATERIAL,TABKABLADE);
+
     public static Item MOLYBDENUM_PICKAXE = new NormalTools.ToolPickaxe("molybdenum_pickaxe", MOLYBDENUM_MATERIAL,TABKABLADE);
     public static Item MOLYBDENUM_HOE = new NormalTools.ToolHoe("molybdenum_hoe", MOLYBDENUM_MATERIAL,TABKABLADE);
     public static Item CHROMOLY_SWORD = new NormalTools.ToolSword("chromoly_sword",CHROMOLY_MATERIAL,TABKABLADE);
@@ -159,6 +160,7 @@ public class ItemInit {
     public static Item ICON_MAIN = new ItemBase("main_icon");
     public static Item ICON_NOTED = new ItemBase("noted_icon");
     public static Item ICON_HONKAI = new ItemBase("honkai_icon");
+    public static Item ICON_HONKAI_GREATSWORD = new ItemBase("honkai_greatsword_icon");
     public static Item ICON_GOD= new ItemBase("god_icon");
     public static Item ICON_ORE = new ItemBase("ore_icon");
     public static Item ICON_AW = new ItemBase("icon_aw");

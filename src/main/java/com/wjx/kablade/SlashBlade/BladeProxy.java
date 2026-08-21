@@ -35,6 +35,8 @@ public class BladeProxy {
     public static ISpecialEffect BurstDrive = SpecialEffects.register(new BurstDrive());
     public static ISpecialEffect UndyingSaltiness = SpecialEffects.register(new SEUndyingSaltiness());
     public static ISpecialEffect TrueSelf = SpecialEffects.register(new SETrueSelf());
+    public static ISpecialEffect Unthinkable = SpecialEffects.register(new SEUnthinkable());
+    public static ISpecialEffect FuelTheRuin = SpecialEffects.register(new SEFuelTheRuin());
 
     //SPLight
     public static ISpecialEffect SPLighting = SpecialEffects.register(new SPLighting());
@@ -81,6 +83,11 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(458,new HonkaiInductionCollapse());
             ItemSlashBlade.specialAttacks.put(459,new HonkaiUtpalaAura());
             ItemSlashBlade.specialAttacks.put(460,new HonkaiConceptual());
+            ItemSlashBlade.specialAttacks.put(461,new HonkaiBloodfyreFrenzy());
+            ItemSlashBlade.specialAttacks.put(462,new SwordEnlightenment());
+            ItemSlashBlade.specialAttacks.put(463,new ConceptualMetaphor());
+            ItemSlashBlade.specialAttacks.put(464,new ThunderboltCall());
+            ItemSlashBlade.specialAttacks.put(465,new NarukamiDivinity());
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());

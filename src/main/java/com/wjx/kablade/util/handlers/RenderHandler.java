@@ -39,5 +39,8 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityShockImpact.class,RenderShockImpact::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityZaizan.class,RenderZaizan::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityUtpalaAura.class,RenderUtpalaAura::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBloodfyreFrenzy.class,RenderBloodfyreFrenzy::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityConceptualField.class,RenderConceptualField::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntitySevenThunders.class,RenderSevenThunders::new);
     }
 }

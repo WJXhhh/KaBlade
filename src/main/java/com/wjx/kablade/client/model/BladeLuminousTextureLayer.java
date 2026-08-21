@@ -1,6 +1,7 @@
 package com.wjx.kablade.client.model;
 
 import mods.flammpfeil.slashblade.client.model.obj.GroupObject;
+import mods.flammpfeil.slashblade.util.ResourceLocationRaw;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -180,7 +181,10 @@ public class BladeLuminousTextureLayer implements IResourceManagerReloadListener
 
             String luminousPath = path.substring(0, path.length() - PNG_EXTENSION.length())
                     + LUMINOUS_TEXTURE_SUFFIX;
-            ResourceLocation luminous = new ResourceLocation(texture.getNamespace(), luminousPath);
+            // SlashBlade 使用 ResourceLocationRaw 保留模型资源路径的大小写。
+            // 若这里退回普通 ResourceLocation，"Honkai" 等目录会被强制转为小写，
+            // 导致基础贴图可用、同目录的发光贴图却始终查找失败。
+            ResourceLocation luminous = new ResourceLocationRaw(texture.getNamespace(), luminousPath);
             return resourceExists(luminous) ? Optional.of(luminous) : Optional.empty();
         });
     }

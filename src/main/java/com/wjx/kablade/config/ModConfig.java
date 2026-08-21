@@ -45,6 +45,10 @@ public class ModConfig {
         public static boolean EnableShiftLockTargeting = true;
         /** 锁敌诊断日志与计数，生产环境默认关闭。 */
         public static boolean DebugTargeting;
+        /** 涤罪七雷 SA 的本地镜头震动与 FOV 冲击。 */
+        public static boolean SevenThundersCameraFeedback = true;
+        /** 降低涤罪七雷的全屏闪光强度，供光敏玩家使用。 */
+        public static boolean SevenThundersReducedFlash;
         /** 额外允许作为 multipart/Boss 父实体锁定的完整类名。 */
         public static String[] ExtraMultipartTargetClasses;
     }
@@ -165,6 +169,16 @@ public class ModConfig {
         GeneralConf.DebugTargeting = config.getBoolean(
                 "DebugTargeting", category, false,
                 "Log rate-limited lock-on resolver diagnostics. Keep disabled on production servers unless investigating targeting."
+        );
+
+        GeneralConf.SevenThundersCameraFeedback = config.getBoolean(
+                "SevenThundersCameraFeedback", category, true,
+                "Enable camera shake and FOV impulses for Thunderbolt Call and Narukami Divinity."
+        );
+
+        GeneralConf.SevenThundersReducedFlash = config.getBoolean(
+                "SevenThundersReducedFlash", category, false,
+                "Reduce full-screen flashes produced by Seven Thunders slash arts."
         );
 
         GeneralConf.ExtraMultipartTargetClasses = config.getStringList(
