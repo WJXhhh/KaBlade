@@ -30,15 +30,28 @@ public class NuclearShockRenderer extends EntityRenderer<NuclearShockEntity> {
     @Override
     public void render(NuclearShockEntity entity, float yaw, float partialTicks,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        if (NuclearShockOculusPipeline.enqueue(entity, partialTicks)) {
+            return;
+        }
+
         float timeSeconds = (entity.getLifetime() + partialTicks) / 30.0F;
         if (timeSeconds < 0.88F || timeSeconds > 2.24F) {
             return;
         }
 
-        float burstTime = timeSeconds - 0.88F;
         poseStack.pushPose();
-
         VertexConsumer consumer = buffer.getBuffer(KabladeRenderTypes.nuclearShockDome());
+        renderLayers(poseStack, consumer, timeSeconds);
+        poseStack.popPose();
+        super.render(entity, yaw, partialTicks, poseStack, buffer, packedLight);
+    }
+
+    public static void renderLayers(PoseStack poseStack, VertexConsumer consumer, float timeSeconds) {
+        if (timeSeconds < 0.88F || timeSeconds > 2.24F) {
+            return;
+        }
+
+        float burstTime = timeSeconds - 0.88F;
 
         // 1. 地面零点核爆聚能火球闪光 (Ground-Zero Burst Flash)
         if (burstTime < 0.38F) {
@@ -71,12 +84,9 @@ public class NuclearShockRenderer extends EntityRenderer<NuclearShockEntity> {
         if (burstTime < 0.70F) {
             renderRadialSpikes(poseStack, consumer, burstTime, alpha);
         }
-
-        poseStack.popPose();
-        super.render(entity, yaw, partialTicks, poseStack, buffer, packedLight);
     }
 
-    private void renderFlashCore(PoseStack ps, VertexConsumer consumer, float t) {
+    private static void renderFlashCore(PoseStack ps, VertexConsumer consumer, float t) {
         Matrix4f mat = ps.last().pose();
         float flashProgress = t / 0.38F;
         float flashRadius = (1.0F - (float) Math.pow(1.0F - flashProgress, 2)) * 2.2F;
@@ -100,7 +110,7 @@ public class NuclearShockRenderer extends EntityRenderer<NuclearShockEntity> {
         }
     }
 
-    private void putFlashVertex(VertexConsumer consumer, Matrix4f mat, float r, float phi, float theta, float alpha) {
+    private static void putFlashVertex(VertexConsumer consumer, Matrix4f mat, float r, float phi, float theta, float alpha) {
         float x = r * Mth.cos(phi) * Mth.cos(theta);
         float y = r * Mth.sin(phi) + 0.15F;
         float z = r * Mth.cos(phi) * Mth.sin(theta);
@@ -110,8 +120,8 @@ public class NuclearShockRenderer extends EntityRenderer<NuclearShockEntity> {
                 .endVertex();
     }
 
-    private void renderHemisphereDome(PoseStack ps, VertexConsumer consumer, float radius, float alpha,
-                                      float rCol, float gCol, float bCol) {
+    private static void renderHemisphereDome(PoseStack ps, VertexConsumer consumer, float radius, float alpha,
+                                             float rCol, float gCol, float bCol) {
         Matrix4f mat = ps.last().pose();
         int rings = 16;
         int segments = 32;
@@ -132,8 +142,8 @@ public class NuclearShockRenderer extends EntityRenderer<NuclearShockEntity> {
         }
     }
 
-    private void putDomeVertex(VertexConsumer consumer, Matrix4f mat, float r, float phi, float theta,
-                               float alpha, float rCol, float gCol, float bCol) {
+    private static void putDomeVertex(VertexConsumer consumer, Matrix4f mat, float r, float phi, float theta,
+                                      float alpha, float rCol, float gCol, float bCol) {
         float x = r * Mth.cos(phi) * Mth.cos(theta);
         float y = r * Mth.sin(phi);
         float z = r * Mth.cos(phi) * Mth.sin(theta);
@@ -143,7 +153,7 @@ public class NuclearShockRenderer extends EntityRenderer<NuclearShockEntity> {
                 .endVertex();
     }
 
-    private void renderPillar(PoseStack ps, VertexConsumer consumer, float t) {
+    private static void renderPillar(PoseStack ps, VertexConsumer consumer, float t) {
         Matrix4f mat = ps.last().pose();
         float height = 13.5F;
         float progress = t / 0.55F;
@@ -181,7 +191,7 @@ public class NuclearShockRenderer extends EntityRenderer<NuclearShockEntity> {
         }
     }
 
-    private void renderGroundRibbons(PoseStack ps, VertexConsumer consumer, float r, float t, float alpha) {
+    private static void renderGroundRibbons(PoseStack ps, VertexConsumer consumer, float r, float t, float alpha) {
         Matrix4f mat = ps.last().pose();
         float rotAngle = t * 7.5F;
         int segs = 36;
@@ -241,7 +251,7 @@ public class NuclearShockRenderer extends EntityRenderer<NuclearShockEntity> {
         }
     }
 
-    private void renderRadialSpikes(PoseStack ps, VertexConsumer consumer, float t, float alpha) {
+    private static void renderRadialSpikes(PoseStack ps, VertexConsumer consumer, float t, float alpha) {
         Matrix4f mat = ps.last().pose();
         float progress = t / 0.70F;
         float spikeLength = 3.6F * (1.0F - (float) Math.pow(progress, 1.5));

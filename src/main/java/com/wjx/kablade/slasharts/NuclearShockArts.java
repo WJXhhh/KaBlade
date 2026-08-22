@@ -21,8 +21,8 @@ import java.util.function.Function;
  */
 public final class NuclearShockArts extends SlashArts {
 
-    private static final float BASE_DAMAGE = 72.0F;
-    private static final float ATTACK_FACTOR = 16.0F;
+    private static final float BASE_DAMAGE = 17.0F;
+    private static final float ATTACK_FACTOR = 6.0F;
     private static final double IMPACT_DISTANCE = 1.65D;
 
     public NuclearShockArts(Function<LivingEntity, ResourceLocation> state) {

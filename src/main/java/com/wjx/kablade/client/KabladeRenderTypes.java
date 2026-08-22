@@ -624,6 +624,11 @@ public final class KabladeRenderTypes extends RenderType {
             131072,
             LIGHTNING_TRANSPARENCY);
 
+    private static final RenderType NUCLEAR_SHOCK_OCULUS_SAFE = shaderFallbackTriangles(
+            "kablade_nuclear_shock_oculus_safe",
+            131072,
+            LIGHTNING_TRANSPARENCY);
+
     private KabladeRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
                                boolean affectsCrumbling, boolean sortOnUpload,
                                Runnable setupState, Runnable clearState) {
@@ -765,6 +770,10 @@ public final class KabladeRenderTypes extends RenderType {
         return (useShaderFallbackTextures() || KabladeShaders.nuclearShockDome() == null)
                 ? NUCLEAR_SHOCK_DOME_FALLBACK
                 : NUCLEAR_SHOCK_DOME;
+    }
+
+    public static RenderType nuclearShockOculusSafe() {
+        return NUCLEAR_SHOCK_OCULUS_SAFE;
     }
 
     public static RenderType inductionCollapse() {

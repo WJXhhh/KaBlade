@@ -12,11 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-/**
- * 融核动力剑初型——崩坏线大剑系列 Lv2。
- * <p>
- * 属性：攻击 9.0、耐久 350、非妖化、无 SA。
- */
 public class NuclearPRI extends BladeDefineBase {
     public NuclearPRI(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
@@ -33,7 +28,7 @@ public class NuclearPRI extends BladeDefineBase {
                         .baseAttackModifier(9.0F)
                         .maxDamage(350)
                         .build(),
-                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2))
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3))
         ));
     }
 
