@@ -64,8 +64,10 @@ import com.wjx.kablade.blades.allweapon.AwYingyue;
 import com.wjx.kablade.blades.allweapon.AwYouming;
 import com.wjx.kablade.blades.allweapon.AwZhanYue;
 import com.wjx.kablade.blades.honkai.claymore.GreatSword;
+import com.wjx.kablade.blades.honkai.claymore.KingCobra;
 import com.wjx.kablade.blades.honkai.claymore.NuclearPRI;
 import com.wjx.kablade.blades.honkai.claymore.NuclearPRIEX;
+import com.wjx.kablade.blades.honkai.claymore.Vanguard;
 import com.wjx.kablade.blades.ordinary.ArcLight;
 import com.wjx.kablade.blades.ordinary.AuroraBlade;
 import com.wjx.kablade.blades.ordinary.BambooBattler;
@@ -169,6 +171,8 @@ public final class BladeLoader {
     public static BladeDefineBase GREAT_SWORD;
     public static BladeDefineBase NUCLEAR_PRI;
     public static BladeDefineBase NUCLEAR_PRI_EX;
+    public static BladeDefineBase VANGUARD;
+    public static BladeDefineBase KING_COBRA;
     // 万物皆刃线（首批 5 把招牌刀，世界合成获取）
     public static BladeDefineBase AW_LIURRH;
     public static BladeDefineBase AW_CHANSHIZHE;
@@ -279,6 +283,8 @@ public final class BladeLoader {
             "greatsword",
             "nuclear_pri",
             "nuclear_pri_ex",
+            "vanguard",
+            "king_cobra",
             // 龙一文字线
             "splight_initial",
             "splight_normal",
@@ -313,7 +319,9 @@ public final class BladeLoader {
     private static final Set<String> HONKAI_GREATSWORD_BLADE_KEYS = Set.of(
             "greatsword",
             "nuclear_pri",
-            "nuclear_pri_ex"
+            "nuclear_pri_ex",
+            "vanguard",
+            "king_cobra"
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
@@ -421,6 +429,8 @@ public final class BladeLoader {
         GREAT_SWORD = new GreatSword(context);
         NUCLEAR_PRI = new NuclearPRI(context);
         NUCLEAR_PRI_EX = new NuclearPRIEX(context);
+        VANGUARD = new Vanguard(context);
+        KING_COBRA = new KingCobra(context);
     }
 
     public static void fillCreativeTab(CreativeModeTab.ItemDisplayParameters parameters,
