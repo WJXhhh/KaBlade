@@ -175,11 +175,13 @@ public class EntityUtpalaAura extends Entity {
                 this.posX + 5.2D, this.posY + 2.8D, this.posZ + 5.2D);
         List<Entity> found = this.world.getEntitiesInAABBexcluding(this, area,
                 entity -> TargetingUtil.canSelectForDamage(owner, entity));
+        Vec3d pulseCenter = getPositionVector().add(0.0D, 1.0D, 0.0D);
         for (Entity receiver : TargetingUtil.getDistinctDamageTargets(found)) {
             EntityLivingBase target = TargetingUtil.getSelectionTarget(receiver);
             if (target == null) continue;
-            double dx = target.posX - this.posX;
-            double dz = target.posZ - this.posZ;
+            Vec3d hitPoint = TargetingUtil.getClosestPointOnDamageBounds(receiver, pulseCenter);
+            double dx = hitPoint.x - this.posX;
+            double dz = hitPoint.z - this.posZ;
             if (dx * dx + dz * dz > 27.04D) continue;
             hurt(receiver, owner, getBaseDamage() * 0.16F);
             target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 45, 2));
@@ -204,7 +206,7 @@ public class EntityUtpalaAura extends Entity {
         for (Entity receiver : TargetingUtil.getDistinctDamageTargets(found)) {
             EntityLivingBase target = TargetingUtil.getSelectionTarget(receiver);
             if (target == null) continue;
-            Vec3d rel = target.getPositionVector().add(0.0D, target.height * 0.5D, 0.0D).subtract(origin);
+            Vec3d rel = TargetingUtil.getClosestPointOnDamageBounds(receiver, origin).subtract(origin);
             double ahead = rel.dotProduct(forward);
             if (ahead < 0.25D || ahead > range || Math.abs(rel.dotProduct(right)) > halfWidth
                     || Math.abs(rel.y) > 3.0D) continue;

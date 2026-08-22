@@ -35,6 +35,8 @@ public class EntityInit {
         registerEntity("bloodfyre_frenzy", EntityBloodfyreFrenzy.class,13700020,128);
         registerEntity("conceptual_field", EntityConceptualField.class,13700021,128);
         registerEntity("seven_thunders", EntitySevenThunders.class,13700022,160);
+        registerEntity("raizan_cleave", EntityRaizanCleave.class,13700023,192);
+        registerEntity("jizo_mitama_soul", EntityJizoMitamaSoul.class,13700024,192);
 
 
 

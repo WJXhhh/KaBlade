@@ -237,7 +237,7 @@ public class EntityVorpalBlackHole extends Entity implements IThrowableEntity {
         for (Entity e : TargetingUtil.getDistinctDamageTargets(list)) {
             EntityLivingBase selection = TargetingUtil.getSelectionTarget(e);
             Entity target = selection != null ? selection : e;
-            Vec3d targetCenter = new Vec3d(target.posX, target.posY + target.height * 0.52, target.posZ);
+            Vec3d targetCenter = TargetingUtil.getClosestPointOnDamageBounds(e, getPositionVector());
             double dx = this.posX - targetCenter.x;
             double dy = this.posY - targetCenter.y;
             double dz = this.posZ - targetCenter.z;
@@ -276,7 +276,8 @@ public class EntityVorpalBlackHole extends Entity implements IThrowableEntity {
                     continue;
                 }
                 selection.hurtResistantTime = 0;
-                if (selection.attackEntityFrom(source, this.getOpeningDamage())) {
+                e.hurtResistantTime = 0;
+                if (e.attackEntityFrom(source, this.getOpeningDamage())) {
                     double pullX = (this.posX - selection.posX) * 0.08;
                     double pullZ = (this.posZ - selection.posZ) * 0.08;
                     selection.motionX = pullX;
@@ -307,7 +308,8 @@ public class EntityVorpalBlackHole extends Entity implements IThrowableEntity {
             EntityLivingBase selection = TargetingUtil.getSelectionTarget(e);
             if (selection != null) {
                 selection.hurtResistantTime = 0;
-                selection.attackEntityFrom(source, this.getPulseDamage());
+                e.hurtResistantTime = 0;
+                e.attackEntityFrom(source, this.getPulseDamage());
                 double dx = this.posX - selection.posX;
                 double dy = this.posY - selection.posY;
                 double dz = this.posZ - selection.posZ;

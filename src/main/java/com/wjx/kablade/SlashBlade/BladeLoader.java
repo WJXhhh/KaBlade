@@ -111,6 +111,7 @@ public class BladeLoader {
             loadBlade(new FutsunushiTo());
             loadBlade(new FairySword());
             loadBlade(new Nue());
+            loadBlade(new JizoMitama());
 
             loadBlade(new SakuraBlossom());
 
@@ -127,6 +128,8 @@ public class BladeLoader {
             loadBlade(new DomainOfUnity());
             loadBlade(new SevenThundersRumble());
             loadBlade(new SevenThundersNarukami());
+            loadBlade(new DomainOfSanction());
+            loadBlade(new MagTyphoon());
 
             // 崩坏大剑系列
             loadBlade(new GreatSword());

@@ -25,8 +25,8 @@ public class SlashBladeNamedRecipe extends ShapedOreRecipe {
         if (!super.matches(inventory, world) || requiredBlade.isEmpty()) return false;
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack current = inventory.getStackInSlot(i);
-            if (current.getItem() instanceof ItemSlashBlade) {
-                return sameNamedBlade(requiredBlade, current);
+            if (sameNamedBlade(requiredBlade, current)) {
+                return true;
             }
         }
         return false;

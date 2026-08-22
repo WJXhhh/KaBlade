@@ -49,6 +49,12 @@ public class ModConfig {
         public static boolean SevenThundersCameraFeedback = true;
         /** 降低涤罪七雷的全屏闪光强度，供光敏玩家使用。 */
         public static boolean SevenThundersReducedFlash;
+        public static String RaizanCleaveQuality = "HIGH";
+        public static boolean RaizanCleaveCameraFeedback = true;
+        public static boolean RaizanCleaveReducedFlash;
+        public static String RaidenCycloneQuality = "HIGH";
+        public static boolean RaidenCycloneCameraFeedback = true;
+        public static boolean RaidenCycloneReducedFlash;
         /** 额外允许作为 multipart/Boss 父实体锁定的完整类名。 */
         public static String[] ExtraMultipartTargetClasses;
     }
@@ -181,6 +187,19 @@ public class ModConfig {
                 "Reduce full-screen flashes produced by Seven Thunders slash arts."
         );
 
+        GeneralConf.RaizanCleaveQuality = quality(config.getString("RaizanCleaveQuality", category, "HIGH",
+                "Raizan Cleave render quality: LOW, MEDIUM or HIGH."), "RaizanCleaveQuality", category);
+        GeneralConf.RaizanCleaveCameraFeedback = config.getBoolean("RaizanCleaveCameraFeedback", category, true,
+                "Enable Raizan Cleave camera shake and FOV impulses.");
+        GeneralConf.RaizanCleaveReducedFlash = config.getBoolean("RaizanCleaveReducedFlash", category, false,
+                "Reduce Raizan Cleave full-screen flashes while retaining world effects.");
+        GeneralConf.RaidenCycloneQuality = quality(config.getString("RaidenCycloneQuality", category, "HIGH",
+                "Raiden Cyclone render quality: LOW, MEDIUM or HIGH."), "RaidenCycloneQuality", category);
+        GeneralConf.RaidenCycloneCameraFeedback = config.getBoolean("RaidenCycloneCameraFeedback", category, true,
+                "Enable Raiden Cyclone camera shake and FOV impulses.");
+        GeneralConf.RaidenCycloneReducedFlash = config.getBoolean("RaidenCycloneReducedFlash", category, false,
+                "Reduce Raiden Cyclone full-screen flashes while retaining world effects.");
+
         GeneralConf.ExtraMultipartTargetClasses = config.getStringList(
                 "ExtraMultipartTargetClasses", category, new String[0],
                 "Additional fully-qualified parent entity class names that KaBlade may lock through multipart hitboxes. " +
@@ -189,6 +208,15 @@ public class ModConfig {
         if (config.hasChanged()) {
             config.save();
         }
+    }
+
+    private static String quality(String value, String key, String category) {
+        String normalized = value.trim().toUpperCase(java.util.Locale.ROOT);
+        if (!normalized.equals("LOW") && !normalized.equals("MEDIUM") && !normalized.equals("HIGH")) {
+            normalized = "HIGH";
+            config.get(category, key, "HIGH").set("HIGH");
+        }
+        return normalized;
     }
 
     @SubscribeEvent

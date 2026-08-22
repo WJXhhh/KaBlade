@@ -20,6 +20,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -144,9 +145,11 @@ public class SEFuelTheRuin implements ISpecialEffect, IRemovable {
                 player.posZ - RANGE, player.posX + RANGE, player.posY + 4.5D, player.posZ + RANGE);
         List<Entity> found = player.world.getEntitiesInAABBexcluding(player, area,
                 entity -> TargetingUtil.canSelectForDamage(player, entity));
+        Vec3d center = player.getPositionVector().add(0.0D, 1.0D, 0.0D);
         for (Entity receiver : TargetingUtil.getDistinctDamageTargets(found)) {
             EntityLivingBase target = TargetingUtil.getSelectionTarget(receiver);
-            if (target == null || player.getDistanceSq(target) > RANGE * RANGE) continue;
+            Vec3d hitPoint = TargetingUtil.getClosestPointOnDamageBounds(receiver, center);
+            if (target == null || hitPoint.squareDistanceTo(center) > RANGE * RANGE) continue;
             target.hurtResistantTime = 0;
             receiver.attackEntityFrom(DamageSource.causePlayerDamage(player), damage);
         }

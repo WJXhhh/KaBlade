@@ -42,5 +42,7 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityBloodfyreFrenzy.class,RenderBloodfyreFrenzy::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityConceptualField.class,RenderConceptualField::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySevenThunders.class,RenderSevenThunders::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRaizanCleave.class,RenderRaizanCleave::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityJizoMitamaSoul.class,RenderJizoMitamaSoul::new);
     }
 }

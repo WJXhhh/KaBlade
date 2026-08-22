@@ -13,6 +13,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -128,13 +129,15 @@ public class EntityStageLight extends Entity {
                 input -> TargetingUtil.canSelectForDamage(this.owner, input));
 
         DamageSource source = DamageSource.causePlayerDamage(this.owner);
+        Vec3d stageCenter = new Vec3d(this.posX, centerY, this.posZ);
         for (Entity raw : TargetingUtil.getDistinctDamageTargets(candidates)) {
             EntityLivingBase target = TargetingUtil.getSelectionTarget(raw);
             if (target == null) {
                 continue;
             }
-            double dx = target.posX - this.posX;
-            double dz = target.posZ - this.posZ;
+            Vec3d hitPoint = TargetingUtil.getClosestPointOnDamageBounds(raw, stageCenter);
+            double dx = hitPoint.x - this.posX;
+            double dz = hitPoint.z - this.posZ;
             if (dx * dx + dz * dz > RANGE * RANGE) {
                 continue;
             }

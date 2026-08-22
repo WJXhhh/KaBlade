@@ -27,7 +27,9 @@ public class SEThunderBlitz  implements ISpecialEffect, IRemovable {
 
     @Override
     public boolean canRemoval(ItemStack itemStack) {
-        return !itemStack.getTranslationKey().equals("item.wjx.blade.honkai.key_of_cas");
+        String key = itemStack.getTranslationKey();
+        return !key.equals("item.wjx.blade.honkai.key_of_cas")
+                && !key.equals("item.wjx.blade.honkai.domain_of_sanction");
     }
 
     @Override

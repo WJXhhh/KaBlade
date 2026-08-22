@@ -179,6 +179,21 @@ public final class TargetingUtil {
     }
 
     /**
+     * 返回指定点在实际伤害接收部位碰撞箱上的最近点。
+     * 范围/方向判定必须使用该点，而不是 multipart 逻辑本体的位置。
+     */
+    public static Vec3d getClosestPointOnDamageBounds(Entity receiver, Vec3d point) {
+        if (receiver == null || point == null) {
+            return point == null ? Vec3d.ZERO : point;
+        }
+        AxisAlignedBB box = receiver.getEntityBoundingBox();
+        return new Vec3d(
+                Math.max(box.minX, Math.min(point.x, box.maxX)),
+                Math.max(box.minY, Math.min(point.y, box.maxY)),
+                Math.max(box.minZ, Math.min(point.z, box.maxZ)));
+    }
+
+    /**
      * 范围攻击按逻辑父实体只结算一次，但保留一个真实 multipart 部件作为伤害接收者。
      * 若查询结果同时包含父实体和部件，优先选择部件，避免九头蛇一类父实体拒绝普通伤害。
      */

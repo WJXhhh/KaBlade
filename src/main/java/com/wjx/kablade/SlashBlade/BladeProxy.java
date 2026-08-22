@@ -37,6 +37,9 @@ public class BladeProxy {
     public static ISpecialEffect TrueSelf = SpecialEffects.register(new SETrueSelf());
     public static ISpecialEffect Unthinkable = SpecialEffects.register(new SEUnthinkable());
     public static ISpecialEffect FuelTheRuin = SpecialEffects.register(new SEFuelTheRuin());
+    public static ISpecialEffect ThunderDivinePenalty = SpecialEffects.register(new SEThunderDivinePenalty());
+    public static SEEMPulsar EMPulsar = (SEEMPulsar) SpecialEffects.register(new SEEMPulsar());
+    public static ISpecialEffect RoaringNimbus = SpecialEffects.register(new SERoaringNimbus());
 
     //SPLight
     public static ISpecialEffect SPLighting = SpecialEffects.register(new SPLighting());
@@ -88,6 +91,9 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(463,new ConceptualMetaphor());
             ItemSlashBlade.specialAttacks.put(464,new ThunderboltCall());
             ItemSlashBlade.specialAttacks.put(465,new NarukamiDivinity());
+            ItemSlashBlade.specialAttacks.put(466,new RaizanCleave());
+            ItemSlashBlade.specialAttacks.put(467,new RaidenCyclone());
+            ItemSlashBlade.specialAttacks.put(468,new SoulAppearance());
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());

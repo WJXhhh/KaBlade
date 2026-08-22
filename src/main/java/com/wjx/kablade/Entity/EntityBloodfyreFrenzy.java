@@ -17,9 +17,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /** 魂妖刀「血樱寂灭」SA 的同步锚点、时间轴与服务端伤害逻辑。 */
 public class EntityBloodfyreFrenzy extends Entity {
@@ -30,7 +30,8 @@ public class EntityBloodfyreFrenzy extends Entity {
     private static final DataParameter<Float> BASE_DAMAGE =
             EntityDataManager.createKey(EntityBloodfyreFrenzy.class, DataSerializers.FLOAT);
     private static final double SCAN_RADIUS = 13.0D;
-    private final Set<Integer> burningTargets = new HashSet<>();
+    /** 逻辑本体 ID -> 实际伤害接收部位 ID，避免 multipart Boss 的持续伤害改打本体。 */
+    private final Map<Integer, Integer> burningTargets = new HashMap<>();
 
     public EntityBloodfyreFrenzy(World worldIn) {
         super(worldIn);
@@ -129,10 +130,11 @@ public class EntityBloodfyreFrenzy extends Entity {
         for (Entity receiver : nearbyTargets(owner)) {
             EntityLivingBase target = TargetingUtil.getSelectionTarget(receiver);
             if (target == null) continue;
-            Vec3d offset = target.getPositionVector().add(0.0D, target.height * 0.5D, 0.0D).subtract(origin);
+            Vec3d hitPoint = TargetingUtil.getClosestPointOnDamageBounds(receiver, origin);
+            Vec3d offset = hitPoint.subtract(origin);
             if (Math.abs(offset.y) > 2.7D || offset.x * offset.x + offset.z * offset.z > radius * radius) continue;
             if (hurt(receiver, owner, damage)) {
-                Vec3d pull = origin.subtract(target.getPositionVector());
+                Vec3d pull = origin.subtract(hitPoint);
                 pull = pull.x * pull.x + pull.z * pull.z > 1.0E-5D
                         ? new Vec3d(pull.x, 0.0D, pull.z).normalize().scale(0.10D) : Vec3d.ZERO;
                 target.motionX = target.motionX * 0.60D + pull.x;
@@ -150,7 +152,8 @@ public class EntityBloodfyreFrenzy extends Entity {
         for (Entity receiver : nearbyTargets(owner)) {
             EntityLivingBase target = TargetingUtil.getSelectionTarget(receiver);
             if (target == null) continue;
-            Vec3d offset = target.getPositionVector().add(0.0D, target.height * 0.5D, 0.0D).subtract(origin);
+            // 范围判断必须针对实际命中的部位；九头蛇头部等 multipart 会折算到远处的本体。
+            Vec3d offset = TargetingUtil.getClosestPointOnDamageBounds(receiver, origin).subtract(origin);
             double ahead = offset.dotProduct(forward);
             double side = Math.abs(offset.dotProduct(right));
             double width = finisher ? 2.6D + Math.max(0.0D, ahead) * 0.48D
@@ -159,7 +162,7 @@ public class EntityBloodfyreFrenzy extends Entity {
             if (ahead < -0.8D || ahead > reach || side > width || offset.y < -1.25D || offset.y > 4.5D) continue;
             float falloff = MathHelper.clamp((float) (1.0D - Math.max(0.0D, ahead - 2.0D) / 22.0D), 0.62F, 1.0F);
             if (hurt(receiver, owner, damage * falloff)) {
-                this.burningTargets.add(target.getEntityId());
+                this.burningTargets.put(target.getEntityId(), receiver.getEntityId());
                 double push = finisher ? 0.72D : 0.28D;
                 target.motionX = target.motionX * (finisher ? 0.38D : 0.55D) + forward.x * push;
                 target.motionY = target.motionY * (finisher ? 0.38D : 0.55D) + (finisher ? 0.24D : 0.12D);
@@ -170,16 +173,18 @@ public class EntityBloodfyreFrenzy extends Entity {
     }
 
     private void hitBurning(EntityLivingBase owner, float damage) {
-        for (Integer id : new HashSet<>(this.burningTargets)) {
-            Entity target = this.world.getEntityByID(id);
-            if (!(target instanceof EntityLivingBase) || !target.isEntityAlive()
-                    || getDistanceSq(target) > SCAN_RADIUS * SCAN_RADIUS * 2.0D
-                    || !TargetingUtil.canSelectForDamage(owner, target)) {
-                this.burningTargets.remove(id);
+        for (Map.Entry<Integer, Integer> entry : new HashMap<>(this.burningTargets).entrySet()) {
+            Entity receiver = this.world.getEntityByID(entry.getValue());
+            EntityLivingBase logical = TargetingUtil.getSelectionTarget(receiver);
+            if (receiver == null || logical == null || !logical.isEntityAlive()
+                    || logical.getEntityId() != entry.getKey()
+                    || getDistanceSq(receiver) > SCAN_RADIUS * SCAN_RADIUS * 2.0D
+                    || !TargetingUtil.canSelectForDamage(owner, receiver)) {
+                this.burningTargets.remove(entry.getKey());
                 continue;
             }
-            hurt(target, owner, damage);
-            target.setFire(2);
+            hurt(receiver, owner, damage);
+            logical.setFire(2);
         }
     }
 

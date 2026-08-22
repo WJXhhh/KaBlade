@@ -94,10 +94,11 @@ public class EntityConceptualField extends Entity {
                 entity -> TargetingUtil.canSelectForDamage(owner, entity));
         Vec3d forward = flatForward();
         Vec3d pullCenter = getPositionVector().add(forward.scale(2.15D)).add(0, 1.1D, 0);
+        Vec3d fieldCenter = getPositionVector().add(0, 1.1D, 0);
         for (Entity receiver : TargetingUtil.getDistinctDamageTargets(found)) {
             EntityLivingBase target = TargetingUtil.getSelectionTarget(receiver);
             if (target == null) continue;
-            Vec3d center = target.getPositionVector().add(0, target.height * 0.5D, 0);
+            Vec3d center = TargetingUtil.getClosestPointOnDamageBounds(receiver, fieldCenter);
             double horizontal = Math.sqrt(center.squareDistanceTo(new Vec3d(posX, center.y, posZ)));
             float falloff = MathHelper.clamp((float) (1.0D - horizontal / 11.07D), 0.62F, 1.0F);
             target.hurtResistantTime = 0;

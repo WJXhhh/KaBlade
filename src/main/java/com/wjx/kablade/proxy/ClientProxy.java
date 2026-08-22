@@ -3,9 +3,11 @@ package com.wjx.kablade.proxy;
 import com.wjx.kablade.Entity.Render.Layer.LayerFreeze;
 import com.wjx.kablade.Entity.Render.RenderConfinementForceField;
 import com.wjx.kablade.Entity.Render.RenderWindEnchantment;
+import com.wjx.kablade.Entity.Render.JizoSoulShader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.client.model.BladeLuminousTextureLayer;
 import com.wjx.kablade.client.model.SlashBladeModelWarmup;
+import com.wjx.kablade.client.renderer.RaizanAnimation;
 import com.wjx.kablade.util.ParticleManager;
 import com.wjx.kablade.util.handlers.RenderHandler;
 import net.minecraft.client.Minecraft;
@@ -55,6 +57,10 @@ public class ClientProxy extends CommonProxy{
         if (Minecraft.getMinecraft().getResourceManager() instanceof IReloadableResourceManager) {
             ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
                     .registerReloadListener(BladeLuminousTextureLayer.INSTANCE);
+            ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
+                    .registerReloadListener(RaizanAnimation.INSTANCE);
+            ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
+                    .registerReloadListener(JizoSoulShader.INSTANCE);
         }
         Minecraft.getMinecraft().getRenderManager().entityRenderMap.values().forEach(r -> {
             if (r instanceof RenderLivingBase) {

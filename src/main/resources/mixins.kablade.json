@@ -19,6 +19,7 @@
   ],
   "client": [
     "MixinSlashBladeGroupObject",
-    "MixinSlashBladeWavefrontObject"
+    "MixinSlashBladeWavefrontObject",
+    "MixinLayerSlashBlade"
   ]
 }

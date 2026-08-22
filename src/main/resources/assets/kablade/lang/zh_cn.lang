@@ -46,6 +46,7 @@ item.wjx.blade.honkai.ice_epiphyllum.name=仿灵刀·冰昙天
 item.wjx.blade.honkai.futsunushi_to.name=辉刀·经津主
 item.wjx.blade.honkai.fairy_sword.name=妖精剑·希尔文
 item.wjx.blade.honkai.nue.name=影鵺
+item.wjx.blade.honkai.jizo_mitama.name=§r地藏御魂
 item.wjx.blade.honkai.sakura_blossom.name=灵刀·樱吹雪
 item.wjx.blade.honkai.key_of_cas.name=天殛之钥
 item.wjx.blade.honkai.florid_sakura.name=妖刀·赤染樱
@@ -59,6 +60,8 @@ item.wjx.blade.honkai.key_of_limpidity.name=澄凝之钥
 item.wjx.blade.honkai.domain_of_unity.name=澄凝之境：自性纯一
 item.wjx.blade.honkai.str_rumble.name=§d§l涤罪七雷·鸣
 item.wjx.blade.honkai.str_narukami.name=§d§l涤罪七雷·鸣雷见
+item.wjx.blade.honkai.domain_of_sanction.name=§r天殛之境：裁决
+item.wjx.blade.honkai.mag_typhoon.name=§r重磁暴·斩
 item.wjx.blade.honkai.greatsword.name=大剑
 item.wjx.blade.honkai.nuclear_pri.name=融核动力剑初型
 
@@ -238,6 +241,9 @@ flammpfeil.slashblade.specialattack.bloodfyre_frenzy=浴血狂樱
 slashblade.seffect.name.kablade.fuel_the_ruin=§c绯刃残樱
 prop.fuel_the_ruin=绯刃残樱
 flammpfeil.slashblade.specialattack.thunder_edge=雷刃
+flammpfeil.slashblade.specialattack.raizan_cleave=雷斩·裁决
+flammpfeil.slashblade.specialattack.raiden_cyclone=雷电旋岚
+flammpfeil.slashblade.specialattack.soul_appearance=御魂示现
 flammpfeil.slashblade.specialattack.crimson_sakura=血色落樱
 flammpfeil.slashblade.specialattack.lethal_thrust=致命突刺
 flammpfeil.slashblade.specialattack.love_is_war=恋爱即战争！
@@ -261,6 +267,9 @@ slashblade.seffect.name.kablade.glacial_bane=§b苦寒地狱
 slashblade.seffect.name.kablade.raging_izumo=§e出云
 slashblade.seffect.name.kablade.power_of_wind=§a风之力
 slashblade.seffect.name.kablade.thunder_blitz=§d万雷轰临
+slashblade.seffect.name.kablade.thunder_divine_penalty=§d罪雷天罚
+slashblade.seffect.name.kablade.em_pulsar=§b电磁脉冲
+slashblade.seffect.name.kablade.roaring_nimbus=§b雷云咆哮
 slashblade.seffect.name.kablade.undying_saltiness=§2咸鱼精神
 slashblade.seffect.name.kablade.true_self=§d明心见性
 slashblade.seffect.name.kablade.unthinkable=§d心行处灭
@@ -270,6 +279,8 @@ entity.vorpal_black_hole.name=反力场黑洞
 entity.kablade.vorpal_black_hole.name=反力场黑洞
 entity.EntityVorpalBlackHole.name=反力场黑洞
 entity.wine.name=藤蔓
+entity.jizo_mitama_soul.name=地藏御魂
+entity.kablade.jizo_mitama_soul.name=地藏御魂
 
 
 

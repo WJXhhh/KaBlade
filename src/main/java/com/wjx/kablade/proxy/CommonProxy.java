@@ -62,6 +62,8 @@ public class CommonProxy{
         PACKET_HANDLER.registerMessage(MessageHandlerSpawnParticleBatch.class, MessageSpawnParticleBatch.class, 11, Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerSpawnParticleRing.class, MessageSpawnParticleRing.class, 12, Side.CLIENT);
         PACKET_HANDLER.registerMessage(MessageHandlerSpawnParticleBurst.class, MessageSpawnParticleBurst.class, 13, Side.CLIENT);
+        PACKET_HANDLER.registerMessage(MessageRaidenCycloneStartHandler.class, MessageRaidenCycloneStart.class, 14, Side.CLIENT);
+        PACKET_HANDLER.registerMessage(MessageRaidenCycloneEndHandler.class, MessageRaidenCycloneEnd.class, 15, Side.CLIENT);
     }
 
     public void registerItemRenderer(Item item, int meta, String id){
