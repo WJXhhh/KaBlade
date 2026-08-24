@@ -47,6 +47,16 @@ public final class PlayerAnimationCompat {
 
             animMap.put(ModComboStates.FUSION_NUCLEAR_SHOCK.getId(), anim);
             Main.LOGGER.info("Registered Player Animator tracking for Nuclear Shock");
+
+            Object valkyrieAnim = ctor.newInstance(
+                    ResourceUtil.getLocation("combostate/valkyrie_impact_player.vmd"),
+                    0.0D,
+                    67.0D,
+                    false);
+            setBlendArms.invoke(valkyrieAnim, true);
+            setBlendLegs.invoke(valkyrieAnim, true);
+            animMap.put(ModComboStates.VALKYRIE_IMPACT.getId(), valkyrieAnim);
+            Main.LOGGER.info("Registered Player Animator tracking for Valkyrie Impact");
         } catch (Throwable t) {
             Main.LOGGER.warn("Failed to register Player Animator animations: {}", t.getMessage());
         }

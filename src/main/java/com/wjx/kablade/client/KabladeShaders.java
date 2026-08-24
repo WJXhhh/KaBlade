@@ -4,9 +4,11 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.renderer.BloodfyreOculusPipeline;
 import com.wjx.kablade.client.renderer.JizoMitamaSoulOculusPipeline;
+import com.wjx.kablade.client.renderer.NuclearShockOculusPipeline;
 import com.wjx.kablade.client.renderer.RaidenCycloneOculusPipeline;
 import com.wjx.kablade.client.renderer.ShockImpactOculusPipeline;
 import com.wjx.kablade.client.renderer.ThunderboltCallOculusPipeline;
+import com.wjx.kablade.client.renderer.ValkyrieImpactOculusPipeline;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -53,9 +55,11 @@ public final class KabladeShaders {
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
         BloodfyreOculusPipeline.invalidateResources();
         JizoMitamaSoulOculusPipeline.invalidateResources();
+        NuclearShockOculusPipeline.invalidateResources();
         RaidenCycloneOculusPipeline.invalidateResources();
         ShockImpactOculusPipeline.invalidateResources();
         ThunderboltCallOculusPipeline.invalidateResources();
+        ValkyrieImpactOculusPipeline.invalidateResources();
         event.registerShader(new ShaderInstance(
                         event.getResourceProvider(),
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "stage_light"),

@@ -55,6 +55,17 @@ public final class ModComboStates {
                     .nextOfTimeout(entity -> ComboStateRegistry.NONE.getId())
                     .build());
 
+    public static final RegistryObject<ComboState> VALKYRIE_IMPACT = REGISTRY.register(
+            "valkyrie_impact",
+            () -> ComboState.Builder.newInstance()
+                    .startAndEnd(0, 67)
+                    .speed(1.0F)
+                    .priority(50)
+                    .motionLoc(ResourceUtil.getLocation("combostate/valkyrie_impact_blade.vmd"))
+                    .next(entity -> ComboStateRegistry.NONE.getId())
+                    .nextOfTimeout(entity -> ComboStateRegistry.NONE.getId())
+                    .build());
+
     private ModComboStates() {
     }
 }

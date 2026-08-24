@@ -50,6 +50,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.RAIN_UMBRELLA.get(), RainUmbrellaRenderer::new);
         event.registerEntityRenderer(ModEntities.SUMMONED_HEDRA.get(), SummonedHedraRenderer::new);
         event.registerEntityRenderer(ModEntities.NUCLEAR_SHOCK.get(), NuclearShockRenderer::new);
+        event.registerEntityRenderer(ModEntities.VALKYRIE_IMPACT.get(), ValkyrieImpactRenderer::new);
 
         // SP Light SA entities
         event.registerEntityRenderer(ModEntities.EX_SLASH_DRIVE.get(), ExDriveRenderer::new);

@@ -52,6 +52,7 @@ import com.wjx.kablade.slasharts.ThunderboltCallArts;
 import com.wjx.kablade.slasharts.SwordEnlightenmentArts;
 import com.wjx.kablade.slasharts.ConceptualMetaphorArts;
 import com.wjx.kablade.slasharts.UtpalaAuraArts;
+import com.wjx.kablade.slasharts.ValkyrieImpactArts;
 import com.wjx.kablade.slasharts.VorpalHoleArts;
 import com.wjx.kablade.slasharts.WindEnchantmentArts;
 import com.wjx.kablade.slasharts.YuqiArts;
@@ -282,6 +283,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> NUCLEAR_SHOCK = REGISTRY.register(
             "nuclear_shock",
             () -> new NuclearShockArts(entity -> ModComboStates.FUSION_NUCLEAR_SHOCK.getId()));
+
+    public static final RegistryObject<SlashArts> VALKYRIE_IMPACT = REGISTRY.register(
+            "valkyrie_impact",
+            () -> new ValkyrieImpactArts(entity -> ModComboStates.VALKYRIE_IMPACT.getId()));
 
     private ModSlashArts() {
     }

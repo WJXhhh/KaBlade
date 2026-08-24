@@ -457,6 +457,18 @@ public final class ModEntities {
                     .noSave()
                     .build("nuclear_shock"));
 
+    /** 「女武神冲击」的地面冲击波与地裂推进实体。 */
+    public static final RegistryObject<EntityType<ValkyrieImpactEntity>> VALKYRIE_IMPACT = REGISTRY.register(
+            "valkyrie_impact",
+            () -> EntityType.Builder.<ValkyrieImpactEntity>of(ValkyrieImpactEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 1.0F)
+                    .clientTrackingRange(16)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("valkyrie_impact"));
+
     private ModEntities() {
     }
 }
