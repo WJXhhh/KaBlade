@@ -1,0 +1,32 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:king_cobra",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "minecraft:bone_block"
+    },
+    "C": {
+      "item": "minecraft:cactus"
+    },
+    "S": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:nuclear_pri_ex"
+      }
+    },
+    "G": {
+      "item": "minecraft:gilded_blackstone"
+    }
+  },
+  "pattern": [
+    " B ",
+    "CSC",
+    "G G"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

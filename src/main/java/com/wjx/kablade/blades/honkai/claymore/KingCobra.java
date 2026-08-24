@@ -1,6 +1,5 @@
 package com.wjx.kablade.blades.honkai.claymore;
 
-import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
@@ -30,10 +29,9 @@ public class KingCobra extends BladeDefineBase {
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(14.0F)
+                        .baseAttackModifier(15.0F)
                         .maxDamage(550)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
-                        .slashArtsType(ModSlashArts.NUCLEAR_SHOCK.getId())
                         .build(),
                 List.of(
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2),

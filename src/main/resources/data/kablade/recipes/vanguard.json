@@ -1,0 +1,32 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:vanguard",
+  "category": "equipment",
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:nuclear_pri_ex"
+      }
+    },
+    "S": {
+      "item": "minecraft:gilded_blackstone"
+    }
+  },
+  "pattern": [
+    " N ",
+    "GBG",
+    "S S"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}
