@@ -63,6 +63,18 @@ public final class ModEntities {
                     .noSave()
                     .build("cut_metal_ring"));
 
+    /** 「魔龙旋斩」的环形刀光表现实体。 */
+    public static final RegistryObject<EntityType<DraconicVortexRingEntity>> DRACONIC_VORTEX_RING = REGISTRY.register(
+            "draconic_vortex_ring",
+            () -> EntityType.Builder.<DraconicVortexRingEntity>of(DraconicVortexRingEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 1.0F)
+                    .clientTrackingRange(12)
+                    .updateInterval(20)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("draconic_vortex_ring"));
+
     /** 「领域压杀」的源能自由剑。 */
     public static final RegistryObject<EntityType<OriginFreeSwordEntity>> ORIGIN_FREE_SWORD = REGISTRY.register(
             "origin_free_sword",

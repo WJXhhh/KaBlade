@@ -1,0 +1,29 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:proto_pulse_cleaver",
+  "category": "equipment",
+  "key": {
+    "D": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:greatsword"
+      }
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    }
+  },
+  "pattern": [
+    " P ",
+    "IDI",
+    "I I"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

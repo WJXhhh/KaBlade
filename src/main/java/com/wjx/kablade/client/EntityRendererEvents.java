@@ -27,6 +27,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.AURORA_VEIL.get(), AuroraVeilRenderer::new);
         event.registerEntityRenderer(ModEntities.DAWN_CRESCENT.get(), DawnCrescentRenderer::new);
         event.registerEntityRenderer(ModEntities.CUT_METAL_RING.get(), CutMetalRingRenderer::new);
+        event.registerEntityRenderer(ModEntities.DRACONIC_VORTEX_RING.get(), DraconicVortexRingRenderer::new);
         event.registerEntityRenderer(ModEntities.ORIGIN_FREE_SWORD.get(), OriginFreeSwordRenderer::new);
         event.registerEntityRenderer(ModEntities.VORPAL_BLACK_HOLE.get(), VorpalBlackHoleRenderer::new);
         event.registerEntityRenderer(ModEntities.RAIKIRI_SHIELD.get(), RaikiriShieldRenderer::new);

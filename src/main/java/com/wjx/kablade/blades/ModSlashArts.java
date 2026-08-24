@@ -11,6 +11,7 @@ import com.wjx.kablade.slasharts.ChopWillowArts;
 import com.wjx.kablade.slasharts.CrimsonSakuraArts;
 import com.wjx.kablade.slasharts.CutMetalArts;
 import com.wjx.kablade.slasharts.DomainSuppressionArts;
+import com.wjx.kablade.slasharts.DraconicVortexArts;
 import com.wjx.kablade.slasharts.FallingPetalsArts;
 import com.wjx.kablade.slasharts.FireOfSinArts;
 import com.wjx.kablade.slasharts.FengxuanArts;
@@ -287,6 +288,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> VALKYRIE_IMPACT = REGISTRY.register(
             "valkyrie_impact",
             () -> new ValkyrieImpactArts(entity -> ModComboStates.VALKYRIE_IMPACT.getId()));
+
+    public static final RegistryObject<SlashArts> DRACONIC_VORTEX = REGISTRY.register(
+            "draconic_vortex",
+            () -> new DraconicVortexArts(entity -> ComboStateRegistry.NONE.getId()));
 
     private ModSlashArts() {
     }

@@ -1,5 +1,6 @@
 package com.wjx.kablade.blades.honkai.claymore;
 
+import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
@@ -14,35 +15,36 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 /**
- * 超重剑·王蛇 (King Cobra)
+ * 魔龙之脊 (Dragon Spine)
  */
-public class KingCobra extends BladeDefineBase {
-    public KingCobra(BootstapContext<SlashBladeDefinition> context) {
+public class DragonSpine extends BladeDefineBase {
+    public DragonSpine(BootstapContext<SlashBladeDefinition> context) {
         String key = getKey();
         context.register(createBladeKey(key), new SlashBladeDefinition(
                 getBaseBladeId(BaseBladeType.HONKAI),
                 ResourceUtil.getLocation(key),
                 RenderDefinition.Builder.newInstance()
-                        .modelName(ResourceUtil.getLocation("model/honkai_claymore/super_heavy_sword/mdl.obj"))
-                        .textureName(ResourceUtil.getLocation("model/honkai_claymore/super_heavy_sword/tex_1.png"))
-                        .effectColor(0x00FF00)
+                        .modelName(ResourceUtil.getLocation("model/honkai_claymore/dragon_spine/mdl.obj"))
+                        .textureName(ResourceUtil.getLocation("model/honkai_claymore/dragon_spine/tex.png"))
+                        .effectColor(0xFF0000)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(15.0F)
-                        .maxDamage(550)
+                        .baseAttackModifier(19.0F)
+                        .maxDamage(750)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
+                        .slashArtsType(ModSlashArts.DRACONIC_VORTEX.getId())
                         .build(),
                 List.of(
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2),
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2),
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 1)
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 3),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2)
                 )
         ));
     }
 
     @Override
     public String getKey() {
-        return "king_cobra";
+        return "dragon_spine";
     }
 }
