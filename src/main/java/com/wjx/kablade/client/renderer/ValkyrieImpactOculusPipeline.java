@@ -78,7 +78,7 @@ public final class ValkyrieImpactOculusPipeline {
             return false;
         }
 
-        QUEUED.put(entity.getId(), new QueuedImpact(entity, x, y, z, entity.getYRot(), partialTick, timeSeconds));
+        QUEUED.put(entity.getId(), new QueuedImpact(entity, x, y, z, entity.getYawRot(), partialTick, timeSeconds));
         return true;
     }
 

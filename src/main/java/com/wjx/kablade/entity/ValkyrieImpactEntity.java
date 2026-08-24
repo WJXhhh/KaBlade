@@ -65,6 +65,8 @@ public class ValkyrieImpactEntity extends Entity {
         ValkyrieImpactEntity entity = new ValkyrieImpactEntity(ModEntities.VALKYRIE_IMPACT.get(), level);
         entity.setPos(impactPos.x, impactPos.y, impactPos.z);
         entity.ownerUUID = owner.getUUID();
+        entity.setYRot(yaw);
+        entity.yRotO = yaw;
         entity.setYawRot(yaw);
         entity.setDamage(damage);
         level.addFreshEntity(entity);
@@ -186,12 +188,24 @@ public class ValkyrieImpactEntity extends Entity {
         return this.entityData.get(LIFETIME);
     }
 
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+        if (YAW_ROT.equals(key)) {
+            float yaw = this.entityData.get(YAW_ROT);
+            this.setYRot(yaw);
+            this.yRotO = yaw;
+        }
+    }
+
     public float getYawRot() {
         return this.entityData.get(YAW_ROT);
     }
 
     public void setYawRot(float yaw) {
         this.entityData.set(YAW_ROT, yaw);
+        this.setYRot(yaw);
+        this.yRotO = yaw;
     }
 
     public float getDamage() {
