@@ -37,6 +37,8 @@ public class EntityInit {
         registerEntity("seven_thunders", EntitySevenThunders.class,13700022,160);
         registerEntity("raizan_cleave", EntityRaizanCleave.class,13700023,192);
         registerEntity("jizo_mitama_soul", EntityJizoMitamaSoul.class,13700024,192);
+        registerEntity("nuclear_shock", EntityNuclearShock.class,13700025,192);
+        registerEntity("valkyrie_impact", EntityValkyrieImpact.class,13700026,192);
 
 
 

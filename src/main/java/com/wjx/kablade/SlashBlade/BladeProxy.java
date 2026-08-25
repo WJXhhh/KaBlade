@@ -94,6 +94,8 @@ public class BladeProxy {
             ItemSlashBlade.specialAttacks.put(466,new RaizanCleave());
             ItemSlashBlade.specialAttacks.put(467,new RaidenCyclone());
             ItemSlashBlade.specialAttacks.put(468,new SoulAppearance());
+            ItemSlashBlade.specialAttacks.put(469,new NuclearShock());
+            ItemSlashBlade.specialAttacks.put(470,new ValkyrieImpact());
 
             if(EnableAllWeapon){
                 ItemSlashBlade.specialAttacks.put(400,new AL_YanjiFZ());

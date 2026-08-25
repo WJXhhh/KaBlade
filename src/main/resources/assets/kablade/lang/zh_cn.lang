@@ -64,6 +64,9 @@ item.wjx.blade.honkai.domain_of_sanction.name=§r天殛之境：裁决
 item.wjx.blade.honkai.mag_typhoon.name=§r重磁暴·斩
 item.wjx.blade.honkai.greatsword.name=大剑
 item.wjx.blade.honkai.nuclear_pri.name=融核动力剑初型
+item.wjx.blade.honkai.nuclear_pri_ex.name=融核动力剑·改
+item.wjx.blade.honkai.vanguard.name=超重剑·冲锋
+item.wjx.blade.honkai.king_cobra.name=超重剑·王蛇
 
 
 item.wjx.blade.honkai.dizui.name=§d§l涤罪七雷·鸣
@@ -244,6 +247,8 @@ flammpfeil.slashblade.specialattack.thunder_edge=雷刃
 flammpfeil.slashblade.specialattack.raizan_cleave=雷斩
 flammpfeil.slashblade.specialattack.raiden_cyclone=重电斩
 flammpfeil.slashblade.specialattack.soul_appearance=御魂示现
+flammpfeil.slashblade.specialattack.nuclear_shock=核能震动
+flammpfeil.slashblade.specialattack.valkyrie_impact=女武神冲击
 flammpfeil.slashblade.specialattack.crimson_sakura=血色落樱
 flammpfeil.slashblade.specialattack.lethal_thrust=致命突刺
 flammpfeil.slashblade.specialattack.love_is_war=恋爱即战争！

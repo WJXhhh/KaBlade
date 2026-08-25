@@ -7,7 +7,10 @@ import com.wjx.kablade.Entity.Render.JizoSoulShader;
 import com.wjx.kablade.SlashBlade.BladeProxy;
 import com.wjx.kablade.client.model.BladeLuminousTextureLayer;
 import com.wjx.kablade.client.model.SlashBladeModelWarmup;
+import com.wjx.kablade.client.command.CommandGreatswordVmdDebug;
+import com.wjx.kablade.client.command.GreatswordVmdDebugKeys;
 import com.wjx.kablade.client.renderer.RaizanAnimation;
+import com.wjx.kablade.client.renderer.GreatswordVmdAnimation;
 import com.wjx.kablade.util.ParticleManager;
 import com.wjx.kablade.util.handlers.RenderHandler;
 import net.minecraft.client.Minecraft;
@@ -18,6 +21,7 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -25,6 +29,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 
 import java.util.Map;
 import java.util.Objects;
@@ -53,12 +58,20 @@ public class ClientProxy extends CommonProxy{
     @Override
     public void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
+        if (FMLLaunchHandler.isDeobfuscatedEnvironment()) {
+            ClientCommandHandler.instance.registerCommand(new CommandGreatswordVmdDebug());
+            GreatswordVmdDebugKeys.register();
+        }
         MinecraftForge.EVENT_BUS.register(new SlashBladeModelWarmup());
         if (Minecraft.getMinecraft().getResourceManager() instanceof IReloadableResourceManager) {
             ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
                     .registerReloadListener(BladeLuminousTextureLayer.INSTANCE);
             ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
                     .registerReloadListener(RaizanAnimation.INSTANCE);
+            ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
+                    .registerReloadListener(GreatswordVmdAnimation.INSTANCE);
+            GreatswordVmdAnimation.INSTANCE.onResourceManagerReload(
+                    Minecraft.getMinecraft().getResourceManager());
             ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
                     .registerReloadListener(JizoSoulShader.INSTANCE);
         }

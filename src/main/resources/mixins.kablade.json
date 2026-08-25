@@ -20,6 +20,8 @@
   "client": [
     "MixinSlashBladeGroupObject",
     "MixinSlashBladeWavefrontObject",
-    "MixinLayerSlashBlade"
+    "MixinLayerSlashBlade",
+    "MixinModelBipedGreatswordAction",
+    "MixinRenderLivingBaseGreatswordAction"
   ]
 }

@@ -134,6 +134,9 @@ public class BladeLoader {
             // 崩坏大剑系列
             loadBlade(new GreatSword());
             loadBlade(new NuclearPRI());
+            loadBlade(new NuclearPRIEX());
+            loadBlade(new Vanguard());
+            loadBlade(new KingCobra());
 
 
 

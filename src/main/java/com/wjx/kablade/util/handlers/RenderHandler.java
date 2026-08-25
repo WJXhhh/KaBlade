@@ -44,5 +44,7 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntitySevenThunders.class,RenderSevenThunders::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRaizanCleave.class,RenderRaizanCleave::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityJizoMitamaSoul.class,RenderJizoMitamaSoul::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityNuclearShock.class,RenderNuclearShock::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityValkyrieImpact.class,RenderValkyrieImpact::new);
     }
 }

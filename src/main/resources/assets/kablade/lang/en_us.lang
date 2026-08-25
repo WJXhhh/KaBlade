@@ -64,6 +64,9 @@ item.wjx.blade.honkai.domain_of_sanction.name=§rDomain of Sanction
 item.wjx.blade.honkai.mag_typhoon.name=§rMAG-Typhoon
 item.wjx.blade.honkai.greatsword.name=Greatsword
 item.wjx.blade.honkai.nuclear_pri.name=Nuclear PRI
+item.wjx.blade.honkai.nuclear_pri_ex.name=Fusion Sword EX
+item.wjx.blade.honkai.vanguard.name=Vanguard
+item.wjx.blade.honkai.king_cobra.name=King Cobra
 
 item.wjx.blade.honkai.dizui.name=§d§lSeven Thunders of Retribution: Rumble
 
@@ -231,6 +234,8 @@ flammpfeil.slashblade.specialattack.thunder_edge=Thunder Edge
 flammpfeil.slashblade.specialattack.raizan_cleave=Raizan Cleave
 flammpfeil.slashblade.specialattack.raiden_cyclone=Raiden's Cyclone
 flammpfeil.slashblade.specialattack.soul_appearance=Soul Appearance
+flammpfeil.slashblade.specialattack.nuclear_shock=Nuclear Shock
+flammpfeil.slashblade.specialattack.valkyrie_impact=Valkyrie Impact
 flammpfeil.slashblade.specialattack.crimson_sakura=Crimson Sakura
 flammpfeil.slashblade.specialattack.lethal_thrust=Lethal Thrust
 flammpfeil.slashblade.specialattack.love_is_war=Love is War!
