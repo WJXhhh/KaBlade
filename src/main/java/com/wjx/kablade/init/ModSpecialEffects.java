@@ -1,6 +1,7 @@
 package com.wjx.kablade.init;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.specialeffect.BloodAwakening;
 import com.wjx.kablade.specialeffect.BurstDrive;
 import com.wjx.kablade.specialeffect.DivinePenalty;
 import com.wjx.kablade.specialeffect.EMInduction;
@@ -88,6 +89,9 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> FUEL_THE_RUIN = REGISTRY.register(
             "fuel_the_ruin", FuelTheRuin::new);
+
+    public static final RegistryObject<SpecialEffect> BLOOD_AWAKENING = REGISTRY.register(
+            "blood_awakening", BloodAwakening::new);
 
     private ModSpecialEffects() {
     }

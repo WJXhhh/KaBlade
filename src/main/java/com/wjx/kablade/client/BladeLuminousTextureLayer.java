@@ -72,7 +72,8 @@ public final class BladeLuminousTextureLayer implements ResourceManagerReloadLis
 
         luminousTexture(baseTexture).ifPresent(texture -> {
             boolean shaderPackHand = isShaderPackHand(event);
-            boolean queuedForPost = shouldUseShaderPackPost()
+            boolean queuedForPost = baseTarget.startsWith("item_")
+                    && shouldUseShaderPackHandPost(shaderPackHand)
                     && BladeLuminousHandOculusPipeline.enqueue(
                     event.getModel(), baseTarget, texture, event.getPoseStack());
             if (queuedForPost) {
@@ -138,16 +139,19 @@ public final class BladeLuminousTextureLayer implements ResourceManagerReloadLis
                 .endsWith("FullyBufferedMultiBufferSource$UnflushableWrapper");
     }
 
-    private static boolean shouldUseShaderPackPost() {
-        if (!ShaderCompat.shouldUseOculusPostPath()
+    private static boolean shouldUseShaderPackHandPost(boolean shaderPackHand) {
+        if (!shaderPackHand
+                || !ShaderCompat.shouldUseOculusPostPath()
                 || ShaderCompat.isRenderingShaderPackShadow()
                 || Minecraft.getInstance().level == null) {
             return false;
         }
 
-        // Perspective projections cover first/third person, item entities, and in-world blade
-        // displays. Orthographic inventory/GUI renders happen after the level post stage and
-        // must remain on the immediate RenderType path.
+        // RenderSystem exposes the shader pack's usable projection while Iris/Oculus is
+        // replaying the hand. World entities and third-person layers can use a different
+        // internal projection which cannot be reconstructed reliably by the deferred GL pass;
+        // keep those draws on the normal full-bright RenderType path. Orthographic inventory
+        // and GUI renders must also remain immediate because they happen after the level pass.
         return Math.abs(RenderSystem.getProjectionMatrix().m33()) < 1.0E-5F;
     }
 

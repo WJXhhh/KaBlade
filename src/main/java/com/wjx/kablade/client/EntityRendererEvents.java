@@ -56,6 +56,7 @@ public final class EntityRendererEvents {
         // SP Light SA entities
         event.registerEntityRenderer(ModEntities.EX_SLASH_DRIVE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.LACERATE_DRIVE.get(), ExDriveRenderer::new);
+        event.registerEntityRenderer(ModEntities.PURPLE_IMPACT_DRIVE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.FLARE_EDGE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.AQUA_EDGE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.PHANTOM_SWORD_EX.get(), PhantomSwordExRenderer::new);

@@ -38,6 +38,7 @@ import com.wjx.kablade.slasharts.NuclearShockArts;
 import com.wjx.kablade.slasharts.OverSlashArts;
 import com.wjx.kablade.slasharts.PhantomButterflyArts;
 import com.wjx.kablade.slasharts.PhantomButterflySArts;
+import com.wjx.kablade.slasharts.PurpleImpactArts;
 import com.wjx.kablade.slasharts.RagingFireArts;
 import com.wjx.kablade.slasharts.RainbowSlashArts;
 import com.wjx.kablade.slasharts.RockStrikeArts;
@@ -91,6 +92,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> LACERATE_BLADE = REGISTRY.register(
             "lacerate_blade",
             () -> new LacerateBladeArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> PURPLE_IMPACT = REGISTRY.register(
+            "purple_impact",
+            () -> new PurpleImpactArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> CHOP_WILLOW = REGISTRY.register(
             "chop_willow",

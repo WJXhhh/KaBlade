@@ -37,13 +37,13 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Draws visible-scene luminous blade masks through one Oculus HDR/Bloom pass.
+ * Draws first-person luminous blade masks through one Oculus HDR/Bloom pass.
  *
  * <p>Oculus 1.8 maps Minecraft's translucent-emissive shader to the shader pack's
- * entity-eyes program even while it is rendering a hand. A separate hand-only workaround
- * would make first and third person look different, so this path captures the exact matrix of
- * every visible perspective draw and renders all of them into Oculus' live HDR target and the
- * same narrow bloom mask after translucent blocks.</p>
+ * entity-eyes program even while it is rendering a hand. This path captures the hand matrix
+ * and renders the mask into Oculus' live HDR target and the same narrow bloom mask after
+ * translucent blocks. World and third-person draws deliberately stay on the normal RenderType
+ * path because their shader-pack projection is not guaranteed to match RenderSystem's matrix.</p>
  */
 @Mod.EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT,
         bus = Mod.EventBusSubscriber.Bus.FORGE)

@@ -63,13 +63,16 @@ import com.wjx.kablade.blades.allweapon.AwXuezou;
 import com.wjx.kablade.blades.allweapon.AwYingyue;
 import com.wjx.kablade.blades.allweapon.AwYouming;
 import com.wjx.kablade.blades.allweapon.AwZhanYue;
+import com.wjx.kablade.blades.honkai.claymore.CrimsonQueen;
 import com.wjx.kablade.blades.honkai.claymore.DragonSpine;
+import com.wjx.kablade.blades.honkai.claymore.EnergyGreatsword;
 import com.wjx.kablade.blades.honkai.claymore.GreatSword;
 import com.wjx.kablade.blades.honkai.claymore.KingCobra;
 import com.wjx.kablade.blades.honkai.claymore.NuclearPRI;
 import com.wjx.kablade.blades.honkai.claymore.NuclearPRIEX;
 import com.wjx.kablade.blades.honkai.claymore.ProtoPulseCleaver;
 import com.wjx.kablade.blades.honkai.claymore.Vanguard;
+import com.wjx.kablade.blades.honkai.claymore.VioletKnight;
 import com.wjx.kablade.blades.ordinary.ArcLight;
 import com.wjx.kablade.blades.ordinary.AuroraBlade;
 import com.wjx.kablade.blades.ordinary.BambooBattler;
@@ -171,7 +174,10 @@ public final class BladeLoader {
     public static BladeDefineBase FAIRY_SWORD;
     // 崩坏线·大剑系列
     public static BladeDefineBase GREAT_SWORD;
+    public static BladeDefineBase ENERGY_GREATSWORD;
     public static BladeDefineBase PROTO_PULSE_CLEAVER;
+    public static BladeDefineBase CRIMSON_QUEEN;
+    public static BladeDefineBase VIOLET_KNIGHT;
     public static BladeDefineBase NUCLEAR_PRI;
     public static BladeDefineBase NUCLEAR_PRI_EX;
     public static BladeDefineBase VANGUARD;
@@ -285,7 +291,10 @@ public final class BladeLoader {
             "ice_epiphyllum",
             "frozen_naraka",
             "greatsword",
+            "energy_greatsword",
             "proto_pulse_cleaver",
+            "crimson_queen",
+            "violet_knight",
             "nuclear_pri",
             "nuclear_pri_ex",
             "vanguard",
@@ -324,7 +333,10 @@ public final class BladeLoader {
 
     private static final Set<String> HONKAI_GREATSWORD_BLADE_KEYS = Set.of(
             "greatsword",
+            "energy_greatsword",
             "proto_pulse_cleaver",
+            "crimson_queen",
+            "violet_knight",
             "nuclear_pri",
             "nuclear_pri_ex",
             "vanguard",
@@ -435,7 +447,10 @@ public final class BladeLoader {
         SPLIGHT_SENTA = new SL_Senta(context);
         // 崩坏大剑
         GREAT_SWORD = new GreatSword(context);
+        ENERGY_GREATSWORD = new EnergyGreatsword(context);
         PROTO_PULSE_CLEAVER = new ProtoPulseCleaver(context);
+        CRIMSON_QUEEN = new CrimsonQueen(context);
+        VIOLET_KNIGHT = new VioletKnight(context);
         NUCLEAR_PRI = new NuclearPRI(context);
         NUCLEAR_PRI_EX = new NuclearPRIEX(context);
         VANGUARD = new Vanguard(context);

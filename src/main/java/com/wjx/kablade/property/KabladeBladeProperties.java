@@ -1,6 +1,7 @@
 package com.wjx.kablade.property;
 
 import com.wjx.kablade.init.KabladeCapabilities;
+import com.wjx.kablade.specialeffect.BloodAwakening;
 import com.wjx.kablade.specialeffect.FuelTheRuin;
 import com.wjx.kablade.specialeffect.RoaringNimbus;
 import net.minecraft.ChatFormatting;
@@ -94,6 +95,14 @@ public final class KabladeBladeProperties {
                 .intValue(RoaringNimbus::readiness)
                 .activeWhen(RoaringNimbus::isHeldBy)
                 .maxValue(RoaringNimbus.COOLDOWN_TICKS)
+                .build());
+
+        PlayerPropertyRegistry.register(PlayerProperty.builder("blood_awakening")
+                .displayName(Component.translatable("prop.kablade.blood_awakening")
+                        .withStyle(ChatFormatting.RED))
+                .intValue(BloodAwakening::getLostHealthPercentInt)
+                .activeWhen(BloodAwakening::isHeldBy)
+                .maxValue(100)
                 .build());
     }
 }

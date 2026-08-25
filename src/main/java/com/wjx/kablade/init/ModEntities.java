@@ -373,6 +373,18 @@ public final class ModEntities {
                     .noSave()
                     .build("lacerate_drive"));
 
+    /** 「深紫冲击」深紫驱动实体。 */
+    public static final RegistryObject<EntityType<PurpleImpactDriveEntity>> PURPLE_IMPACT_DRIVE = REGISTRY.register(
+            "purple_impact_drive",
+            () -> EntityType.Builder.<PurpleImpactDriveEntity>of(PurpleImpactDriveEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("purple_impact_drive"));
+
     /** 熔岩驱动（FlareEdge）。 */
     public static final RegistryObject<EntityType<FlareEdgeEntity>> FLARE_EDGE = REGISTRY.register(
             "flare_edge",

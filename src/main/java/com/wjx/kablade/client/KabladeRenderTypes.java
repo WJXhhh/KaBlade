@@ -667,18 +667,21 @@ public final class KabladeRenderTypes extends RenderType {
     }
 
     /**
-     * Additive, full-bright blade mask pass with a raster depth bias.
+     * Additive, full-bright world blade mask pass with a raster depth bias.
      *
      * <p>The mask intentionally reuses the base OBJ group. A view-space scale offset is not
      * stable for large OBJ coordinates or surfaces seen at a shallow angle: the mask can
      * still quantize to the base surface and fail its depth test in third person or when a
      * dropped blade lies on the ground. Polygon offset separates the coplanar triangles at
-     * rasterization time without changing the model's visible size.</p>
+     * rasterization time without changing the model's visible size. The regular entity shader
+     * is intentional: Oculus maps the translucent-emissive shader to entity-eyes, whose world
+     * projection/depth can differ from the blade's base entity pass and reject this coplanar
+     * mask in third person and on item entities.</p>
      */
     public static RenderType bladeLuminousTexture(ResourceLocation texture) {
         return BLADE_LUMINOUS_TEXTURE.computeIfAbsent(texture, tex -> {
             CompositeState state = CompositeState.builder()
-                    .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                    .setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
                     .setTextureState(new TextureStateShard(tex, true, true))
                     .setTransparencyState(LIGHTNING_TRANSPARENCY)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
