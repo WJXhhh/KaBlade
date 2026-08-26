@@ -13,6 +13,7 @@ import com.wjx.kablade.specialeffect.Oripursuit;
 import com.wjx.kablade.specialeffect.Phoenix;
 import com.wjx.kablade.specialeffect.PowerOfWind;
 import com.wjx.kablade.specialeffect.RagingIzumo;
+import com.wjx.kablade.specialeffect.RainbowFlames;
 import com.wjx.kablade.specialeffect.RoaringNimbus;
 import com.wjx.kablade.specialeffect.SPLighting;
 import com.wjx.kablade.specialeffect.ThunderBlitz;
@@ -92,6 +93,9 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> BLOOD_AWAKENING = REGISTRY.register(
             "blood_awakening", BloodAwakening::new);
+
+    public static final RegistryObject<SpecialEffect> RAINBOW_FLAMES = REGISTRY.register(
+            "rainbow_flames", RainbowFlames::new);
 
     private ModSpecialEffects() {
     }

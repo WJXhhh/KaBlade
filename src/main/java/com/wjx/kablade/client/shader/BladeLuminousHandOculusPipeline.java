@@ -8,13 +8,17 @@ import mods.flammpfeil.slashblade.client.renderer.model.obj.GroupObject;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.TextureCoordinate;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.Vertex;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -37,18 +41,18 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Draws first-person luminous blade masks through one Oculus HDR/Bloom pass.
+ * Draws blade luminous masks through deterministic Oculus HDR/Bloom passes.
  *
  * <p>Oculus 1.8 maps Minecraft's translucent-emissive shader to the shader pack's
  * entity-eyes program even while it is rendering a hand. This path captures the hand matrix
- * and renders the mask into Oculus' live HDR target and the same narrow bloom mask after
- * translucent blocks. World and third-person draws deliberately stay on the normal RenderType
- * path because their shader-pack projection is not guaranteed to match RenderSystem's matrix.</p>
+ * and renders the mask into Oculus' live HDR target and the same narrow bloom mask. World
+ * masks flush after world translucency; first-person masks flush inside Oculus' hand phase.</p>
  */
 @Mod.EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT,
         bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class BladeLuminousHandOculusPipeline {
-    private static final List<QueuedDraw> QUEUED = new ArrayList<>();
+    private static final List<QueuedDraw> WORLD_QUEUED = new ArrayList<>();
+    private static final List<QueuedDraw> HAND_QUEUED = new ArrayList<>();
     private static final Map<WavefrontObject, Map<String, LuminousMesh>> MESHES =
             new IdentityHashMap<>();
     private static final LuminousProgram PROGRAM = new LuminousProgram();
@@ -56,6 +60,7 @@ public final class BladeLuminousHandOculusPipeline {
     private static boolean resourcesDirty;
     private static boolean disabledForSession;
     private static boolean loggedActive;
+    private static boolean loggedHandActive;
     private static boolean loggedUnavailable;
     private static boolean loggedFailure;
 
@@ -65,8 +70,18 @@ public final class BladeLuminousHandOculusPipeline {
     /**
      * Captures a luminous draw while its world or hand projection is still current.
      */
-    public static boolean enqueue(WavefrontObject model, String target,
-                                  ResourceLocation texture, PoseStack poseStack) {
+    public static boolean enqueueWorld(WavefrontObject model, String target,
+                                       ResourceLocation texture, PoseStack poseStack) {
+        return enqueue(WORLD_QUEUED, model, target, texture, poseStack);
+    }
+
+    public static boolean enqueueHand(WavefrontObject model, String target,
+                                      ResourceLocation texture, PoseStack poseStack) {
+        return enqueue(HAND_QUEUED, model, target, texture, poseStack);
+    }
+
+    private static boolean enqueue(List<QueuedDraw> queue, WavefrontObject model, String target,
+                                   ResourceLocation texture, PoseStack poseStack) {
         if (model == null || target == null || texture == null || poseStack == null
                 || disabledForSession || !ShaderCompat.shouldUseOculusPostPath()) {
             return false;
@@ -75,29 +90,82 @@ public final class BladeLuminousHandOculusPipeline {
         Matrix4f modelView = new Matrix4f(RenderSystem.getModelViewMatrix())
                 .mul(poseStack.last().pose());
         Matrix4f projection = new Matrix4f(RenderSystem.getProjectionMatrix());
-        QUEUED.add(new QueuedDraw(model, target, texture, modelView, projection));
+        queue.add(new QueuedDraw(model, target, texture, modelView, projection,
+                new Matrix4f(poseStack.last().pose()),
+                new Matrix3f(poseStack.last().normal())));
         return true;
     }
 
     /** Marks GL objects stale after a resource or shader-pack reload. */
     public static void invalidateResources() {
-        QUEUED.clear();
+        WORLD_QUEUED.clear();
+        HAND_QUEUED.clear();
         resourcesDirty = true;
         disabledForSession = false;
         loggedActive = false;
+        loggedHandActive = false;
         loggedUnavailable = false;
         loggedFailure = false;
     }
 
-    @SubscribeEvent
-    public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS
-                || QUEUED.isEmpty()) {
+    /**
+     * Consumes the current hand's queued masks immediately after its buffers are flushed.
+     * Calling this from a world render stage is too early: Minecraft renders the hand only
+     * after every {@code RenderLevelStageEvent} has completed.
+     */
+    public static void flushQueuedHand(MultiBufferSource.BufferSource handBuffer) {
+        if (HAND_QUEUED.isEmpty()) {
+            return;
+        }
+        List<QueuedDraw> draws = new ArrayList<>(HAND_QUEUED);
+        HAND_QUEUED.clear();
+        if (disabledForSession || !ShaderCompat.shouldUseOculusPostPath()) {
             return;
         }
 
-        List<QueuedDraw> draws = new ArrayList<>(QUEUED);
-        QUEUED.clear();
+        try {
+            for (QueuedDraw draw : draws) {
+                PoseStack replayPose = new PoseStack();
+                replayPose.last().pose().set(draw.localPose());
+                replayPose.last().normal().set(draw.normal());
+                draw.model().tessellateOnly(
+                        handBuffer.getBuffer(RenderType.entityTranslucentEmissive(draw.texture())),
+                        replayPose,
+                        BladeRenderState.MAX_LIGHT,
+                        0xFFFFFFFF,
+                        draw.target());
+            }
+            // The first endBatch submitted the ordinary blade. A second complete submission
+            // preserves that ordering while letting Oculus select the hand projection, shader
+            // program and MRT attachments for the emissive render type itself.
+            handBuffer.endBatch();
+            if (!loggedHandActive) {
+                loggedHandActive = true;
+                Main.LOGGER.info("Native Oculus hand blade luminous replay active.");
+            }
+        } catch (RuntimeException exception) {
+            disabledForSession = true;
+            if (!loggedFailure) {
+                loggedFailure = true;
+                Main.LOGGER.warn("Disabling the native Oculus hand blade luminous replay "
+                        + "for this session.", exception);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderLevel(RenderLevelStageEvent event) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
+            flush(WORLD_QUEUED, false);
+        }
+    }
+
+    private static void flush(List<QueuedDraw> queue, boolean handPass) {
+        if (queue.isEmpty()) {
+            return;
+        }
+        List<QueuedDraw> draws = new ArrayList<>(queue);
+        queue.clear();
         if (disabledForSession || !ShaderCompat.shouldUseOculusPostPath()) {
             return;
         }
@@ -112,8 +180,8 @@ public final class BladeLuminousHandOculusPipeline {
             // A blade edge needs a tight halo. The generic skill preset uses two blur passes
             // plus refraction, which makes thin weapon details look washed out in first person.
             boolean rendered = OculusSkillRenderer.runPostIfNeeded(
-                    () -> render(draws, false),
-                    () -> render(draws, true),
+                    () -> render(draws, false, handPass, 1.0F),
+                    () -> render(draws, true, handPass, 1.0F),
                     1, 0.38F, 0.0F, 1.0F);
             if (!rendered) {
                 if (!loggedUnavailable) {
@@ -143,12 +211,14 @@ public final class BladeLuminousHandOculusPipeline {
     @SubscribeEvent
     public static void onLevelUnload(LevelEvent.Unload event) {
         if (event.getLevel().isClientSide()) {
-            QUEUED.clear();
+            WORLD_QUEUED.clear();
+            HAND_QUEUED.clear();
             resourcesDirty = true;
         }
     }
 
-    private static void render(List<QueuedDraw> draws, boolean maskPass) {
+    private static void render(List<QueuedDraw> draws, boolean maskPass,
+                               boolean handPass, float colorScale) {
         GL11.glColorMask(true, true, true, true);
         GL11.glEnable(GL11.GL_BLEND);
         GL20.glBlendEquationSeparate(GL14.GL_FUNC_ADD, GL14.GL_FUNC_ADD);
@@ -163,14 +233,16 @@ public final class BladeLuminousHandOculusPipeline {
                     GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthFunc(GL11.GL_LEQUAL);
+        // Hand depth attachments are not stable across packs. World masks retain depth testing;
+        // the vertex shader's clip-space bias separates them from the base blade surface.
+        GL11.glDepthFunc(handPass ? GL11.GL_ALWAYS : GL11.GL_LEQUAL);
         GL11.glDepthMask(false);
         GL11.glDisable(GL11.GL_CULL_FACE);
 
         for (QueuedDraw draw : draws) {
             LuminousMesh mesh = mesh(draw.model, draw.target);
             int texture = textureId(draw.texture);
-            PROGRAM.apply(draw.modelView, draw.projection, texture);
+            PROGRAM.apply(draw.modelView, draw.projection, texture, colorScale);
             mesh.draw();
         }
     }
@@ -204,6 +276,7 @@ public final class BladeLuminousHandOculusPipeline {
         private int modelViewLocation;
         private int projectionLocation;
         private int samplerLocation;
+        private int colorScaleLocation;
 
         private void ensureLoaded() throws IOException {
             if (id != 0) {
@@ -233,15 +306,18 @@ public final class BladeLuminousHandOculusPipeline {
             modelViewLocation = GL20.glGetUniformLocation(id, "ModelViewMat");
             projectionLocation = GL20.glGetUniformLocation(id, "ProjMat");
             samplerLocation = GL20.glGetUniformLocation(id, "Sampler0");
+            colorScaleLocation = GL20.glGetUniformLocation(id, "ColorScale");
         }
 
-        private void apply(Matrix4f modelView, Matrix4f projection, int texture) {
+        private void apply(Matrix4f modelView, Matrix4f projection,
+                           int texture, float colorScale) {
             GL20.glUseProgram(id);
             uploadMatrix(modelViewLocation, modelView);
             uploadMatrix(projectionLocation, projection);
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
             GL20.glUniform1i(samplerLocation, 0);
+            GL20.glUniform1f(colorScaleLocation, colorScale);
         }
 
         private static int compile(int type, String source) {
@@ -363,7 +439,8 @@ public final class BladeLuminousHandOculusPipeline {
     }
 
     private record QueuedDraw(WavefrontObject model, String target, ResourceLocation texture,
-                              Matrix4f modelView, Matrix4f projection) {
+                              Matrix4f modelView, Matrix4f projection,
+                              Matrix4f localPose, Matrix3f normal) {
     }
 
     private record GlState(int drawFramebuffer, int readFramebuffer,

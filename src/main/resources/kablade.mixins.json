@@ -8,8 +8,10 @@
     "SlashBladeShapedRecipeMixin"
   ],
   "client": [
+    "client.BladeFirstPersonRenderMixin",
     "client.IngredientMixin",
-    "client.LayerMainBladeMixin"
+    "client.LayerMainBladeMixin",
+    "client.OculusHandRendererMixin"
   ],
   "server": [],
   "injectors": {

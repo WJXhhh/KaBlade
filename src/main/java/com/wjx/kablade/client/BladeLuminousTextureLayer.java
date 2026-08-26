@@ -44,6 +44,8 @@ public final class BladeLuminousTextureLayer implements ResourceManagerReloadLis
      */
     private final Map<ResourceLocation, Optional<ResourceLocation>> luminousTextures =
             new ConcurrentHashMap<>();
+    private static final ThreadLocal<Integer> FIRST_PERSON_DEPTH =
+            ThreadLocal.withInitial(() -> 0);
 
     private BladeLuminousTextureLayer() {
     }
@@ -71,18 +73,33 @@ public final class BladeLuminousTextureLayer implements ResourceManagerReloadLis
         }
 
         luminousTexture(baseTexture).ifPresent(texture -> {
-            boolean shaderPackHand = isShaderPackHand(event);
-            boolean queuedForPost = baseTarget.startsWith("item_")
-                    && shouldUseShaderPackHandPost(shaderPackHand)
-                    && BladeLuminousHandOculusPipeline.enqueue(
-                    event.getModel(), baseTarget, texture, event.getPoseStack());
+            // A color-only luminous layer must never participate in the shader pack's shadow
+            // pass. Apart from producing incorrect shadows, doing so leaves its submission
+            // order dependent on the shader pack's internal buffer traversal.
+            if (ShaderCompat.isRenderingShaderPackShadow()) {
+                return;
+            }
+
+            boolean slashBladeFirstPerson = isFirstPersonBladeRender();
+            boolean shaderPackHand = slashBladeFirstPerson
+                    ? ShaderCompat.shouldUseOculusPostPath()
+                    : isShaderPackHand(event);
+            boolean oculusPerspective = ShaderCompat.shouldUseOculusPostPath()
+                    && Minecraft.getInstance().level != null
+                    && Math.abs(RenderSystem.getProjectionMatrix().m33()) < 1.0E-5F;
+            boolean queuedForPost = oculusPerspective && (slashBladeFirstPerson
+                    ? BladeLuminousHandOculusPipeline.enqueueHand(
+                    event.getModel(), baseTarget, texture, event.getPoseStack())
+                    : BladeLuminousHandOculusPipeline.enqueueWorld(
+                    event.getModel(), baseTarget, texture, event.getPoseStack()));
             if (queuedForPost) {
-                // Use an intentionally absent group instead of canceling the event. SlashBlade
-                // can then run its normal per-draw color/UV cleanup without emitting vertices.
+                // World masks and first-person masks have separate flush points. Suppressing
+                // this RenderType draw keeps Oculus' startup-dependent ordering out of both.
                 event.setTarget(DEFERRED_LUMINOUS_TARGET);
                 event.setTexture(texture);
                 return;
             }
+
             event.setTarget(baseTarget);
             event.setTexture(texture);
             event.setGetRenderType(shaderPackHand
@@ -93,6 +110,23 @@ public final class BladeLuminousTextureLayer implements ResourceManagerReloadLis
             // self-lit in that fallback path while preserving the luminous blend state.
             event.setPackedLightIn(BladeRenderState.MAX_LIGHT);
         });
+    }
+
+    public static void beginFirstPersonBladeRender() {
+        FIRST_PERSON_DEPTH.set(FIRST_PERSON_DEPTH.get() + 1);
+    }
+
+    public static void endFirstPersonBladeRender() {
+        int depth = FIRST_PERSON_DEPTH.get() - 1;
+        if (depth <= 0) {
+            FIRST_PERSON_DEPTH.remove();
+        } else {
+            FIRST_PERSON_DEPTH.set(depth);
+        }
+    }
+
+    private static boolean isFirstPersonBladeRender() {
+        return FIRST_PERSON_DEPTH.get() > 0;
     }
 
     private Optional<ResourceLocation> luminousTexture(ResourceLocation baseTexture) {
@@ -137,22 +171,6 @@ public final class BladeLuminousTextureLayer implements ResourceManagerReloadLis
                 && event.getBuffer() != null
                 && event.getBuffer().getClass().getName()
                 .endsWith("FullyBufferedMultiBufferSource$UnflushableWrapper");
-    }
-
-    private static boolean shouldUseShaderPackHandPost(boolean shaderPackHand) {
-        if (!shaderPackHand
-                || !ShaderCompat.shouldUseOculusPostPath()
-                || ShaderCompat.isRenderingShaderPackShadow()
-                || Minecraft.getInstance().level == null) {
-            return false;
-        }
-
-        // RenderSystem exposes the shader pack's usable projection while Iris/Oculus is
-        // replaying the hand. World entities and third-person layers can use a different
-        // internal projection which cannot be reconstructed reliably by the deferred GL pass;
-        // keep those draws on the normal full-bright RenderType path. Orthographic inventory
-        // and GUI renders must also remain immediate because they happen after the level pass.
-        return Math.abs(RenderSystem.getProjectionMatrix().m33()) < 1.0E-5F;
     }
 
     @Override

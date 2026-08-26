@@ -4,6 +4,7 @@ import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
+import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.PropertiesDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.RenderDefinition;
@@ -31,6 +32,7 @@ public class VioletKnight extends BladeDefineBase {
                 PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(11.0F)
                         .maxDamage(480)
+                        .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ModSlashArts.PURPLE_IMPACT.getId())
                         .build(),
                 List.of(

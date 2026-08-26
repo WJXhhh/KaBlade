@@ -36,7 +36,7 @@ public class DragonSpine extends BladeDefineBase {
                         .slashArtsType(ModSlashArts.DRACONIC_VORTEX.getId())
                         .build(),
                 List.of(
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 3),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2)
                 )

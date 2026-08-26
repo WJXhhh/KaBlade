@@ -67,6 +67,7 @@ import com.wjx.kablade.blades.honkai.claymore.CrimsonQueen;
 import com.wjx.kablade.blades.honkai.claymore.DragonSpine;
 import com.wjx.kablade.blades.honkai.claymore.EnergyGreatsword;
 import com.wjx.kablade.blades.honkai.claymore.GreatSword;
+import com.wjx.kablade.blades.honkai.claymore.InquisitionTorch;
 import com.wjx.kablade.blades.honkai.claymore.KingCobra;
 import com.wjx.kablade.blades.honkai.claymore.NuclearPRI;
 import com.wjx.kablade.blades.honkai.claymore.NuclearPRIEX;
@@ -176,6 +177,7 @@ public final class BladeLoader {
     public static BladeDefineBase GREAT_SWORD;
     public static BladeDefineBase ENERGY_GREATSWORD;
     public static BladeDefineBase PROTO_PULSE_CLEAVER;
+    public static BladeDefineBase INQUISITION_TORCH;
     public static BladeDefineBase CRIMSON_QUEEN;
     public static BladeDefineBase VIOLET_KNIGHT;
     public static BladeDefineBase NUCLEAR_PRI;
@@ -293,6 +295,7 @@ public final class BladeLoader {
             "greatsword",
             "energy_greatsword",
             "proto_pulse_cleaver",
+            "inquisition_torch",
             "crimson_queen",
             "violet_knight",
             "nuclear_pri",
@@ -335,6 +338,7 @@ public final class BladeLoader {
             "greatsword",
             "energy_greatsword",
             "proto_pulse_cleaver",
+            "inquisition_torch",
             "crimson_queen",
             "violet_knight",
             "nuclear_pri",
@@ -449,6 +453,7 @@ public final class BladeLoader {
         GREAT_SWORD = new GreatSword(context);
         ENERGY_GREATSWORD = new EnergyGreatsword(context);
         PROTO_PULSE_CLEAVER = new ProtoPulseCleaver(context);
+        INQUISITION_TORCH = new InquisitionTorch(context);
         CRIMSON_QUEEN = new CrimsonQueen(context);
         VIOLET_KNIGHT = new VioletKnight(context);
         NUCLEAR_PRI = new NuclearPRI(context);

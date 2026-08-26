@@ -28,7 +28,7 @@ public class NuclearPRI extends BladeDefineBase {
                         .baseAttackModifier(9.0F)
                         .maxDamage(350)
                         .build(),
-                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3))
+                List.of(new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 2))
         ));
     }
 

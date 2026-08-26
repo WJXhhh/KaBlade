@@ -1,6 +1,7 @@
 #version 150
 
 uniform sampler2D Sampler0;
+uniform float ColorScale;
 
 in vec2 texCoord0;
 
@@ -11,5 +12,5 @@ void main() {
     if (texel.a <= 0.001) {
         discard;
     }
-    fragColor = texel;
+    fragColor = vec4(texel.rgb * ColorScale, texel.a);
 }
