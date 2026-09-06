@@ -63,6 +63,7 @@ import com.wjx.kablade.blades.allweapon.AwXuezou;
 import com.wjx.kablade.blades.allweapon.AwYingyue;
 import com.wjx.kablade.blades.allweapon.AwYouming;
 import com.wjx.kablade.blades.allweapon.AwZhanYue;
+import com.wjx.kablade.blades.honkai.claymore.Betrayer;
 import com.wjx.kablade.blades.honkai.claymore.CrimsonQueen;
 import com.wjx.kablade.blades.honkai.claymore.DragonSpine;
 import com.wjx.kablade.blades.honkai.claymore.EnergyGreatsword;
@@ -185,6 +186,7 @@ public final class BladeLoader {
     public static BladeDefineBase VANGUARD;
     public static BladeDefineBase KING_COBRA;
     public static BladeDefineBase DRAGON_SPINE;
+    public static BladeDefineBase BETRAYER;
     // 万物皆刃线（首批 5 把招牌刀，世界合成获取）
     public static BladeDefineBase AW_LIURRH;
     public static BladeDefineBase AW_CHANSHIZHE;
@@ -303,6 +305,7 @@ public final class BladeLoader {
             "vanguard",
             "king_cobra",
             "dragon_spine",
+            "betrayer",
             // 龙一文字线
             "splight_initial",
             "splight_normal",
@@ -345,7 +348,8 @@ public final class BladeLoader {
             "nuclear_pri_ex",
             "vanguard",
             "king_cobra",
-            "dragon_spine"
+            "dragon_spine",
+            "betrayer"
     );
 
     public static void bootstrap(BootstapContext<SlashBladeDefinition> context) {
@@ -461,6 +465,7 @@ public final class BladeLoader {
         VANGUARD = new Vanguard(context);
         KING_COBRA = new KingCobra(context);
         DRAGON_SPINE = new DragonSpine(context);
+        BETRAYER = new Betrayer(context);
     }
 
     public static void fillCreativeTab(CreativeModeTab.ItemDisplayParameters parameters,
