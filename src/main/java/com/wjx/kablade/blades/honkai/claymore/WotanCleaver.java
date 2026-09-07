@@ -1,6 +1,7 @@
 package com.wjx.kablade.blades.honkai.claymore;
 
 import com.wjx.kablade.blades.base.BladeDefineBase;
+import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
@@ -31,6 +32,7 @@ public class WotanCleaver extends BladeDefineBase {
                 PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(12.0F)
                         .maxDamage(350)
+                        .slashArtsType(ModSlashArts.DEATH_GAZE.getId())
                         .addSpecialEffect(ModSpecialEffects.BLOOD_AWAKENING.getId())
                         .build(),
                 List.of(

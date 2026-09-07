@@ -504,6 +504,18 @@ public final class ModEntities {
                     .noSave()
                     .build("valkyrie_impact"));
 
+    /** 「灼热重斩」的高能穿透激光与等离子光束实体。 */
+    public static final RegistryObject<EntityType<DeathGazeBeamEntity>> DEATH_GAZE_BEAM = REGISTRY.register(
+            "death_gaze_beam",
+            () -> EntityType.Builder.<DeathGazeBeamEntity>of(DeathGazeBeamEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 1.0F)
+                    .clientTrackingRange(16)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("death_gaze_beam"));
+
     private ModEntities() {
     }
 }

@@ -11,6 +11,7 @@ import com.wjx.kablade.slasharts.BreakTheDawnArts;
 import com.wjx.kablade.slasharts.ChopWillowArts;
 import com.wjx.kablade.slasharts.CrimsonSakuraArts;
 import com.wjx.kablade.slasharts.CutMetalArts;
+import com.wjx.kablade.slasharts.DeathGazeArts;
 import com.wjx.kablade.slasharts.DomainSuppressionArts;
 import com.wjx.kablade.slasharts.DraconicVortexArts;
 import com.wjx.kablade.slasharts.FallingPetalsArts;
@@ -302,6 +303,10 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> TREASON = REGISTRY.register(
             "treason",
             () -> new TreasonArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> DEATH_GAZE = REGISTRY.register(
+            "death_gaze",
+            () -> new DeathGazeArts(entity -> ModComboStates.VALKYRIE_IMPACT.getId()));
 
     private ModSlashArts() {
     }

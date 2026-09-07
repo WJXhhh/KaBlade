@@ -514,6 +514,21 @@ public final class KabladeRenderTypes extends RenderType {
                     .setWriteMaskState(COLOR_WRITE)
                     .createCompositeState(false));
 
+    private static final RenderType DEATH_GAZE_BEAM = create(
+            "kablade_death_gaze_beam",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.QUADS,
+            262144,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
     private static final RenderType RAIDEN_CYCLONE = create(
             "kablade_raiden_cyclone",
             DefaultVertexFormat.POSITION_COLOR_TEX,
@@ -745,6 +760,10 @@ public final class KabladeRenderTypes extends RenderType {
 
     public static RenderType shockImpactLines() {
         return SHOCK_IMPACT_LINES;
+    }
+
+    public static RenderType deathGazeBeam() {
+        return DEATH_GAZE_BEAM;
     }
 
     public static RenderType raidenCyclone() {
