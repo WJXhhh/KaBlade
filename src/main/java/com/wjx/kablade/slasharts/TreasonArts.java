@@ -28,7 +28,9 @@ public final class TreasonArts extends SlashArts {
     public ResourceLocation doArts(ArtsType type, LivingEntity user) {
         if (!user.level().isClientSide() && type != ArtsType.Fail) {
             var state = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE);
-            Entity locked = state.map(value -> value.getTargetEntity(user.level())).orElse(null);
+            // An unlocked blade legitimately returns null; LazyOptional.map rejects
+            // null results, while java.util.Optional.map handles them as empty.
+            Entity locked = state.resolve().map(value -> value.getTargetEntity(user.level())).orElse(null);
             SaTarget target = SaTargeting.findTarget(user, locked, 32.0D).orElse(null);
             float damage = MathFunc.amplifierCalc(
                     state.map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F), 1.0F) * DAMAGE_MULTIPLIER;

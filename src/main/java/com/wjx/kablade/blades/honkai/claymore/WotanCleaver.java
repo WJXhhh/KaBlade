@@ -2,9 +2,9 @@ package com.wjx.kablade.blades.honkai.claymore;
 
 import com.wjx.kablade.blades.base.BladeDefineBase;
 import com.wjx.kablade.blades.ModSlashArts;
-import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
+import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.PropertiesDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.RenderDefinition;
@@ -30,15 +30,16 @@ public class WotanCleaver extends BladeDefineBase {
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
-                        .baseAttackModifier(12.0F)
-                        .maxDamage(350)
+                        .baseAttackModifier(14.0F)
+                        .maxDamage(550)
+                        .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ModSlashArts.DEATH_GAZE.getId())
-                        .addSpecialEffect(ModSpecialEffects.BLOOD_AWAKENING.getId())
                         .build(),
                 List.of(
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 1),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 1)
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 1),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "fire_aspect"), 2)
                 )
         ));
     }

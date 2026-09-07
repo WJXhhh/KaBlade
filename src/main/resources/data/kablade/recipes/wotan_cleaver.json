@@ -1,0 +1,35 @@
+﻿{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:wotan_cleaver",
+  "category": "equipment",
+  "key": {
+    "M": {
+      "item": "minecraft:magma_block"
+    },
+    "A": {
+      "item": "minecraft:amethyst_block"
+    },
+    "Q": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:crimson_queen"
+      }
+    },
+    "B": {
+      "item": "minecraft:polished_blackstone_bricks"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "MAM",
+    " Q ",
+    "BDB"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}

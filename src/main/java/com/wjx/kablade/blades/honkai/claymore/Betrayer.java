@@ -5,6 +5,7 @@ import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.util.ResourceUtil;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
+import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.PropertiesDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.RenderDefinition;
@@ -32,6 +33,7 @@ public class Betrayer extends BladeDefineBase {
                 PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(15.0F)
                         .maxDamage(560)
+                        .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(ModSlashArts.TREASON.getId())
                         .addSpecialEffect(ModSpecialEffects.BETRAYER_COUNTER.getId())
                         .build(),

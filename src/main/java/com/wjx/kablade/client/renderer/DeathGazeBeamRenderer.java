@@ -42,17 +42,13 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
     @Override
     public void render(DeathGazeBeamEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        float age = entity.getAge() + partialTick;
-        float maxLife = (float) DeathGazeBeamEntity.MAX_LIFETIME;
-        if (age < 0.0F || age > maxLife) {
+        if (DeathGazeOculusPipeline.enqueue(entity, partialTick)) {
             return;
         }
 
-        // Alpha envelope: fast ramp up, sustained blast, smooth fade out
-        float fadeIn = Mth.clamp(age / 3.0F, 0.0F, 1.0F);
-        float fadeOut = Mth.clamp((maxLife - age) / 5.0F, 0.0F, 1.0F);
-        float alpha = fadeIn * fadeOut;
-        if (alpha <= 0.005F) {
+        float age = entity.getAge() + partialTick;
+        float maxLife = (float) DeathGazeBeamEntity.MAX_LIFETIME;
+        if (age < 0.0F || age > maxLife) {
             return;
         }
 
@@ -61,23 +57,39 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
             return;
         }
 
-        poseStack.pushPose();
-
-        // Rotate poseStack to align +Z with laser shooting direction
         float yaw = Mth.rotLerp(partialTick, entity.yRotO, entity.getYRot());
         float pitch = Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
+
+        poseStack.pushPose();
+        VertexConsumer consumer = buffer.getBuffer(KabladeRenderTypes.deathGazeBeam());
+        renderLayers(poseStack, consumer, yaw, pitch, beamLength, age);
+        poseStack.popPose();
+
+        super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+    }
+
+    public static void renderLayers(PoseStack poseStack, VertexConsumer consumer,
+                                    float yaw, float pitch, float beamLength, float age) {
+        float maxLife = (float) DeathGazeBeamEntity.MAX_LIFETIME;
+        float fadeIn = Mth.clamp(age / 3.0F, 0.0F, 1.0F);
+        float fadeOut = Mth.clamp((maxLife - age) / 5.0F, 0.0F, 1.0F);
+        float alpha = fadeIn * fadeOut;
+        if (alpha <= 0.005F) {
+            return;
+        }
+
+        poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(-yaw));
         poseStack.mulPose(Axis.XP.rotationDegrees(pitch));
 
-        VertexConsumer consumer = buffer.getBuffer(KabladeRenderTypes.deathGazeBeam());
         Matrix4f mat = poseStack.last().pose();
 
         // 1. 剑尖发射源高能闪光火球与放射尖刺
         renderMuzzleFlare(consumer, mat, age, alpha);
 
-        // 2. 核心白炽强光激光柱 (White-Hot Lavender Core)
+        // 2. 核心高能电光激光柱 (Electric Hot Pink Core)
         renderPulsingCylinder(consumer, mat, 0.14F, beamLength, 12, age,
-                1.0F, 0.94F, 1.0F, alpha * 0.98F, 0.03F, 3.5F);
+                1.0F, 0.35F, 0.95F, alpha * 0.92F, 0.03F, 3.5F);
 
         // 3. 内层高能灼热品红等离子鞘 (Inner Magenta Sheath)
         renderPulsingCylinder(consumer, mat, 0.38F, beamLength, 16, age,
@@ -100,7 +112,6 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
         renderProceduralSparks(consumer, mat, beamLength, age, alpha);
 
         poseStack.popPose();
-        super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
     }
 
     /* -------------------------------------------------------------
@@ -116,12 +127,12 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
             float th1 = ((float) j / segments) * Mth.TWO_PI;
             float th2 = ((float) (j + 1) / segments) * Mth.TWO_PI;
 
-            consumer.vertex(mat, 0.0F, 0.0F, z).color(1.0F, 0.95F, 1.0F, alpha * 0.95F).endVertex();
+            consumer.vertex(mat, 0.0F, 0.0F, z).color(1.0F, 0.30F, 0.90F, alpha * 0.95F).endVertex();
             consumer.vertex(mat, Mth.cos(th1) * discRadius, Mth.sin(th1) * discRadius, z)
-                    .color(0.9F, 0.2F, 0.95F, 0.0F).endVertex();
+                    .color(0.85F, 0.05F, 0.95F, 0.0F).endVertex();
             consumer.vertex(mat, Mth.cos(th2) * discRadius, Mth.sin(th2) * discRadius, z)
-                    .color(0.9F, 0.2F, 0.95F, 0.0F).endVertex();
-            consumer.vertex(mat, 0.0F, 0.0F, z).color(1.0F, 0.95F, 1.0F, alpha * 0.95F).endVertex();
+                    .color(0.85F, 0.05F, 0.95F, 0.0F).endVertex();
+            consumer.vertex(mat, 0.0F, 0.0F, z).color(1.0F, 0.30F, 0.90F, alpha * 0.95F).endVertex();
         }
 
         // 20 Radial Emitter Energy Spikes
@@ -139,10 +150,10 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
             float tipX = cosA * len;
             float tipY = sinA * len;
 
-            consumer.vertex(mat, -cosPerp, -sinPerp, z).color(1.0F, 0.85F, 1.0F, alpha * 0.90F).endVertex();
-            consumer.vertex(mat, cosPerp, sinPerp, z).color(1.0F, 0.85F, 1.0F, alpha * 0.90F).endVertex();
-            consumer.vertex(mat, tipX, tipY, z).color(0.85F, 0.15F, 0.95F, 0.0F).endVertex();
-            consumer.vertex(mat, tipX, tipY, z).color(0.85F, 0.15F, 0.95F, 0.0F).endVertex();
+            consumer.vertex(mat, -cosPerp, -sinPerp, z).color(0.98F, 0.25F, 0.92F, alpha * 0.90F).endVertex();
+            consumer.vertex(mat, cosPerp, sinPerp, z).color(0.98F, 0.25F, 0.92F, alpha * 0.90F).endVertex();
+            consumer.vertex(mat, tipX, tipY, z).color(0.85F, 0.05F, 0.95F, 0.0F).endVertex();
+            consumer.vertex(mat, tipX, tipY, z).color(0.85F, 0.05F, 0.95F, 0.0F).endVertex();
         }
     }
 
@@ -208,10 +219,10 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
                 float px2 = -Mth.sin(theta2) * ribbonWidth;
                 float py2 = Mth.cos(theta2) * ribbonWidth;
 
-                consumer.vertex(mat, x1 - px1, y1 - py1, z1).color(0.92F, 0.32F, 1.0F, alpha * 0.75F).endVertex();
-                consumer.vertex(mat, x1 + px1, y1 + py1, z1).color(0.92F, 0.32F, 1.0F, alpha * 0.75F).endVertex();
-                consumer.vertex(mat, x2 + px2, y2 + py2, z2).color(0.92F, 0.32F, 1.0F, alpha * 0.75F).endVertex();
-                consumer.vertex(mat, x2 - px2, y2 - py2, z2).color(0.92F, 0.32F, 1.0F, alpha * 0.75F).endVertex();
+                consumer.vertex(mat, x1 - px1, y1 - py1, z1).color(0.92F, 0.14F, 0.98F, alpha * 0.75F).endVertex();
+                consumer.vertex(mat, x1 + px1, y1 + py1, z1).color(0.92F, 0.14F, 0.98F, alpha * 0.75F).endVertex();
+                consumer.vertex(mat, x2 + px2, y2 + py2, z2).color(0.92F, 0.14F, 0.98F, alpha * 0.75F).endVertex();
+                consumer.vertex(mat, x2 - px2, y2 - py2, z2).color(0.92F, 0.14F, 0.98F, alpha * 0.75F).endVertex();
             }
         }
     }
@@ -240,13 +251,13 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
                 float c2 = Mth.cos(th2); float s2 = Mth.sin(th2);
 
                 consumer.vertex(mat, c1 * rInner, s1 * rInner, ringZ)
-                        .color(0.98F, 0.45F, 1.0F, alpha * 0.70F).endVertex();
+                        .color(0.96F, 0.18F, 0.92F, alpha * 0.70F).endVertex();
                 consumer.vertex(mat, c2 * rInner, s2 * rInner, ringZ)
-                        .color(0.98F, 0.45F, 1.0F, alpha * 0.70F).endVertex();
+                        .color(0.96F, 0.18F, 0.92F, alpha * 0.70F).endVertex();
                 consumer.vertex(mat, c2 * rOuter, s2 * rOuter, ringZ)
-                        .color(0.70F, 0.10F, 0.95F, 0.0F).endVertex();
+                        .color(0.68F, 0.04F, 0.92F, 0.0F).endVertex();
                 consumer.vertex(mat, c1 * rOuter, s1 * rOuter, ringZ)
-                        .color(0.70F, 0.10F, 0.95F, 0.0F).endVertex();
+                        .color(0.68F, 0.04F, 0.92F, 0.0F).endVertex();
             }
         }
     }
@@ -265,12 +276,12 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
             float th1 = ((float) j / segments) * Mth.TWO_PI;
             float th2 = ((float) (j + 1) / segments) * Mth.TWO_PI;
 
-            consumer.vertex(mat, 0.0F, 0.0F, z).color(1.0F, 0.90F, 1.0F, alpha * 0.90F).endVertex();
+            consumer.vertex(mat, 0.0F, 0.0F, z).color(1.0F, 0.32F, 0.92F, alpha * 0.90F).endVertex();
             consumer.vertex(mat, Mth.cos(th1) * burstRadius, Mth.sin(th1) * burstRadius, z)
-                    .color(0.95F, 0.25F, 0.90F, 0.0F).endVertex();
+                    .color(0.90F, 0.12F, 0.90F, 0.0F).endVertex();
             consumer.vertex(mat, Mth.cos(th2) * burstRadius, Mth.sin(th2) * burstRadius, z)
-                    .color(0.95F, 0.25F, 0.90F, 0.0F).endVertex();
-            consumer.vertex(mat, 0.0F, 0.0F, z).color(1.0F, 0.90F, 1.0F, alpha * 0.90F).endVertex();
+                    .color(0.90F, 0.12F, 0.90F, 0.0F).endVertex();
+            consumer.vertex(mat, 0.0F, 0.0F, z).color(1.0F, 0.32F, 0.92F, alpha * 0.90F).endVertex();
         }
 
         // 24 Radial Impact Splash Spikes
@@ -288,10 +299,10 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
             float tipX = cosA * spikeLen;
             float tipY = sinA * spikeLen;
 
-            consumer.vertex(mat, -cosP, -sinP, z).color(1.0F, 0.70F, 1.0F, alpha * 0.85F).endVertex();
-            consumer.vertex(mat, cosP, sinP, z).color(1.0F, 0.70F, 1.0F, alpha * 0.85F).endVertex();
-            consumer.vertex(mat, tipX, tipY, z).color(0.80F, 0.10F, 0.90F, 0.0F).endVertex();
-            consumer.vertex(mat, tipX, tipY, z).color(0.80F, 0.10F, 0.90F, 0.0F).endVertex();
+            consumer.vertex(mat, -cosP, -sinP, z).color(0.95F, 0.20F, 0.90F, alpha * 0.85F).endVertex();
+            consumer.vertex(mat, cosP, sinP, z).color(0.95F, 0.20F, 0.90F, alpha * 0.85F).endVertex();
+            consumer.vertex(mat, tipX, tipY, z).color(0.75F, 0.05F, 0.90F, 0.0F).endVertex();
+            consumer.vertex(mat, tipX, tipY, z).color(0.75F, 0.05F, 0.90F, 0.0F).endVertex();
         }
     }
 
@@ -299,7 +310,7 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
        8. Procedural 3D Plasma Sparks & Particles Orbiting Beam
        ------------------------------------------------------------- */
     private static void renderProceduralSparks(VertexConsumer consumer, Matrix4f mat,
-                                               float length, float age, float alpha) {
+                                                float length, float age, float alpha) {
         for (int i = 0; i < SPARK_COUNT; i++) {
             float seed = i * 23.456F;
             float z = ((seed * 47.0F + age * 18.0F) % length);
@@ -312,9 +323,9 @@ public class DeathGazeBeamRenderer extends EntityRenderer<DeathGazeBeamEntity> {
             float sz = (i % 2 == 0) ? 0.055F : 0.038F;
 
             boolean isCoreSpark = (i % 3 == 0);
-            float cr = isCoreSpark ? 1.0F : 0.88F;
-            float cg = isCoreSpark ? 0.90F : 0.22F;
-            float cb = 1.0F;
+            float cr = isCoreSpark ? 1.0F : 0.82F;
+            float cg = isCoreSpark ? 0.35F : 0.08F;
+            float cb = isCoreSpark ? 0.95F : 1.0F;
             float ca = alpha * (isCoreSpark ? 0.95F : 0.75F);
 
             consumer.vertex(mat, x - sz, y - sz, z).color(cr, cg, cb, ca).endVertex();

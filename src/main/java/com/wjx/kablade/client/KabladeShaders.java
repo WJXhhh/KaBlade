@@ -3,6 +3,7 @@ package com.wjx.kablade.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.renderer.BloodfyreOculusPipeline;
+import com.wjx.kablade.client.renderer.DeathGazeOculusPipeline;
 import com.wjx.kablade.client.renderer.JizoMitamaSoulOculusPipeline;
 import com.wjx.kablade.client.renderer.NuclearShockOculusPipeline;
 import com.wjx.kablade.client.renderer.RaidenCycloneOculusPipeline;
@@ -54,6 +55,7 @@ public final class KabladeShaders {
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
         BloodfyreOculusPipeline.invalidateResources();
+        DeathGazeOculusPipeline.invalidateResources();
         JizoMitamaSoulOculusPipeline.invalidateResources();
         NuclearShockOculusPipeline.invalidateResources();
         RaidenCycloneOculusPipeline.invalidateResources();
