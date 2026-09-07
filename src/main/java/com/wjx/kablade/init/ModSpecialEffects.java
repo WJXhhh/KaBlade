@@ -2,6 +2,7 @@ package com.wjx.kablade.init;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.specialeffect.BloodAwakening;
+import com.wjx.kablade.specialeffect.BetrayerCounter;
 import com.wjx.kablade.specialeffect.BurstDrive;
 import com.wjx.kablade.specialeffect.DivinePenalty;
 import com.wjx.kablade.specialeffect.EMInduction;
@@ -93,6 +94,9 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> BLOOD_AWAKENING = REGISTRY.register(
             "blood_awakening", BloodAwakening::new);
+
+    public static final RegistryObject<SpecialEffect> BETRAYER_COUNTER = REGISTRY.register(
+            "betrayer_counter", BetrayerCounter::new);
 
     public static final RegistryObject<SpecialEffect> RAINBOW_FLAMES = REGISTRY.register(
             "rainbow_flames", RainbowFlames::new);

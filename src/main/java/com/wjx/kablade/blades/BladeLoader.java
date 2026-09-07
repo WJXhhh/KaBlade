@@ -75,6 +75,7 @@ import com.wjx.kablade.blades.honkai.claymore.NuclearPRIEX;
 import com.wjx.kablade.blades.honkai.claymore.ProtoPulseCleaver;
 import com.wjx.kablade.blades.honkai.claymore.Vanguard;
 import com.wjx.kablade.blades.honkai.claymore.VioletKnight;
+import com.wjx.kablade.blades.honkai.claymore.WotanCleaver;
 import com.wjx.kablade.blades.ordinary.ArcLight;
 import com.wjx.kablade.blades.ordinary.AuroraBlade;
 import com.wjx.kablade.blades.ordinary.BambooBattler;
@@ -187,6 +188,7 @@ public final class BladeLoader {
     public static BladeDefineBase KING_COBRA;
     public static BladeDefineBase DRAGON_SPINE;
     public static BladeDefineBase BETRAYER;
+    public static BladeDefineBase WOTAN_CLEAVER;
     // 万物皆刃线（首批 5 把招牌刀，世界合成获取）
     public static BladeDefineBase AW_LIURRH;
     public static BladeDefineBase AW_CHANSHIZHE;
@@ -299,6 +301,7 @@ public final class BladeLoader {
             "proto_pulse_cleaver",
             "inquisition_torch",
             "crimson_queen",
+            "wotan_cleaver",
             "violet_knight",
             "nuclear_pri",
             "nuclear_pri_ex",
@@ -343,6 +346,7 @@ public final class BladeLoader {
             "proto_pulse_cleaver",
             "inquisition_torch",
             "crimson_queen",
+            "wotan_cleaver",
             "violet_knight",
             "nuclear_pri",
             "nuclear_pri_ex",
@@ -459,6 +463,7 @@ public final class BladeLoader {
         PROTO_PULSE_CLEAVER = new ProtoPulseCleaver(context);
         INQUISITION_TORCH = new InquisitionTorch(context);
         CRIMSON_QUEEN = new CrimsonQueen(context);
+        WOTAN_CLEAVER = new WotanCleaver(context);
         VIOLET_KNIGHT = new VioletKnight(context);
         NUCLEAR_PRI = new NuclearPRI(context);
         NUCLEAR_PRI_EX = new NuclearPRIEX(context);

@@ -123,6 +123,17 @@ public final class ModEntities {
                     .noSave()
                     .build("confinement_force_field"));
 
+    public static final RegistryObject<EntityType<TreasonMissileEntity>> TREASON_MISSILE = REGISTRY.register(
+            "treason_missile",
+            () -> EntityType.Builder.<TreasonMissileEntity>of(TreasonMissileEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .fireImmune()
+                    .noSummon()
+                    .noSave()
+                    .build("treason_missile"));
+
     /** 「寒霜灵刃」的追踪冰晶飞剑与命中晶簇。 */
     public static final RegistryObject<EntityType<FrostBladeEntity>> FROST_BLADE_EDGE = REGISTRY.register(
             "frost_blade_edge",

@@ -60,6 +60,7 @@ public final class EntityRendererEvents {
         event.registerEntityRenderer(ModEntities.FLARE_EDGE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.AQUA_EDGE.get(), ExDriveRenderer::new);
         event.registerEntityRenderer(ModEntities.PHANTOM_SWORD_EX.get(), PhantomSwordExRenderer::new);
+        event.registerEntityRenderer(ModEntities.TREASON_MISSILE.get(), TreasonMissileRenderer::new);
         event.registerEntityRenderer(ModEntities.BUTTERFLY_SWORD.get(), ButterflySwordRenderer::new);
         event.registerEntityRenderer(ModEntities.LIGHTNING_SWORD.get(), PhantomSwordExRenderer::new);
         event.registerEntityRenderer(ModEntities.STAR_SWORD.get(), PhantomSwordExRenderer::new);
