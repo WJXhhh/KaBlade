@@ -54,8 +54,8 @@ public final class FlameBlockArts extends SlashArts {
             UUID.fromString("6d7b4a2e-8c31-4f1a-9b56-1e98d7f2a3c5");
 
     private static final double PULSE_RADIUS = 5.0;
-    private static final float PULSE_DAMAGE_BASE = 4.0F;
-    private static final float ATTACK_FACTOR = 0.5F;
+    private static final float PULSE_DAMAGE_BASE = 6.0F;
+    private static final float ATTACK_FACTOR = 0.75F;
     private static final int FIRE_SECONDS = 4;
 
     public FlameBlockArts(Function<LivingEntity, ResourceLocation> state) {
@@ -190,11 +190,11 @@ public final class FlameBlockArts extends SlashArts {
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area);
 
         ItemStack blade = player.getMainHandItem();
-        float bladeAttack = 11.0F;
+        float bladeAttack = 17.0F;
         if (blade.getItem() instanceof ItemSlashBlade) {
             bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                     .map(ISlashBladeState::getBaseAttackModifier)
-                    .orElse(11.0F);
+                    .orElse(17.0F);
         }
         float pulseDamage = PULSE_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
 

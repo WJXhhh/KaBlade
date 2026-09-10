@@ -27,7 +27,7 @@ public class RangersSawtooth extends BladeDefineBase {
                 RenderDefinition.Builder.newInstance()
                         .modelName(ResourceUtil.getLocation("model/honkai_claymore/rangers_sawtooth/mdl.obj"))
                         .textureName(ResourceUtil.getLocation("model/honkai_claymore/rangers_sawtooth/tex.png"))
-                        .effectColor(0x8A2BE2)
+                        .effectColor(0x800080)
                         .standbyRenderType(CarryType.KATANA)
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
@@ -38,9 +38,10 @@ public class RangersSawtooth extends BladeDefineBase {
                         .addSpecialEffect(ModSpecialEffects.FLAME_THORNS.getId())
                         .build(),
                 List.of(
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 1),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 1)
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "thorns"), 2)
                 )
         ));
     }

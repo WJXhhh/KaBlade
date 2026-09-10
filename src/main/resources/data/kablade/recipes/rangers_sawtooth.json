@@ -1,0 +1,36 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:rangers_sawtooth",
+  "category": "equipment",
+  "key": {
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "B": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:betrayer"
+      }
+    },
+    "V": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:violet_knight"
+      }
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "pattern": [
+    "OBO",
+    "OVO",
+    " E "
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}
