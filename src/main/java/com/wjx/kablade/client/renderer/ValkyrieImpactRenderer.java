@@ -66,17 +66,35 @@ public class ValkyrieImpactRenderer extends EntityRenderer<ValkyrieImpactEntity>
         // Rotate pose to match caster horizontal orientation (Z+ is forward fissure direction)
         poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYawRot()));
 
-        VertexConsumer additiveConsumer = buffer.getBuffer(KabladeRenderTypes.nuclearShockDome());
-        VertexConsumer solidConsumer = buffer.getBuffer(RenderType.entityCutout(DEEPSLATE_TEXTURE));
-
-        renderLayers(poseStack, additiveConsumer, solidConsumer, packedLight, timeSeconds);
+        renderLayers(poseStack, buffer, KabladeRenderTypes.nuclearShockDome(), packedLight, timeSeconds);
 
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, buffer, packedLight);
     }
 
+    public static void renderLayers(PoseStack poseStack, MultiBufferSource buffer, RenderType additiveType,
+                                    int packedLight, float timeSeconds) {
+        if (timeSeconds < 0.56F) {
+            return;
+        }
+        // getBuffer may reuse the same builder and change its vertex format. Finish
+        // all solid vertices before acquiring the additive consumer; never retain both.
+        renderMultiLaneFissure(poseStack, buffer.getBuffer(RenderType.entityCutout(DEEPSLATE_TEXTURE)),
+                packedLight, timeSeconds, true);
+        renderAdditiveLayers(poseStack, buffer.getBuffer(additiveType), packedLight, timeSeconds);
+    }
+
+    /** For independent mesh collectors only; shared buffer sources must use the overload above. */
     public static void renderLayers(PoseStack poseStack, VertexConsumer additiveConsumer, VertexConsumer solidConsumer,
                                     int packedLight, float timeSeconds) {
+        if (timeSeconds >= 0.56F) {
+            renderMultiLaneFissure(poseStack, solidConsumer, packedLight, timeSeconds, true);
+        }
+        renderAdditiveLayers(poseStack, additiveConsumer, packedLight, timeSeconds);
+    }
+
+    private static void renderAdditiveLayers(PoseStack poseStack, VertexConsumer additiveConsumer,
+                                             int packedLight, float timeSeconds) {
         // 1. Ground Impact Burst (Frame 17 ~ 30, 0.56s ~ 1.00s)
         if (timeSeconds >= 0.56F && timeSeconds < 1.00F) {
             renderImpactBurst(poseStack, additiveConsumer, timeSeconds - 0.56F);
@@ -84,7 +102,7 @@ public class ValkyrieImpactRenderer extends EntityRenderer<ValkyrieImpactEntity>
 
         // 2. Multi-Lane Ground Fissure Slabs & Vertical Jagged Energy Blades (0.56s ~ 2.24s)
         if (timeSeconds >= 0.56F) {
-            renderMultiLaneFissure(poseStack, additiveConsumer, solidConsumer, packedLight, timeSeconds);
+            renderMultiLaneFissure(poseStack, additiveConsumer, packedLight, timeSeconds, false);
         }
 
         // 3. Earthen Debris Particles & Sparks across the wide fan (0.58s ~ 2.20s)
@@ -171,7 +189,7 @@ public class ValkyrieImpactRenderer extends EntityRenderer<ValkyrieImpactEntity>
     /* -------------------------------------------------------------
        2. 5-Lane Spreading Ground Fissure (Rock Slabs + Jagged Energy Blades)
        ------------------------------------------------------------- */
-    private static void renderMultiLaneFissure(PoseStack ps, VertexConsumer additiveConsumer, VertexConsumer solidConsumer, int light, float sec) {
+    private static void renderMultiLaneFissure(PoseStack ps, VertexConsumer consumer, int light, float sec, boolean solidPass) {
         Matrix4f mat = ps.last().pose();
         Matrix3f normal = ps.last().normal();
 
@@ -221,20 +239,24 @@ public class ValkyrieImpactRenderer extends EntityRenderer<ValkyrieImpactEntity>
                     continue;
                 }
 
-                // A. Left and Right Tilted Rock Slabs along the lane heading
-                float slabOffset = 0.20F * lane.widthScale;
-                float slabW = 0.22F * lane.widthScale;
-                float slabL = 0.32F * lane.widthScale;
-                float slabH = 0.16F * lane.heightScale * eruptP;
+                if (solidPass) {
+                    // A. Left and Right Tilted Rock Slabs along the lane heading
+                    float slabOffset = 0.20F * lane.widthScale;
+                    float slabW = 0.22F * lane.widthScale;
+                    float slabL = 0.32F * lane.widthScale;
+                    float slabH = 0.16F * lane.heightScale * eruptP;
 
-                renderOrientedRockSlab(solidConsumer, mat, normal, light,
-                        posX - pX * slabOffset, posZ - pZ * slabOffset,
-                        slabW, slabL, slabH, 0.38F, fX, fZ, pX, pZ);
-                renderOrientedRockSlab(solidConsumer, mat, normal, light,
-                        posX + pX * slabOffset, posZ + pZ * slabOffset,
-                        slabW, slabL, slabH, -0.38F, fX, fZ, pX, pZ);
+                    renderOrientedRockSlab(consumer, mat, normal, light,
+                            posX - pX * slabOffset, posZ - pZ * slabOffset,
+                            slabW, slabL, slabH, 0.38F, fX, fZ, pX, pZ);
+                    renderOrientedRockSlab(consumer, mat, normal, light,
+                            posX + pX * slabOffset, posZ + pZ * slabOffset,
+                            slabW, slabL, slabH, -0.38F, fX, fZ, pX, pZ);
+                    continue;
+                }
 
                 // B. Vertical Jagged Golden Energy Blade Crest
+                VertexConsumer additiveConsumer = consumer;
                 float peakH = (0.55F + Mth.sin(progress * Mth.PI) * 0.65F) * lane.heightScale * eruptP;
                 float halfW = 0.14F * lane.widthScale;
                 float halfL = 0.18F * lane.widthScale;

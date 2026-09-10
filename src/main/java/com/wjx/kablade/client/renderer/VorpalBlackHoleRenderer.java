@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.wjx.kablade.client.KabladeRenderTypes;
+import com.wjx.kablade.client.EffectVertexBatch;
 import com.wjx.kablade.entity.VorpalBlackHoleEntity;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -91,10 +92,11 @@ public final class VorpalBlackHoleRenderer extends EntityRenderer<VorpalBlackHol
             bladeAnchorZ = Mth.lerp(anchorWeight, bladeAnchorZ, ownerAnchorZ);
         }
 
+        EffectVertexBatch batch = new EffectVertexBatch();
         // Ask for buffers in pass order: opaque depth core, dark alpha volume, additive light.
-        VertexConsumer core = buffers.getBuffer(KabladeRenderTypes.vorpalBlackHoleCore());
-        VertexConsumer dark = buffers.getBuffer(KabladeRenderTypes.vorpalBlackHoleDark());
-        VertexConsumer glow = buffers.getBuffer(KabladeRenderTypes.vorpalBlackHoleGlow());
+        VertexConsumer core = batch.getBuffer(KabladeRenderTypes.vorpalBlackHoleCore());
+        VertexConsumer dark = batch.getBuffer(KabladeRenderTypes.vorpalBlackHoleDark());
+        VertexConsumer glow = batch.getBuffer(KabladeRenderTypes.vorpalBlackHoleGlow());
 
         renderFacingVoid(poseStack, core, dark, glow, frame, seed);
         renderWorldVolume(poseStack, dark, glow, frame, seed, yaw);
@@ -103,6 +105,7 @@ public final class VorpalBlackHoleRenderer extends EntityRenderer<VorpalBlackHol
         renderWorldSlashes(poseStack, dark, glow, frame, seed, yaw,
                 cameraLocalX, cameraLocalY, cameraLocalZ, bladeAnchorX, bladeAnchorY, bladeAnchorZ);
 
+        batch.submit(buffers);
         super.render(entity, entityYaw, partialTick, poseStack, buffers, FULL_BRIGHT);
     }
 

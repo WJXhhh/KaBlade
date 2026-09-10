@@ -104,5 +104,19 @@ public final class KabladeBladeProperties {
                 .activeWhen(BloodAwakening::isHeldBy)
                 .maxValue(100)
                 .build());
+
+        // 盗火者（Prometheus SA）：神火试炼专属 SA，施放后 10 秒（200 tick）内攻击附带额外伤害
+        PlayerPropertyRegistry.register(PlayerProperty.builder("prometheus")
+                .displayName(Component.translatable("prop.kablade.prometheus").withStyle(ChatFormatting.RED))
+                .capabilityKey("prometheus")
+                .maxValue(200)
+                .build());
+
+        // 火焰格挡（Flame Block SA）：游骑兵锯齿专属 SA，10 秒（200 tick）内移速 -40%、受击 -40%、每秒对周围敌人造成伤害并引燃
+        PlayerPropertyRegistry.register(PlayerProperty.builder("flame_block")
+                .displayName(Component.translatable("prop.kablade.flame_block").withStyle(ChatFormatting.RED))
+                .capabilityKey("flame_block")
+                .maxValue(200)
+                .build());
     }
 }

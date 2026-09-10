@@ -6,6 +6,7 @@ import com.wjx.kablade.specialeffect.BetrayerCounter;
 import com.wjx.kablade.specialeffect.BurstDrive;
 import com.wjx.kablade.specialeffect.DivinePenalty;
 import com.wjx.kablade.specialeffect.EMInduction;
+import com.wjx.kablade.specialeffect.FlameThorns;
 import com.wjx.kablade.specialeffect.EMPulsar;
 import com.wjx.kablade.specialeffect.FuelTheRuin;
 import com.wjx.kablade.specialeffect.GlacialBane;
@@ -100,6 +101,9 @@ public final class ModSpecialEffects {
 
     public static final RegistryObject<SpecialEffect> RAINBOW_FLAMES = REGISTRY.register(
             "rainbow_flames", RainbowFlames::new);
+
+    public static final RegistryObject<SpecialEffect> FLAME_THORNS = REGISTRY.register(
+            "flame_thorns", FlameThorns::new);
 
     private ModSpecialEffects() {
     }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.KabladeRenderTypes;
+import com.wjx.kablade.client.EffectVertexBatch;
 import com.wjx.kablade.entity.NarukamiDivinityEntity;
 import com.wjx.kablade.slasharts.NarukamiDivinityTimeline;
 import com.wjx.kablade.slasharts.NarukamiDivinityTimeline.Cue;
@@ -54,13 +55,15 @@ public final class NarukamiDivinityRenderer extends EntityRenderer<NarukamiDivin
             super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
             return;
         }
+        EffectVertexBatch batch = new EffectVertexBatch();
         renderGeometry(entity, partialTick, poseStack.last().pose(),
                 this.entityRenderDispatcher.camera.getPosition(),
-                buffer.getBuffer(KabladeRenderTypes.thunderboltCallComposite()),
-                buffer.getBuffer(KabladeRenderTypes.thunderboltCallEnergy()),
-                buffer.getBuffer(KabladeRenderTypes.thunderboltCallCross()),
-                buffer.getBuffer(KabladeRenderTypes.thunderboltCallLightning()),
-                buffer.getBuffer(KabladeRenderTypes.thunderboltCallParticle()));
+                batch.getBuffer(KabladeRenderTypes.thunderboltCallComposite()),
+                batch.getBuffer(KabladeRenderTypes.thunderboltCallEnergy()),
+                batch.getBuffer(KabladeRenderTypes.thunderboltCallCross()),
+                batch.getBuffer(KabladeRenderTypes.thunderboltCallLightning()),
+                batch.getBuffer(KabladeRenderTypes.thunderboltCallParticle()));
+        batch.submit(buffer);
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
     }
 

@@ -18,6 +18,7 @@ import com.wjx.kablade.slasharts.FallingPetalsArts;
 import com.wjx.kablade.slasharts.FireOfSinArts;
 import com.wjx.kablade.slasharts.FengxuanArts;
 import com.wjx.kablade.slasharts.FlashArts;
+import com.wjx.kablade.slasharts.FlameBlockArts;
 import com.wjx.kablade.slasharts.FrostBladeArts;
 import com.wjx.kablade.slasharts.FrostCometArts;
 import com.wjx.kablade.slasharts.AquaEdgeArts;
@@ -40,6 +41,7 @@ import com.wjx.kablade.slasharts.NuclearShockArts;
 import com.wjx.kablade.slasharts.OverSlashArts;
 import com.wjx.kablade.slasharts.PhantomButterflyArts;
 import com.wjx.kablade.slasharts.PhantomButterflySArts;
+import com.wjx.kablade.slasharts.PrometheusArts;
 import com.wjx.kablade.slasharts.PurpleImpactArts;
 import com.wjx.kablade.slasharts.RagingFireArts;
 import com.wjx.kablade.slasharts.RainbowSlashArts;
@@ -307,6 +309,14 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> DEATH_GAZE = REGISTRY.register(
             "death_gaze",
             () -> new DeathGazeArts(entity -> ModComboStates.VALKYRIE_IMPACT.getId()));
+
+    public static final RegistryObject<SlashArts> PROMETHEUS = REGISTRY.register(
+            "prometheus",
+            () -> new PrometheusArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> FLAME_BLOCK = REGISTRY.register(
+            "flame_block",
+            () -> new FlameBlockArts(entity -> ComboStateRegistry.NONE.getId()));
 
     private ModSlashArts() {
     }

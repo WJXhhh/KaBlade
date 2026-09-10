@@ -40,14 +40,13 @@ public final class UtpalaAuraRenderer extends EntityRenderer<UtpalaAuraEntity> {
         }
 
         float age = entity.tickCount + partialTick;
-        VertexConsumer veil = buffer.getBuffer(KabladeRenderTypes.utpalaAuraVeil());
-        VertexConsumer vc = buffer.getBuffer(KabladeRenderTypes.utpalaAura());
 
         poseStack.pushPose();
         float yaw = Mth.rotLerp(partialTick, entity.yRotO, entity.getYRot());
         poseStack.mulPose(Axis.YP.rotationDegrees(-yaw));
 
-        renderLocalVeil(age, poseStack, veil);
+        renderLocalVeil(age, poseStack, buffer.getBuffer(KabladeRenderTypes.utpalaAuraVeil()));
+        VertexConsumer vc = buffer.getBuffer(KabladeRenderTypes.utpalaAura());
         renderFootGlow(age, poseStack, vc);
         renderOpeningIceRing(age, poseStack, vc);
         renderOpeningWindRipples(age, poseStack, vc);

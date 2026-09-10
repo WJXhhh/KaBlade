@@ -103,9 +103,11 @@ public final class RaidenCycloneRenderer {
             return;
         }
         MultiBufferSource.BufferSource buffers = minecraft.renderBuffers().bufferSource();
-        VertexConsumer bright = buffers.getBuffer(KabladeRenderTypes.raidenCyclone());
-        VertexConsumer dark = buffers.getBuffer(KabladeRenderTypes.raidenCycloneDark());
+        EffectVertexBatch batch = new EffectVertexBatch();
+        VertexConsumer bright = batch.getBuffer(KabladeRenderTypes.raidenCyclone());
+        VertexConsumer dark = batch.getBuffer(KabladeRenderTypes.raidenCycloneDark());
         renderAll(event, bright, dark);
+        batch.submit(buffers);
         buffers.endBatch(KabladeRenderTypes.raidenCyclone());
         buffers.endBatch(KabladeRenderTypes.raidenCycloneDark());
     }

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.client.KabladeRenderTypes;
+import com.wjx.kablade.client.EffectVertexBatch;
 import com.wjx.kablade.client.RaizanCleaveAnimation;
 import com.wjx.kablade.config.KabladeClientConfig;
 import com.wjx.kablade.entity.RaizanCleaveEntity;
@@ -142,13 +143,15 @@ public final class RaizanCleaveRenderer extends EntityRenderer<RaizanCleaveEntit
                               RaizanCleaveAnimation.Animation animation,
                               float frame, Vec3 target, Matrix4f matrix,
                               MultiBufferSource buffer) {
-        VertexConsumer energy = buffer.getBuffer(KabladeRenderTypes.raizanWeaponEnergy());
-        VertexConsumer lightning = buffer.getBuffer(KabladeRenderTypes.raizanLightning());
-        VertexConsumer heart = buffer.getBuffer(KabladeRenderTypes.raizanHeartSlash());
-        VertexConsumer particle = buffer.getBuffer(KabladeRenderTypes.raizanParticle());
-        VertexConsumer composite = buffer.getBuffer(KabladeRenderTypes.raizanComposite());
+        EffectVertexBatch batch = new EffectVertexBatch();
+        VertexConsumer energy = batch.getBuffer(KabladeRenderTypes.raizanWeaponEnergy());
+        VertexConsumer lightning = batch.getBuffer(KabladeRenderTypes.raizanLightning());
+        VertexConsumer heart = batch.getBuffer(KabladeRenderTypes.raizanHeartSlash());
+        VertexConsumer particle = batch.getBuffer(KabladeRenderTypes.raizanParticle());
+        VertexConsumer composite = batch.getBuffer(KabladeRenderTypes.raizanComposite());
         renderEffects(entity, animation, frame, target, matrix,
                 energy, lightning, heart, particle, composite);
+        batch.submit(buffer);
     }
 
     /**

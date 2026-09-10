@@ -13,7 +13,6 @@ import com.wjx.kablade.client.shader.SkillShaderTarget;
 import com.wjx.kablade.entity.ValkyrieImpactEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -218,9 +217,8 @@ public final class ValkyrieImpactOculusPipeline {
             try {
                 poseStack.translate(impact.x() - camera.x, impact.y() - camera.y, impact.z() - camera.z);
                 poseStack.mulPose(Axis.YP.rotationDegrees(-impact.yaw()));
-                VertexConsumer additiveVc = immediate.getBuffer(KabladeRenderTypes.nuclearShockOculusSafe());
-                VertexConsumer solidVc = immediate.getBuffer(RenderType.entityCutout(ValkyrieImpactRenderer.DEEPSLATE_TEXTURE));
-                ValkyrieImpactRenderer.renderLayers(poseStack, additiveVc, solidVc, 15728880, impact.timeSeconds());
+                ValkyrieImpactRenderer.renderLayers(poseStack, immediate,
+                        KabladeRenderTypes.nuclearShockOculusSafe(), 15728880, impact.timeSeconds());
             } finally {
                 poseStack.popPose();
             }

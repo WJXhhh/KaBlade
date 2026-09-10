@@ -69,10 +69,12 @@ import com.wjx.kablade.blades.honkai.claymore.DragonSpine;
 import com.wjx.kablade.blades.honkai.claymore.EnergyGreatsword;
 import com.wjx.kablade.blades.honkai.claymore.GreatSword;
 import com.wjx.kablade.blades.honkai.claymore.InquisitionTorch;
+import com.wjx.kablade.blades.honkai.claymore.LaborOfOlympus;
 import com.wjx.kablade.blades.honkai.claymore.KingCobra;
 import com.wjx.kablade.blades.honkai.claymore.NuclearPRI;
 import com.wjx.kablade.blades.honkai.claymore.NuclearPRIEX;
 import com.wjx.kablade.blades.honkai.claymore.ProtoPulseCleaver;
+import com.wjx.kablade.blades.honkai.claymore.RangersSawtooth;
 import com.wjx.kablade.blades.honkai.claymore.Vanguard;
 import com.wjx.kablade.blades.honkai.claymore.VioletKnight;
 import com.wjx.kablade.blades.honkai.claymore.WotanCleaver;
@@ -181,6 +183,7 @@ public final class BladeLoader {
     public static BladeDefineBase PROTO_PULSE_CLEAVER;
     public static BladeDefineBase INQUISITION_TORCH;
     public static BladeDefineBase CRIMSON_QUEEN;
+    public static BladeDefineBase LABOR_OF_OLYMPUS;
     public static BladeDefineBase VIOLET_KNIGHT;
     public static BladeDefineBase NUCLEAR_PRI;
     public static BladeDefineBase NUCLEAR_PRI_EX;
@@ -189,6 +192,7 @@ public final class BladeLoader {
     public static BladeDefineBase DRAGON_SPINE;
     public static BladeDefineBase BETRAYER;
     public static BladeDefineBase WOTAN_CLEAVER;
+    public static BladeDefineBase RANGERS_SAWTOOTH;
     // 万物皆刃线（首批 5 把招牌刀，世界合成获取）
     public static BladeDefineBase AW_LIURRH;
     public static BladeDefineBase AW_CHANSHIZHE;
@@ -301,8 +305,10 @@ public final class BladeLoader {
             "proto_pulse_cleaver",
             "inquisition_torch",
             "crimson_queen",
+            "labor_of_olympus",
             "wotan_cleaver",
             "violet_knight",
+            "rangers_sawtooth",
             "nuclear_pri",
             "nuclear_pri_ex",
             "vanguard",
@@ -346,8 +352,10 @@ public final class BladeLoader {
             "proto_pulse_cleaver",
             "inquisition_torch",
             "crimson_queen",
+            "labor_of_olympus",
             "wotan_cleaver",
             "violet_knight",
+            "rangers_sawtooth",
             "nuclear_pri",
             "nuclear_pri_ex",
             "vanguard",
@@ -463,8 +471,10 @@ public final class BladeLoader {
         PROTO_PULSE_CLEAVER = new ProtoPulseCleaver(context);
         INQUISITION_TORCH = new InquisitionTorch(context);
         CRIMSON_QUEEN = new CrimsonQueen(context);
+        LABOR_OF_OLYMPUS = new LaborOfOlympus(context);
         WOTAN_CLEAVER = new WotanCleaver(context);
         VIOLET_KNIGHT = new VioletKnight(context);
+        RANGERS_SAWTOOTH = new RangersSawtooth(context);
         NUCLEAR_PRI = new NuclearPRI(context);
         NUCLEAR_PRI_EX = new NuclearPRIEX(context);
         VANGUARD = new Vanguard(context);
