@@ -50,7 +50,7 @@ public final class Main {
     public static final String MOD_NAME = "Kablade";
 
     /** Mod version. */
-    public static final String VERSION = "2.13.0-b";
+    public static final String VERSION = "2.14.0-b";
 
     /** Shared logger. */
     public static final Logger LOGGER = LogUtils.getLogger();
