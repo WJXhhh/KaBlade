@@ -32,7 +32,27 @@ public final class SelectorCompatibilityGameTests {
             new ClassReader(input).accept(selector, 0);
         }
         helper.assertTrue(KabladeMixinPlugin.supportsSelector(selector),
-                "the pinned SlashBlade selector must be supported");
+                "the loaded SlashBlade selector must be supported");
+
+        // Some forks wrap world queries. The patch must not accept a wrapper that
+        // no longer delegates to the expected world scan.
+        for (MethodNode method : selector.methods) {
+            if (!"safeGetEntitiesOfClass".equals(method.name)
+                    || !method.desc.contains("Ljava/util/function/Predicate;")) {
+                continue;
+            }
+            for (AbstractInsnNode instruction : method.instructions) {
+                if (instruction instanceof MethodInsnNode call && "net/minecraft/world/level/Level".equals(call.owner)
+                        && call.desc.contains("Ljava/util/function/Predicate;")) {
+                    String owner = call.owner;
+                    call.owner = "example/ChangedWorldQuery";
+                    helper.assertFalse(KabladeMixinPlugin.supportsSelector(selector),
+                            "a changed wrapped query must disable the whole compatibility mixin");
+                    call.owner = owner;
+                    break;
+                }
+            }
+        }
 
         for (MethodNode method : selector.methods) {
             if (!"getTargettableEntitiesWithinAABB".equals(method.name)

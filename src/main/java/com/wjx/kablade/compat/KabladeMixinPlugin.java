@@ -28,6 +28,11 @@ public final class KabladeMixinPlugin implements IMixinConfigPlugin {
             + "Ljava/util/function/Predicate;)Ljava/util/List;";
     private static final String BODY_SCAN_DESC =
             "(Ljava/lang/Class;Lnet/minecraft/world/phys/AABB;)Ljava/util/List;";
+    private static final String SAFE_SCAN_METHOD = "safeGetEntitiesOfClass";
+    private static final String SAFE_EXPANDED_SCAN_DESC = "(Lnet/minecraft/world/level/Level;"
+            + "Ljava/lang/Class;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Ljava/util/List;";
+    private static final String SAFE_BODY_SCAN_DESC = "(Lnet/minecraft/world/level/Level;"
+            + "Ljava/lang/Class;Lnet/minecraft/world/phys/AABB;)Ljava/util/List;";
 
     @Override
     public void onLoad(String mixinPackage) {
@@ -72,9 +77,11 @@ public final class KabladeMixinPlugin implements IMixinConfigPlugin {
             if (instruction.getOpcode() == Opcodes.ARETURN) {
                 returnsList = true;
             }
-            if (instruction instanceof MethodInsnNode call && "net/minecraft/world/level/Level".equals(call.owner)
-                    && (EXPANDED_SCAN_DESC.equals(call.desc) || BODY_SCAN_DESC.equals(call.desc))) {
-                scan = call.desc;
+            if (instruction instanceof MethodInsnNode call) {
+                String candidateScan = scanType(target, call);
+                if (candidateScan != null) {
+                    scan = candidateScan;
+                }
             }
             if (instruction instanceof MethodInsnNode call && "java/util/stream/Stream".equals(call.owner)
                     && "flatMap".equals(call.name) && FLAT_MAP_DESC.equals(call.desc)) {
@@ -94,6 +101,47 @@ public final class KabladeMixinPlugin implements IMixinConfigPlugin {
             }
         }
         return returnsList && expansions == 2;
+    }
+
+    /** Recognize both direct world scans and a checked wrapper around the same scans. */
+    private static String scanType(ClassNode target, MethodInsnNode call) {
+        if ("net/minecraft/world/level/Level".equals(call.owner)
+                && (EXPANDED_SCAN_DESC.equals(call.desc) || BODY_SCAN_DESC.equals(call.desc))) {
+            return call.desc;
+        }
+        if (!target.name.equals(call.owner) || !SAFE_SCAN_METHOD.equals(call.name)
+                || call.getOpcode() != Opcodes.INVOKESTATIC) {
+            return null;
+        }
+        if (SAFE_EXPANDED_SCAN_DESC.equals(call.desc)
+                && wrapperCalls(target, SAFE_EXPANDED_SCAN_DESC, "net/minecraft/world/level/Level",
+                null, EXPANDED_SCAN_DESC)) {
+            return EXPANDED_SCAN_DESC;
+        }
+        if (SAFE_BODY_SCAN_DESC.equals(call.desc)
+                && wrapperCalls(target, SAFE_BODY_SCAN_DESC, target.name, SAFE_SCAN_METHOD, SAFE_EXPANDED_SCAN_DESC)
+                && wrapperCalls(target, SAFE_EXPANDED_SCAN_DESC, "net/minecraft/world/level/Level",
+                null, EXPANDED_SCAN_DESC)) {
+            return BODY_SCAN_DESC;
+        }
+        return null;
+    }
+
+    private static boolean wrapperCalls(ClassNode target, String wrapperDesc, String owner,
+                                        String methodName, String methodDesc) {
+        for (MethodNode wrapper : target.methods) {
+            if (!SAFE_SCAN_METHOD.equals(wrapper.name) || !wrapperDesc.equals(wrapper.desc)
+                    || (wrapper.access & Opcodes.ACC_STATIC) == 0) {
+                continue;
+            }
+            for (AbstractInsnNode instruction : wrapper.instructions) {
+                if (instruction instanceof MethodInsnNode call && owner.equals(call.owner)
+                        && (methodName == null || methodName.equals(call.name)) && methodDesc.equals(call.desc)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static boolean isPartsExpansion(ClassNode target, InvokeDynamicInsnNode lambda) {
