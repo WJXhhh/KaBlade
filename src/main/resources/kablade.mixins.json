@@ -4,8 +4,10 @@
   "package": "com.wjx.kablade.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "kablade.refmap.json",
+  "plugin": "com.wjx.kablade.compat.KabladeMixinPlugin",
   "mixins": [
-    "SlashBladeShapedRecipeMixin"
+    "SlashBladeShapedRecipeMixin",
+    "SlashBladeTargetSelectorMixin"
   ],
   "client": [
     "client.BladeFirstPersonRenderMixin",

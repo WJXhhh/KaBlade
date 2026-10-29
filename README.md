@@ -87,6 +87,18 @@ cd KBlade2
 ./gradlew runServer
 ```
 
+### 多部件选敌测试
+
+```bash
+# 通用测试；测试世界保存在 run/gametest/base
+./gradlew runGameTestServer -PenableShaderMods=false -PenableJeiRuntime=false -x downloadAssets
+
+# 同时加载暮色森林 1.20.1-4.3.2508，测试真实的哥布林和九头蛇
+./gradlew runGameTestServer -PenableShaderMods=false -PenableJeiRuntime=false -PtestTwilightForest=true -x downloadAssets
+```
+
+暮色森林仅在指定测试参数时加入开发运行环境，不是本模组的运行时依赖。
+
 ### 数据生成
 
 添加或修改命名刀后，需要重新生成刀定义的 JSON 文件：

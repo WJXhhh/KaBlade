@@ -27,6 +27,14 @@ base {
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+// GameTests are loaded only by the dedicated test server, not the release jar or JUnit task.
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+    }
+}
+
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
     // The mappings can be changed at any time and must be in the following format.
@@ -114,6 +122,17 @@ minecraft {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             property 'forge.enabledGameTestNamespaces', mod_id
+            def twilightIntegration = project.findProperty('testTwilightForest')?.toString()?.toBoolean() ?: false
+            workingDirectory project.file(twilightIntegration ? 'run/gametest/twilight' : 'run/gametest/base')
+            if (twilightIntegration) {
+                property 'kablade.gametest.requireTwilight', 'true'
+            }
+            // Keep GameTest fixtures out of the release jar and normal client/server runs.
+            mods {
+                "${mod_id}" {
+                    source sourceSets.gametest
+                }
+            }
         }
 
         data {
@@ -224,7 +243,9 @@ dependencies {
     // JEI — 运行时启用
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    if ((project.findProperty('enableJeiRuntime') ?: 'true').toString().toBoolean()) {
+        runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    }
 
     // EMI — optional integration; compile-only here because the runtime is supplied by the user's EMI installation.
     compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
@@ -250,6 +271,11 @@ dependencies {
 
     // Damage Numbers - local dev runtime jar in ./libs.
     runtimeOnly fg.deobf("blank:damagenumbers:1.4.0-forge")
+
+    // Optional real-mod GameTest integration; production has no Twilight Forest dependency.
+    if (project.findProperty('testTwilightForest')?.toString()?.toBoolean() ?: false) {
+        runtimeOnly fg.deobf('curse.maven:the-twilight-forest-227639:5468648')
+    }
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

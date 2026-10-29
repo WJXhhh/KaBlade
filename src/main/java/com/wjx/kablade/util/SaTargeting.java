@@ -223,10 +223,13 @@ public final class SaTargeting {
                                                       Vec3 eye, Vec3 look, double range) {
         if (locked.isMultipartEntity() && locked.getParts() != null && locked.getParts().length > 0) {
             Vec3 end = eye.add(look.scale(range));
-            return java.util.Arrays.stream(locked.getParts())
+            Optional<SaTarget> selectedPart = java.util.Arrays.stream(locked.getParts())
                     .map(part -> validPhysicalTarget(owner, part, range, eye).orElse(null))
                     .filter(java.util.Objects::nonNull)
                     .min(Comparator.comparingDouble(target -> lockedPartScore(target, eye, end)));
+            if (selectedPart.isPresent()) {
+                return selectedPart;
+            }
         }
         return validPhysicalTarget(owner, locked, range, eye);
     }
