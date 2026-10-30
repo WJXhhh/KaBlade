@@ -119,8 +119,7 @@ public final class EmiShapedBladeRecipe extends BasicEmiRecipe {
     }
 
     private static ResourceLocation getEmiRecipeId(SlashBladeShapedRecipe recipe) {
-        ResourceLocation id = recipe.getId();
-        return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "emi/" + id.getPath());
+        return recipe.getId();
     }
 
     private static void ensureTranslationKey(ItemStack stack, SlashBladeShapedRecipe recipe) {

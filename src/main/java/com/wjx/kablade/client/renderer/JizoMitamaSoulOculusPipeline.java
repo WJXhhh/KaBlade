@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.wjx.kablade.Main;
+import com.wjx.kablade.client.compat.SlashBladeObjCompat;
 import com.wjx.kablade.client.shader.OculusFramebufferAccess;
 import com.wjx.kablade.client.shader.ShaderCompat;
 import com.wjx.kablade.client.shader.SkillPostShaders;
@@ -447,9 +448,9 @@ public final class JizoMitamaSoulOculusPipeline {
                     .filter(candidate -> name.equals(candidate.name))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Missing Jizo OBJ group: " + name));
-            int vertexCount = group.faces.stream().mapToInt(face -> face.vertices.length).sum();
+            int vertexCount = SlashBladeObjCompat.faces(group).stream().mapToInt(face -> face.vertices.length).sum();
             ByteBuffer data = BufferUtils.createByteBuffer(vertexCount * STRIDE);
-            for (Face face : group.faces) {
+            for (Face face : SlashBladeObjCompat.faces(group)) {
                 if (face.vertices.length != 3) {
                     throw new IllegalStateException("Jizo Oculus mesh requires triangles: " + name);
                 }

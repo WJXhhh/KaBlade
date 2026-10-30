@@ -2,6 +2,8 @@ package com.wjx.kablade.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.wjx.kablade.Main;
+import com.wjx.kablade.client.compat.SlashBladeObjCompat;
+import com.wjx.kablade.client.compat.SlashBladeRenderOverrideCompat;
 import com.wjx.kablade.client.shader.BladeLuminousHandOculusPipeline;
 import com.wjx.kablade.client.shader.ShaderCompat;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.GroupObject;
@@ -102,13 +104,13 @@ public final class BladeLuminousTextureLayer implements ResourceManagerReloadLis
 
             event.setTarget(baseTarget);
             event.setTexture(texture);
-            event.setGetRenderType(shaderPackHand
+            SlashBladeRenderOverrideCompat.setRenderType(event, shaderPackHand
                     ? KabladeRenderTypes::bladeLuminousHandTexture
                     : KabladeRenderTypes::bladeLuminousTexture);
             // Shader packs commonly route first-person items through a regular hand shader,
             // discarding SlashBlade's emissive shader. Full light keeps the mask visibly
             // self-lit in that fallback path while preserving the luminous blend state.
-            event.setPackedLightIn(BladeRenderState.MAX_LIGHT);
+            SlashBladeRenderOverrideCompat.setPackedLight(event, BladeRenderState.MAX_LIGHT);
         });
     }
 
@@ -153,7 +155,7 @@ public final class BladeLuminousTextureLayer implements ResourceManagerReloadLis
 
         for (GroupObject group : model.groupObjects) {
             if (group != null && group.name != null && target.equalsIgnoreCase(group.name)
-                    && group.faces != null && !group.faces.isEmpty()) {
+                    && !SlashBladeObjCompat.faces(group).isEmpty()) {
                 return true;
             }
         }

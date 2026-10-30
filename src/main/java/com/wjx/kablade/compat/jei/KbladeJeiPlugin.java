@@ -5,7 +5,10 @@ import com.wjx.kablade.util.ResourceUtil;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.ISubtypeRegistration;
-import mods.flammpfeil.slashblade.compat.jei.JEICompat;
+import mezz.jei.api.ingredients.subtypes.UidContext;
+import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * 注册了 subtype 解释器，不覆盖我们的载体——这正是 NegoreRouse（用 slashblade 原生载体）正常、而我们
  * 不正常的根因。
  *
- * <p>这里为我们的载体注册同样的解释器，直接复用 SlashBlade 的 {@link JEICompat#syncSlashBlade}
+ * <p>这里为我们的载体注册同样的解释器，先从堆叠的 NBT 同步刀状态，再使用刀名
  * （UID = 刀名）。JEI 拿到正确区分的堆叠后：不同刀的合成表各自分开，预览也由 {@code BladeModel} 按刀名
  * 解析出正确的模型/贴图/颜色。
  *
@@ -35,9 +38,19 @@ public class KbladeJeiPlugin implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         // registerItemSubtypes 在注册表冻结后由 JEI 调用，此处 .get() 安全。
-        registration.registerSubtypeInterpreter(ModItems.KABLADE_BLADE.get(), JEICompat::syncSlashBlade);
-        registration.registerSubtypeInterpreter(ModItems.KABLADE_HONKAI_BLADE.get(), JEICompat::syncSlashBlade);
-        registration.registerSubtypeInterpreter(ModItems.KABLADE_SL_BLADE.get(), JEICompat::syncSlashBlade);
-        registration.registerSubtypeInterpreter(ModItems.KABLADE_AW_BLADE.get(), JEICompat::syncSlashBlade);
+        registration.registerSubtypeInterpreter(ModItems.KABLADE_BLADE.get(), KbladeJeiPlugin::syncKablade);
+        registration.registerSubtypeInterpreter(ModItems.KABLADE_HONKAI_BLADE.get(), KbladeJeiPlugin::syncKablade);
+        registration.registerSubtypeInterpreter(ModItems.KABLADE_SL_BLADE.get(), KbladeJeiPlugin::syncKablade);
+        registration.registerSubtypeInterpreter(ModItems.KABLADE_AW_BLADE.get(), KbladeJeiPlugin::syncKablade);
     }
+
+    private static String syncKablade(ItemStack stack, UidContext context) {
+        if (stack.hasTag() && stack.getTag().contains("bladeState")) {
+            stack.getCapability(ItemSlashBlade.BLADESTATE)
+                    .ifPresent(state -> state.deserializeNBT(stack.getTag().getCompound("bladeState")));
+        }
+        return stack.getCapability(ItemSlashBlade.BLADESTATE)
+                .map(ISlashBladeState::getTranslationKey).orElse("");
+    }
+
 }

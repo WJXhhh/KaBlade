@@ -56,7 +56,8 @@ public final class KbladeEmiPlugin implements EmiPlugin {
         }
 
         registry.removeRecipes(recipe ->
-                recipe.getId() != null && slashBladeRecipeIds.contains(recipe.getId()));
+                recipe.getId() != null && slashBladeRecipeIds.contains(recipe.getId())
+                        && !(recipe instanceof EmiShapedBladeRecipe));
 
         for (var recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
             if (recipe instanceof SlashBladeShapedRecipe shapedBladeRecipe && shouldWrapRecipe(shapedBladeRecipe)) {

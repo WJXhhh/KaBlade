@@ -3,6 +3,7 @@ package com.wjx.kablade.client.shader;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.wjx.kablade.Main;
+import com.wjx.kablade.client.compat.SlashBladeObjCompat;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.Face;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.GroupObject;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.TextureCoordinate;
@@ -377,13 +378,13 @@ public final class BladeLuminousHandOculusPipeline {
                     .orElseThrow(() -> new IllegalStateException(
                             "Missing luminous source OBJ group: " + target));
 
-            int vertexCount = group.faces.stream()
+            int vertexCount = SlashBladeObjCompat.faces(group).stream()
                     .filter(face -> face != null && face.vertices != null
                             && face.vertices.length >= 3)
                     .mapToInt(face -> (face.vertices.length - 2) * 3)
                     .sum();
             ByteBuffer data = BufferUtils.createByteBuffer(vertexCount * STRIDE);
-            for (Face face : group.faces) {
+            for (Face face : SlashBladeObjCompat.faces(group)) {
                 if (face == null || face.vertices == null || face.vertices.length < 3) {
                     continue;
                 }
