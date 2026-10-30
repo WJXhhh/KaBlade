@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModEntities;
@@ -44,6 +45,7 @@ public class ConfinementForceFieldEntity extends Entity {
     private static final double FIELD_RADIUS = 6.0;
     private static final float DAMAGE_BOOST = 3.2F;
 
+    private float damageMultiplier = 1.0F;
     private LivingEntity owner;
     private UUID ownerUUID;
 
@@ -57,6 +59,7 @@ public class ConfinementForceFieldEntity extends Entity {
         this(ModEntities.CONFINEMENT_FORCE_FIELD.get(), level);
         this.owner = owner;
         this.ownerUUID = owner.getUUID();
+        this.damageMultiplier = SridrCompat.damageMultiplier(owner);
         this.setPos(owner.getX(), owner.getY(), owner.getZ());
         this.setYRot(owner.getYRot());
     }
@@ -128,7 +131,7 @@ public class ConfinementForceFieldEntity extends Entity {
                     5, 3, false, true));
 
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), serverLevel, this, this.owner, FIELD_DAMAGE);
+                    selected.hitEntity(), serverLevel, this, this.owner, FIELD_DAMAGE * this.damageMultiplier);
         }
     }
 
@@ -138,6 +141,7 @@ public class ConfinementForceFieldEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
+        this.damageMultiplier = tag.contains("SridrDamageMultiplier") ? tag.getFloat("SridrDamageMultiplier") : 1.0F;
         if (tag.hasUUID("OwnerUUID")) {
             this.ownerUUID = tag.getUUID("OwnerUUID");
         }
@@ -148,6 +152,7 @@ public class ConfinementForceFieldEntity extends Entity {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
+        tag.putFloat("SridrDamageMultiplier", this.damageMultiplier);
         if (this.ownerUUID != null) {
             tag.putUUID("OwnerUUID", this.ownerUUID);
         }

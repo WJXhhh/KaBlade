@@ -136,7 +136,7 @@ public final class DeathGazeOculusPipeline {
             bindTarget(target);
 
             Matrix4f modelView = new Matrix4f(RenderSystem.getModelViewMatrix());
-            Matrix4f projection = new Matrix4f(event.getProjectionMatrix());
+            Matrix4f projection = target.layout().privateProjection(event.getProjectionMatrix());
             float gameTime = shaderGameTime(event.getPartialTick());
 
             PROGRAM.apply(modelView, projection, gameTime);
@@ -172,7 +172,7 @@ public final class DeathGazeOculusPipeline {
         if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
             throw new IllegalStateException("Death Gaze Oculus framebuffer incomplete: 0x" + Integer.toHexString(status));
         }
-        GL11.glViewport(0, 0, target.width(), target.height());
+        target.layout().viewport();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
         GL11.glDepthMask(false);

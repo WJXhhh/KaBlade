@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -62,7 +63,7 @@ public final class MoltenBladeArts extends SlashArts {
         float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR)) * DAMAGE_MULTIPLIER;
+        float damage = SridrCompat.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR)) * DAMAGE_MULTIPLIER);
 
         startLunge(level, user, damage);
 

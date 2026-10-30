@@ -22,18 +22,21 @@ public final class SkillEffectFramebuffer implements AutoCloseable {
     private int sceneCopyTextureId;
     private int width;
     private int height;
+    private SkillRenderLayout layout;
 
     public void beginColor(SkillShaderTarget target) {
         RenderSystem.assertOnRenderThread();
-        ensureAllocated(target.width(), target.height());
+        ensureAllocated(target);
 
         bindSingleColorTarget(target.colorTextureId(), target.depthTextureId());
+        // ShaderInstance/RenderType callbacks are transformed by the shaderpack. Private
+        // GL callbacks must explicitly use target.layout().viewport()/privateProjection().
         GL11.glViewport(0, 0, target.width(), target.height());
     }
 
     public void beginMask(SkillShaderTarget target) {
         RenderSystem.assertOnRenderThread();
-        ensureAllocated(target.width(), target.height());
+        ensureAllocated(target);
 
         bindSingleColorTarget(maskTextureId, target.depthTextureId());
         GL11.glViewport(0, 0, target.width(), target.height());
@@ -53,15 +56,15 @@ public final class SkillEffectFramebuffer implements AutoCloseable {
                           float glowStrength, float distortionStrength,
                           float colorPreservation) {
         RenderSystem.assertOnRenderThread();
-        ensureAllocated(target.width(), target.height());
+        ensureAllocated(target);
 
         copySceneColor(target);
         blurMask(blurPasses);
 
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, target.framebufferId());
-        GL11.glViewport(0, 0, target.width(), target.height());
+        layout.viewport();
         SkillPostShaders.composite(sceneCopyTextureId, maskTextureId,
-                target.width(), target.height(), glowStrength, distortionStrength,
+                layout, glowStrength, distortionStrength,
                 colorPreservation);
     }
 
@@ -103,19 +106,15 @@ public final class SkillEffectFramebuffer implements AutoCloseable {
         GL20.glDrawBuffers(drawBuffer);
         checkFramebuffer("skill scene copy");
 
-        GL30.glBlitFramebuffer(
-                0, 0, target.width(), target.height(),
-                0, 0, target.width(), target.height(),
-                GL11.GL_COLOR_BUFFER_BIT,
-                GL11.GL_NEAREST);
+        layout.copyColor();
     }
 
     private void blurMask(int passes) {
         for (int i = 0; i < Math.max(0, passes); i++) {
             bindPostColor(blurTextureId);
-            SkillPostShaders.blur(maskTextureId, width, height, true);
+            SkillPostShaders.blur(maskTextureId, layout, true);
             bindPostColor(maskTextureId);
-            SkillPostShaders.blur(blurTextureId, width, height, false);
+            SkillPostShaders.blur(blurTextureId, layout, false);
         }
     }
 
@@ -128,7 +127,7 @@ public final class SkillEffectFramebuffer implements AutoCloseable {
         drawBuffer.flip();
         GL20.glDrawBuffers(drawBuffer);
         checkFramebuffer("skill post");
-        GL11.glViewport(0, 0, width, height);
+        layout.viewport();
     }
 
     private void clearColorAttachment() {
@@ -138,7 +137,10 @@ public final class SkillEffectFramebuffer implements AutoCloseable {
         GL30.glClearBufferfv(GL11.GL_COLOR, 0, transparent);
     }
 
-    private void ensureAllocated(int nextWidth, int nextHeight) {
+    private void ensureAllocated(SkillShaderTarget target) {
+        layout = target.layout();
+        int nextWidth = target.width();
+        int nextHeight = target.height();
         if (framebufferId == 0) {
             framebufferId = GL30.glGenFramebuffers();
         }
@@ -162,7 +164,7 @@ public final class SkillEffectFramebuffer implements AutoCloseable {
         height = nextHeight;
         allocateTexture(maskTextureId, GL30.GL_RGBA16F, GL11.GL_RGBA, GL11.GL_FLOAT);
         allocateTexture(blurTextureId, GL30.GL_RGBA16F, GL11.GL_RGBA, GL11.GL_FLOAT);
-        allocateTexture(sceneCopyTextureId, GL11.GL_RGBA8, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE);
+        allocateTexture(sceneCopyTextureId, GL30.GL_RGBA16F, GL11.GL_RGBA, GL11.GL_FLOAT);
     }
 
     private void allocateTexture(int textureId, int internalFormat, int format, int type) {
@@ -183,6 +185,7 @@ public final class SkillEffectFramebuffer implements AutoCloseable {
     @Override
     public void close() {
         RenderSystem.assertOnRenderThread();
+        width = height = 0;
         deleteTexture(maskTextureId);
         deleteTexture(blurTextureId);
         deleteTexture(sceneCopyTextureId);

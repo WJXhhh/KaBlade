@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.ShockImpactEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -55,14 +56,14 @@ public final class ShockImpactArts extends SlashArts {
         float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float extraDamage = (float) MathFunc.amplifierCalc(bladeAttack, 10.0F);
+        float damage = SridrCompat.scaleDamage(user, BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, 10.0F));
         AABB box = user.getBoundingBox()
                 .inflate(AOE_RADIUS, AOE_VERTICAL, AOE_RADIUS)
                 .move(user.getDeltaMovement().scale(0.5));
         var enemies = SaTargeting.uniqueTargets(level, user, box);
         for (var selected : enemies) {
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), level, user, BASE_DAMAGE + extraDamage);
+                    selected.hitEntity(), level, user, damage);
         }
 
         user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST,

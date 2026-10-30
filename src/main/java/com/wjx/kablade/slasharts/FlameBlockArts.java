@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.util.MathFunc;
@@ -49,6 +50,7 @@ public final class FlameBlockArts extends SlashArts {
 
     public static final String PROP_KEY = "flame_block";
     public static final int BUFF_DURATION_TICKS = 200;
+    private static final String MULTIPLIER_KEY = "kablade:flameblock_sridr_multiplier";
 
     private static final UUID SPEED_MODIFIER_UUID =
             UUID.fromString("6d7b4a2e-8c31-4f1a-9b56-1e98d7f2a3c5");
@@ -69,6 +71,7 @@ public final class FlameBlockArts extends SlashArts {
         }
 
         if (user instanceof Player player) {
+            player.getPersistentData().putFloat(MULTIPLIER_KEY, SridrCompat.damageMultiplier(user));
             player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
                     .ifPresent(cap -> cap.set(PROP_KEY, BUFF_DURATION_TICKS));
             applySpeedDebuffIfMissing(player);
@@ -196,7 +199,9 @@ public final class FlameBlockArts extends SlashArts {
                     .map(ISlashBladeState::getBaseAttackModifier)
                     .orElse(17.0F);
         }
-        float pulseDamage = PULSE_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
+        float pulseDamage = (PULSE_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
+                * (player.getPersistentData().contains(MULTIPLIER_KEY)
+                ? player.getPersistentData().getFloat(MULTIPLIER_KEY) : 1.0F);
 
         boolean hitAny = false;
         for (LivingEntity target : targets) {

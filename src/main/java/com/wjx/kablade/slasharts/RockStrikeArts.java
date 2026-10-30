@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.RockSpikeEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -129,7 +130,7 @@ public final class RockStrikeArts extends SlashArts {
             final int r = ring;
             final double radius = INNER_RADIUS + ring * RING_STEP;
             final float factor = RING_DAMAGE_FACTOR[Math.min(ring, RING_DAMAGE_FACTOR.length - 1)];
-            final double damage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR) * factor * tierMultiplier;
+            final double damage = SridrCompat.scaleDamage(user, MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR) * factor * tierMultiplier);
 
             final Runnable wave = () -> {
                 if (!user.isAlive()) {

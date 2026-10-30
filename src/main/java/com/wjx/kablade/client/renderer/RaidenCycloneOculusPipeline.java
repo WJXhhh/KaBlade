@@ -9,6 +9,7 @@ import com.wjx.kablade.client.shader.OculusFramebufferAccess;
 import com.wjx.kablade.client.shader.ShaderCompat;
 import com.wjx.kablade.client.shader.SkillPostShaders;
 import com.wjx.kablade.client.shader.SkillShaderTarget;
+import com.wjx.kablade.client.shader.SkillRenderLayout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
@@ -102,7 +103,7 @@ public final class RaidenCycloneOculusPipeline {
                 resourcesDirty = false;
             }
             PROGRAM.ensureLoaded();
-            FRAMEBUFFER.ensureAllocated(target.width(), target.height());
+            FRAMEBUFFER.ensureAllocated(target);
 
             if (!loggedActive) {
                 loggedActive = true;
@@ -114,7 +115,7 @@ public final class RaidenCycloneOculusPipeline {
             }
 
             Matrix4f modelView = new Matrix4f(RenderSystem.getModelViewMatrix());
-            Matrix4f projection = new Matrix4f(event.getProjectionMatrix());
+            Matrix4f projection = target.layout().privateProjection(event.getProjectionMatrix());
             float gameTime = shaderGameTime(event.getPartialTick());
 
             FRAMEBUFFER.beginEffect(target);
@@ -326,8 +327,12 @@ public final class RaidenCycloneOculusPipeline {
         private int sceneTexture;
         private int width;
         private int height;
+        private SkillRenderLayout layout;
 
-        private void ensureAllocated(int nextWidth, int nextHeight) {
+        private void ensureAllocated(SkillShaderTarget target) {
+            layout = target.layout();
+            int nextWidth = target.width();
+            int nextHeight = target.height();
             if (effectFramebuffer == 0) effectFramebuffer = GL30.glGenFramebuffers();
             if (copyFramebuffer == 0) copyFramebuffer = GL30.glGenFramebuffers();
             if (effectTexture == 0) effectTexture = GL11.glGenTextures();
@@ -366,7 +371,7 @@ public final class RaidenCycloneOculusPipeline {
                     GL11.GL_TEXTURE_2D, depthTexture, 0);
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             checkFramebuffer("Raiden Cyclone " + stage);
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
         }
 
         private void prepareGeometryState() {
@@ -388,9 +393,9 @@ public final class RaidenCycloneOculusPipeline {
             int bloomTexture = blurGlow();
             GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, target.framebufferId());
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
             SkillPostShaders.compositeRaiden(sceneTexture, effectTexture,
-                    glowTexture, bloomTexture, width, height);
+                    glowTexture, bloomTexture, layout);
         }
 
         private void copyScene(SkillShaderTarget target) {
@@ -401,17 +406,16 @@ public final class RaidenCycloneOculusPipeline {
                     GL11.GL_TEXTURE_2D, sceneTexture, 0);
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             checkDrawFramebuffer("Raiden Cyclone scene copy");
-            GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
-                    GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+            layout.copyColor();
         }
 
         private int blurGlow() {
             int source = glowTexture;
             for (int i = 0; i < BLOOM_BLUR_PASSES; i++) {
                 bindPostTarget(blurTextureA);
-                SkillPostShaders.blurBloodfyre(source, width, height, true);
+                SkillPostShaders.blurBloodfyre(source, layout, true);
                 bindPostTarget(blurTextureB);
-                SkillPostShaders.blurBloodfyre(blurTextureA, width, height, false);
+                SkillPostShaders.blurBloodfyre(blurTextureA, layout, false);
                 source = blurTextureB;
             }
             return source;
@@ -423,7 +427,7 @@ public final class RaidenCycloneOculusPipeline {
                     GL11.GL_TEXTURE_2D, texture, 0);
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             checkFramebuffer("Raiden Cyclone bloom");
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
         }
 
         private void allocate(int texture) {

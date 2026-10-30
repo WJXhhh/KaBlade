@@ -179,9 +179,9 @@ public final class BladeLuminousHandOculusPipeline {
             PROGRAM.ensureLoaded();
             // A blade edge needs a tight halo. The generic skill preset uses two blur passes
             // plus refraction, which makes thin weapon details look washed out in first person.
-            boolean rendered = OculusSkillRenderer.runPostIfNeeded(
-                    () -> render(draws, false, handPass, 1.0F),
-                    () -> render(draws, true, handPass, 1.0F),
+            boolean rendered = OculusSkillRenderer.runTargetPostIfNeeded(
+                    target -> render(draws, false, handPass, 1.0F, target),
+                    target -> render(draws, true, handPass, 1.0F, target),
                     1, 0.38F, 0.0F, 1.0F);
             if (!rendered) {
                 if (!loggedUnavailable) {
@@ -218,7 +218,8 @@ public final class BladeLuminousHandOculusPipeline {
     }
 
     private static void render(List<QueuedDraw> draws, boolean maskPass,
-                               boolean handPass, float colorScale) {
+                               boolean handPass, float colorScale, SkillShaderTarget target) {
+        target.layout().viewport();
         GL11.glColorMask(true, true, true, true);
         GL11.glEnable(GL11.GL_BLEND);
         GL20.glBlendEquationSeparate(GL14.GL_FUNC_ADD, GL14.GL_FUNC_ADD);
@@ -242,7 +243,7 @@ public final class BladeLuminousHandOculusPipeline {
         for (QueuedDraw draw : draws) {
             LuminousMesh mesh = mesh(draw.model, draw.target);
             int texture = textureId(draw.texture);
-            PROGRAM.apply(draw.modelView, draw.projection, texture, colorScale);
+            PROGRAM.apply(draw.modelView, target.layout().privateProjection(draw.projection), texture, colorScale);
             mesh.draw();
         }
     }

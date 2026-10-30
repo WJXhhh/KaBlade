@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -40,7 +41,7 @@ public final class StarBurstArts extends SlashArts {
         final RandomSource rng = level.random;
         final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F);
-        final float damage = DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO);
+        final float damage = SridrCompat.scaleDamage(user, DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO));
 
         // 水平前射方向（俯仰=0），对应 1.12.2 setLocationAndAngles(rotationYaw, 0.0f)
         final Vec3 flat = SaFx.flatLook(user);

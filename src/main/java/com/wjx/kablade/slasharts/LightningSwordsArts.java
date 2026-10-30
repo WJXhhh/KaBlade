@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.LightningSwordEntity;
 import com.wjx.kablade.entity.PhantomSwordExEntity;
 import com.wjx.kablade.util.SaDamage;
@@ -82,14 +83,14 @@ public final class LightningSwordsArts extends SlashArts {
                 .map(cap -> cap.getRank(level.getGameTime()).level)
                 .orElse(0);
         int powerLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, blade);
-        float magicDamage = (1.0F + baseAttack * 0.5F
+        float magicDamage = SridrCompat.scaleDamage(user, (1.0F + baseAttack * 0.5F
                 * ((float) powerLevel / 5.0F)
-                * (1.5F + 0.2F * rank)) * 0.5F;
+                * (1.5F + 0.2F * rank)) * 0.5F);
 
         // Multipart roots commonly reject damage themselves. Route the opening hit through
         // the selected physical part; ordinary targets keep SlashBlade's managed melee path.
         if (selected.isMultipartPart()) {
-            SaDamage.hurtSlashArtNoIFrame(physicalTarget, level, user, user, Math.max(1.0F, baseAttack));
+            SaDamage.hurtSlashArtNoIFrame(physicalTarget, level, user, user, SridrCompat.scaleDamage(user, Math.max(1.0F, baseAttack)));
         } else {
             AttackManager.doMeleeAttack(user, livingTarget, true, true);
         }

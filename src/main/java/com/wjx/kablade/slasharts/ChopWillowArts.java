@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -85,7 +86,7 @@ public final class ChopWillowArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
-        float damage = BASE_DAMAGE + extraDamage;
+        float damage = SridrCompat.scaleDamage(user, BASE_DAMAGE + extraDamage);
 
         Vec3 pos = user.position();
         AABB box = new AABB(

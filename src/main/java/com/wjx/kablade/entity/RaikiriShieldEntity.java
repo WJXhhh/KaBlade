@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModEntities;
@@ -51,6 +52,7 @@ public class RaikiriShieldEntity extends Entity {
     /** amplifierCalc 琛ユ绯绘暟锛堣€愪箙鍜屼激瀹冲叡鐢ㄥ悓涓€涓斁澶у櫒鍊硷級銆?*/
     private static final float AMP_FACTOR = 1.0F;
 
+    private float damageMultiplier = 1.0F;
     private LivingEntity thrower;
     /** 鍙敜鏃舵柦娉曡€呮嫈鍒€鍓戠殑 baseAttackModifier銆?*/
     private float bladeAttack;
@@ -67,6 +69,7 @@ public class RaikiriShieldEntity extends Entity {
         this(ModEntities.RAIKIRI_SHIELD.get(), level);
         this.thrower = thrower;
         this.bladeAttack = bladeAttack;
+        this.damageMultiplier = SridrCompat.damageMultiplier(thrower);
         this.setPos(thrower.getX(), thrower.getY(), thrower.getZ());
         this.xOld = this.getX();
         this.yOld = this.getY();
@@ -129,7 +132,7 @@ public class RaikiriShieldEntity extends Entity {
         updateHud();
 
         // 瀵硅创杩戠殑鍙敾鍑荤洰鏍囬€犳垚浼ゅ锛堟寜鍒€鐨勬敾鍑诲姏鍔ㄦ€佽绠楋級
-        float contactDamage = calcContactDamage(this.bladeAttack);
+        float contactDamage = calcContactDamage(this.bladeAttack) * this.damageMultiplier;
         AABB box = this.getBoundingBox()
                 .inflate(CONTACT_RADIUS, 0.0, CONTACT_RADIUS);
         DamageSource src = this.level().damageSources().mobAttack(this.thrower);
@@ -237,6 +240,7 @@ public class RaikiriShieldEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        this.damageMultiplier = tag.contains("SridrDamageMultiplier") ? tag.getFloat("SridrDamageMultiplier") : 1.0F;
         if (tag.contains("bladeAttack")) {
             this.bladeAttack = tag.getFloat("bladeAttack");
         }
@@ -244,6 +248,7 @@ public class RaikiriShieldEntity extends Entity {
 
     @Override
     protected void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        tag.putFloat("SridrDamageMultiplier", this.damageMultiplier);
         tag.putFloat("bladeAttack", this.bladeAttack);
         tag.putFloat("shieldBlood", this.getShieldBlood());
     }

@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModMobEffects;
@@ -68,11 +69,11 @@ public final class KamiOfWarArts extends SlashArts {
         float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float extraDamage = MathFunc.amplifierCalc(bladeAttack, EXTRA_DAMAGE_FACTOR);
+        float damage = SridrCompat.scaleDamage(user, BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, EXTRA_DAMAGE_FACTOR));
         long now = level.getServer().getTickCount();
 
         ACTIVE.put(user.getUUID(), new KamiState(
-                level.dimension(), user.getUUID(), extraDamage, PULSE_COUNT, now + FIRST_DELAY));
+                level.dimension(), user.getUUID(), damage, PULSE_COUNT, now + FIRST_DELAY));
         setCounter(user, PULSE_COUNT);
 
         user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,
@@ -107,7 +108,7 @@ public final class KamiOfWarArts extends SlashArts {
                 return false;
             }
 
-            pulse(level, user, state.extraDamage);
+            pulse(level, user, state.damage);
             state.pulsesLeft--;
             setCounter(user, state.pulsesLeft);
 
@@ -121,7 +122,7 @@ public final class KamiOfWarArts extends SlashArts {
         });
     }
 
-    private static void pulse(ServerLevel level, LivingEntity user, float extraDamage) {
+    private static void pulse(ServerLevel level, LivingEntity user, float damage) {
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
                 SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 4.0F,
                 (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
@@ -150,7 +151,7 @@ public final class KamiOfWarArts extends SlashArts {
                 target -> SaTargeting.canDamage(user, target.root()))) {
             LivingEntity target = selected.root();
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), level, user, BASE_DAMAGE + extraDamage);
+                    selected.hitEntity(), level, user, damage);
             if (blade.getItem() instanceof ItemSlashBlade && user instanceof Player player) {
                 blade.hurtEnemy(target, player);
             }
@@ -176,15 +177,15 @@ public final class KamiOfWarArts extends SlashArts {
     private static final class KamiState {
         private final ResourceKey<Level> dimension;
         private final UUID ownerUUID;
-        private final float extraDamage;
+        private final float damage;
         private int pulsesLeft;
         private long nextPulseAt;
 
         private KamiState(ResourceKey<Level> dimension, UUID ownerUUID,
-                          float extraDamage, int pulsesLeft, long nextPulseAt) {
+                          float damage, int pulsesLeft, long nextPulseAt) {
             this.dimension = dimension;
             this.ownerUUID = ownerUUID;
-            this.extraDamage = extraDamage;
+            this.damage = damage;
             this.pulsesLeft = pulsesLeft;
             this.nextPulseAt = nextPulseAt;
         }

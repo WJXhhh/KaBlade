@@ -1,6 +1,5 @@
 package com.wjx.kablade.client.shader;
 
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -99,16 +98,19 @@ public final class OculusFramebufferAccess {
             return Optional.empty();
         }
 
-        int width = renderTargets.flatMap(targets -> readInt(targets, "getCurrentWidth", "cachedWidth"))
-                .orElseGet(() -> textureSize(colorTextureId.get(), GL11.GL_TEXTURE_WIDTH));
-        int height = renderTargets.flatMap(targets -> readInt(targets, "getCurrentHeight", "cachedHeight"))
-                .orElseGet(() -> textureSize(colorTextureId.get(), GL11.GL_TEXTURE_HEIGHT));
-        if (width <= 0 || height <= 0) {
-            width = Minecraft.getInstance().getWindow().getWidth();
-            height = Minecraft.getInstance().getWindow().getHeight();
-        }
-        return Optional.of(new SkillShaderTarget(
-                framebufferId.get(), colorTextureId.get(), depthTextureId, width, height, true));
+        return createTarget(framebufferId.get(), colorTextureId.get(), depthTextureId, true);
+    }
+
+    private static Optional<SkillShaderTarget> createTarget(int framebuffer, int color, int depth,
+                                                            boolean shaderPackTarget) {
+        // Allocation dimensions must come from the attached images, not a cached viewport.
+        int width = textureSize(color, GL11.GL_TEXTURE_WIDTH);
+        int height = textureSize(color, GL11.GL_TEXTURE_HEIGHT);
+        if (width <= 0 || height <= 0
+                || textureSize(depth, GL11.GL_TEXTURE_WIDTH) != width
+                || textureSize(depth, GL11.GL_TEXTURE_HEIGHT) != height) return Optional.empty();
+        return Optional.of(SuperResolutionCompat.adapt(new SkillShaderTarget(
+                framebuffer, color, depth, width, height, shaderPackTarget)));
     }
 
     private static int textureSize(int textureId, int parameter) {
@@ -238,19 +240,7 @@ public final class OculusFramebufferAccess {
             return Optional.empty();
         }
 
-        int width = readInt(framebuffer, "width", "getWidth")
-                .or(() -> renderTargets.flatMap(targets -> readInt(targets, "getCurrentWidth", "cachedWidth")))
-                .orElse(Minecraft.getInstance().getWindow().getWidth());
-        int height = readInt(framebuffer, "height", "getHeight")
-                .or(() -> renderTargets.flatMap(targets -> readInt(targets, "getCurrentHeight", "cachedHeight")))
-                .orElse(Minecraft.getInstance().getWindow().getHeight());
-        return Optional.of(new SkillShaderTarget(
-                framebufferId.get(),
-                colorTextureId.get(),
-                depthTextureId.get(),
-                width,
-                height,
-                shaderPackTarget));
+        return createTarget(framebufferId.get(), colorTextureId.get(), depthTextureId.get(), shaderPackTarget);
     }
 
     private static boolean canExtractFramebufferId(Object value) {

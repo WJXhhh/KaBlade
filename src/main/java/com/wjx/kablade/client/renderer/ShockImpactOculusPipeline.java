@@ -9,6 +9,7 @@ import com.wjx.kablade.Main;
 import com.wjx.kablade.client.shader.OculusFramebufferAccess;
 import com.wjx.kablade.client.shader.ShaderCompat;
 import com.wjx.kablade.client.shader.SkillShaderTarget;
+import com.wjx.kablade.client.shader.SkillRenderLayout;
 import com.wjx.kablade.entity.ShockImpactEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -147,11 +148,11 @@ public final class ShockImpactOculusPipeline {
             }
             PROGRAM.ensureLoaded();
             POST.ensureLoaded();
-            FRAMEBUFFER.ensureAllocated(target.width(), target.height());
+            FRAMEBUFFER.ensureAllocated(target);
 
             DrawContext context = new DrawContext(
                     new Matrix4f(RenderSystem.getModelViewMatrix()),
-                    new Matrix4f(event.getProjectionMatrix()), shaderGameTime(event.getPartialTick()));
+                    target.layout().privateProjection(event.getProjectionMatrix()), shaderGameTime(event.getPartialTick()));
 
             FRAMEBUFFER.beginEffect(target);
             renderQueued(event, impacts, context, false);
@@ -372,8 +373,12 @@ public final class ShockImpactOculusPipeline {
         private int sceneTexture;
         private int width;
         private int height;
+        private SkillRenderLayout layout;
 
-        private void ensureAllocated(int nextWidth, int nextHeight) {
+        private void ensureAllocated(SkillShaderTarget target) {
+            layout = target.layout();
+            int nextWidth = target.width();
+            int nextHeight = target.height();
             if (geometryFramebuffer == 0) geometryFramebuffer = GL30.glGenFramebuffers();
             if (postFramebuffer == 0) postFramebuffer = GL30.glGenFramebuffers();
             if (effectTexture == 0) effectTexture = GL11.glGenTextures();
@@ -411,7 +416,7 @@ public final class ShockImpactOculusPipeline {
                     GL11.GL_TEXTURE_2D, depthTexture, 0);
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             checkFramebuffer("Shock Impact geometry");
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
             clearColor();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glDepthFunc(GL11.GL_LEQUAL);
@@ -436,9 +441,9 @@ public final class ShockImpactOculusPipeline {
         private void blur(int texture, int passes) {
             for (int i = 0; i < passes; i++) {
                 bindPost(blurTexture);
-                POST.blur(texture, width, height, true);
+                POST.blur(texture, layout, true);
                 bindPost(texture);
-                POST.blur(blurTexture, width, height, false);
+                POST.blur(blurTexture, layout, false);
             }
         }
 
@@ -446,9 +451,9 @@ public final class ShockImpactOculusPipeline {
             copyScene(target);
             GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, target.framebufferId());
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
             POST.composite(sceneTexture, effectTexture, glowTexture,
-                    narrowTexture, wideTexture, width, height);
+                    narrowTexture, wideTexture, layout);
         }
 
         private void copyScene(SkillShaderTarget target) {
@@ -459,8 +464,7 @@ public final class ShockImpactOculusPipeline {
                     GL11.GL_TEXTURE_2D, sceneTexture, 0);
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             checkDrawFramebuffer("Shock Impact scene copy");
-            GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
-                    GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+            layout.copyColor();
         }
 
         private void copyTexture(int source, int destination) {
@@ -473,8 +477,7 @@ public final class ShockImpactOculusPipeline {
                     GL11.GL_TEXTURE_2D, destination, 0);
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             checkDrawFramebuffer("Shock Impact bloom copy");
-            GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
-                    GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+            layout.copyColor();
         }
 
         private void bindPost(int texture) {
@@ -483,7 +486,7 @@ public final class ShockImpactOculusPipeline {
                     GL11.GL_TEXTURE_2D, texture, 0);
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             checkFramebuffer("Shock Impact post");
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
         }
 
         private void allocate(int texture) {
@@ -557,11 +560,11 @@ public final class ShockImpactOculusPipeline {
                 in vec2 vUv;
                 out vec4 fragColor;
                 void main() {
-                    vec4 sum = texture(Source, vUv) * 0.227027;
-                    sum += texture(Source, vUv + TexelStep * 1.384615) * 0.316216;
-                    sum += texture(Source, vUv - TexelStep * 1.384615) * 0.316216;
-                    sum += texture(Source, vUv + TexelStep * 3.230769) * 0.070270;
-                    sum += texture(Source, vUv - TexelStep * 3.230769) * 0.070270;
+                    vec4 sum = sampleRegion(Source, vUv) * 0.227027;
+                    sum += sampleRegion(Source, vUv + TexelStep * 1.384615) * 0.316216;
+                    sum += sampleRegion(Source, vUv - TexelStep * 1.384615) * 0.316216;
+                    sum += sampleRegion(Source, vUv + TexelStep * 3.230769) * 0.070270;
+                    sum += sampleRegion(Source, vUv - TexelStep * 3.230769) * 0.070270;
                     fragColor = sum;
                 }
                 """;
@@ -577,18 +580,18 @@ public final class ShockImpactOculusPipeline {
                 out vec4 fragColor;
                 float powerOf(vec4 c) { return max(c.a, max(max(c.r, c.g), c.b)); }
                 void main() {
-                    vec4 sharp = texture(Glow, vUv);
+                    vec4 sharp = sampleRegion(Glow, vUv);
                     float m = clamp(powerOf(sharp), 0.0, 4.0);
-                    float left = powerOf(texture(Glow, vUv - vec2(TexelSize.x, 0.0)));
-                    float right = powerOf(texture(Glow, vUv + vec2(TexelSize.x, 0.0)));
-                    float down = powerOf(texture(Glow, vUv - vec2(0.0, TexelSize.y)));
-                    float up = powerOf(texture(Glow, vUv + vec2(0.0, TexelSize.y)));
+                    float left = powerOf(sampleRegion(Glow, vUv - vec2(TexelSize.x, 0.0)));
+                    float right = powerOf(sampleRegion(Glow, vUv + vec2(TexelSize.x, 0.0)));
+                    float down = powerOf(sampleRegion(Glow, vUv - vec2(0.0, TexelSize.y)));
+                    float up = powerOf(sampleRegion(Glow, vUv + vec2(0.0, TexelSize.y)));
                     float impact = smoothstep(0.18, 1.10, m);
                     vec2 warp = vec2(right - left, up - down) * TexelSize * 13.0 * 0.16 * impact;
-                    vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
-                    vec3 effect = max(texture(Effect, vUv).rgb, vec3(0.0));
-                    vec3 narrow = max(texture(Narrow, vUv).rgb, vec3(0.0));
-                    vec3 wide = max(texture(Wide, vUv).rgb, vec3(0.0));
+                    vec4 scene = sampleRegion(Scene, clamp(vUv + warp, vec2(0.0), vec2(1.0)));
+                    vec3 effect = max(sampleRegion(Effect, vUv).rgb, vec3(0.0));
+                    vec3 narrow = max(sampleRegion(Narrow, vUv).rgb, vec3(0.0));
+                    vec3 wide = max(sampleRegion(Wide, vUv).rgb, vec3(0.0));
                     float peak = max(max(sharp.r, sharp.g), sharp.b);
                     vec3 hue = peak > 0.0001 ? sharp.rgb / peak : vec3(0.12, 0.82, 1.0);
                     vec3 cyanFloor = vec3(0.05, 0.46, 0.72);
@@ -608,19 +611,21 @@ public final class ShockImpactOculusPipeline {
             if (compositeProgram == 0) compositeProgram = createProgram(COMPOSITE_FRAGMENT);
         }
 
-        private void blur(int source, int width, int height, boolean horizontal) {
+        private void blur(int source, SkillRenderLayout layout, boolean horizontal) {
             beginFullscreen(blurProgram);
+            layout.postUniforms(blurProgram);
             bindTexture(0, source);
             GL20.glUniform1i(GL20.glGetUniformLocation(blurProgram, "Source"), 0);
             GL20.glUniform2f(GL20.glGetUniformLocation(blurProgram, "TexelStep"),
-                    horizontal ? 1.0F / Math.max(1, width) : 0.0F,
-                    horizontal ? 0.0F : 1.0F / Math.max(1, height));
+                    horizontal ? 1.0F / layout.width() : 0.0F,
+                    horizontal ? 0.0F : 1.0F / layout.height());
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
         }
 
         private void composite(int scene, int effect, int glow, int narrow, int wide,
-                               int width, int height) {
+                               SkillRenderLayout layout) {
             beginFullscreen(compositeProgram);
+            layout.postUniforms(compositeProgram);
             bindTexture(0, scene);
             bindTexture(1, effect);
             bindTexture(2, glow);
@@ -632,7 +637,7 @@ public final class ShockImpactOculusPipeline {
             GL20.glUniform1i(GL20.glGetUniformLocation(compositeProgram, "Narrow"), 3);
             GL20.glUniform1i(GL20.glGetUniformLocation(compositeProgram, "Wide"), 4);
             GL20.glUniform2f(GL20.glGetUniformLocation(compositeProgram, "TexelSize"),
-                    1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
+                    1.0F / layout.width(), 1.0F / layout.height());
             GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
         }
 
@@ -652,7 +657,7 @@ public final class ShockImpactOculusPipeline {
 
         private static int createProgram(String fragmentSource) {
             int vertex = GlProgram.compileShader(GL20.GL_VERTEX_SHADER, FULLSCREEN_VERTEX);
-            int fragment = GlProgram.compileShader(GL20.GL_FRAGMENT_SHADER, fragmentSource);
+            int fragment = GlProgram.compileShader(GL20.GL_FRAGMENT_SHADER, SkillRenderLayout.postFragment(fragmentSource));
             int program = GL20.glCreateProgram();
             GL20.glAttachShader(program, vertex);
             GL20.glAttachShader(program, fragment);

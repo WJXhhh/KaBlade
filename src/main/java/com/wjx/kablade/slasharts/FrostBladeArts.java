@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.FrostBladeEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -60,7 +61,7 @@ public final class FrostBladeArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR) * DAMAGE_MULTIPLIER;
+        float damage = SridrCompat.scaleDamage(user, MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR) * DAMAGE_MULTIPLIER);
 
         SaTarget target = findTarget(level, user, blade);
         Vec3 fallbackDirection = target == null

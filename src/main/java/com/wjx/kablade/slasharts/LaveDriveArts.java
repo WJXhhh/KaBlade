@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.entity.FlareEdgeEntity;
 import com.wjx.kablade.util.SaTargeting;
@@ -94,7 +95,7 @@ public final class LaveDriveArts extends SlashArts {
         for (var selected : targets) {
             LivingEntity target = selected.root();
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), level, user, baseAttack);
+                    selected.hitEntity(), level, user, SridrCompat.scaleDamage(user, baseAttack));
             target.invulnerableTime = 0;
             level.sendParticles(ParticleTypes.CRIT,
                     target.getX(), target.getY(0.5), target.getZ(),
@@ -112,6 +113,7 @@ public final class LaveDriveArts extends SlashArts {
         }
 
         // 鈹€鈹€ 鏋勫缓閫愪釜鐢熸垚鐨勯槦鍒楋紙4 鍙戯紝姣?3 tick 鍑轰竴鏍癸級 鈹€鈹€鈹€鈹€鈹€鈹€
+        magicDamage = SridrCompat.scaleDamage(user, magicDamage);
         Vec3 forward = user.getLookAngle();
         Vec3 right = new Vec3(-forward.z, 0, forward.x).normalize();
         double depth = 3.0;

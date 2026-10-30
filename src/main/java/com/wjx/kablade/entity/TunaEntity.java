@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +34,7 @@ public class TunaEntity extends Entity {
     private static final float FINAL_HIT_DAMAGE = 14.0F;
 
     private UUID ownerUUID;
+    private float damageMultiplier = 1.0F;
     private LivingEntity owner;
     private float extraDamage;
 
@@ -47,6 +49,7 @@ public class TunaEntity extends Entity {
         this.owner = owner;
         this.ownerUUID = owner.getUUID();
         this.extraDamage = extraDamage;
+        this.damageMultiplier = SridrCompat.damageMultiplier(owner);
         this.setYRot(owner.getYRot());
     }
 
@@ -108,7 +111,7 @@ public class TunaEntity extends Entity {
                 player.crit(target);
             }
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), level, this, this.owner, damage);
+                    selected.hitEntity(), level, this, this.owner, damage * this.damageMultiplier);
             hurtBladeOnce();
         }
     }
@@ -157,6 +160,7 @@ public class TunaEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
+        this.damageMultiplier = tag.contains("SridrDamageMultiplier") ? tag.getFloat("SridrDamageMultiplier") : 1.0F;
         if (tag.hasUUID("OwnerUUID")) {
             this.ownerUUID = tag.getUUID("OwnerUUID");
         }
@@ -167,6 +171,7 @@ public class TunaEntity extends Entity {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
+        tag.putFloat("SridrDamageMultiplier", this.damageMultiplier);
         if (this.ownerUUID != null) {
             tag.putUUID("OwnerUUID", this.ownerUUID);
         }

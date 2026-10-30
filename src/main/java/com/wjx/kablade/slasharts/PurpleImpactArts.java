@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.PurpleImpactDriveEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -47,7 +48,7 @@ public final class PurpleImpactArts extends SlashArts {
                 .orElse(4.0F);
 
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
-        float totalDamage = BASE_DAMAGE + extraDamage;
+        float totalDamage = SridrCompat.scaleDamage(user, BASE_DAMAGE + extraDamage);
 
         Vec3 lookDir = user.getLookAngle();
         double speed = 0.101F;

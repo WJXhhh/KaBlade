@@ -50,6 +50,15 @@ public final class OculusSkillRenderer {
     public static boolean runPostIfNeeded(Runnable colorRenderer, Runnable maskRenderer,
                                           int blurPasses, float glowStrength,
                                           float distortionStrength, float colorPreservation) {
+        return runTargetPostIfNeeded(target -> colorRenderer.run(), target -> maskRenderer.run(),
+                blurPasses, glowStrength, distortionStrength, colorPreservation);
+    }
+
+    /** Private GL callbacks receive the very same frame mapping used by the compositor. */
+    public static boolean runTargetPostIfNeeded(Consumer<SkillShaderTarget> colorRenderer,
+                                                Consumer<SkillShaderTarget> maskRenderer,
+                                                int blurPasses, float glowStrength,
+                                                float distortionStrength, float colorPreservation) {
         if (postDisabled || RENDERING_PASS.get()) {
             return false;
         }
@@ -105,14 +114,14 @@ public final class OculusSkillRenderer {
         return RENDERING_PASS.get();
     }
 
-    private static void renderColorPass(SkillShaderTarget target, Runnable renderer) {
+    private static void renderColorPass(SkillShaderTarget target, Consumer<SkillShaderTarget> renderer) {
         EFFECT_FRAMEBUFFER.beginColor(target);
-        renderer.run();
+        renderer.accept(target);
     }
 
-    private static void renderMaskPass(SkillShaderTarget target, Runnable renderer) {
+    private static void renderMaskPass(SkillShaderTarget target, Consumer<SkillShaderTarget> renderer) {
         EFFECT_FRAMEBUFFER.beginMask(target);
-        renderer.run();
+        renderer.accept(target);
     }
 
     private static void renderImmediate(Consumer<MultiBufferSource.BufferSource> renderer) {

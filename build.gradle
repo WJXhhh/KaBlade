@@ -27,6 +27,30 @@ base {
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+sourceSets {
+    rendercheck {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+// Pure projection checks run without Minecraft. Opt-in --gl also compiles the real
+// shaders and checks packed-region sampling in a hidden context (no game/visual QA).
+tasks.register('verifySkillRenderCompatibility', JavaExec) {
+    dependsOn rendercheckClasses
+    // Exclude optional game runtime mods: this standalone probe only needs compiled
+    // classes and compile dependencies, and must not resolve/download the dev modpack.
+    classpath = sourceSets.rendercheck.runtimeClasspath
+    mainClass = 'com.wjx.kablade.client.shader.SkillRenderCompatibilityChecks'
+    args projectDir.absolutePath
+    if (project.findProperty('verifySkillGl')?.toString()?.toBoolean() ?: false) {
+        dependsOn 'extractNatives'
+        jvmArgs "-Dorg.lwjgl.librarypath=${layout.buildDirectory.dir('natives').get().asFile.absolutePath}"
+        args '--gl'
+    }
+}
+tasks.named('check').configure { dependsOn 'verifySkillRenderCompatibility' }
+
 // GameTests are loaded only by the dedicated test server, not the release jar or JUnit task.
 sourceSets {
     gametest {

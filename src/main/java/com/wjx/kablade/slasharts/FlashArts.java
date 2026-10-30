@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
 import com.wjx.kablade.util.SaTarget;
@@ -43,7 +44,7 @@ public final class FlashArts extends SlashArts {
         float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = (bladeAttack / 3.0F) * 2.0F + MathFunc.amplifierCalc(bladeAttack, 1.0F);
+        float damage = SridrCompat.scaleDamage(user, (bladeAttack / 3.0F) * 2.0F + MathFunc.amplifierCalc(bladeAttack, 1.0F));
 
         SaTarget selected = resolveTarget(level, user);
         if (selected == null) {

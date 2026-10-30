@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.FengxuanDimensionEntity;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -45,7 +46,7 @@ public final class FengxuanArts extends SlashArts {
         float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = bladeAttack / 3.4F + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO);
+        float damage = SridrCompat.scaleDamage(user, bladeAttack / 3.4F + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO));
 
         FengxuanDimensionEntity.spawn(level, user, pos, damage, COLOR, 50);
 

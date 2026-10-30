@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.WindEnchantmentEntity;
 import com.wjx.kablade.util.SaTargeting;
 import com.wjx.kablade.util.SaTarget;
@@ -95,12 +96,13 @@ public final class WindEnchantmentArts extends SlashArts {
         if (target != null && !SaTargeting.canDamageAttackable(player, target)) {
             return super.doArts(type, user);
         }
+        final float extraDamage = SridrCompat.scaleDamage(user, EXTRA_DAMAGE);
         if (target != null) {
             blade.getItem().hurtEnemy(blade, target, player);
             player.crit(target);
             // 绗簩娈碉細棰濆浼ゅ
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), level, player, player, EXTRA_DAMAGE);
+                    selected.hitEntity(), level, player, player, extraDamage);
         }
 
         for (int i = 0; i < SMOKE_PARTICLES; i++) {

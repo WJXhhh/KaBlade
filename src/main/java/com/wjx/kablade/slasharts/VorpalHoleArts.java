@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.VorpalBlackHoleEntity;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -41,14 +42,14 @@ public final class VorpalHoleArts extends SlashArts {
         float bladeAttack = bladeAttack(user);
         Vec3 look = SaFx.flatLook(user);
         Vec3 origin = user.position().add(look.scale(2.35)).add(0.0, 1.35, 0.0);
-        float openingDamage = bladeAttack * OPENING_DAMAGE_RATIO * DAMAGE_MULTIPLIER;
-        float pulseDamage = bladeAttack * PULSE_DAMAGE_RATIO * DAMAGE_MULTIPLIER;
+        float openingDamage = SridrCompat.scaleDamage(user, bladeAttack * OPENING_DAMAGE_RATIO * DAMAGE_MULTIPLIER);
+        float pulseDamage = SridrCompat.scaleDamage(user, bladeAttack * PULSE_DAMAGE_RATIO * DAMAGE_MULTIPLIER);
 
         VorpalBlackHoleEntity.spawn(level, user, origin, LIFETIME,
                 openingDamage,
                 pulseDamage);
         openingFx(level, origin);
-        spawnCutLines(level, user, origin, look, openingDamage);
+        spawnCutLines(level, user, origin, look, bladeAttack * OPENING_DAMAGE_RATIO * DAMAGE_MULTIPLIER);
 
         return super.doArts(type, user);
     }

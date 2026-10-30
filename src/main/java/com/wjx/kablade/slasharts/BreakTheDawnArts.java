@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.DawnCrescentEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -75,8 +76,9 @@ public final class BreakTheDawnArts extends SlashArts {
                 .orElse(4.0F);
 
         final float driveDamage = DRIVE_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
-        final float swordDamage = SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
-        final float finaleDamage = AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO);
+        final float swordDamage = SridrCompat.scaleDamage(user, SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO));
+        final float crescentDamage = SridrCompat.scaleDamage(user, driveDamage);
+        final float finaleDamage = SridrCompat.scaleDamage(user, AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO));
 
         // 鈹€鈹€ t=0锛氱牬鏅擄紙鍚戝墠钃勫娍锛夆攢鈹€
         if (user instanceof Player player) {
@@ -106,7 +108,7 @@ public final class BreakTheDawnArts extends SlashArts {
         // 鈹€鈹€ t=5锛氬墠鍚戝姬鍏夋í鎵?鈹€鈹€
         SaFx.schedule(level, 5, () -> {
             if (!user.isAlive()) return;
-            arcSweep(level, user, driveDamage);
+            arcSweep(level, user, driveDamage, crescentDamage);
             level.playSound(null, user.getX(), user.getY(), user.getZ(),
                     SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.2F, 1.5F);
         });
@@ -122,7 +124,7 @@ public final class BreakTheDawnArts extends SlashArts {
         // 鈹€鈹€ t=15锛氬悜鍓嶈绌虹牬鏅撴柀 + 鍓嶆柟寮曠垎 鈹€鈹€
         SaFx.schedule(level, 15, () -> {
             if (!user.isAlive()) return;
-            daybreakFinale(level, user, finaleDamage, driveDamage);
+            daybreakFinale(level, user, finaleDamage, crescentDamage);
         });
 
         return super.doArts(type, user);
@@ -149,7 +151,7 @@ public final class BreakTheDawnArts extends SlashArts {
     }
 
     /** 涓€閬撳墠鍚戝姬鍏夛細涓夊集閲戣壊寮ф湀锛堟嫑鐗岋級鎵囧舰椋炲嚭锛岃緟浠ョ粏閲戦鏂╁～鍏呫€?*/
-    private static void arcSweep(ServerLevel level, LivingEntity user, float damage) {
+    private static void arcSweep(ServerLevel level, LivingEntity user, float damage, float crescentDamage) {
         Vec3 eye = user.getEyePosition(1.0F);
         Vec3 look = user.getLookAngle();
         // 鎷涚墝锛氫笁寮姬鏈堝憟鎵囧舰鍚戝墠椋炴帬锛堟湞鍚戝悇鑷殑椋炶鏂瑰悜锛屾湀闈㈡湞鍓嶏級
@@ -157,7 +159,7 @@ public final class BreakTheDawnArts extends SlashArts {
         for (int k = -1; k <= 1; k++) {
             float yaw = baseYaw + k * 20.0F;
             DawnCrescentEntity.spawn(level, eye.x, eye.y, eye.z, yaw, SaFx.yawDir(yaw, 0.9),
-                    1.0F, 16, GOLD, user, damage);
+                    1.0F, 16, GOLD, user, crescentDamage);
         }
         // 缁嗛噾椋炴柀濉厖鎵囬潰
         for (int i = 0; i < ARC_DRIVES; i++) {

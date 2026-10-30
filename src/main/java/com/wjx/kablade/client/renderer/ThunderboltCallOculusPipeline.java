@@ -128,7 +128,7 @@ public final class ThunderboltCallOculusPipeline {
             bindTarget(target);
             DrawContext context = new DrawContext(
                     new Matrix4f(RenderSystem.getModelViewMatrix()),
-                    new Matrix4f(event.getProjectionMatrix()),
+                    target.layout().privateProjection(event.getProjectionMatrix()),
                     shaderGameTime(event.getPartialTick()));
             renderQueued(event, casts, context);
 
@@ -167,7 +167,7 @@ public final class ThunderboltCallOculusPipeline {
             throw new IllegalStateException("Kablade lightning Oculus framebuffer incomplete: 0x"
                     + Integer.toHexString(status));
         }
-        GL11.glViewport(0, 0, target.width(), target.height());
+        target.layout().viewport();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
         GL11.glDepthMask(false);

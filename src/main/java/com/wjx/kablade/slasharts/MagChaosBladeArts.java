@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.network.KabladeNetwork;
@@ -68,16 +69,17 @@ public final class MagChaosBladeArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
+        float damageMultiplier = SridrCompat.damageMultiplier(user);
 
         broadcastFx(user);
         spawnReleaseParticles(level, user);
-        boolean hit = sweepVolume(level, user, IMMEDIATE_DAMAGE + extraDamage);
+        boolean hit = sweepVolume(level, user, (IMMEDIATE_DAMAGE + extraDamage) * damageMultiplier);
         if (hit) {
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
         }
 
         long dueTick = level.getServer().getTickCount() + DELAY_TICKS;
-        PendingAttack attack = new PendingAttack(level.dimension(), user.getUUID(), dueTick, extraDamage);
+        PendingAttack attack = new PendingAttack(level.dimension(), user.getUUID(), dueTick, (DELAYED_DAMAGE + extraDamage) * damageMultiplier);
         PENDING_ATTACKS.put(new PendingKey(user.getUUID(), dueTick), attack);
 
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
@@ -112,7 +114,7 @@ public final class MagChaosBladeArts extends SlashArts {
 
             broadcastFx(user);
             spawnReleaseParticles(level, user);
-            boolean hit = rayStrike(level, user, DELAYED_DAMAGE + attack.extraDamage());
+            boolean hit = rayStrike(level, user, attack.damage());
             if (hit) {
                 user.getMainHandItem().hurtAndBreak(1, user,
                         e -> e.broadcastBreakEvent(user.getUsedItemHand()));
@@ -217,6 +219,6 @@ public final class MagChaosBladeArts extends SlashArts {
     }
 
     private record PendingAttack(ResourceKey<Level> dimension, UUID ownerUuid, long dueTick,
-                                 float extraDamage) {
+                                 float damage) {
     }
 }

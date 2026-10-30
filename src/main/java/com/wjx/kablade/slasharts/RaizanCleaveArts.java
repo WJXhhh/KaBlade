@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.RaizanCleaveEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -59,8 +60,8 @@ public final class RaizanCleaveArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float totalDamage = (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
-                * THUNDER_EDGE_MULTIPLIER * RAIZAN_MULTIPLIER;
+        float totalDamage = SridrCompat.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
+                * THUNDER_EDGE_MULTIPLIER * RAIZAN_MULTIPLIER);
 
         if (RaizanCleaveEntity.spawn(level, user, origin, targetAnchor, yaw, totalDamage) == null) {
             return super.doArts(type, user);

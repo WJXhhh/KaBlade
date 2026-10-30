@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -46,7 +47,7 @@ public class RainUmbrellaEntity extends Entity {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float extraDamage = MathFunc.amplifierCalc(baseAttack, 1.25F);
-        RainUmbrellaEntity entity = new RainUmbrellaEntity(level, owner, (2.0F + extraDamage) / 3.0F);
+        RainUmbrellaEntity entity = new RainUmbrellaEntity(level, owner, SridrCompat.scaleDamage(owner, (2.0F + extraDamage) / 3.0F));
         entity.setPos(x, y, z);
         level.addFreshEntity(entity);
         return entity;

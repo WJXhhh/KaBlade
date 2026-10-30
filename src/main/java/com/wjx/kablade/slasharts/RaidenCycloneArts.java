@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.init.ModMobEffects;
@@ -87,7 +88,7 @@ public final class RaidenCycloneArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float extra = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
-        float totalDamage = DAMAGE_MULTIPLIER * 1.35F * (60.0F + 2.0F * extra);
+        float totalDamage = SridrCompat.scaleDamage(user, DAMAGE_MULTIPLIER * 1.35F * (60.0F + 2.0F * extra));
 
         long now = level.getServer().getTickCount();
         long castId = NEXT_CAST_ID.getAndIncrement();

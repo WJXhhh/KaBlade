@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.BloodfyreFrenzyEntity;
 import com.wjx.kablade.specialeffect.FuelTheRuin;
 import com.wjx.kablade.util.MathFunc;
@@ -37,8 +38,8 @@ public final class BloodfyreFrenzyArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
-                * DAMAGE_MULTIPLIER;
+        float damage = SridrCompat.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
+                * DAMAGE_MULTIPLIER);
 
         BloodfyreFrenzyEntity.spawn(level, user, damage);
         if (user instanceof net.minecraft.world.entity.player.Player player) {

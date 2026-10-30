@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -80,7 +81,7 @@ public final class OverSlashArts extends SlashArts {
         var targets = SaTargeting.uniqueTargets(level, user, box);
         for (var selected : targets) {
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), level, user, magicDamage);
+                    selected.hitEntity(), level, user, SridrCompat.scaleDamage(user, magicDamage));
         }
         // 鏆村嚮鏁堟灉锛堢矑瀛愮敱瀹㈡埛绔鐞嗭級
 

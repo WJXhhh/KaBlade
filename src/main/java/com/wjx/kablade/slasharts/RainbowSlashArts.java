@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -40,7 +41,7 @@ public final class RainbowSlashArts extends SlashArts {
         final ServerLevel level = (ServerLevel) user.level();
         final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F);
-        final float damage = DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO);
+        final float damage = SridrCompat.scaleDamage(user, DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO));
 
         // 出生点：眼前一格（贴合 1.12.2 EntityDriveAdd 默认定位），统一朝向玩家视线
         final Vec3 look = user.getLookAngle();

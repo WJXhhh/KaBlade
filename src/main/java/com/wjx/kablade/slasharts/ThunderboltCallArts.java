@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.ThunderboltCallEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -52,8 +53,8 @@ public final class ThunderboltCallArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float totalDamage = (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
-                * DAMAGE_MULTIPLIER;
+        float totalDamage = SridrCompat.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
+                * DAMAGE_MULTIPLIER);
 
         if (ThunderboltCallEntity.spawn(level, user,
                 target == null ? null : target.hitEntity(), targetAnchor,

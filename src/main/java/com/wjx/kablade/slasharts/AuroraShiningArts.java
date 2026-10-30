@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.AuroraVeilEntity;
 import com.wjx.kablade.event.AuroraColorCycling;
 import com.wjx.kablade.util.MathFunc;
@@ -80,8 +81,9 @@ public final class AuroraShiningArts extends SlashArts {
                 .orElse(4.0F);
 
         final float driveDamage = DRIVE_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
-        final float swordDamage = SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
-        final float bypassDamage = AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO);
+        final float swordDamage = SridrCompat.scaleDamage(user, SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO));
+        final float veilDamage = SridrCompat.scaleDamage(user, driveDamage);
+        final float bypassDamage = SridrCompat.scaleDamage(user, AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO));
 
         // 鈹€鈹€ t=0锛氳搫鍔涳紙涓嶆斁鎷涳紝鍚戝墠钃勫娍锛夆攢鈹€
         if (user instanceof Player player) {
@@ -110,7 +112,7 @@ public final class AuroraShiningArts extends SlashArts {
         // 鈹€鈹€ t=6锛氭瀬鍏夊垉娲祦鍚戝墠鍠峰皠 鈹€鈹€
         SaFx.schedule(level, 6, () -> {
             if (!user.isAlive()) return;
-            auroraStorm(level, user, rng, driveDamage);
+            auroraStorm(level, user, rng, driveDamage, veilDamage);
             level.playSound(null, user.getX(), user.getY(), user.getZ(),
                     SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.3F, 1.4F);
         });
@@ -126,7 +128,7 @@ public final class AuroraShiningArts extends SlashArts {
         // 鈹€鈹€ t=18锛氬悜鍓嶈绌烘瀬鍏夋柀 + 鍓嶆柟寮曠垎 鈹€鈹€
         SaFx.schedule(level, 18, () -> {
             if (!user.isAlive()) return;
-            auroraFinale(level, user, rng, bypassDamage, driveDamage);
+            auroraFinale(level, user, rng, bypassDamage, veilDamage);
         });
 
         return super.doArts(type, user);
@@ -156,7 +158,7 @@ public final class AuroraShiningArts extends SlashArts {
     }
 
     /** 鏋佸厜鍒冩椽娴侊細16 閬撻鏂╂湞瑙嗙嚎鍛堥敟褰㈠悜鍓嶅柗灏勩€?*/
-    private static void auroraStorm(ServerLevel level, LivingEntity user, RandomSource rng, float damage) {
+    private static void auroraStorm(ServerLevel level, LivingEntity user, RandomSource rng, float damage, float veilDamage) {
         Vec3 eye = user.getEyePosition(1.0F);
         Vec3 look = user.getLookAngle();
         for (int i = 0; i < STORM_DRIVES; i++) {
@@ -173,7 +175,7 @@ public final class AuroraShiningArts extends SlashArts {
         for (int k = -1; k <= 1; k++) {
             Vec3 off = perp.scale(k * 2.0);
             AuroraVeilEntity.spawn(level, user.getX() + off.x, user.getY() + 0.2, user.getZ() + off.z,
-                    user.getYRot(), vel, 1.0F, 26, rng.nextInt(), user, damage);
+                    user.getYRot(), vel, 1.0F, 26, rng.nextInt(), user, veilDamage);
         }
         for (int i = 0; i < 24; i++) {
             level.sendParticles(auroraDust(rng, 1.2F), eye.x, eye.y, eye.z, 0,

@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.JizoMitamaSoulEntity;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -31,9 +32,9 @@ public final class SoulAppearanceArts extends SlashArts {
         float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = (BASE_DAMAGE
+        float damage = SridrCompat.scaleDamage(user, (BASE_DAMAGE
                 + (float) MathFunc.amplifierCalc(bladeAttack, EXTRA_DAMAGE_FACTOR))
-                * DAMAGE_MULTIPLIER;
+                * DAMAGE_MULTIPLIER);
         JizoMitamaSoulEntity.spawn((ServerLevel) user.level(), user, damage);
         return super.doArts(type, user);
     }

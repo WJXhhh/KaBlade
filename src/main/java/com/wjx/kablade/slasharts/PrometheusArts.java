@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.init.KabladeCapabilities;
@@ -38,6 +39,7 @@ public final class PrometheusArts extends SlashArts {
 
     public static final String PROP_KEY = "prometheus";
     public static final int BUFF_DURATION_TICKS = 200;
+    private static final String MULTIPLIER_KEY = "kablade:prometheus_sridr_multiplier";
 
     private static final float EXTRA_DAMAGE_BASE = 8.0F;
     private static final float ATTACK_FACTOR = 1.5F;
@@ -54,6 +56,7 @@ public final class PrometheusArts extends SlashArts {
         }
 
         if (user instanceof Player player) {
+            player.getPersistentData().putFloat(MULTIPLIER_KEY, SridrCompat.damageMultiplier(user));
             player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
                     .ifPresent(cap -> cap.set(PROP_KEY, BUFF_DURATION_TICKS));
         }
@@ -144,7 +147,9 @@ public final class PrometheusArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(12.0F);
 
-        float extra = EXTRA_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
+        float extra = (EXTRA_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
+                * (player.getPersistentData().contains(MULTIPLIER_KEY)
+                ? player.getPersistentData().getFloat(MULTIPLIER_KEY) : 1.0F);
         boolean isBurning = victim.isOnFire() || victim.getRemainingFireTicks() > 0;
         if (isBurning) {
             extra *= BURNING_FACTOR;

@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.entity.ExSlashDriveEntity;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -37,7 +38,7 @@ public final class YuqiArts extends SlashArts {
 
         final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F);
-        final float damage = DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO);
+        final float damage = SridrCompat.scaleDamage(user, DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO));
 
         final Vec3 eye = user.getEyePosition(1.0F);
         final Vec3 look = user.getLookAngle();

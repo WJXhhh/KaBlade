@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.ConfinementForceFieldEntity;
 import com.wjx.kablade.entity.OriginFreeSwordEntity;
 import com.wjx.kablade.specialeffect.Oripursuit;
@@ -83,7 +84,7 @@ public final class DomainSuppressionArts extends SlashArts {
                     .ifPresent(state -> state.setTargetEntityId(selected.hitEntity()));
         }
 
-        float extraDamage = MathFunc.amplifierCalc(bladeAttack, 3.0F);
+        final float innerDamage = SridrCompat.scaleDamage(user, INNER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 3.0F));
 
         // 目标上浮
         target.setDeltaMovement(target.getDeltaMovement().add(0, 0.5, 0));
@@ -94,8 +95,8 @@ public final class DomainSuppressionArts extends SlashArts {
         final double groundY = selected.anchor().y;
         final double midY = selected.anchor().y;
         final double topY = selected.anchor().y + 1.0;
-        final float outerDamage = OUTER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F);
-        final float freeDamage = GROUND_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F);
+        final float outerDamage = SridrCompat.scaleDamage(user, OUTER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F));
+        final float freeDamage = SridrCompat.scaleDamage(user, GROUND_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F));
 
         ConfinementForceFieldEntity field = new ConfinementForceFieldEntity(level, user);
         field.setPos(tx, groundY, tz);
@@ -112,7 +113,7 @@ public final class DomainSuppressionArts extends SlashArts {
             if (!target.isAlive()) {
                 return;
             }
-            spawnSwordCircle(level, user, tx, topY, tz, 2.0, 6, INNER_DAMAGE_BASE + extraDamage, 0);
+            spawnSwordCircle(level, user, tx, topY, tz, 2.0, 6, innerDamage, 0);
             spawnDomainPulse(level, tx, midY, tz, 2.2, 16, 30.0F);
             level.sendParticles(ParticleTypes.ENCHANTED_HIT, tx, midY, tz, 14, 0.4, 0.7, 0.4, 0.03);
             level.playSound(null, tx, midY, tz, SoundEvents.ALLAY_HURT, SoundSource.PLAYERS, 0.85F, 0.55F);

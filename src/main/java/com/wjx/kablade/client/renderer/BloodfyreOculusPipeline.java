@@ -10,6 +10,7 @@ import com.wjx.kablade.client.shader.OculusFramebufferAccess;
 import com.wjx.kablade.client.shader.ShaderCompat;
 import com.wjx.kablade.client.shader.SkillPostShaders;
 import com.wjx.kablade.client.shader.SkillShaderTarget;
+import com.wjx.kablade.client.shader.SkillRenderLayout;
 import com.wjx.kablade.entity.BloodfyreFrenzyEntity;
 import com.wjx.kablade.entity.ConceptualMetaphorEntity;
 import com.wjx.kablade.entity.SwordEnlightenmentEntity;
@@ -183,10 +184,10 @@ public final class BloodfyreOculusPipeline {
             float gameTime = shaderGameTime(event.getPartialTick());
             DrawContext context = new DrawContext(
                     new Matrix4f(RenderSystem.getModelViewMatrix()),
-                    new Matrix4f(event.getProjectionMatrix()), gameTime);
+                    target.layout().privateProjection(event.getProjectionMatrix()), gameTime);
 
             if (!effects.isEmpty()) {
-                FRAMEBUFFER.ensureAllocated(target.width(), target.height());
+                FRAMEBUFFER.ensureAllocated(target);
                 FRAMEBUFFER.beginEffect(target);
                 renderQueued(event, effects, context, false);
                 FRAMEBUFFER.beginMask(target);
@@ -195,7 +196,7 @@ public final class BloodfyreOculusPipeline {
             }
 
             if (!utpalaEffects.isEmpty() || !swordEffects.isEmpty()) {
-                HONKAI_FRAMEBUFFER.ensureAllocated(target.width(), target.height());
+                HONKAI_FRAMEBUFFER.ensureAllocated(target);
                 HONKAI_FRAMEBUFFER.beginEffect(target);
                 renderHonkaiQueued(event, utpalaEffects, swordEffects, context, false);
                 HONKAI_FRAMEBUFFER.beginMask(target);
@@ -586,12 +587,16 @@ public final class BloodfyreOculusPipeline {
         private int sceneTexture;
         private int width;
         private int height;
+        private SkillRenderLayout layout;
 
         private BloodfyreFramebuffer(boolean honkaiComposite) {
             this.honkaiComposite = honkaiComposite;
         }
 
-        private void ensureAllocated(int nextWidth, int nextHeight) {
+        private void ensureAllocated(SkillShaderTarget target) {
+            layout = target.layout();
+            int nextWidth = target.width();
+            int nextHeight = target.height();
             if (effectFramebuffer == 0) effectFramebuffer = GL30.glGenFramebuffers();
             if (copyFramebuffer == 0) copyFramebuffer = GL30.glGenFramebuffers();
             if (effectTexture == 0) effectTexture = GL11.glGenTextures();
@@ -631,7 +636,7 @@ public final class BloodfyreOculusPipeline {
                     GL11.GL_TEXTURE_2D, depthTexture, 0);
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             checkFramebuffer("Bloodfyre effect");
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
         }
 
         private void prepareGeometryState() {
@@ -653,13 +658,13 @@ public final class BloodfyreOculusPipeline {
             int bloomTexture = blurMask();
             GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, target.framebufferId());
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
             if (honkaiComposite) {
                 SkillPostShaders.compositeHonkai(
-                        sceneTexture, effectTexture, bloomTexture, width, height);
+                        sceneTexture, effectTexture, bloomTexture, layout);
             } else {
                 SkillPostShaders.compositeBloodfyre(
-                        sceneTexture, effectTexture, maskTexture, bloomTexture, width, height);
+                        sceneTexture, effectTexture, maskTexture, bloomTexture, layout);
             }
         }
 
@@ -671,17 +676,16 @@ public final class BloodfyreOculusPipeline {
                     GL11.GL_TEXTURE_2D, sceneTexture, 0);
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             checkDrawFramebuffer("Bloodfyre scene copy");
-            GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
-                    GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+            layout.copyColor();
         }
 
         private int blurMask() {
             int source = maskTexture;
             for (int i = 0; i < BLOOM_BLUR_PASSES; i++) {
                 bindPostTarget(blurTextureA);
-                SkillPostShaders.blurBloodfyre(source, width, height, true);
+                SkillPostShaders.blurBloodfyre(source, layout, true);
                 bindPostTarget(blurTextureB);
-                SkillPostShaders.blurBloodfyre(blurTextureA, width, height, false);
+                SkillPostShaders.blurBloodfyre(blurTextureA, layout, false);
                 source = blurTextureB;
             }
             return source;
@@ -693,7 +697,7 @@ public final class BloodfyreOculusPipeline {
                     GL11.GL_TEXTURE_2D, texture, 0);
             GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
             checkFramebuffer("Bloodfyre post");
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
         }
 
         private void allocate(int texture) {

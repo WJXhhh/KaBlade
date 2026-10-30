@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.FallingPetalsMarkPacket;
 import com.wjx.kablade.network.KabladeNetwork;
@@ -76,7 +77,7 @@ public final class FallingPetalsArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
+        float damage = SridrCompat.scaleDamage(user, BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR));
         LivingEntity marked = damageLine(level, user, damage);
         if (marked != null) {
             markTarget(level, marked);

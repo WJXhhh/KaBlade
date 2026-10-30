@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.CutMetalRingEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -66,6 +67,7 @@ public final class CutMetalArts extends SlashArts {
         var targets = SaTargeting.uniqueTargets(level, user, bb);
 
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
+        final float damageMultiplier = SridrCompat.damageMultiplier(user);
 
         for (var selected : targets) {
             LivingEntity target = selected.root();
@@ -73,14 +75,14 @@ public final class CutMetalArts extends SlashArts {
             target.level().playSound(null, target.getX(), target.getY(), target.getZ(),
                     SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, 1.0F, 1.0F);
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), level, user, BASE_DAMAGE + extraDamage);
+                    selected.hitEntity(), level, user, (BASE_DAMAGE + extraDamage) * damageMultiplier);
             blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
 
             // 鎶ょ敳杩藉姞浼ゅ
             double armor = target.getAttribute(Attributes.ARMOR).getValue();
             if (armor > 0) {
                 com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                        selected.hitEntity(), level, user, (float) (armor * ARMOR_RATIO));
+                        selected.hitEntity(), level, user, (float) (armor * ARMOR_RATIO) * damageMultiplier);
                 blade.hurtAndBreak(1, user, e -> e.broadcastBreakEvent(user.getUsedItemHand()));
             }
 

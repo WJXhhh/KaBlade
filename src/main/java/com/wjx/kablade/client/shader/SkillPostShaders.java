@@ -39,11 +39,11 @@ public final class SkillPostShaders {
             out vec4 fragColor;
 
             void main() {
-                vec4 sum = texture(Source, vUv) * 0.227027;
-                sum += texture(Source, vUv + TexelStep * 1.384615) * 0.316216;
-                sum += texture(Source, vUv - TexelStep * 1.384615) * 0.316216;
-                sum += texture(Source, vUv + TexelStep * 3.230769) * 0.070270;
-                sum += texture(Source, vUv - TexelStep * 3.230769) * 0.070270;
+                vec4 sum = sampleRegion(Source, vUv) * 0.227027;
+                sum += sampleRegion(Source, vUv + TexelStep * 1.384615) * 0.316216;
+                sum += sampleRegion(Source, vUv - TexelStep * 1.384615) * 0.316216;
+                sum += sampleRegion(Source, vUv + TexelStep * 3.230769) * 0.070270;
+                sum += sampleRegion(Source, vUv - TexelStep * 3.230769) * 0.070270;
                 fragColor = sum;
             }
             """;
@@ -66,15 +66,15 @@ public final class SkillPostShaders {
             }
 
             void main() {
-                vec4 mask = texture(Mask, vUv);
+                vec4 mask = sampleRegion(Mask, vUv);
                 float m = clamp(maskPower(mask), 0.0, 1.0);
-                float left = maskPower(texture(Mask, vUv - vec2(TexelSize.x, 0.0)));
-                float right = maskPower(texture(Mask, vUv + vec2(TexelSize.x, 0.0)));
-                float down = maskPower(texture(Mask, vUv - vec2(0.0, TexelSize.y)));
-                float up = maskPower(texture(Mask, vUv + vec2(0.0, TexelSize.y)));
+                float left = maskPower(sampleRegion(Mask, vUv - vec2(TexelSize.x, 0.0)));
+                float right = maskPower(sampleRegion(Mask, vUv + vec2(TexelSize.x, 0.0)));
+                float down = maskPower(sampleRegion(Mask, vUv - vec2(0.0, TexelSize.y)));
+                float up = maskPower(sampleRegion(Mask, vUv + vec2(0.0, TexelSize.y)));
                 vec2 warp = vec2(right - left, up - down) * DistortionStrength * TexelSize * 28.0;
 
-                vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
+                vec4 scene = sampleRegion(Scene, clamp(vUv + warp, vec2(0.0), vec2(1.0)));
                 float colorPeak = max(mask.r, max(mask.g, mask.b));
                 vec3 chromaticGlow = colorPeak > 0.00001
                         ? (mask.rgb / colorPeak) * m
@@ -106,19 +106,19 @@ public final class SkillPostShaders {
             }
 
             void main() {
-                vec4 rawGlow = texture(Glow, vUv);
-                vec4 bloomSample = texture(Bloom, vUv);
+                vec4 rawGlow = sampleRegion(Glow, vUv);
+                vec4 bloomSample = sampleRegion(Bloom, vUv);
                 vec3 bloomRgb = max(bloomSample.rgb, vec3(0.0));
                 float m = clamp(glowPower(bloomSample), 0.0, 6.0);
-                float left = glowPower(texture(Bloom, vUv - vec2(TexelSize.x, 0.0)));
-                float right = glowPower(texture(Bloom, vUv + vec2(TexelSize.x, 0.0)));
-                float down = glowPower(texture(Bloom, vUv - vec2(0.0, TexelSize.y)));
-                float up = glowPower(texture(Bloom, vUv + vec2(0.0, TexelSize.y)));
+                float left = glowPower(sampleRegion(Bloom, vUv - vec2(TexelSize.x, 0.0)));
+                float right = glowPower(sampleRegion(Bloom, vUv + vec2(TexelSize.x, 0.0)));
+                float down = glowPower(sampleRegion(Bloom, vUv - vec2(0.0, TexelSize.y)));
+                float up = glowPower(sampleRegion(Bloom, vUv + vec2(0.0, TexelSize.y)));
                 vec2 warp = vec2(right - left, up - down)
                         * DistortionStrength * TexelSize * 18.0;
 
-                vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
-                vec4 effect = texture(Effect, vUv);
+                vec4 scene = sampleRegion(Scene, clamp(vUv + warp, vec2(0.0), vec2(1.0)));
+                vec4 effect = sampleRegion(Effect, vUv);
 
                 // Saturate only where the blurred emissive mask is present. Dark smoke and the
                 // charred blade body therefore retain their contrast instead of turning red.
@@ -172,18 +172,18 @@ public final class SkillPostShaders {
             }
 
             void main() {
-                vec4 bloomSample = texture(Bloom, vUv);
+                vec4 bloomSample = sampleRegion(Bloom, vUv);
                 float m = clamp(powerOf(bloomSample), 0.0, 5.0);
-                float left = powerOf(texture(Bloom, vUv - vec2(TexelSize.x, 0.0)));
-                float right = powerOf(texture(Bloom, vUv + vec2(TexelSize.x, 0.0)));
-                float down = powerOf(texture(Bloom, vUv - vec2(0.0, TexelSize.y)));
-                float up = powerOf(texture(Bloom, vUv + vec2(0.0, TexelSize.y)));
+                float left = powerOf(sampleRegion(Bloom, vUv - vec2(TexelSize.x, 0.0)));
+                float right = powerOf(sampleRegion(Bloom, vUv + vec2(TexelSize.x, 0.0)));
+                float down = powerOf(sampleRegion(Bloom, vUv - vec2(0.0, TexelSize.y)));
+                float up = powerOf(sampleRegion(Bloom, vUv + vec2(0.0, TexelSize.y)));
                 vec2 warp = vec2(right - left, up - down)
                     * DistortionStrength * TexelSize * 15.0;
 
-                vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
-                vec4 effect = texture(Effect, vUv);
-                vec4 rawGlow = texture(Glow, vUv);
+                vec4 scene = sampleRegion(Scene, clamp(vUv + warp, vec2(0.0), vec2(1.0)));
+                vec4 effect = sampleRegion(Effect, vUv);
+                vec4 rawGlow = sampleRegion(Glow, vUv);
                 float coverage = clamp(effect.a, 0.0, 1.0);
                 vec3 base = scene.rgb * (1.0 - coverage) + max(effect.rgb, vec3(0.0));
 
@@ -220,17 +220,17 @@ public final class SkillPostShaders {
             }
 
             void main() {
-                vec4 bloomSample = texture(Bloom, vUv);
+                vec4 bloomSample = sampleRegion(Bloom, vUv);
                 float m = clamp(powerOf(bloomSample), 0.0, 5.0);
-                float left = powerOf(texture(Bloom, vUv - vec2(TexelSize.x, 0.0)));
-                float right = powerOf(texture(Bloom, vUv + vec2(TexelSize.x, 0.0)));
-                float down = powerOf(texture(Bloom, vUv - vec2(0.0, TexelSize.y)));
-                float up = powerOf(texture(Bloom, vUv + vec2(0.0, TexelSize.y)));
+                float left = powerOf(sampleRegion(Bloom, vUv - vec2(TexelSize.x, 0.0)));
+                float right = powerOf(sampleRegion(Bloom, vUv + vec2(TexelSize.x, 0.0)));
+                float down = powerOf(sampleRegion(Bloom, vUv - vec2(0.0, TexelSize.y)));
+                float up = powerOf(sampleRegion(Bloom, vUv + vec2(0.0, TexelSize.y)));
                 vec2 warp = vec2(right - left, up - down)
                         * DistortionStrength * TexelSize * 14.0;
 
-                vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
-                vec4 effect = texture(Effect, vUv);
+                vec4 scene = sampleRegion(Scene, clamp(vUv + warp, vec2(0.0), vec2(1.0)));
+                vec4 effect = sampleRegion(Effect, vUv);
                 float coverage = clamp(effect.a, 0.0, 1.0);
                 vec3 base = scene.rgb * (1.0 - coverage) + max(effect.rgb, vec3(0.0));
 
@@ -272,24 +272,24 @@ public final class SkillPostShaders {
             }
 
             void main() {
-                vec4 bloomSample = texture(Bloom, vUv);
+                vec4 bloomSample = sampleRegion(Bloom, vUv);
                 float m = clamp(powerOf(bloomSample), 0.0, 6.0);
-                float left = powerOf(texture(Bloom, vUv - vec2(TexelSize.x, 0.0)));
-                float right = powerOf(texture(Bloom, vUv + vec2(TexelSize.x, 0.0)));
-                float down = powerOf(texture(Bloom, vUv - vec2(0.0, TexelSize.y)));
-                float up = powerOf(texture(Bloom, vUv + vec2(0.0, TexelSize.y)));
+                float left = powerOf(sampleRegion(Bloom, vUv - vec2(TexelSize.x, 0.0)));
+                float right = powerOf(sampleRegion(Bloom, vUv + vec2(TexelSize.x, 0.0)));
+                float down = powerOf(sampleRegion(Bloom, vUv - vec2(0.0, TexelSize.y)));
+                float up = powerOf(sampleRegion(Bloom, vUv + vec2(0.0, TexelSize.y)));
                 vec2 gradient = vec2(right - left, up - down);
                 vec2 warp = gradient * DistortionStrength * TexelSize * 13.0;
 
-                vec4 scene = texture(Scene, clamp(vUv + warp, vec2(0.001), vec2(0.999)));
-                vec4 effect = texture(Effect, vUv);
+                vec4 scene = sampleRegion(Scene, clamp(vUv + warp, vec2(0.0), vec2(1.0)));
+                vec4 effect = sampleRegion(Effect, vUv);
                 float energy = 1.0 - exp(-m * 1.35);
 
                 // The split is sampled only inside the Raizan mask and never exceeds 1.5 px.
                 vec2 split = normalize(gradient + vec2(0.0001)) * TexelSize
                         * min(1.5, ChromaticStrength * energy * 1.5);
-                vec4 effectR = texture(Effect, clamp(vUv + split, vec2(0.001), vec2(0.999)));
-                vec4 effectB = texture(Effect, clamp(vUv - split, vec2(0.001), vec2(0.999)));
+                vec4 effectR = sampleRegion(Effect, clamp(vUv + split, vec2(0.0), vec2(1.0)));
+                vec4 effectB = sampleRegion(Effect, clamp(vUv - split, vec2(0.0), vec2(1.0)));
                 vec3 splitEffect = vec3(effectR.r, effect.g, effectB.b);
                 vec3 effectRgb = mix(max(effect.rgb, vec3(0.0)), max(splitEffect, vec3(0.0)),
                         energy * 0.34);
@@ -304,8 +304,8 @@ public final class SkillPostShaders {
                 vec3 violet = mix(vec3(0.38, 0.06, 0.92), hue, 0.58);
                 vec3 bloom = violet * GlowStrength * energy * (0.42 + energy * 1.10);
 
-                vec3 raw = max(texture(Glow, vUv).rgb, vec3(0.0));
-                float rawPower = clamp(powerOf(texture(Glow, vUv)), 0.0, 5.0);
+                vec3 raw = max(sampleRegion(Glow, vUv).rgb, vec3(0.0));
+                float rawPower = clamp(powerOf(sampleRegion(Glow, vUv)), 0.0, 5.0);
                 float coreEnergy = (1.0 - exp(-rawPower * 1.55)) * FlashScale;
                 vec3 coreHue = mix(raw, vec3(0.96, 0.90, 1.0), coreEnergy * 0.72);
                 vec3 core = coreHue * coreEnergy * 0.62;
@@ -329,10 +329,10 @@ public final class SkillPostShaders {
             }
 
             void main() {
-                vec4 scene = texture(Scene, vUv);
-                vec4 effect = texture(Effect, vUv);
-                vec4 rawGlow = texture(Glow, vUv);
-                vec4 bloomSample = texture(Bloom, vUv);
+                vec4 scene = sampleRegion(Scene, vUv);
+                vec4 effect = sampleRegion(Effect, vUv);
+                vec4 rawGlow = sampleRegion(Glow, vUv);
+                vec4 bloomSample = sampleRegion(Bloom, vUv);
 
                 float coverage = clamp(effect.a, 0.0, 1.0);
                 vec3 base = scene.rgb * (1.0 - coverage) + max(effect.rgb, vec3(0.0));
@@ -361,41 +361,43 @@ public final class SkillPostShaders {
     private SkillPostShaders() {
     }
 
-    static void blur(int sourceTextureId, int width, int height, boolean horizontal) {
+    static void blur(int sourceTextureId, SkillRenderLayout layout, boolean horizontal) {
         ensurePrograms();
         withFullscreenState(() -> {
             GL20.glUseProgram(blurProgram);
+            layout.postUniforms(blurProgram);
             bindTexture(0, sourceTextureId);
             GL20.glUniform1i(GL20.glGetUniformLocation(blurProgram, "Source"), 0);
-            float x = horizontal ? 1.0F / Math.max(1, width) : 0.0F;
-            float y = horizontal ? 0.0F : 1.0F / Math.max(1, height);
+            float x = horizontal ? 1.0F / layout.width() : 0.0F;
+            float y = horizontal ? 0.0F : 1.0F / layout.height();
             GL20.glUniform2f(GL20.glGetUniformLocation(blurProgram, "TexelStep"), x, y);
             drawFullscreenTriangle();
         });
     }
 
-    static void composite(int sceneTextureId, int maskTextureId, int width, int height) {
-        composite(sceneTextureId, maskTextureId, width, height, 0.72F, 0.45F);
+    static void composite(int sceneTextureId, int maskTextureId, SkillRenderLayout layout) {
+        composite(sceneTextureId, maskTextureId, layout, 0.72F, 0.45F);
     }
 
-    static void composite(int sceneTextureId, int maskTextureId, int width, int height,
+    static void composite(int sceneTextureId, int maskTextureId, SkillRenderLayout layout,
                           float glowStrength, float distortionStrength) {
-        composite(sceneTextureId, maskTextureId, width, height,
+        composite(sceneTextureId, maskTextureId, layout,
                 glowStrength, distortionStrength, 0.0F);
     }
 
-    static void composite(int sceneTextureId, int maskTextureId, int width, int height,
+    static void composite(int sceneTextureId, int maskTextureId, SkillRenderLayout layout,
                           float glowStrength, float distortionStrength,
                           float colorPreservation) {
         ensurePrograms();
         withFullscreenState(() -> {
             GL20.glUseProgram(compositeProgram);
+            layout.postUniforms(compositeProgram);
             bindTexture(0, sceneTextureId);
             bindTexture(1, maskTextureId);
             GL20.glUniform1i(GL20.glGetUniformLocation(compositeProgram, "Scene"), 0);
             GL20.glUniform1i(GL20.glGetUniformLocation(compositeProgram, "Mask"), 1);
             GL20.glUniform2f(GL20.glGetUniformLocation(compositeProgram, "TexelSize"),
-                    1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
+                    1.0F / layout.width(), 1.0F / layout.height());
             GL20.glUniform1f(GL20.glGetUniformLocation(compositeProgram, "GlowStrength"),
                     glowStrength);
             GL20.glUniform1f(GL20.glGetUniformLocation(compositeProgram, "DistortionStrength"),
@@ -408,10 +410,11 @@ public final class SkillPostShaders {
 
     public static void compositeBloodfyre(int sceneTextureId, int effectTextureId,
                                           int glowTextureId, int bloomTextureId,
-                                          int width, int height) {
+                                          SkillRenderLayout layout) {
         ensurePrograms();
         withFullscreenState(() -> {
             GL20.glUseProgram(bloodfyreCompositeProgram);
+            layout.postUniforms(bloodfyreCompositeProgram);
             bindTexture(0, sceneTextureId);
             bindTexture(1, effectTextureId);
             bindTexture(2, glowTextureId);
@@ -421,7 +424,7 @@ public final class SkillPostShaders {
             GL20.glUniform1i(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "Glow"), 2);
             GL20.glUniform1i(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "Bloom"), 3);
             GL20.glUniform2f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "TexelSize"),
-                    1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
+                    1.0F / layout.width(), 1.0F / layout.height());
             GL20.glUniform1f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "CoreStrength"), 0.85F);
             GL20.glUniform1f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "GlowStrength"), 1.65F);
             GL20.glUniform1f(GL20.glGetUniformLocation(bloodfyreCompositeProgram, "DistortionStrength"), 0.12F);
@@ -431,10 +434,11 @@ public final class SkillPostShaders {
 
     public static void compositeRaiden(int sceneTextureId, int effectTextureId,
                                        int glowTextureId, int bloomTextureId,
-                                       int width, int height) {
+                                       SkillRenderLayout layout) {
         ensurePrograms();
         withFullscreenState(() -> {
             GL20.glUseProgram(raidenCompositeProgram);
+            layout.postUniforms(raidenCompositeProgram);
             bindTexture(0, sceneTextureId);
             bindTexture(1, effectTextureId);
             bindTexture(2, glowTextureId);
@@ -444,7 +448,7 @@ public final class SkillPostShaders {
             GL20.glUniform1i(GL20.glGetUniformLocation(raidenCompositeProgram, "Glow"), 2);
             GL20.glUniform1i(GL20.glGetUniformLocation(raidenCompositeProgram, "Bloom"), 3);
             GL20.glUniform2f(GL20.glGetUniformLocation(raidenCompositeProgram, "TexelSize"),
-                    1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
+                    1.0F / layout.width(), 1.0F / layout.height());
             GL20.glUniform1f(GL20.glGetUniformLocation(raidenCompositeProgram, "GlowStrength"), 0.92F);
             GL20.glUniform1f(GL20.glGetUniformLocation(raidenCompositeProgram, "DistortionStrength"), 0.10F);
             drawFullscreenTriangle();
@@ -452,10 +456,11 @@ public final class SkillPostShaders {
     }
 
     public static void compositeHonkai(int sceneTextureId, int effectTextureId,
-                                       int bloomTextureId, int width, int height) {
+                                       int bloomTextureId, SkillRenderLayout layout) {
         ensurePrograms();
         withFullscreenState(() -> {
             GL20.glUseProgram(honkaiCompositeProgram);
+            layout.postUniforms(honkaiCompositeProgram);
             bindTexture(0, sceneTextureId);
             bindTexture(1, effectTextureId);
             bindTexture(2, bloomTextureId);
@@ -463,7 +468,7 @@ public final class SkillPostShaders {
             GL20.glUniform1i(GL20.glGetUniformLocation(honkaiCompositeProgram, "Effect"), 1);
             GL20.glUniform1i(GL20.glGetUniformLocation(honkaiCompositeProgram, "Bloom"), 2);
             GL20.glUniform2f(GL20.glGetUniformLocation(honkaiCompositeProgram, "TexelSize"),
-                    1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
+                    1.0F / layout.width(), 1.0F / layout.height());
             GL20.glUniform1f(GL20.glGetUniformLocation(honkaiCompositeProgram, "GlowStrength"), 0.96F);
             GL20.glUniform1f(GL20.glGetUniformLocation(honkaiCompositeProgram, "DistortionStrength"), 0.10F);
             drawFullscreenTriangle();
@@ -472,11 +477,12 @@ public final class SkillPostShaders {
 
     public static void compositeRaizan(int sceneTextureId, int effectTextureId,
                                        int glowTextureId, int bloomTextureId,
-                                       int width, int height, float glowStrength,
+                                       SkillRenderLayout layout, float glowStrength,
                                        float chromaticStrength, float flashScale) {
         ensurePrograms();
         withFullscreenState(() -> {
             GL20.glUseProgram(raizanCompositeProgram);
+            layout.postUniforms(raizanCompositeProgram);
             bindTexture(0, sceneTextureId);
             bindTexture(1, effectTextureId);
             bindTexture(2, glowTextureId);
@@ -486,7 +492,7 @@ public final class SkillPostShaders {
             GL20.glUniform1i(GL20.glGetUniformLocation(raizanCompositeProgram, "Glow"), 2);
             GL20.glUniform1i(GL20.glGetUniformLocation(raizanCompositeProgram, "Bloom"), 3);
             GL20.glUniform2f(GL20.glGetUniformLocation(raizanCompositeProgram, "TexelSize"),
-                    1.0F / Math.max(1, width), 1.0F / Math.max(1, height));
+                    1.0F / layout.width(), 1.0F / layout.height());
             GL20.glUniform1f(GL20.glGetUniformLocation(raizanCompositeProgram, "GlowStrength"), glowStrength);
             GL20.glUniform1f(GL20.glGetUniformLocation(raizanCompositeProgram, "DistortionStrength"), 0.09F);
             GL20.glUniform1f(GL20.glGetUniformLocation(raizanCompositeProgram, "ChromaticStrength"), chromaticStrength);
@@ -497,10 +503,11 @@ public final class SkillPostShaders {
 
     public static void compositeJizo(int sceneTextureId, int effectTextureId,
                                      int glowTextureId, int bloomTextureId,
-                                     int width, int height) {
+                                     SkillRenderLayout layout) {
         ensurePrograms();
         withFullscreenState(() -> {
             GL20.glUseProgram(jizoCompositeProgram);
+            layout.postUniforms(jizoCompositeProgram);
             bindTexture(0, sceneTextureId);
             bindTexture(1, effectTextureId);
             bindTexture(2, glowTextureId);
@@ -522,8 +529,8 @@ public final class SkillPostShaders {
         }
     }
 
-    public static void blurBloodfyre(int sourceTextureId, int width, int height, boolean horizontal) {
-        blur(sourceTextureId, width, height, horizontal);
+    public static void blurBloodfyre(int sourceTextureId, SkillRenderLayout layout, boolean horizontal) {
+        blur(sourceTextureId, layout, horizontal);
     }
 
     private static void ensurePrograms() {
@@ -555,7 +562,7 @@ public final class SkillPostShaders {
 
     private static int createProgram(String fragmentSource) {
         int vertex = compile(GL20.GL_VERTEX_SHADER, FULLSCREEN_VERTEX);
-        int fragment = compile(GL20.GL_FRAGMENT_SHADER, fragmentSource);
+        int fragment = compile(GL20.GL_FRAGMENT_SHADER, SkillRenderLayout.postFragment(fragmentSource));
         int program = GL20.glCreateProgram();
         GL20.glAttachShader(program, vertex);
         GL20.glAttachShader(program, fragment);

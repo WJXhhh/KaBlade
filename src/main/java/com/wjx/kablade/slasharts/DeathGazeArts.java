@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.DeathGazeBeamEntity;
 import com.wjx.kablade.init.ModComboStates;
 import com.wjx.kablade.util.MathFunc;
@@ -42,7 +43,7 @@ public final class DeathGazeArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(12.0F);
-        float totalDamage = BASE_DAMAGE + (float) MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
+        float totalDamage = SridrCompat.scaleDamage(user, BASE_DAMAGE + (float) MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR));
 
         // Spawn DeathGazeBeamEntity
         DeathGazeBeamEntity.spawn(level, user, totalDamage);

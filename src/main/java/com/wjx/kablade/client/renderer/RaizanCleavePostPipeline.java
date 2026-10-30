@@ -10,6 +10,7 @@ import com.wjx.kablade.client.RaizanCleaveAnimation;
 import com.wjx.kablade.client.shader.ShaderCompat;
 import com.wjx.kablade.client.shader.SkillPostShaders;
 import com.wjx.kablade.client.shader.SkillShaderTarget;
+import com.wjx.kablade.client.shader.SkillRenderLayout;
 import com.wjx.kablade.config.KabladeClientConfig;
 import com.wjx.kablade.entity.RaizanCleaveEntity;
 import net.minecraft.client.Minecraft;
@@ -145,10 +146,10 @@ public final class RaizanCleavePostPipeline {
                 OCULUS_PROGRAMS.ensureLoaded();
                 rawContext = new RawDrawContext(
                         new org.joml.Matrix4f(RenderSystem.getModelViewMatrix()),
-                        new org.joml.Matrix4f(event.getProjectionMatrix()),
+                        target.layout().privateProjection(event.getProjectionMatrix()),
                         shaderGameTime(event.getPartialTick()));
             }
-            FRAMEBUFFER.ensureAllocated(target.width(), target.height());
+            FRAMEBUFFER.ensureAllocated(target);
             FRAMEBUFFER.beginEffect(target);
             renderQueued(event, casts, rawContext);
             FRAMEBUFFER.beginGlow(target);
@@ -658,8 +659,12 @@ public final class RaizanCleavePostPipeline {
         private int sceneTexture;
         private int width;
         private int height;
+        private SkillRenderLayout layout;
 
-        private void ensureAllocated(int nextWidth, int nextHeight) {
+        private void ensureAllocated(SkillShaderTarget target) {
+            layout = target.layout();
+            int nextWidth = target.width();
+            int nextHeight = target.height();
             if (geometryFbo == 0) geometryFbo = GL30.glGenFramebuffers();
             if (postFbo == 0) postFbo = GL30.glGenFramebuffers();
             if (effectTexture == 0) effectTexture = GL11.glGenTextures();
@@ -697,9 +702,9 @@ public final class RaizanCleavePostPipeline {
             blurGlow(passes);
             GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, target.framebufferId());
             setDrawAttachment();
-            GL11.glViewport(0, 0, target.width(), target.height());
+            target.layout().viewport();
             SkillPostShaders.compositeRaizan(sceneTexture, effectTexture, glowTexture,
-                    bloomTexture, width, height, glowStrength, chromaticStrength, flashScale);
+                    bloomTexture, layout, glowStrength, chromaticStrength, flashScale);
         }
 
         private void bindGeometry(int color, int depth) {
@@ -710,7 +715,7 @@ public final class RaizanCleavePostPipeline {
                     GL11.GL_TEXTURE_2D, depth, 0);
             setDrawAttachment();
             check("Raizan geometry");
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
         }
 
         private void copyScene(SkillShaderTarget target) {
@@ -723,17 +728,16 @@ public final class RaizanCleavePostPipeline {
                     GL11.GL_TEXTURE_2D, sceneTexture, 0);
             setDrawAttachment();
             check("Raizan scene copy");
-            GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
-                    GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+            layout.copyColor();
         }
 
         private void blurGlow(int passes) {
             int source = glowTexture;
             for (int i = 0; i < passes; i++) {
                 bindPost(blurTexture);
-                SkillPostShaders.blurBloodfyre(source, width, height, true);
+                SkillPostShaders.blurBloodfyre(source, layout, true);
                 bindPost(bloomTexture);
-                SkillPostShaders.blurBloodfyre(blurTexture, width, height, false);
+                SkillPostShaders.blurBloodfyre(blurTexture, layout, false);
                 source = bloomTexture;
             }
         }
@@ -744,7 +748,7 @@ public final class RaizanCleavePostPipeline {
                     GL11.GL_TEXTURE_2D, texture, 0);
             setDrawAttachment();
             check("Raizan blur");
-            GL11.glViewport(0, 0, width, height);
+            layout.viewport();
         }
 
         private void allocate(int texture, int internalFormat, int type) {

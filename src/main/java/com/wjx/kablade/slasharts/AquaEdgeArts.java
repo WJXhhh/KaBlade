@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.AquaEdgeEntity;
 import com.wjx.kablade.util.SaTargeting;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -68,14 +69,14 @@ public final class AquaEdgeArts extends SlashArts {
         float baseAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float magicDamage = baseAttack * 0.27F;
+        float magicDamage = SridrCompat.scaleDamage(user, baseAttack * 0.27F);
 
         // AOE 鏂╁嚮
         AABB box = user.getBoundingBox().inflate(AOE_RADIUS, 0.25, AOE_RADIUS);
         var targets = SaTargeting.uniqueTargets(level, user, box);
         for (var selected : targets) {
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), level, user, baseAttack);
+                    selected.hitEntity(), level, user, SridrCompat.scaleDamage(user, baseAttack));
         }
 
         // 鎵囧舰灏勫嚭姘存祦椋炲垉

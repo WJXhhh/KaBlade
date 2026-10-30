@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SridrCompat;
 import com.wjx.kablade.entity.StarSwordEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -55,7 +56,7 @@ public final class StarChaseArts extends SlashArts {
         final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F);
         // 1.12.2: magicDamage = base/3 + amplifierCalc(base, 4)
-        final float damage = bladeAttack / 3.0F + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO);
+        final float damage = SridrCompat.scaleDamage(user, bladeAttack / 3.0F + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO));
 
         final SaTarget selected = resolveTarget(level, user);
         if (selected == null) {
