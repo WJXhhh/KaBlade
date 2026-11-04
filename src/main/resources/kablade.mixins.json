@@ -6,7 +6,9 @@
   "refmap": "kablade.refmap.json",
   "plugin": "com.wjx.kablade.compat.KabladeMixinPlugin",
   "mixins": [
+    "RepairItemRecipeMixin",
     "SlashBladeShapedRecipeMixin",
+    "SstBladeAffinityHandlerMixin",
     "SlashBladeTargetSelectorMixin"
   ],
   "client": [

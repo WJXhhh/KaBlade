@@ -19,6 +19,10 @@ public final class SridrCompat {
     private SridrCompat() {
     }
 
+    public static UUID weaponDamageUuid() {
+        return WEAPON_DAMAGE_UUID;
+    }
+
     /** Capture once when casting; pass the scaled damage to delayed hits/summons. */
     public static float damageMultiplier(LivingEntity owner) {
         return damageMultiplier(owner.getMainHandItem());

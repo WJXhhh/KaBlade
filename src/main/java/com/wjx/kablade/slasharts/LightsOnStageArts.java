@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.StageLightEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -47,7 +47,7 @@ public final class LightsOnStageArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float timingBonus = type == ArtsType.Jackpot || type == ArtsType.Super ? 1.25F : 1.0F;
-        float damage = SridrCompat.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR)) * timingBonus);
+        float damage = SaCombatScaling.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR)) * timingBonus);
 
         StageLightEntity.spawn(level, origin.x, origin.y + 0.06, origin.z,
                 user.getYRot(), STAGE_LIFETIME);
@@ -57,7 +57,7 @@ public final class LightsOnStageArts extends SlashArts {
         level.playSound(null, origin.x, origin.y, origin.z,
                 SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.2F, 1.1F);
 
-        SaFx.schedule(level, HIT_DELAY, () -> strikeStage(level, user, origin, damage));
+        SaFx.schedule(level, HIT_DELAY, user, () -> strikeStage(level, user, origin, damage));
         return super.doArts(type, user);
     }
 

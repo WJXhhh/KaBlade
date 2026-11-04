@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -38,7 +38,7 @@ public final class MoonFangArts extends SlashArts {
         final ServerLevel level = (ServerLevel) user.level();
         final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F);
-        final float damage = SridrCompat.scaleDamage(user, (DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO)) * 3.0F);
+        final float damage = SaCombatScaling.scaleDamage(user, (DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO)) * 3.0F);
 
         final Vec3 eye = user.getEyePosition(1.0F);
         final Vec3 look = user.getLookAngle();
@@ -49,7 +49,7 @@ public final class MoonFangArts extends SlashArts {
             float speed = 0.55F + 0.15F * i;
             int delay = i * 2;
             final int idx = i;
-            SaFx.schedule(level, delay, () -> {
+            SaFx.schedule(level, delay, user, () -> {
                 if (!user.isAlive()) return;
                 Vec3 e = user.getEyePosition(1.0F);
                 Vec3 l = user.getLookAngle();

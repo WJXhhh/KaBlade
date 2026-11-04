@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.util.MathFunc;
@@ -51,6 +52,7 @@ public final class FlameBlockArts extends SlashArts {
     public static final String PROP_KEY = "flame_block";
     public static final int BUFF_DURATION_TICKS = 200;
     private static final String MULTIPLIER_KEY = "kablade:flameblock_sridr_multiplier";
+    private static final String AFFINITY_KEY = "kablade:flameblock_affinity";
 
     private static final UUID SPEED_MODIFIER_UUID =
             UUID.fromString("6d7b4a2e-8c31-4f1a-9b56-1e98d7f2a3c5");
@@ -71,7 +73,8 @@ public final class FlameBlockArts extends SlashArts {
         }
 
         if (user instanceof Player player) {
-            player.getPersistentData().putFloat(MULTIPLIER_KEY, SridrCompat.damageMultiplier(user));
+            player.getPersistentData().putFloat(MULTIPLIER_KEY, SaCombatScaling.damageMultiplier(user));
+            player.getPersistentData().putDouble(AFFINITY_KEY, SstBladeCompat.affinityBonus(player));
             player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
                     .ifPresent(cap -> cap.set(PROP_KEY, BUFF_DURATION_TICKS));
             applySpeedDebuffIfMissing(player);
@@ -203,6 +206,8 @@ public final class FlameBlockArts extends SlashArts {
                 * (player.getPersistentData().contains(MULTIPLIER_KEY)
                 ? player.getPersistentData().getFloat(MULTIPLIER_KEY) : 1.0F);
 
+        var affinity = SstBladeCompat.affinityScope(player, player.getPersistentData().contains(AFFINITY_KEY)
+                ? player.getPersistentData().getDouble(AFFINITY_KEY) : SstBladeCompat.affinityBonus(player));
         boolean hitAny = false;
         for (LivingEntity target : targets) {
             if (!SaTargeting.canDamage(player, target)) {
@@ -214,7 +219,7 @@ public final class FlameBlockArts extends SlashArts {
 
             hitAny = true;
             target.setSecondsOnFire(FIRE_SECONDS);
-            SaDamage.hurtSlashArtNoIFrame(target, level, player, pulseDamage);
+            affinity.accept(() -> SaDamage.hurtSlashArtNoIFrame(target, level, player, pulseDamage));
 
             Vec3 hitPos = target.position().add(0, target.getBbHeight() * 0.5, 0);
             level.sendParticles(ParticleTypes.FLAME, hitPos.x, hitPos.y, hitPos.z,

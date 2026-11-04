@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.network.protocol.Packet;
@@ -60,6 +61,7 @@ public class DawnCrescentEntity extends Entity {
         c.setDeltaMovement(velocity);
         c.owner = owner;
         c.damage = damage;
+        SstBladeCompat.snapshotAffinity(c, owner);
         level.addFreshEntity(c);
         return c;
     }

@@ -1,5 +1,6 @@
 package com.wjx.kablade.slasharts;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
@@ -7,7 +8,7 @@ import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
 import com.wjx.kablade.init.ModComboStates;
 import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
-import mods.flammpfeil.slashblade.util.AttackHelper;
+import com.wjx.kablade.util.SaCombatScaling;
 import mods.flammpfeil.slashblade.util.AttackManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
@@ -50,6 +51,10 @@ final class SaFx {
     }
 
     /** 延迟 {@code delay} tick 在主线程执行 {@code task}；delay&le;0 立即执行。用于把大招拆成连续的演出阶段。 */
+    static void schedule(ServerLevel level, int delay, LivingEntity owner, Runnable task) {
+        schedule(level, delay, SstBladeCompat.deferred(owner, task));
+    }
+
     static void schedule(ServerLevel level, int delay, Runnable task) {
         MinecraftServer server = level.getServer();
         if (delay <= 0 || server == null) {
@@ -171,6 +176,7 @@ final class SaFx {
         d.setRotationRoll(roll);
         d.shoot(dir.x, dir.y, dir.z, speed, 0.6F);
         level.addFreshEntity(d);
+        SstBladeCompat.snapshotAffinity(d, user);
         return d;
     }
 
@@ -183,7 +189,7 @@ final class SaFx {
         double attack = Math.max(user.getAttributeValue(Attributes.ATTACK_DAMAGE), 0.001D);
         double scale = Math.max(AttackManager.getSlashBladeDamageScale(user), 0.001F);
         double config = ((Double) SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER.get());
-        double additive = AttackHelper.getRankBonus(user);
+        double additive = SaCombatScaling.nativeRankBonus(user);
         double preScaled = desiredFinalDamage / Math.max(scale * config, 0.001D);
         return Math.max((preScaled - additive) / attack, 0.0D);
     }

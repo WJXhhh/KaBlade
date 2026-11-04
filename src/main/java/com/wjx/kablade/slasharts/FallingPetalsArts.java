@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.FallingPetalsMarkPacket;
 import com.wjx.kablade.network.KabladeNetwork;
@@ -77,7 +78,7 @@ public final class FallingPetalsArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = SridrCompat.scaleDamage(user, BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR));
+        float damage = SaCombatScaling.scaleDamage(user, BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR));
         LivingEntity marked = damageLine(level, user, damage);
         if (marked != null) {
             markTarget(level, marked);
@@ -214,8 +215,8 @@ public final class FallingPetalsArts extends SlashArts {
                 return true;
             }
 
-            SakuraEnd.doSlash(user, slash.roll(), PETAL_COLOR, Vec3.ZERO, false, slash.critical(), slash.damage(),
-                    mods.flammpfeil.slashblade.util.KnockBacks.cancel);
+            slash.affinity().accept(() -> SakuraEnd.doSlash(user, slash.roll(), PETAL_COLOR, Vec3.ZERO, false, slash.critical(), slash.damage(),
+                    mods.flammpfeil.slashblade.util.KnockBacks.cancel));
             if (slash.playSound()) {
                 level.playSound(null, user.getX(), user.getY(), user.getZ(),
                         SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.1F, 1.35F);
@@ -266,7 +267,7 @@ public final class FallingPetalsArts extends SlashArts {
                                        float roll, boolean critical, double damage, boolean playSound) {
         long dueTick = level.getServer().getTickCount() + delayTicks;
         PendingSlash slash = new PendingSlash(level.dimension(), user.getUUID(), dueTick,
-                roll, critical, damage, playSound);
+                roll, critical, damage, playSound, SstBladeCompat.affinityScope(user));
         PENDING_SAKURA_ENDS.put(new PendingSlashKey(user.getUUID(), dueTick, roll), slash);
     }
 
@@ -277,6 +278,6 @@ public final class FallingPetalsArts extends SlashArts {
     }
 
     private record PendingSlash(ResourceKey<Level> dimension, UUID ownerUuid, long dueTick,
-                                float roll, boolean critical, double damage, boolean playSound) {
+                                float roll, boolean critical, double damage, boolean playSound, java.util.function.Consumer<Runnable> affinity) {
     }
 }

@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.ButterflySwordEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -58,7 +58,7 @@ public final class PhantomButterflyArts extends SlashArts {
     }
 
     private static void spawnAroundUser(ServerLevel level, LivingEntity user, float bladeAttack) {
-        float damage = SridrCompat.scaleDamage(user, ((bladeAttack + MathFunc.amplifierCalc(bladeAttack, 4.0F)) / 45.0F
+        float damage = SaCombatScaling.scaleDamage(user, ((bladeAttack + MathFunc.amplifierCalc(bladeAttack, 4.0F)) / 45.0F
                 + bladeAttack * 0.1F) * DAMAGE_MULTIPLIER);
 
         for (int i = 0; i < SWORD_COUNT; i++) {
@@ -82,7 +82,7 @@ public final class PhantomButterflyArts extends SlashArts {
 
     private static void spawnAroundTarget(ServerLevel level, LivingEntity user,
                                           SaTarget target, float bladeAttack) {
-        float damage = SridrCompat.scaleDamage(user, ((bladeAttack + MathFunc.amplifierCalc(bladeAttack, 2.0F)) / 50.0F
+        float damage = SaCombatScaling.scaleDamage(user, ((bladeAttack + MathFunc.amplifierCalc(bladeAttack, 2.0F)) / 50.0F
                 + bladeAttack * 0.02F) * DAMAGE_MULTIPLIER);
 
         for (int i = 0; i < SWORD_COUNT; i++) {

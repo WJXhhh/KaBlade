@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.FrostBladeEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -61,7 +61,7 @@ public final class FrostBladeArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = SridrCompat.scaleDamage(user, MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR) * DAMAGE_MULTIPLIER);
+        float damage = SaCombatScaling.scaleDamage(user, MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR) * DAMAGE_MULTIPLIER);
 
         SaTarget target = findTarget(level, user, blade);
         Vec3 fallbackDirection = target == null
@@ -75,7 +75,7 @@ public final class FrostBladeArts extends SlashArts {
         for (int i = 0; i < SWORD_COUNT; i++) {
             final int wave = i;
             final SaTarget lockedTarget = target;
-            SaFx.schedule(level, WAVE_DELAYS[i], () -> {
+            SaFx.schedule(level, WAVE_DELAYS[i], user, () -> {
                 if (!user.isAlive() || (lockedTarget != null && !lockedTarget.isAlive())) {
                     return;
                 }

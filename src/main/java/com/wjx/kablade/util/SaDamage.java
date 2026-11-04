@@ -1,6 +1,7 @@
 package com.wjx.kablade.util;
 
 import com.wjx.kablade.Main;
+import com.wjx.kablade.compat.SstBladeCompat;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.resources.ResourceKey;
@@ -24,12 +25,12 @@ public final class SaDamage {
     /** Multipart-aware damage that preserves vanilla invulnerability frames. */
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
         Entity physicalTarget = SaTargeting.damageEntity(target, damageOrigin(source, target));
-        return physicalTarget.hurt(source, amount);
+        return physicalTarget.hurt(SstBladeCompat.captureSource(source), amount);
     }
 
     /** Damage an already selected physical target without discarding its multipart part. */
     public static boolean hurt(Entity target, DamageSource source, float amount) {
-        return SaTarget.of(target).isPresent() && target.hurt(source, amount);
+        return SaTarget.of(target).isPresent() && target.hurt(SstBladeCompat.captureSource(source), amount);
     }
 
     public static boolean hurtNoIFrame(LivingEntity target, DamageSource source, float amount) {
@@ -44,7 +45,7 @@ public final class SaDamage {
             return false;
         }
         clearInvulnerability(root);
-        boolean hurt = target.hurt(source, amount);
+        boolean hurt = target.hurt(SstBladeCompat.captureSource(source), amount);
         clearInvulnerability(root);
         return hurt;
     }

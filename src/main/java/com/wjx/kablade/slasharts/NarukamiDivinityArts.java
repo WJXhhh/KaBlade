@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.NarukamiDivinityEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -54,7 +54,7 @@ public final class NarukamiDivinityArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float totalDamage = SridrCompat.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
+        float totalDamage = SaCombatScaling.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
                 * DAMAGE_MULTIPLIER);
 
         if (NarukamiDivinityEntity.spawn(level, user,

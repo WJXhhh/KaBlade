@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.BloodfyreFrenzyEntity;
 import com.wjx.kablade.specialeffect.FuelTheRuin;
 import com.wjx.kablade.util.MathFunc;
@@ -38,7 +38,7 @@ public final class BloodfyreFrenzyArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = SridrCompat.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
+        float damage = SaCombatScaling.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR))
                 * DAMAGE_MULTIPLIER);
 
         BloodfyreFrenzyEntity.spawn(level, user, damage);

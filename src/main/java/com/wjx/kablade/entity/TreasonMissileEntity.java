@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTarget;
@@ -36,6 +37,7 @@ public final class TreasonMissileEntity extends PhantomSwordExEntity {
         missile.setInterval(0);
         missile.initializeTrajectory(0, 0, direction.scale(0.8D));
         if (target != null) missile.setTarget(target.hitEntity());
+        SstBladeCompat.snapshotAffinity(missile, owner);
         owner.level().addFreshEntity(missile);
     }
 

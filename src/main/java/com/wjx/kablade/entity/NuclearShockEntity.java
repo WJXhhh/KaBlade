@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTarget;
@@ -52,6 +53,7 @@ public class NuclearShockEntity extends Entity {
         entity.setPos(pos.x, pos.y, pos.z);
         entity.ownerUUID = owner.getUUID();
         entity.totalDamage = damage;
+        SstBladeCompat.snapshotAffinity(entity, owner);
         level.addFreshEntity(entity);
         return entity;
     }

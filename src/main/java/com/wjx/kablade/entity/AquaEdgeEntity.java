@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -36,6 +37,7 @@ public class AquaEdgeEntity extends ExSlashDriveEntity {
         e.setMultiHit(multiHit);
         e.blade = thrower.getMainHandItem();
         if (thrower != null) e.alreadyHit.add(thrower.getUUID());
+        SstBladeCompat.snapshotAffinity(e, thrower);
         level.addFreshEntity(e);
         return e;
     }

@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,6 +37,7 @@ public class ButterflySwordEntity extends PhantomSwordExEntity {
         if (thrower != null) {
             entity.alreadyHit.add(thrower.getUUID());
         }
+        SstBladeCompat.snapshotAffinity(entity, thrower);
         level.addFreshEntity(entity);
         return entity;
     }

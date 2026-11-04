@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTarget;
@@ -82,6 +83,8 @@ public class DeathGazeBeamEntity extends Entity {
         // Initial raycast
         float initialLength = computeBeamLength(level, spawnPos, look, entity);
         entity.setBeamLength(initialLength);
+
+        SstBladeCompat.snapshotAffinity(entity, owner);
 
         level.addFreshEntity(entity);
         return entity;

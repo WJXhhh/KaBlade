@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.DawnCrescentEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -76,9 +76,9 @@ public final class BreakTheDawnArts extends SlashArts {
                 .orElse(4.0F);
 
         final float driveDamage = DRIVE_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
-        final float swordDamage = SridrCompat.scaleDamage(user, SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO));
-        final float crescentDamage = SridrCompat.scaleDamage(user, driveDamage);
-        final float finaleDamage = SridrCompat.scaleDamage(user, AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO));
+        final float swordDamage = SaCombatScaling.scaleSummonedSwordDamage(user, SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO));
+        final float crescentDamage = SaCombatScaling.scaleDamage(user, driveDamage);
+        final float finaleDamage = SaCombatScaling.scaleDamage(user, AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO));
 
         // 鈹€鈹€ t=0锛氱牬鏅擄紙鍚戝墠钃勫娍锛夆攢鈹€
         if (user instanceof Player player) {
@@ -106,7 +106,7 @@ public final class BreakTheDawnArts extends SlashArts {
         }
 
         // 鈹€鈹€ t=5锛氬墠鍚戝姬鍏夋í鎵?鈹€鈹€
-        SaFx.schedule(level, 5, () -> {
+        SaFx.schedule(level, 5, user, () -> {
             if (!user.isAlive()) return;
             arcSweep(level, user, driveDamage, crescentDamage);
             level.playSound(null, user.getX(), user.getY(), user.getZ(),
@@ -114,7 +114,7 @@ public final class BreakTheDawnArts extends SlashArts {
         });
 
         // 鈹€鈹€ t=10锛氬悜鍓嶈疮鍑烘櫒鏇﹀厜鏋?鈹€鈹€
-        SaFx.schedule(level, 10, () -> {
+        SaFx.schedule(level, 10, user, () -> {
             if (!user.isAlive()) return;
             dawnLance(level, user, rng, driveDamage);
             level.playSound(null, user.getX(), user.getY(), user.getZ(),
@@ -122,7 +122,7 @@ public final class BreakTheDawnArts extends SlashArts {
         });
 
         // 鈹€鈹€ t=15锛氬悜鍓嶈绌虹牬鏅撴柀 + 鍓嶆柟寮曠垎 鈹€鈹€
-        SaFx.schedule(level, 15, () -> {
+        SaFx.schedule(level, 15, user, () -> {
             if (!user.isAlive()) return;
             daybreakFinale(level, user, finaleDamage, crescentDamage);
         });

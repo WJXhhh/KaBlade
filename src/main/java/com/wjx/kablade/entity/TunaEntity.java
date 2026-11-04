@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.nbt.CompoundTag;
@@ -49,7 +50,7 @@ public class TunaEntity extends Entity {
         this.owner = owner;
         this.ownerUUID = owner.getUUID();
         this.extraDamage = extraDamage;
-        this.damageMultiplier = SridrCompat.damageMultiplier(owner);
+        this.damageMultiplier = SaCombatScaling.damageMultiplier(owner);
         this.setYRot(owner.getYRot());
     }
 
@@ -57,6 +58,7 @@ public class TunaEntity extends Entity {
                                    float extraDamage) {
         TunaEntity entity = new TunaEntity(level, owner, extraDamage);
         entity.setPos(x, y, z);
+        SstBladeCompat.snapshotAffinity(entity, owner);
         level.addFreshEntity(entity);
         return entity;
     }

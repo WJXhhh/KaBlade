@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.ZaizanEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTarget;
@@ -85,7 +85,7 @@ public final class ZaizanArts extends SlashArts {
         float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = SridrCompat.scaleDamage(user, BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, 20.0F));
+        float damage = SaCombatScaling.scaleDamage(user, BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, 20.0F));
         Vec3 look = SaFx.flatLook(user);
         AABB box = user.getBoundingBox()
                 .inflate(AOE_RADIUS, 1.0, AOE_RADIUS)

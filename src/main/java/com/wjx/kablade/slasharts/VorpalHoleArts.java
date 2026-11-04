@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.VorpalBlackHoleEntity;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -42,8 +42,8 @@ public final class VorpalHoleArts extends SlashArts {
         float bladeAttack = bladeAttack(user);
         Vec3 look = SaFx.flatLook(user);
         Vec3 origin = user.position().add(look.scale(2.35)).add(0.0, 1.35, 0.0);
-        float openingDamage = SridrCompat.scaleDamage(user, bladeAttack * OPENING_DAMAGE_RATIO * DAMAGE_MULTIPLIER);
-        float pulseDamage = SridrCompat.scaleDamage(user, bladeAttack * PULSE_DAMAGE_RATIO * DAMAGE_MULTIPLIER);
+        float openingDamage = SaCombatScaling.scaleDamage(user, bladeAttack * OPENING_DAMAGE_RATIO * DAMAGE_MULTIPLIER);
+        float pulseDamage = SaCombatScaling.scaleDamage(user, bladeAttack * PULSE_DAMAGE_RATIO * DAMAGE_MULTIPLIER);
 
         VorpalBlackHoleEntity.spawn(level, user, origin, LIFETIME,
                 openingDamage,
@@ -74,7 +74,7 @@ public final class VorpalHoleArts extends SlashArts {
         Vec3 base = origin.add(0.0, -0.15, 0.0);
         for (int i = 0; i < 3; i++) {
             final int index = i;
-            SaFx.schedule(level, 14 + i * 5, () -> {
+            SaFx.schedule(level, 14 + i * 5, user, () -> {
                 Vec3 dir = side.scale(index == 1 ? -1.0 : 1.0)
                         .add(look.scale(0.18)).normalize();
                 Vec3 pos = base.add(look.scale(0.35 * index))

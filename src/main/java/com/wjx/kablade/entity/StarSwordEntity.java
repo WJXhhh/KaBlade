@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
 import com.wjx.kablade.util.SaTarget;
@@ -74,6 +75,7 @@ public class StarSwordEntity extends PhantomSwordExEntity {
         e.blade = thrower.getMainHandItem().copy();
         e.alreadyHit.add(thrower.getUUID());
         e.setTarget(target);
+        SstBladeCompat.snapshotAffinity(e, thrower);
         level.addFreshEntity(e);
         return e;
     }

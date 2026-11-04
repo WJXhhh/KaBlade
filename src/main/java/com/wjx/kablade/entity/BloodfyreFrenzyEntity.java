@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTarget;
@@ -59,6 +60,7 @@ public final class BloodfyreFrenzyEntity extends Entity {
         entity.setPos(owner.getX(), owner.getY(), owner.getZ());
         entity.setYRot(owner.getYRot());
         entity.yRotO = owner.yRotO;
+        SstBladeCompat.snapshotAffinity(entity, owner);
         level.addFreshEntity(entity);
         return entity;
     }

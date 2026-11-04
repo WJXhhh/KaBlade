@@ -7,6 +7,7 @@ import com.wjx.kablade.init.ModBlocks;
 import com.wjx.kablade.init.ModComboStates;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.init.ModItems;
+import com.wjx.kablade.init.ModRecipes;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModSpecialEffects;
 import com.wjx.kablade.blades.ModSlashArts;
@@ -50,7 +51,7 @@ public final class Main {
     public static final String MOD_NAME = "Kablade";
 
     /** Mod version. */
-    public static final String VERSION = "2.15.0-b";
+    public static final String VERSION = "2.15.1-b";
 
     /** Shared logger. */
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -105,6 +106,7 @@ public final class Main {
 
         // --- Content registration ---
         ModItems.ITEM_REGISTRY.register(modBus);
+        ModRecipes.REGISTRY.register(modBus);
         ModBlocks.BLOCK_REGISTRY.register(modBus);
         ModComboStates.REGISTRY.register(modBus);
         ModSlashArts.REGISTRY.register(modBus);

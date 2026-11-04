@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.WindEnchantmentEntity;
 import com.wjx.kablade.util.SaTargeting;
 import com.wjx.kablade.util.SaTarget;
@@ -96,7 +96,7 @@ public final class WindEnchantmentArts extends SlashArts {
         if (target != null && !SaTargeting.canDamageAttackable(player, target)) {
             return super.doArts(type, user);
         }
-        final float extraDamage = SridrCompat.scaleDamage(user, EXTRA_DAMAGE);
+        final float extraDamage = SaCombatScaling.scaleDamage(user, EXTRA_DAMAGE);
         if (target != null) {
             blade.getItem().hurtEnemy(blade, target, player);
             player.crit(target);

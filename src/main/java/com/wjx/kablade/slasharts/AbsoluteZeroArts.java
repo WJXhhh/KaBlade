@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTarget;
@@ -54,7 +54,7 @@ public final class AbsoluteZeroArts extends SlashArts {
             float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                     .map(ISlashBladeState::getBaseAttackModifier)
                     .orElse(4.0F);
-            float damage = SridrCompat.scaleDamage(user, BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR));
+            float damage = SaCombatScaling.scaleDamage(user, BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR));
             DamageSource source = user instanceof Player player
                     ? level.damageSources().playerAttack(player)
                     : level.damageSources().mobAttack(user);

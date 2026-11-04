@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTargeting;
@@ -78,6 +79,7 @@ public final class JizoMitamaSoulEntity extends Entity {
         entity.setPos(origin);
         entity.setYRot(owner.getYRot());
         entity.yRotO = owner.getYRot();
+        SstBladeCompat.snapshotAffinity(entity, owner);
         if (!level.addFreshEntity(entity)) {
             ACTIVE_CASTERS.remove(owner.getUUID());
             return null;

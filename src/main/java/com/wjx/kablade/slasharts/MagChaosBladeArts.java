@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.network.KabladeNetwork;
@@ -69,7 +70,7 @@ public final class MagChaosBladeArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
-        float damageMultiplier = SridrCompat.damageMultiplier(user);
+        float damageMultiplier = SaCombatScaling.damageMultiplier(user);
 
         broadcastFx(user);
         spawnReleaseParticles(level, user);
@@ -79,7 +80,7 @@ public final class MagChaosBladeArts extends SlashArts {
         }
 
         long dueTick = level.getServer().getTickCount() + DELAY_TICKS;
-        PendingAttack attack = new PendingAttack(level.dimension(), user.getUUID(), dueTick, (DELAYED_DAMAGE + extraDamage) * damageMultiplier);
+        PendingAttack attack = new PendingAttack(level.dimension(), user.getUUID(), dueTick, (DELAYED_DAMAGE + extraDamage) * damageMultiplier, SstBladeCompat.affinityScope(user));
         PENDING_ATTACKS.put(new PendingKey(user.getUUID(), dueTick), attack);
 
         level.playSound(null, user.getX(), user.getY(), user.getZ(),
@@ -114,11 +115,13 @@ public final class MagChaosBladeArts extends SlashArts {
 
             broadcastFx(user);
             spawnReleaseParticles(level, user);
-            boolean hit = rayStrike(level, user, attack.damage());
-            if (hit) {
-                user.getMainHandItem().hurtAndBreak(1, user,
-                        e -> e.broadcastBreakEvent(user.getUsedItemHand()));
-            }
+            attack.affinity().accept(() -> {
+                boolean hit = rayStrike(level, user, attack.damage());
+                if (hit) {
+                    user.getMainHandItem().hurtAndBreak(1, user,
+                            e -> e.broadcastBreakEvent(user.getUsedItemHand()));
+                }
+            });
             return true;
         });
     }
@@ -219,6 +222,6 @@ public final class MagChaosBladeArts extends SlashArts {
     }
 
     private record PendingAttack(ResourceKey<Level> dimension, UUID ownerUuid, long dueTick,
-                                 float damage) {
+                                 float damage, java.util.function.Consumer<Runnable> affinity) {
     }
 }

@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.init.KabladeCapabilities;
@@ -56,7 +56,7 @@ public final class PrometheusArts extends SlashArts {
         }
 
         if (user instanceof Player player) {
-            player.getPersistentData().putFloat(MULTIPLIER_KEY, SridrCompat.damageMultiplier(user));
+            player.getPersistentData().putFloat(MULTIPLIER_KEY, SaCombatScaling.damageMultiplier(user));
             player.getCapability(KabladeCapabilities.PLAYER_PROPERTY_DATA)
                     .ifPresent(cap -> cap.set(PROP_KEY, BUFF_DURATION_TICKS));
         }

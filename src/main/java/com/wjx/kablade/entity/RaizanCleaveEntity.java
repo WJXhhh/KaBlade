@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.init.ModMobEffects;
@@ -101,6 +102,7 @@ public final class RaizanCleaveEntity extends Entity {
         entity.setStartGameTime(level.getGameTime());
         entity.setSeed(level.random.nextLong() ^ owner.getUUID().getMostSignificantBits());
         entity.setTargetAnchor(targetAnchor);
+        SstBladeCompat.snapshotAffinity(entity, owner);
         if (!level.addFreshEntity(entity)) {
             ACTIVE_CASTERS.remove(owner.getUUID());
             return null;

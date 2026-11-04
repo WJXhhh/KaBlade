@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.LacerateDriveEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -53,7 +53,7 @@ public final class LacerateBladeArts extends SlashArts {
                 .orElse(4.0F);
 
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
-        float totalDamage = SridrCompat.scaleDamage(user, BASE_DAMAGE + extraDamage);
+        float totalDamage = SaCombatScaling.scaleDamage(user, BASE_DAMAGE + extraDamage);
 
         // 玩家朝向 = 飞行方向（匹配 1.12.2 setDriveVector + setInitialSpeed 行为）
         Vec3 lookDir = user.getLookAngle();

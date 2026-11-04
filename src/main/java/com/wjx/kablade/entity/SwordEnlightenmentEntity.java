@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.util.SaDamage;
@@ -65,6 +66,7 @@ public class SwordEnlightenmentEntity extends Entity {
                                                  float baseDamage, Vec3 attackPosition) {
         SwordEnlightenmentEntity entity = new SwordEnlightenmentEntity(ModEntities.SWORD_ENLIGHTENMENT.get(), level);
         entity.initialize(owner, baseDamage, attackPosition);
+        SstBladeCompat.snapshotAffinity(entity, owner);
         level.addFreshEntity(entity);
         return entity;
     }

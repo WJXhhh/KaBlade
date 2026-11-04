@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.init.ModEntities;
@@ -69,7 +70,7 @@ public class RaikiriShieldEntity extends Entity {
         this(ModEntities.RAIKIRI_SHIELD.get(), level);
         this.thrower = thrower;
         this.bladeAttack = bladeAttack;
-        this.damageMultiplier = SridrCompat.damageMultiplier(thrower);
+        this.damageMultiplier = SaCombatScaling.damageMultiplier(thrower);
         this.setPos(thrower.getX(), thrower.getY(), thrower.getZ());
         this.xOld = this.getX();
         this.yOld = this.getY();
@@ -81,6 +82,7 @@ public class RaikiriShieldEntity extends Entity {
 
     public static RaikiriShieldEntity spawn(Level level, LivingEntity thrower, float bladeAttack) {
         RaikiriShieldEntity shield = new RaikiriShieldEntity(level, thrower, bladeAttack);
+        SstBladeCompat.snapshotAffinity(shield, thrower);
         level.addFreshEntity(shield);
         return shield;
     }

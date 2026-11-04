@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -38,7 +38,7 @@ public final class RagingFireArts extends SlashArts {
         final RandomSource rng = level.random;
         final float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F);
-        final float damage = SridrCompat.scaleDamage(user, (DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO)) * 3.0F);
+        final float damage = SaCombatScaling.scaleDamage(user, (DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO)) * 3.0F);
 
         final Vec3 eye = user.getEyePosition(1.0F);
         final Vec3 look = user.getLookAngle();

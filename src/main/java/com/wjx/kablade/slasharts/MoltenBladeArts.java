@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -63,7 +64,7 @@ public final class MoltenBladeArts extends SlashArts {
         float bladeAttack = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = SridrCompat.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR)) * DAMAGE_MULTIPLIER);
+        float damage = SaCombatScaling.scaleDamage(user, (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR)) * DAMAGE_MULTIPLIER);
 
         startLunge(level, user, damage);
 
@@ -82,10 +83,10 @@ public final class MoltenBladeArts extends SlashArts {
         }
         long now = level.getServer().getTickCount();
         LungeState state = new LungeState(level.dimension(), user.getUUID(), damage,
-                now + SaFx.PIERCING_LUNGE_TICKS, now + 1L, user.getBoundingBox());
+                now + SaFx.PIERCING_LUNGE_TICKS, now + 1L, user.getBoundingBox(), SstBladeCompat.affinityScope(user));
         ACTIVE_LUNGES.put(user.getUUID(), state);
         SaFx.applyPiercingBoost(user);
-        damageSweep(level, user, state);
+        state.affinity.accept(() -> damageSweep(level, user, state));
     }
 
     @SubscribeEvent
@@ -116,7 +117,7 @@ public final class MoltenBladeArts extends SlashArts {
 
             state.nextTickAt = now + 1L;
             SaFx.applyPiercingBoost(user);
-            damageSweep(level, user, state);
+            state.affinity.accept(() -> damageSweep(level, user, state));
             return false;
         });
     }
@@ -153,6 +154,7 @@ public final class MoltenBladeArts extends SlashArts {
     }
 
     private static final class LungeState {
+        private final java.util.function.Consumer<Runnable> affinity;
         private final ResourceKey<Level> dimension;
         private final UUID ownerUUID;
         private final float damage;
@@ -163,7 +165,8 @@ public final class MoltenBladeArts extends SlashArts {
         private final Set<UUID> hitTargets = new HashSet<>();
 
         private LungeState(ResourceKey<Level> dimension, UUID ownerUUID,
-                           float damage, long expiresAt, long nextTickAt, AABB lastBox) {
+                           float damage, long expiresAt, long nextTickAt, AABB lastBox, java.util.function.Consumer<Runnable> affinity) {
+            this.affinity = affinity;
             this.dimension = dimension;
             this.ownerUUID = ownerUUID;
             this.damage = damage;

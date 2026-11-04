@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.TreasonMissileEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTarget;
@@ -33,7 +33,7 @@ public final class TreasonArts extends SlashArts {
             // null results, while java.util.Optional.map handles them as empty.
             Entity locked = state.resolve().map(value -> value.getTargetEntity(user.level())).orElse(null);
             SaTarget target = SaTargeting.findTarget(user, locked, 32.0D).orElse(null);
-            float damage = SridrCompat.scaleDamage(user, MathFunc.amplifierCalc(
+            float damage = SaCombatScaling.scaleDamage(user, MathFunc.amplifierCalc(
                     state.map(ISlashBladeState::getBaseAttackModifier).orElse(4.0F), 1.0F) * DAMAGE_MULTIPLIER);
             Vec3 forward = SaFx.flatLook(user);
             Vec3 right = new Vec3(-forward.z, 0, forward.x);

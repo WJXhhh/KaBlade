@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
@@ -70,6 +71,7 @@ public class OriginFreeSwordEntity extends Entity {
         if (owner != null) {
             sword.alreadyHit.add(owner.getUUID());
         }
+        SstBladeCompat.snapshotAffinity(sword, owner);
         level.addFreshEntity(sword);
         return sword;
     }

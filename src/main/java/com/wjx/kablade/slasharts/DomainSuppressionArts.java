@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.ConfinementForceFieldEntity;
 import com.wjx.kablade.entity.OriginFreeSwordEntity;
 import com.wjx.kablade.specialeffect.Oripursuit;
@@ -84,7 +84,7 @@ public final class DomainSuppressionArts extends SlashArts {
                     .ifPresent(state -> state.setTargetEntityId(selected.hitEntity()));
         }
 
-        final float innerDamage = SridrCompat.scaleDamage(user, INNER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 3.0F));
+        final float innerDamage = SaCombatScaling.scaleSummonedSwordDamage(user, INNER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 3.0F));
 
         // 目标上浮
         target.setDeltaMovement(target.getDeltaMovement().add(0, 0.5, 0));
@@ -95,8 +95,8 @@ public final class DomainSuppressionArts extends SlashArts {
         final double groundY = selected.anchor().y;
         final double midY = selected.anchor().y;
         final double topY = selected.anchor().y + 1.0;
-        final float outerDamage = SridrCompat.scaleDamage(user, OUTER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F));
-        final float freeDamage = SridrCompat.scaleDamage(user, GROUND_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F));
+        final float outerDamage = SaCombatScaling.scaleSummonedSwordDamage(user, OUTER_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F));
+        final float freeDamage = SaCombatScaling.scaleDamage(user, GROUND_DAMAGE_BASE + MathFunc.amplifierCalc(bladeAttack, 2.0F));
 
         ConfinementForceFieldEntity field = new ConfinementForceFieldEntity(level, user);
         field.setPos(tx, groundY, tz);
@@ -109,7 +109,7 @@ public final class DomainSuppressionArts extends SlashArts {
         level.sendParticles(ParticleTypes.FLASH, tx, target.getY() + 1.35, tz, 1, 0, 0, 0, 0);
         level.playSound(null, tx, target.getY(), tz, SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 0.9F, 0.7F);
 
-        SaFx.schedule(level, 3, () -> {
+        SaFx.schedule(level, 3, user, () -> {
             if (!target.isAlive()) {
                 return;
             }
@@ -119,7 +119,7 @@ public final class DomainSuppressionArts extends SlashArts {
             level.playSound(null, tx, midY, tz, SoundEvents.ALLAY_HURT, SoundSource.PLAYERS, 0.85F, 0.55F);
         });
 
-        SaFx.schedule(level, 8, () -> {
+        SaFx.schedule(level, 8, user, () -> {
             if (!target.isAlive()) {
                 return;
             }
@@ -129,7 +129,7 @@ public final class DomainSuppressionArts extends SlashArts {
             level.playSound(null, tx, midY, tz, SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.PLAYERS, 0.8F, 1.35F);
         });
 
-        SaFx.schedule(level, 12, () -> {
+        SaFx.schedule(level, 12, user, () -> {
             if (!target.isAlive()) {
                 return;
             }
@@ -139,7 +139,7 @@ public final class DomainSuppressionArts extends SlashArts {
             level.playSound(null, tx, midY, tz, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.75F, 1.2F);
         });
 
-        SaFx.schedule(level, 18, () -> {
+        SaFx.schedule(level, 18, user, () -> {
             if (!target.isAlive()) {
                 return;
             }
@@ -148,7 +148,7 @@ public final class DomainSuppressionArts extends SlashArts {
             level.playSound(null, tx, target.getY(), tz, SoundEvents.TRIDENT_RETURN, SoundSource.PLAYERS, 0.75F, 0.65F);
         });
 
-        SaFx.schedule(level, 24, () -> {
+        SaFx.schedule(level, 24, user, () -> {
             if (!target.isAlive()) {
                 return;
             }

@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.CutMetalRingEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -67,7 +67,7 @@ public final class CutMetalArts extends SlashArts {
         var targets = SaTargeting.uniqueTargets(level, user, bb);
 
         float extraDamage = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
-        final float damageMultiplier = SridrCompat.damageMultiplier(user);
+        final float damageMultiplier = SaCombatScaling.damageMultiplier(user);
 
         for (var selected : targets) {
             LivingEntity target = selected.root();

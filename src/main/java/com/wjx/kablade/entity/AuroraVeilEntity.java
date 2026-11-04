@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.network.protocol.Packet;
@@ -60,6 +61,7 @@ public class AuroraVeilEntity extends Entity {
         veil.setDeltaMovement(velocity);
         veil.owner = owner;
         veil.damage = damage;
+        SstBladeCompat.snapshotAffinity(veil, owner);
         level.addFreshEntity(veil);
         return veil;
     }

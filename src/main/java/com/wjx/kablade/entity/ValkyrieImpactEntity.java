@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTarget;
@@ -69,6 +70,7 @@ public class ValkyrieImpactEntity extends Entity {
         entity.yRotO = yaw;
         entity.setYawRot(yaw);
         entity.setDamage(damage);
+        SstBladeCompat.snapshotAffinity(entity, owner);
         level.addFreshEntity(entity);
         return entity;
     }

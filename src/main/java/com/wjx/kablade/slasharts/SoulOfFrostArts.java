@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.PhantomSwordExEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaDamage;
@@ -54,7 +54,7 @@ public final class SoulOfFrostArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
-        float damage = SridrCompat.scaleDamage(user, (bladeAttack / 5.0F) + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO));
+        float damage = SaCombatScaling.scaleDamage(user, (bladeAttack / 5.0F) + MathFunc.amplifierCalc(bladeAttack, DAMAGE_RATIO));
 
         Vec3 eye = user.getEyePosition(1.0F);
         Vec3 look = user.getLookAngle();

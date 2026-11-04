@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.AuroraVeilEntity;
 import com.wjx.kablade.event.AuroraColorCycling;
 import com.wjx.kablade.util.MathFunc;
@@ -81,9 +81,9 @@ public final class AuroraShiningArts extends SlashArts {
                 .orElse(4.0F);
 
         final float driveDamage = DRIVE_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO);
-        final float swordDamage = SridrCompat.scaleDamage(user, SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO));
-        final float veilDamage = SridrCompat.scaleDamage(user, driveDamage);
-        final float bypassDamage = SridrCompat.scaleDamage(user, AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO));
+        final float swordDamage = SaCombatScaling.scaleSummonedSwordDamage(user, SWORD_BASE + MathFunc.amplifierCalc(bladeAttack, HIT_RATIO));
+        final float veilDamage = SaCombatScaling.scaleDamage(user, driveDamage);
+        final float bypassDamage = SaCombatScaling.scaleDamage(user, AOE_BASE + MathFunc.amplifierCalc(bladeAttack, AOE_RATIO));
 
         // 鈹€鈹€ t=0锛氳搫鍔涳紙涓嶆斁鎷涳紝鍚戝墠钃勫娍锛夆攢鈹€
         if (user instanceof Player player) {
@@ -110,7 +110,7 @@ public final class AuroraShiningArts extends SlashArts {
         }
 
         // 鈹€鈹€ t=6锛氭瀬鍏夊垉娲祦鍚戝墠鍠峰皠 鈹€鈹€
-        SaFx.schedule(level, 6, () -> {
+        SaFx.schedule(level, 6, user, () -> {
             if (!user.isAlive()) return;
             auroraStorm(level, user, rng, driveDamage, veilDamage);
             level.playSound(null, user.getX(), user.getY(), user.getZ(),
@@ -118,7 +118,7 @@ public final class AuroraShiningArts extends SlashArts {
         });
 
         // 鈹€鈹€ t=12锛氭瀬鍏夎嚜澶╄€岄檷锛岀牳鍚戞鍓嶆柟鎵撳嚮鍖?鈹€鈹€
-        SaFx.schedule(level, 12, () -> {
+        SaFx.schedule(level, 12, user, () -> {
             if (!user.isAlive()) return;
             auroraRainAhead(level, user, rng, driveDamage);
             level.playSound(null, user.getX(), user.getY(), user.getZ(),
@@ -126,7 +126,7 @@ public final class AuroraShiningArts extends SlashArts {
         });
 
         // 鈹€鈹€ t=18锛氬悜鍓嶈绌烘瀬鍏夋柀 + 鍓嶆柟寮曠垎 鈹€鈹€
-        SaFx.schedule(level, 18, () -> {
+        SaFx.schedule(level, 18, user, () -> {
             if (!user.isAlive()) return;
             auroraFinale(level, user, rng, bypassDamage, veilDamage);
         });

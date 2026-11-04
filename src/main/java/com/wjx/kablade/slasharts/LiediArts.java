@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
@@ -52,7 +52,7 @@ public final class LiediArts extends SlashArts {
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().mobAttack(user);
 
-        final float extraDamage = SridrCompat.scaleDamage(user, EXTRA_DAMAGE);
+        final float extraDamage = SaCombatScaling.scaleDamage(user, EXTRA_DAMAGE);
         for (SaTarget selected : SaTargeting.uniqueTargets(level, user, box)) {
             LivingEntity target = selected.root();
             if (selected.isMultipartPart()) {

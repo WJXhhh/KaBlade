@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.slasharts.ThunderboltCallTimeline;
@@ -106,6 +107,7 @@ public final class ThunderboltCallEntity extends Entity {
         entity.setSeed(level.random.nextLong() ^ owner.getUUID().getMostSignificantBits());
         entity.setLaunchDirection(launchDirection);
         entity.setStoredTargetAnchor(targetAnchor);
+        SstBladeCompat.snapshotAffinity(entity, owner);
         if (!level.addFreshEntity(entity)) {
             ACTIVE_CASTERS.remove(owner.getUUID());
             return null;

@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.network.InductionCollapseFxPacket;
 import com.wjx.kablade.network.KabladeNetwork;
@@ -114,10 +115,10 @@ public final class InductionCollapseArts extends SlashArts {
                 user.getUUID(),
                 now + SaFx.PIERCING_LUNGE_TICKS,
                 now + 1L,
-                user.getBoundingBox(), SridrCompat.damageMultiplier(user));
+                user.getBoundingBox(), SaCombatScaling.damageMultiplier(user), SstBladeCompat.affinityScope(user));
         ACTIVE_LUNGES.put(user.getUUID(), state);
         SaFx.applyPiercingBoost(user);
-        applyCollapseSweep(level, user, state);
+        state.affinity.accept(() -> applyCollapseSweep(level, user, state));
     }
 
     private static void applyCollapse(ServerLevel level, LivingEntity user, SaTarget selected, float damageMultiplier) {
@@ -133,7 +134,7 @@ public final class InductionCollapseArts extends SlashArts {
                 selected.hitEntity(), level, user, IMPACT_DAMAGE * damageMultiplier);
         ACTIVE_COLLAPSES.put(new CollapseKey(target.getUUID(), user.getUUID()), new CollapseState(
                 level.dimension(), target.getUUID(), selected.hitEntity().getId(), user.getUUID(),
-                now + EFFECT_DURATION, now + DAMAGE_INTERVAL, PULSE_DAMAGE * damageMultiplier));
+                now + EFFECT_DURATION, now + DAMAGE_INTERVAL, PULSE_DAMAGE * damageMultiplier, SstBladeCompat.affinityScope(user)));
 
         level.playSound(null, target.getX(), target.getY(), target.getZ(),
                 SoundEvents.TRIDENT_THUNDER, SoundSource.PLAYERS, 0.75F, 1.55F);
@@ -185,8 +186,8 @@ public final class InductionCollapseArts extends SlashArts {
 
             int age = (int) (EFFECT_DURATION - (state.expiresAt - now));
             if (now >= state.nextDamageAt && selected != null) {
-                com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                        selected.hitEntity(), level, owner, state.pulseDamage);
+                state.affinity.accept(() -> com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
+                        selected.hitEntity(), level, owner, state.pulseDamage));
                 state.nextDamageAt = now + DAMAGE_INTERVAL;
             }
             if (age % 6 == 0) {
@@ -225,7 +226,7 @@ public final class InductionCollapseArts extends SlashArts {
 
             state.nextTickAt = now + 1L;
             SaFx.applyPiercingBoost(user);
-            applyCollapseSweep(level, user, state);
+            state.affinity.accept(() -> applyCollapseSweep(level, user, state));
             return false;
         });
     }
@@ -255,6 +256,7 @@ public final class InductionCollapseArts extends SlashArts {
     }
 
     private static final class CollapseState {
+        private final java.util.function.Consumer<Runnable> affinity;
         private final float pulseDamage;
         private final ResourceKey<Level> dimension;
         private final UUID targetUUID;
@@ -265,7 +267,8 @@ public final class InductionCollapseArts extends SlashArts {
 
         private CollapseState(ResourceKey<Level> dimension, UUID targetUUID, int targetEntityId,
                               UUID ownerUUID,
-                              long expiresAt, long nextDamageAt, float pulseDamage) {
+                              long expiresAt, long nextDamageAt, float pulseDamage, java.util.function.Consumer<Runnable> affinity) {
+            this.affinity = affinity;
             this.pulseDamage = pulseDamage;
             this.dimension = dimension;
             this.targetUUID = targetUUID;
@@ -280,6 +283,7 @@ public final class InductionCollapseArts extends SlashArts {
     }
 
     private static final class LungeState {
+        private final java.util.function.Consumer<Runnable> affinity;
         private final float damageMultiplier;
         private final ResourceKey<Level> dimension;
         private final UUID ownerUUID;
@@ -289,7 +293,8 @@ public final class InductionCollapseArts extends SlashArts {
         private final Set<UUID> hitTargets = new HashSet<>();
 
         private LungeState(ResourceKey<Level> dimension, UUID ownerUUID,
-                           long expiresAt, long nextTickAt, AABB lastBox, float damageMultiplier) {
+                           long expiresAt, long nextTickAt, AABB lastBox, float damageMultiplier, java.util.function.Consumer<Runnable> affinity) {
+            this.affinity = affinity;
             this.damageMultiplier = damageMultiplier;
             this.dimension = dimension;
             this.ownerUUID = ownerUUID;

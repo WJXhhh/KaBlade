@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.ValkyrieImpactEntity;
 import com.wjx.kablade.init.ModComboStates;
 import com.wjx.kablade.util.MathFunc;
@@ -44,7 +44,7 @@ public final class ValkyrieImpactArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(5.0F);
-        float totalDamage = SridrCompat.scaleDamage(user, BASE_DAMAGE + (float) MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR));
+        float totalDamage = SaCombatScaling.scaleDamage(user, BASE_DAMAGE + (float) MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR));
 
         // Calculate impact position in front of caster along horizontal look direction
         Vec3 look = user.getLookAngle();

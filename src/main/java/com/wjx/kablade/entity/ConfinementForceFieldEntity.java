@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.init.ModMobEffects;
 import com.wjx.kablade.init.ModEntities;
@@ -59,13 +60,15 @@ public class ConfinementForceFieldEntity extends Entity {
         this(ModEntities.CONFINEMENT_FORCE_FIELD.get(), level);
         this.owner = owner;
         this.ownerUUID = owner.getUUID();
-        this.damageMultiplier = SridrCompat.damageMultiplier(owner);
+        this.damageMultiplier = SaCombatScaling.damageMultiplier(owner);
+        SstBladeCompat.snapshotAffinity(this, owner);
         this.setPos(owner.getX(), owner.getY(), owner.getZ());
         this.setYRot(owner.getYRot());
     }
 
     public static ConfinementForceFieldEntity spawn(Level level, LivingEntity owner) {
         ConfinementForceFieldEntity field = new ConfinementForceFieldEntity(level, owner);
+        SstBladeCompat.snapshotAffinity(field, owner);
         level.addFreshEntity(field);
         return field;
     }

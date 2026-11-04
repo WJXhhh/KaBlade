@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.blades.ModSlashArts;
 import com.wjx.kablade.init.ModMobEffects;
@@ -88,7 +89,7 @@ public final class RaidenCycloneArts extends SlashArts {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float extra = MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR);
-        float totalDamage = SridrCompat.scaleDamage(user, DAMAGE_MULTIPLIER * 1.35F * (60.0F + 2.0F * extra));
+        float totalDamage = SaCombatScaling.scaleDamage(user, DAMAGE_MULTIPLIER * 1.35F * (60.0F + 2.0F * extra));
 
         long now = level.getServer().getTickCount();
         long castId = NEXT_CAST_ID.getAndIncrement();
@@ -96,7 +97,7 @@ public final class RaidenCycloneArts extends SlashArts {
         ActiveCast cast = new ActiveCast(castId, level.dimension(), user.getUUID(),
                 target == null ? null : target.root().getUUID(),
                 target == null ? -1 : target.hitEntity().getId(), now, level.getGameTime(), seed,
-                origin, targetPoint, targetPoint, basisRotation, totalDamage);
+                origin, targetPoint, targetPoint, basisRotation, totalDamage, SstBladeCompat.affinityScope(user));
         ACTIVE.put(user.getUUID(), cast);
         EMPulsar.activate(user, blade);
 
@@ -245,8 +246,8 @@ public final class RaidenCycloneArts extends SlashArts {
 
         for (var selected : targets) {
             LivingEntity target = selected.root();
-            SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), level, user, user, damage);
+            cast.affinity.accept(() -> SaDamage.hurtSlashArtNoIFrame(
+                    selected.hitEntity(), level, user, user, damage));
             target.addEffect(new MobEffectInstance(ModMobEffects.PARALYSIS.get(),
                     PARALYSIS_DURATION, PARALYSIS_AMPLIFIER));
             if (user instanceof Player player) player.crit(target);
@@ -302,6 +303,7 @@ public final class RaidenCycloneArts extends SlashArts {
     }
 
     private static final class ActiveCast {
+        private final java.util.function.Consumer<Runnable> affinity;
         private final long castId;
         private final ResourceKey<Level> dimension;
         private final UUID ownerUuid;
@@ -323,7 +325,8 @@ public final class RaidenCycloneArts extends SlashArts {
         private ActiveCast(long castId, ResourceKey<Level> dimension, UUID ownerUuid, UUID targetUuid,
                            int targetId, long startServerTick, long startGameTime, long seed, Vec3 origin,
                            Vec3 virtualTarget, Vec3 lastTargetPosition, float basisRotation,
-                           float totalDamage) {
+                           float totalDamage, java.util.function.Consumer<Runnable> affinity) {
+            this.affinity = affinity;
             this.castId = castId;
             this.dimension = dimension;
             this.ownerUuid = ownerUuid;

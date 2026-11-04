@@ -1,6 +1,6 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.entity.ButterflySwordEntity;
 import com.wjx.kablade.util.MathFunc;
 import com.wjx.kablade.util.SaTargeting;
@@ -51,7 +51,7 @@ public final class PhantomButterflySArts extends SlashArts {
 
         if (target == null) {
             // No target: scatter 12 phantom swords around the user.
-            final float damage = SridrCompat.scaleDamage(user, (bladeAttack + MathFunc.amplifierCalc(bladeAttack, 4.0F))
+            final float damage = SaCombatScaling.scaleDamage(user, (bladeAttack + MathFunc.amplifierCalc(bladeAttack, 4.0F))
                     / 10.0F * DAMAGE_MULTIPLIER);
             for (int i = 0; i < SWORDS_NO_TARGET; i++) {
                 float a = rng.nextFloat() * 100.0F;
@@ -71,7 +71,7 @@ public final class PhantomButterflySArts extends SlashArts {
             }
         } else {
             // Locked target: spawn 50 delayed tracking swords around the target.
-            final float damage = SridrCompat.scaleDamage(user, (bladeAttack + MathFunc.amplifierCalc(bladeAttack, 2.0F))
+            final float damage = SaCombatScaling.scaleDamage(user, (bladeAttack + MathFunc.amplifierCalc(bladeAttack, 2.0F))
                     / 50.0F * 3.0F * DAMAGE_MULTIPLIER);
             for (int i = 0; i < SWORDS_WITH_TARGET; i++) {
                 float a = rng.nextFloat() * 100.0F;

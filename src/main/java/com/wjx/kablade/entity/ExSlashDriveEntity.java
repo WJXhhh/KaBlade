@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
 import com.wjx.kablade.util.SaTarget;
@@ -109,6 +110,7 @@ public class ExSlashDriveEntity extends Entity {
         if (thrower != null) {
             e.alreadyHit.add(thrower.getUUID());
         }
+        SstBladeCompat.snapshotAffinity(e, thrower);
         level.addFreshEntity(e);
         return e;
     }

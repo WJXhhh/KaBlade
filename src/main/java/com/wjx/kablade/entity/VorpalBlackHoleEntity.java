@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTarget;
 import com.wjx.kablade.util.SaTargeting;
@@ -85,6 +86,7 @@ public class VorpalBlackHoleEntity extends Entity {
                                               int lifetime, float openingDamage, float pulseDamage) {
         VorpalBlackHoleEntity hole = new VorpalBlackHoleEntity(level, owner, pos,
                 lifetime, openingDamage, pulseDamage);
+        SstBladeCompat.snapshotAffinity(hole, owner);
         level.addFreshEntity(hole);
         return hole;
     }

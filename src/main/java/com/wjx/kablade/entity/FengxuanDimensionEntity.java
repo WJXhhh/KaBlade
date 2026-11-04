@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
 import net.minecraft.network.protocol.Packet;
@@ -66,6 +67,7 @@ public final class FengxuanDimensionEntity extends Entity {
         entity.setColor(color);
         entity.setLifetime(lifetime);
         entity.setSeed(level.random.nextInt(50));
+        SstBladeCompat.snapshotAffinity(entity, owner);
         level.addFreshEntity(entity);
         return entity;
     }

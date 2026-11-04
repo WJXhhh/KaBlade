@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,6 +36,7 @@ public class FlareEdgeEntity extends ExSlashDriveEntity {
         e.setMultiHit(multiHit);
         e.blade = thrower.getMainHandItem();
         if (thrower != null) e.alreadyHit.add(thrower.getUUID());
+        SstBladeCompat.snapshotAffinity(e, thrower);
         level.addFreshEntity(e);
         return e;
     }

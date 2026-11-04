@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -66,6 +67,8 @@ public class LacerateDriveEntity extends ExSlashDriveEntity {
         // 粒子：EXPLOSION_NORMAL
         e.setParticleEnabled(true);
         e.setParticleStyle("EXPLOSION_NORMAL");
+
+        SstBladeCompat.snapshotAffinity(e, thrower);
 
         level.addFreshEntity(e);
         return e;

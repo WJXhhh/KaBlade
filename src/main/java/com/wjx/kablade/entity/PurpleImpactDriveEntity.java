@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaDamage;
 import com.wjx.kablade.util.SaTarget;
@@ -66,6 +67,8 @@ public class PurpleImpactDriveEntity extends ExSlashDriveEntity {
         // 粒子：EXPLOSION_NORMAL
         e.setParticleEnabled(true);
         e.setParticleStyle("EXPLOSION_NORMAL");
+
+        SstBladeCompat.snapshotAffinity(e, thrower);
 
         level.addFreshEntity(e);
         return e;

@@ -1,6 +1,7 @@
 package com.wjx.kablade.entity;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.MathFunc;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -47,8 +48,9 @@ public class RainUmbrellaEntity extends Entity {
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(4.0F);
         float extraDamage = MathFunc.amplifierCalc(baseAttack, 1.25F);
-        RainUmbrellaEntity entity = new RainUmbrellaEntity(level, owner, SridrCompat.scaleDamage(owner, (2.0F + extraDamage) / 3.0F));
+        RainUmbrellaEntity entity = new RainUmbrellaEntity(level, owner, SaCombatScaling.scaleDamage(owner, (2.0F + extraDamage) / 3.0F));
         entity.setPos(x, y, z);
+        SstBladeCompat.snapshotAffinity(entity, owner);
         level.addFreshEntity(entity);
         return entity;
     }
@@ -68,8 +70,9 @@ public class RainUmbrellaEntity extends Entity {
         if (this.tickCount > 5 && this.tickCount < 70 && this.owner != null) {
             ServerLevel level = (ServerLevel) this.level();
             for (int i = 0; i < 4; i++) {
-                SummonedHedraEntity.spawn(level, this.owner, this.getX(), this.getY() + 1.0D, this.getZ(),
+                SummonedHedraEntity child = SummonedHedraEntity.spawn(level, this.owner, this.getX(), this.getY() + 1.0D, this.getZ(),
                         this.hedraDamage, 0.0F, level.random.nextFloat() * 360.0F);
+                SstBladeCompat.inheritAffinity(child, this);
             }
         }
 

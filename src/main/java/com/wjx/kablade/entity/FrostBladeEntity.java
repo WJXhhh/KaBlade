@@ -1,5 +1,6 @@
 package com.wjx.kablade.entity;
 
+import com.wjx.kablade.compat.SstBladeCompat;
 import com.wjx.kablade.init.ModEntities;
 import com.wjx.kablade.util.SaTargeting;
 import com.wjx.kablade.util.SaTarget;
@@ -90,6 +91,7 @@ public class FrostBladeEntity extends PhantomSwordExEntity {
         if (target != null) {
             blade.setTarget(target);
         }
+        SstBladeCompat.snapshotAffinity(blade, thrower);
         level.addFreshEntity(blade);
         return blade;
     }

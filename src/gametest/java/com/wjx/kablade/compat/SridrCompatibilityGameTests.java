@@ -5,8 +5,10 @@ import com.wjx.kablade.entity.RaikiriShieldEntity;
 import com.wjx.kablade.init.ModItems;
 import com.wjx.kablade.slasharts.BreakTheDawnArts;
 import com.wjx.kablade.slasharts.LiediArts;
+import com.wjx.kablade.slasharts.NarukamiDivinityArts;
 import com.wjx.kablade.slasharts.NuclearShockArts;
 import com.wjx.kablade.util.MathFunc;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.util.SaDamage;
 import mods.flammpfeil.slashblade.entity.EntityBlisteringSwords;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
@@ -26,6 +28,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.gametest.GameTestHolder;
@@ -68,8 +71,8 @@ public final class SridrCompatibilityGameTests {
     public static void fixedExtraDamageDoesNotScaleManagedHitsTwice(GameTestHelper helper) {
         Zombie owner = owner(helper);
         DamageProbe target = target(helper, owner, new Vec3(2.0D, 2.0D, 3.0D));
-        float multiplier = expectedMultiplier(owner.getMainHandItem());
         new LiediArts(entity -> ComboStateRegistry.NONE.getId()).doArts(SlashArts.ArtsType.Success, owner);
+        final float multiplier = expectedSkillMultiplier(owner);
         helper.assertTrue(target.hits.stream().anyMatch(hit -> hit.source.is(SaDamage.SLASH_ART)
                         && near(hit.amount, 93.75F * multiplier)),
                 "Liedi's fixed extra hit must receive exactly one refine multiplier");
@@ -86,7 +89,7 @@ public final class SridrCompatibilityGameTests {
         Zombie owner = owner(helper);
         DamageProbe target = target(helper, owner, new Vec3(2.0D, 2.0D, 3.5D));
         float expected = (17.0F + MathFunc.amplifierCalc(BASE_ATTACK, 6.0F))
-                * expectedMultiplier(owner.getMainHandItem());
+                * expectedSkillMultiplier(owner);
         new NuclearShockArts(entity -> ComboStateRegistry.NONE.getId())
                 .doArts(SlashArts.ArtsType.Success, owner);
         owner.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
@@ -102,7 +105,7 @@ public final class SridrCompatibilityGameTests {
     public static void nativeSwordAndDriveUseDifferentDamagePaths(GameTestHelper helper) {
         Zombie owner = owner(helper);
         float expectedSword = (0.94F + MathFunc.amplifierCalc(BASE_ATTACK, 0.112F))
-                * expectedMultiplier(owner.getMainHandItem());
+                * expectedSkillMultiplier(owner);
         float expectedDrive = 0.56F + MathFunc.amplifierCalc(BASE_ATTACK, 0.112F);
         new BreakTheDawnArts(entity -> ComboStateRegistry.NONE.getId())
                 .doArts(SlashArts.ArtsType.Success, owner);
@@ -128,7 +131,7 @@ public final class SridrCompatibilityGameTests {
         Zombie owner = owner(helper);
         DamageProbe target = target(helper, owner, new Vec3(2.0D, 2.0D, 2.4D));
         float expected = RaikiriShieldEntity.calcContactDamage(BASE_ATTACK)
-                * expectedMultiplier(owner.getMainHandItem());
+                * expectedSkillMultiplier(owner);
         RaikiriShieldEntity shield = new RaikiriShieldEntity(helper.getLevel(), owner, BASE_ATTACK);
         close(helper, shield.getShieldBlood(), RaikiriShieldEntity.calcShieldBlood(BASE_ATTACK),
                 "damage compatibility must not multiply shield durability");
@@ -137,6 +140,59 @@ public final class SridrCompatibilityGameTests {
         helper.assertTrue(target.hits.stream().anyMatch(hit -> near(hit.amount, expected)),
                 "shield contact damage must retain the casting blade's multiplier");
         helper.succeed();
+    }
+
+    @GameTest(template = "multipart_targeting", batch = "sridr-narukami", timeoutTicks = 70)
+    public static void narukami768AppliesFullDamageToRealWarden(GameTestHelper helper) {
+        Zombie owner = owner(helper);
+        ItemStack blade = new ItemStack(ModItems.KABLADE_HONKAI_BLADE.get());
+        blade.enchant(Enchantments.SHARPNESS, 10);
+        blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
+            state.setBaseAttackModifier(64.0F);
+            state.setRefine(768);
+        });
+        owner.setItemInHand(InteractionHand.MAIN_HAND, blade);
+        var warden = helper.spawn(EntityType.WARDEN, new Vec3(2.0D, 2.0D, 3.5D));
+        warden.setNoAi(true);
+        warden.setNoGravity(true);
+        warden.setAbsorptionAmount(20_000.0F);
+        float initialPool = warden.getHealth() + warden.getAbsorptionAmount();
+        Vec3 position = warden.position();
+        float multiplier = expectedSkillMultiplier(owner);
+        float expected = (54.0F + MathFunc.amplifierCalc(64.0F, 14.0F)) * 8.40F * multiplier;
+        blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> state.setTargetEntityId(warden));
+        new NarukamiDivinityArts(entity -> ComboStateRegistry.NONE.getId())
+                .doArts(SlashArts.ArtsType.Success, owner);
+        owner.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        // Hold the target in the cast volume: this test measures all nine real
+        // damage events, independently of movement, hit selection and armor probes.
+        for (int tick = 1; tick < 36; tick++) {
+            helper.runAfterDelay(tick, () -> {
+                warden.setPos(position.x, position.y, position.z);
+                warden.setDeltaMovement(Vec3.ZERO);
+            });
+        }
+        helper.runAfterDelay(36, () -> {
+            float actual = initialPool - warden.getHealth() - warden.getAbsorptionAmount();
+            helper.assertTrue(Math.abs(actual - expected) < 0.05F,
+                    "768-refine Narukami must apply its complete scaled damage through real Warden.hurt; expected "
+                            + expected + ", got " + actual);
+            helper.succeed();
+        });
+    }
+
+    private static float expectedSkillMultiplier(Zombie owner) {
+        double weapon = owner.getMainHandItem().getAttributeModifiers(EquipmentSlot.MAINHAND)
+                .get(Attributes.ATTACK_DAMAGE).stream()
+                .filter(modifier -> "Weapon modifier".equals(modifier.getName()))
+                .findFirst().orElseThrow().getAmount();
+        double status = owner.hasEffect(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST)
+                ? 3.0D * (owner.getEffect(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST).getAmplifier() + 1) : 0;
+        float base = owner.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
+                .map(state -> state.getBaseAttackModifier()).orElseThrow();
+        double enchant = net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageBonus(
+                owner.getMainHandItem(), net.minecraft.world.entity.MobType.UNDEFINED);
+        return (float) ((1.0D + weapon + status + enchant) / base);
     }
 
     private static ItemStack blade() {
@@ -158,6 +214,7 @@ public final class SridrCompatibilityGameTests {
 
     private static Zombie owner(GameTestHelper helper) {
         Zombie owner = new Zombie(EntityType.ZOMBIE, helper.getLevel());
+        owner.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(1.0D);
         owner.setNoAi(true);
         owner.setNoGravity(true);
         Vec3 position = helper.absoluteVec(new Vec3(2.0D, 2.0D, 2.0D));

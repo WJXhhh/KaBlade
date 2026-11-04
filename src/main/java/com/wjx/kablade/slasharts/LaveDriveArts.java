@@ -1,6 +1,7 @@
 package com.wjx.kablade.slasharts;
 
-import com.wjx.kablade.compat.SridrCompat;
+import com.wjx.kablade.compat.SstBladeCompat;
+import com.wjx.kablade.util.SaCombatScaling;
 import com.wjx.kablade.Main;
 import com.wjx.kablade.entity.FlareEdgeEntity;
 import com.wjx.kablade.util.SaTargeting;
@@ -95,7 +96,7 @@ public final class LaveDriveArts extends SlashArts {
         for (var selected : targets) {
             LivingEntity target = selected.root();
             com.wjx.kablade.util.SaDamage.hurtSlashArtNoIFrame(
-                    selected.hitEntity(), level, user, SridrCompat.scaleDamage(user, baseAttack));
+                    selected.hitEntity(), level, user, SaCombatScaling.scaleDamage(user, baseAttack));
             target.invulnerableTime = 0;
             level.sendParticles(ParticleTypes.CRIT,
                     target.getX(), target.getY(0.5), target.getZ(),
@@ -113,7 +114,7 @@ public final class LaveDriveArts extends SlashArts {
         }
 
         // 鈹€鈹€ 鏋勫缓閫愪釜鐢熸垚鐨勯槦鍒楋紙4 鍙戯紝姣?3 tick 鍑轰竴鏍癸級 鈹€鈹€鈹€鈹€鈹€鈹€
-        magicDamage = SridrCompat.scaleDamage(user, magicDamage);
+        magicDamage = SaCombatScaling.scaleDamage(user, magicDamage);
         Vec3 forward = user.getLookAngle();
         Vec3 right = new Vec3(-forward.z, 0, forward.x).normalize();
         double depth = 3.0;
@@ -165,6 +166,7 @@ public final class LaveDriveArts extends SlashArts {
 
     /** 涓€鏉″緟鐢熸垚鐨勯鍒冭褰曘€?*/
     private static class FlareSpawnEntry {
+        private final java.util.function.Consumer<Runnable> affinity;
         final ServerLevel level;
         final LivingEntity user;
         final Vec3 pos, vel;
@@ -178,6 +180,7 @@ public final class LaveDriveArts extends SlashArts {
                         boolean particle, String pstyle, long spawnTick) {
             this.level = level;
             this.user = user;
+            this.affinity = SstBladeCompat.affinityScope(user);
             this.pos = pos;
             this.vel = vel;
             this.damage = damage;
@@ -187,6 +190,10 @@ public final class LaveDriveArts extends SlashArts {
         }
 
         void spawn() {
+            affinity.accept(this::spawnCaptured);
+        }
+
+        private void spawnCaptured() {
             FlareEdgeEntity flare = FlareEdgeEntity.spawn(level, user, pos, vel,
                     damage, DRIVE_COLOR, 60, 0.0F, true);
             flare.setParticleEnabled(particle);
