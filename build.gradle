@@ -264,15 +264,16 @@ dependencies {
     // Forge already ships Mixin at runtime, so this is only needed at compile time.
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    // JEI — 运行时启用
+    // JEI — compile-only by default; enableJeiRuntime=true opts into the development runtime.
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    if ((project.findProperty('enableJeiRuntime') ?: 'true').toString().toBoolean()) {
+    if ((project.findProperty('enableJeiRuntime') ?: 'false').toString().toBoolean()) {
         runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     }
 
-    // EMI — optional integration; compile-only here because the runtime is supplied by the user's EMI installation.
+    // EMI — enabled in the development runtime and available to KBlade's EMI integration at compile time.
     compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
+    runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
 
     // Client-only dev runtime shader stack for runClient. Controlled by the
     // enableShaderMods Gradle property, which is enabled by default in gradle.properties.
