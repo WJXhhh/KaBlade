@@ -1,0 +1,32 @@
+{
+  "type": "slashblade:shaped_blade",
+  "blade": "kablade:judgment_by_dawn",
+  "category": "equipment",
+  "key": {
+    "T": {
+      "item": "kablade:thunder_crystal"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "V": {
+      "type": "slashblade:blade",
+      "item": "kablade:kablade_honkai_named",
+      "request": {
+        "name": "kablade:violet_knight"
+      }
+    },
+    "L": {
+      "item": "minecraft:lapis_block"
+    }
+  },
+  "pattern": [
+    " T ",
+    "GVG",
+    "L L"
+  ],
+  "result": {
+    "item": "kablade:kablade_honkai_named"
+  },
+  "show_notification": true
+}
