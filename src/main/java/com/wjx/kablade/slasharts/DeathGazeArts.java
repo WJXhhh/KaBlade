@@ -26,6 +26,7 @@ public final class DeathGazeArts extends SlashArts {
 
     private static final float BASE_DAMAGE = 16.0F;
     private static final float ATTACK_FACTOR = 4.5F;
+    private static final float DAMAGE_MULTIPLIER = 1.5F;
 
     public DeathGazeArts(Function<LivingEntity, ResourceLocation> state) {
         super(state);
@@ -43,7 +44,8 @@ public final class DeathGazeArts extends SlashArts {
         float bladeAttack = blade.getCapability(ItemSlashBlade.BLADESTATE)
                 .map(ISlashBladeState::getBaseAttackModifier)
                 .orElse(12.0F);
-        float totalDamage = SaCombatScaling.scaleDamage(user, BASE_DAMAGE + (float) MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR));
+        float totalDamage = SaCombatScaling.scaleDamage(user,
+                (BASE_DAMAGE + MathFunc.amplifierCalc(bladeAttack, ATTACK_FACTOR)) * DAMAGE_MULTIPLIER);
 
         // Spawn DeathGazeBeamEntity
         DeathGazeBeamEntity.spawn(level, user, totalDamage);

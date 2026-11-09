@@ -7,6 +7,7 @@ import com.wjx.kablade.specialeffect.BurstDrive;
 import com.wjx.kablade.specialeffect.DivinePenalty;
 import com.wjx.kablade.specialeffect.EMInduction;
 import com.wjx.kablade.specialeffect.FlameThorns;
+import com.wjx.kablade.specialeffect.LightningPunishment;
 import com.wjx.kablade.specialeffect.EMPulsar;
 import com.wjx.kablade.specialeffect.FuelTheRuin;
 import com.wjx.kablade.specialeffect.GlacialBane;
@@ -107,4 +108,6 @@ public final class ModSpecialEffects {
 
     private ModSpecialEffects() {
     }
+    public static final RegistryObject<SpecialEffect> LIGHTNING_PUNISHMENT = REGISTRY.register(
+            "lightning_punishment", LightningPunishment::new);
 }

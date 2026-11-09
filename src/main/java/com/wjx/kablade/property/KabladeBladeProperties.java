@@ -4,6 +4,7 @@ import com.wjx.kablade.init.KabladeCapabilities;
 import com.wjx.kablade.specialeffect.BloodAwakening;
 import com.wjx.kablade.specialeffect.FuelTheRuin;
 import com.wjx.kablade.specialeffect.RoaringNimbus;
+import com.wjx.kablade.specialeffect.LightningPunishment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
@@ -95,6 +96,13 @@ public final class KabladeBladeProperties {
                 .intValue(RoaringNimbus::readiness)
                 .activeWhen(RoaringNimbus::isHeldBy)
                 .maxValue(RoaringNimbus.COOLDOWN_TICKS)
+                .build());
+
+        PlayerPropertyRegistry.register(PlayerProperty.builder("lightning_punishment")
+                .displayName(Component.translatable("prop.kablade.lightning_punishment").withStyle(ChatFormatting.YELLOW))
+                .intValue(LightningPunishment::readiness)
+                .activeWhen(LightningPunishment::isHeldBy)
+                .maxValue(LightningPunishment.COOLDOWN_TICKS)
                 .build());
 
         PlayerPropertyRegistry.register(PlayerProperty.builder("blood_awakening")

@@ -529,6 +529,16 @@ public final class KabladeRenderTypes extends RenderType {
                     .setWriteMaskState(COLOR_WRITE)
                     .createCompositeState(false));
 
+    private static final RenderType LIGHTNING_PUNISHMENT = create(
+            "kablade_lightning_punishment", DefaultVertexFormat.POSITION_COLOR_TEX,
+            VertexFormat.Mode.QUADS, 65536, false, true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(new RenderStateShard.ShaderStateShard(KabladeShaders::lightningPunishment))
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST).setCullState(NO_CULL)
+                    .setWriteMaskState(COLOR_WRITE).createCompositeState(false));
+    public static RenderType lightningPunishment() { return LIGHTNING_PUNISHMENT; }
+
     private static final RenderType RAIDEN_CYCLONE = create(
             "kablade_raiden_cyclone",
             DefaultVertexFormat.POSITION_COLOR_TEX,

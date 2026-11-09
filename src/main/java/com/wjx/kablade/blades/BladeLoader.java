@@ -75,6 +75,7 @@ import com.wjx.kablade.blades.honkai.claymore.NuclearPRI;
 import com.wjx.kablade.blades.honkai.claymore.NuclearPRIEX;
 import com.wjx.kablade.blades.honkai.claymore.ProtoPulseCleaver;
 import com.wjx.kablade.blades.honkai.claymore.RangersSawtooth;
+import com.wjx.kablade.blades.honkai.claymore.JudgmentByDawn;
 import com.wjx.kablade.blades.honkai.claymore.Vanguard;
 import com.wjx.kablade.blades.honkai.claymore.VioletKnight;
 import com.wjx.kablade.blades.honkai.claymore.WotanCleaver;
@@ -193,6 +194,7 @@ public final class BladeLoader {
     public static BladeDefineBase BETRAYER;
     public static BladeDefineBase WOTAN_CLEAVER;
     public static BladeDefineBase RANGERS_SAWTOOTH;
+    public static BladeDefineBase JUDGMENT_BY_DAWN;
     // 万物皆刃线（首批 5 把招牌刀，世界合成获取）
     public static BladeDefineBase AW_LIURRH;
     public static BladeDefineBase AW_CHANSHIZHE;
@@ -315,6 +317,7 @@ public final class BladeLoader {
             "dragon_spine",
             "betrayer",
             "rangers_sawtooth",
+            "judgment_by_dawn",
             // 龙一文字线
             "splight_initial",
             "splight_normal",
@@ -356,6 +359,7 @@ public final class BladeLoader {
             "wotan_cleaver",
             "violet_knight",
             "rangers_sawtooth",
+            "judgment_by_dawn",
             "nuclear_pri",
             "nuclear_pri_ex",
             "vanguard",
@@ -475,6 +479,7 @@ public final class BladeLoader {
         WOTAN_CLEAVER = new WotanCleaver(context);
         VIOLET_KNIGHT = new VioletKnight(context);
         RANGERS_SAWTOOTH = new RangersSawtooth(context);
+        JUDGMENT_BY_DAWN = new JudgmentByDawn(context);
         NUCLEAR_PRI = new NuclearPRI(context);
         NUCLEAR_PRI_EX = new NuclearPRIEX(context);
         VANGUARD = new Vanguard(context);

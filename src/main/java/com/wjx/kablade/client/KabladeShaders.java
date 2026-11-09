@@ -27,6 +27,7 @@ public final class KabladeShaders {
     private static ShaderInstance stageLight;
     private static ShaderInstance shockImpact;
     private static ShaderInstance raidenCyclone;
+    private static ShaderInstance lightningPunishment;
     private static ShaderInstance zaizan;
     private static ShaderInstance utpalaAura;
     private static ShaderInstance swordEnlightenment;
@@ -72,6 +73,9 @@ public final class KabladeShaders {
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "shock_impact"),
                         DefaultVertexFormat.POSITION_COLOR_TEX),
                 shader -> shockImpact = shader);
+        event.registerShader(new ShaderInstance(event.getResourceProvider(),
+                        ResourceLocation.fromNamespaceAndPath(Main.MODID, "lightning_punishment"),
+                        DefaultVertexFormat.POSITION_COLOR_TEX), shader -> lightningPunishment = shader);
         event.registerShader(new ShaderInstance(
                         event.getResourceProvider(),
                         ResourceLocation.fromNamespaceAndPath(Main.MODID, "raiden_cyclone"),
@@ -205,6 +209,8 @@ public final class KabladeShaders {
     public static ShaderInstance shockImpact() {
         return shockImpact;
     }
+
+    public static ShaderInstance lightningPunishment() { return lightningPunishment; }
 
     public static ShaderInstance raidenCyclone() {
         return raidenCyclone;

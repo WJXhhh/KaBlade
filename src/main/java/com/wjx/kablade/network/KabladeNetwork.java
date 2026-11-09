@@ -55,6 +55,12 @@ public final class KabladeNetwork {
                 .consumerMainThread((packet, context) -> RaidenCycloneFxPacket.handle(packet, context.get()))
                 .add();
 
+        CHANNEL.messageBuilder(LightningPunishmentPacket.class, 7)
+                .encoder(LightningPunishmentPacket::encode)
+                .decoder(LightningPunishmentPacket::decode)
+                .consumerMainThread((packet, context) -> LightningPunishmentPacket.handle(packet, context.get()))
+                .add();
+
         CHANNEL.messageBuilder(RaidenCycloneEndPacket.class, 6)
                 .encoder(RaidenCycloneEndPacket::encode)
                 .decoder(RaidenCycloneEndPacket::decode)
