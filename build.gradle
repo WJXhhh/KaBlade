@@ -1,7 +1,12 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url = 'https://maven.gofancy.wtf/releases' }
+        // Official mirror for historical Forge artifacts when Forge Maven is unavailable.
+        maven {
+            url = 'https://maven.neoforged.net/releases'
+            content { includeGroupByRegex 'net\\.minecraftforge(\\..*)?' }
+        }
+        // FancyGradle's published releases remain available in its GitLab package registry.
         maven { url = 'https://gitlab.com/api/v4/projects/26758973/packages/maven' }
         maven {
             name = 'MixinGradle'
@@ -13,10 +18,10 @@ buildscript {
 
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+'
-        classpath group: 'wtf.gofancy.fancygradle', name: 'wtf.gofancy.fancygradle.gradle.plugin',    version: '+'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.77'
+        classpath group: 'wtf.gofancy.fancygradle', name: 'wtf.gofancy.fancygradle.gradle.plugin',    version: '1.1.2-0'
         // MixinGradle:
-        classpath "org.spongepowered:mixingradle:0.7.+"
+        classpath "org.spongepowered:mixingradle:0.7.38"
     }
 }
 
@@ -95,9 +100,30 @@ fancyGradle {
     }
 }
 
+// FancyGradle 1.1.2 targets a retired JFrog repository and LegacyDev 0.2.4.0.
+// Apply this after its patches so the published plugin works without a local fork.
+afterEvaluate {
+    repositories.named('Su5ed LegacyDev Fork') {
+        url = uri('https://maven.su5ed.dev/releases')
+        content { includeModule 'net.minecraftforge', 'legacydev' }
+    }
+    configurations.matching { it.name.startsWith('runtimeClasspath') }.configureEach {
+        resolutionStrategy.eachDependency {
+            if (requested.group == 'net.minecraftforge' && requested.name == 'legacydev') {
+                useVersion '0.2.4.1'
+                because 'LegacyDev moved from the retired JFrog repository to maven.su5ed.dev'
+            }
+        }
+    }
+}
+
 repositories {
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
+    maven {
+        url = 'https://maven.neoforged.net/releases'
+        content { includeGroupByRegex 'net\\.minecraftforge(\\..*)?' }
+    }
 
     // Curse Maven：提供 Botania 与 ExtraBotany 的 1.12.2 开发依赖
     maven { url = 'https://cursemaven.com' }
@@ -148,26 +174,14 @@ dependencies {
     implementation 'org.openjfx:javafx-fxml:11'
 }
 
-task processMcmodInfo(type: Copy) { from 'src/main/resources/mcmod.info' into 'build/combined' expand 'version': subVersion }
-
-
-sourceSets {
-    main {
-        output.resourcesDir = file('build/combined')
-        java.outputDir = file('build/combined')
-
+// Keep resources and compiled classes in Gradle's separate output directories.
+// Expanding metadata here also makes version changes invalidate processResources.
+processResources {
+    inputs.property 'modVersion', subVersion
+    filesMatching('mcmod.info') {
+        expand 'version': subVersion
     }
 }
-
-
-task miimmi {
-    doLast{
-        processResources.dependsOn(processMcmodInfo)
-        println "proasfmif?!@#######"
-    }
-}
-
-processResources.finalizedBy(processMcmodInfo)
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
@@ -243,6 +257,18 @@ task updateMainClassVersion {
 }
 
 compileJava.dependsOn updateMainClassVersion
+
+// Exercise the same parent/LaunchClassLoader split as a packaged Forge installation.
+tasks.register('verifyLateMixinLoaderClassLoading', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.wjx.kablade.loader.LateMixinLoaderClassLoadingCheck'
+    doFirst {
+        args = [jar.manifest.attributes['TweakClass']]
+    }
+}
+
+check.dependsOn verifyLateMixinLoaderClassLoading
 
 
 
