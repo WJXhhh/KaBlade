@@ -63,6 +63,8 @@ import com.wjx.kablade.blades.allweapon.AwXuezou;
 import com.wjx.kablade.blades.allweapon.AwYingyue;
 import com.wjx.kablade.blades.allweapon.AwYouming;
 import com.wjx.kablade.blades.allweapon.AwZhanYue;
+import com.wjx.kablade.blades.honkai.claymore.Schiffschneider;
+import com.wjx.kablade.blades.honkai.claymore.Sunfire;
 import com.wjx.kablade.blades.honkai.claymore.Betrayer;
 import com.wjx.kablade.blades.honkai.claymore.CrimsonQueen;
 import com.wjx.kablade.blades.honkai.claymore.DragonSpine;
@@ -179,6 +181,8 @@ public final class BladeLoader {
     // 崩坏线·妖精剑
     public static BladeDefineBase FAIRY_SWORD;
     // 崩坏线·大剑系列
+    public static BladeDefineBase SUNFIRE;
+    public static BladeDefineBase SCHIFFSCHNEIDER;
     public static BladeDefineBase GREAT_SWORD;
     public static BladeDefineBase ENERGY_GREATSWORD;
     public static BladeDefineBase PROTO_PULSE_CLEAVER;
@@ -309,6 +313,7 @@ public final class BladeLoader {
             "crimson_queen",
             "labor_of_olympus",
             "wotan_cleaver",
+            "sunfire",
             "violet_knight",
             "nuclear_pri",
             "nuclear_pri_ex",
@@ -318,6 +323,7 @@ public final class BladeLoader {
             "betrayer",
             "rangers_sawtooth",
             "judgment_by_dawn",
+            "schiffschneider",
             // 龙一文字线
             "splight_initial",
             "splight_normal",
@@ -350,6 +356,8 @@ public final class BladeLoader {
     );
 
     private static final Set<String> HONKAI_GREATSWORD_BLADE_KEYS = Set.of(
+            "sunfire",
+            "schiffschneider",
             "greatsword",
             "energy_greatsword",
             "proto_pulse_cleaver",
@@ -470,6 +478,8 @@ public final class BladeLoader {
         SPLIGHT_BLACKWATCH = new SL_Blackwatch(context);
         SPLIGHT_SENTA = new SL_Senta(context);
         // 崩坏大剑
+        SUNFIRE = new Sunfire(context);
+        SCHIFFSCHNEIDER = new Schiffschneider(context);
         GREAT_SWORD = new GreatSword(context);
         ENERGY_GREATSWORD = new EnergyGreatsword(context);
         PROTO_PULSE_CLEAVER = new ProtoPulseCleaver(context);
