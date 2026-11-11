@@ -9,7 +9,8 @@
     "RepairItemRecipeMixin",
     "SlashBladeShapedRecipeMixin",
     "SstBladeAffinityHandlerMixin",
-    "SlashBladeTargetSelectorMixin"
+    "SlashBladeTargetSelectorMixin",
+    "SunfireMovementMixin"
   ],
   "client": [
     "client.BladeFirstPersonRenderMixin",

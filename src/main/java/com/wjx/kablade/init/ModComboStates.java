@@ -66,6 +66,13 @@ public final class ModComboStates {
                     .nextOfTimeout(entity -> ComboStateRegistry.NONE.getId())
                     .build());
 
+    public static final RegistryObject<ComboState> SUNFIRE_IMPACT = REGISTRY.register(
+            "sunfire_impact", () -> ComboState.Builder.newInstance()
+                    .startAndEnd(0, 39).speed(1.0F).priority(50)
+                    .motionLoc(ResourceUtil.getLocation("combostate/sunfire_impact_blade.vmd"))
+                    .next(entity -> ComboStateRegistry.NONE.getId())
+                    .nextOfTimeout(entity -> ComboStateRegistry.NONE.getId()).build());
+
     private ModComboStates() {
     }
 }

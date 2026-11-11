@@ -15,6 +15,11 @@ public final class ModEntities {
     public static final DeferredRegister<EntityType<?>> REGISTRY =
             DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Main.MODID);
 
+    public static final RegistryObject<EntityType<SunfireImpactEntity>> SUNFIRE_IMPACT = REGISTRY.register(
+            "sunfire_impact", () -> EntityType.Builder.<SunfireImpactEntity>of(SunfireImpactEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F).clientTrackingRange(16).updateInterval(1)
+                    .fireImmune().noSummon().noSave().build("sunfire_impact"));
+
     /** 「岩石撼击」的岩刺表现实体。 */
     public static final RegistryObject<EntityType<RockSpikeEntity>> ROCK_SPIKE = REGISTRY.register(
             "rock_spike",

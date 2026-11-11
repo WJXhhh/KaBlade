@@ -4,6 +4,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public final class KabladeClientConfig {
     public static final ForgeConfigSpec SPEC;
+    public static final ForgeConfigSpec.BooleanValue SUNFIRE_IMPACT_CAMERA_SHAKE;
+    public static final ForgeConfigSpec.BooleanValue SUNFIRE_IMPACT_REDUCED_FLASH;
     public static final ForgeConfigSpec.EnumValue<SkillShaderMode> SKILL_SHADER_MODE;
     public static final ForgeConfigSpec.EnumValue<RaidenCycloneQuality> RAIDEN_CYCLONE_QUALITY;
     public static final ForgeConfigSpec.BooleanValue RAIDEN_CYCLONE_CAMERA_SHAKE;
@@ -77,6 +79,12 @@ public final class KabladeClientConfig {
                 .define("camera_shake", true);
         NARUKAMI_DIVINITY_REDUCED_FLASH = builder
                 .comment("Reduce screen-space flashes while retaining the world-space lightning.")
+                .define("reduced_flash", false);
+        builder.pop();
+        builder.comment("Sunfire Impact client effect options.").push("sunfire_impact");
+        SUNFIRE_IMPACT_CAMERA_SHAKE = builder.comment("Enable landing camera and FOV impulses.")
+                .define("camera_shake", true);
+        SUNFIRE_IMPACT_REDUCED_FLASH = builder.comment("Reduce the warm impact flash while retaining world effects.")
                 .define("reduced_flash", false);
         builder.pop();
         SPEC = builder.build();

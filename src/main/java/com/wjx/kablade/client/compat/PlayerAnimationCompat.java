@@ -57,6 +57,11 @@ public final class PlayerAnimationCompat {
             setBlendLegs.invoke(valkyrieAnim, true);
             animMap.put(ModComboStates.VALKYRIE_IMPACT.getId(), valkyrieAnim);
             Main.LOGGER.info("Registered Player Animator tracking for Valkyrie Impact");
+            Object sunfire = ctor.newInstance(ResourceUtil.getLocation("combostate/sunfire_impact_player.vmd"),
+                    0.0D, 39.0D, false);
+            setBlendArms.invoke(sunfire, true);
+            setBlendLegs.invoke(sunfire, true);
+            animMap.put(ModComboStates.SUNFIRE_IMPACT.getId(), sunfire);
         } catch (Throwable t) {
             Main.LOGGER.warn("Failed to register Player Animator animations: {}", t.getMessage());
         }

@@ -308,7 +308,7 @@ public final class ModSlashArts {
             () -> new TreasonArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> SUNFIRE_IMPACT = REGISTRY.register(
-            "sunfire_impact", () -> new SunfireImpactArts(entity -> ComboStateRegistry.NONE.getId()));
+            "sunfire_impact", () -> new SunfireImpactArts(entity -> ModComboStates.SUNFIRE_IMPACT.getId()));
 
     public static final RegistryObject<SlashArts> DEATH_GAZE = REGISTRY.register(
             "death_gaze",
