@@ -31,15 +31,15 @@ public class JudgmentByDawn extends BladeDefineBase {
                         .build(),
                 PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(19.0F)
-                        .maxDamage(580)
+                        .maxDamage(570)
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .addSpecialEffect(ModSpecialEffects.LIGHTNING_PUNISHMENT.getId())
                         .build(),
                 List.of(
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "unbreaking"), 3),
                         new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "knockback"), 2),
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 2),
-                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "thorns"), 2)
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "sharpness"), 3),
+                        new EnchantmentDefinition(ResourceLocation.fromNamespaceAndPath("minecraft", "thorns"), 1)
                 )
         ));
     }

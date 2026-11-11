@@ -61,6 +61,12 @@ public final class KabladeNetwork {
                 .consumerMainThread((packet, context) -> LightningPunishmentPacket.handle(packet, context.get()))
                 .add();
 
+        CHANNEL.messageBuilder(SunfireImpactPacket.class, 8)
+                .encoder(SunfireImpactPacket::encode)
+                .decoder(SunfireImpactPacket::decode)
+                .consumerMainThread((packet, context) -> SunfireImpactPacket.handle(packet, context.get()))
+                .add();
+
         CHANNEL.messageBuilder(RaidenCycloneEndPacket.class, 6)
                 .encoder(RaidenCycloneEndPacket::encode)
                 .decoder(RaidenCycloneEndPacket::decode)

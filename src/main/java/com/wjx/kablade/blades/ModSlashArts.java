@@ -2,6 +2,7 @@ package com.wjx.kablade.blades;
 
 import com.wjx.kablade.Main;
 import com.wjx.kablade.slasharts.TreasonArts;
+import com.wjx.kablade.slasharts.SunfireImpactArts;
 import com.wjx.kablade.init.ModComboStates;
 import com.wjx.kablade.slasharts.AbsoluteZeroArts;
 import com.wjx.kablade.slasharts.AuroraShiningArts;
@@ -305,6 +306,9 @@ public final class ModSlashArts {
     public static final RegistryObject<SlashArts> TREASON = REGISTRY.register(
             "treason",
             () -> new TreasonArts(entity -> ComboStateRegistry.NONE.getId()));
+
+    public static final RegistryObject<SlashArts> SUNFIRE_IMPACT = REGISTRY.register(
+            "sunfire_impact", () -> new SunfireImpactArts(entity -> ComboStateRegistry.NONE.getId()));
 
     public static final RegistryObject<SlashArts> DEATH_GAZE = REGISTRY.register(
             "death_gaze",
